@@ -22,14 +22,18 @@ see [RESEARCH.md](RESEARCH.md).
 8. [Technology Stack](#8-technology-stack)
 9. [Implementation Roadmap](#9-implementation-roadmap)
 10. [Evaluation Strategy](#10-evaluation-strategy)
-11. [Known Problems and Solutions](#11-known-problems-and-solutions)
+11. [Domain Expansion Architecture](#11-domain-expansion-architecture)
+12. [Known Problems and Solutions](#12-known-problems-and-solutions)
 
 ---
 
 ## 1. V1 Scope
 
 All decisions in this section are final for V1. If something is not listed,
-it ships in V2 or later.
+it ships in V2 or later. V1 constraints are scope decisions, not architectural
+limitations -- the system is designed to support any domain (see
+[RESEARCH.md Section 4](RESEARCH.md#4-the-universality-argument) and
+[Section 11](#11-domain-expansion-architecture) below).
 
 ### 1.1 V1 Problem Domains
 
@@ -68,19 +72,23 @@ Counterfactual, Cross-Domain Analogy agents.
 | Time to discovery | < 4 hours per demo on single A100 GPU |
 | Report quality | Correct equations, meaningful plots, no false claims |
 
-### 1.4 What V1 Does NOT Do
+### 1.4 What V1 Does NOT Do (But the Architecture Supports)
 
-- Arbitrary problem domains (only 3 supported)
+V1 deliberately constrains scope to three domains. This is a scope decision,
+not an architectural limitation. The items below are deferred, not impossible:
+
+- Arbitrary problem domains (only 3 in V1; architecture supports unlimited -- see Section 11)
 - Real-time interaction (batch processing only)
-- Sim-to-real transfer
-- Cross-domain analogy
+- Sim-to-real transfer (assumption tracking provides the foundation)
+- Cross-domain analogy (mathematical structure library in V2)
 - Adversarial verification (no second world model)
-- Multi-physics coupling
-- 3D fluid dynamics
+- Multi-physics coupling (composable dynamics modules in V3)
+- 3D fluid dynamics (requires 3D encoder/decoder, not architectural change)
 - Ensemble world models (uses MC dropout instead)
 - Interactive dashboard (static Markdown + PNG)
 - Distributed execution (single GPU)
 - Persistent knowledge across sessions
+- Auto-generated simulation code from equations (V4 goal)
 
 ---
 
@@ -598,7 +606,131 @@ backends (Phase 6 tasks 6.1, 6.2) can start in parallel with Phase 4-5.
 
 ---
 
-## 11. Known Problems and Solutions
+## 11. Domain Expansion Architecture
+
+The system is designed from the ground up to support any domain. V1 proves
+the pipeline on three domains; V2+ expands to unlimited domains without
+architectural changes. This section documents how.
+
+### 11.1 The Only Domain-Specific Component
+
+The entire pipeline is domain-agnostic except for one component: the
+`SimulationEnvironment` subclass. Everything else -- problem parsing, world
+model training, exploration, analysis, reporting -- operates on generic tensors
+and parameter dictionaries.
+
+```
+Domain-agnostic (no changes needed per domain):
+  - Problem Architect (LLM: parses any natural language)
+  - Domain Classifier (routing only, not constraining)
+  - World Model (RSSM: trains on any state sequence)
+  - Explorer (operates on parameter ranges and uncertainty scores)
+  - Analyst (PySR/SINDy: fits equations to any numerical data)
+  - Communication Agent (reports findings from any domain)
+
+Domain-specific (one class per domain):
+  - SimulationEnvironment subclass
+    - reset() -> initial_state
+    - step() -> next_state
+    - observe() -> observation
+```
+
+### 11.2 Adding a New Domain
+
+Adding support for a new problem class requires exactly these steps:
+
+1. **Write a `SimulationEnvironment` subclass** implementing `reset()`,
+   `step()`, and `observe()`. For domains with existing JAX-compatible
+   simulators, this is a thin wrapper (~50-200 lines).
+
+2. **Add a domain config YAML** specifying default parameters, sweep ranges,
+   and known-answer benchmarks.
+
+3. **Register the domain** in the `Domain` enum and `DomainClassifier`
+   keyword table.
+
+4. **(Optional)** Add a specialized encoder/decoder if the state representation
+   requires one (e.g., graph neural network for molecular structures).
+
+No changes to the pipeline, world model, explorer, analyst, or communicator.
+
+### 11.3 Encoder/Decoder Architecture Selection
+
+The state representation determines which encoder/decoder to use:
+
+| State Representation | Encoder | Decoder | Example Domains |
+|---------------------|---------|---------|-----------------|
+| Scalar fields on regular grid | CNN (Conv2d layers) | Transposed CNN | Reaction-diffusion, fluid dynamics, weather, acoustics |
+| Vector state (low-dimensional) | MLP | MLP | Rigid body, ODEs, population dynamics, circuit models |
+| 3D volumetric fields | 3D CNN | 3D Transposed CNN | Structural mechanics, 3D fluid dynamics, MRI |
+| Point clouds / particles | PointNet / Set encoder | Set decoder | Molecular dynamics, SPH fluids, N-body |
+| Graphs / networks | GNN (message-passing) | GNN decoder | Molecules, social networks, supply chains |
+| Sequences / time series | Transformer / 1D CNN | Autoregressive decoder | Financial markets, speech, signal processing |
+| Multi-resolution / AMR | U-Net / hierarchical | Hierarchical decoder | Climate, astrophysics, adaptive mesh simulations |
+
+V1 implements CNN and MLP encoders/decoders. The RSSM core is unchanged
+regardless of encoder choice -- it always operates on a fixed-size latent
+vector.
+
+### 11.4 Domain Expansion Roadmap
+
+#### Near-Term (V2): JAX-Native Domains
+
+These domains have existing JAX-compatible simulators and can be added with
+minimal effort:
+
+| Domain | Simulator | State Shape | Effort |
+|--------|-----------|-------------|--------|
+| Molecular dynamics | JAX-MD | (N_atoms, 3) positions + velocities | Low -- direct wrapper |
+| Robotics (articulated) | Brax / MJX | (N_joints,) angles + velocities | Low -- already in stack |
+| ODEs (arbitrary) | diffrax | (N_vars,) | Low -- generic ODE wrapper |
+| Fluid dynamics (2D) | JAX-CFD | (Nx, Ny, 3) velocity + pressure | Medium -- grid setup |
+| Quantum circuits | PennyLane (JAX) | (2^N,) state vector | Medium -- qubit encoding |
+
+#### Medium-Term (V3): Bridge Domains
+
+These require bridging to non-JAX simulators via file I/O or subprocess:
+
+| Domain | Simulator | Bridge Method |
+|--------|-----------|--------------|
+| Structural FEM | FEniCS / FreeFEM | Python API |
+| Full 3D CFD | OpenFOAM | File-based I/O |
+| Molecular (large-scale) | GROMACS / LAMMPS | Trajectory file parsing |
+| Climate | CESM / E3SM | Netcdf output processing |
+| Traffic networks | SUMO | TraCI Python API |
+| Power grids | PyPSA | Direct Python integration |
+
+#### Long-Term (V4+): Auto-Generated Domains
+
+The ultimate goal: given a natural language description and no pre-existing
+simulator, the system generates the simulation code itself using the LLM
+agents. The Simulation Builder Agent already does this in simplified form
+for V1 templates. V4+ generalizes this to arbitrary domain equations.
+
+### 11.5 Cross-Domain Transfer
+
+As the system studies more domains, it accumulates reusable knowledge:
+
+- **Composable dynamics modules**: Gravity, diffusion, advection, reaction,
+  friction, viscosity, electrostatics -- once implemented for one domain,
+  reusable in others.
+- **Mathematical structure library**: Bifurcations, conservation laws,
+  symmetry groups, scaling relationships -- recognized across domains.
+- **Cross-domain analogies**: The mathematical structure of epidemic spread
+  (SIR) is identical to chemical reaction kinetics. Predator-prey (Lotka-
+  Volterra) has the same form as competing economic firms. The system can
+  transfer discoveries between isomorphic domains automatically.
+- **Encoder/decoder reuse**: A CNN encoder trained on reaction-diffusion
+  patterns transfers to any 2D scalar field problem. An MLP encoder for
+  Lotka-Volterra transfers to any low-dimensional ODE system.
+
+The 100th domain the system studies is dramatically easier than the 10th,
+because the component library, analogy database, and training heuristics
+all compound.
+
+---
+
+## 12. Known Problems and Solutions
 
 | # | Problem | Severity | V1 Solution |
 |---|---------|----------|-------------|
@@ -624,4 +756,6 @@ backends (Phase 6 tasks 6.1, 6.2) can start in parallel with Phase 4-5.
 ---
 
 *This document is the primary technical reference for the Simulating Anything
-project. For research motivation and positioning, see RESEARCH.md.*
+project. For the universality argument and research motivation, see
+[RESEARCH.md](RESEARCH.md). For domain expansion details, see
+[Section 11](#11-domain-expansion-architecture).*

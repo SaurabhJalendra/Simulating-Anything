@@ -9,14 +9,15 @@
 1. [Abstract](#1-abstract)
 2. [Introduction and Motivation](#2-introduction-and-motivation)
 3. [Core Idea and Pipeline](#3-core-idea-and-pipeline)
-4. [What Makes This Different](#4-what-makes-this-different)
-5. [Research Landscape](#5-research-landscape)
-6. [Critical Gaps in Current Research](#6-critical-gaps-in-current-research)
-7. [Novel Contributions](#7-novel-contributions)
-8. [Positioning and Comparison](#8-positioning-and-comparison)
-9. [Target Capabilities](#9-target-capabilities)
-10. [Long-Term Vision](#10-long-term-vision)
-11. [References](#11-references)
+4. [The Universality Argument](#4-the-universality-argument)
+5. [What Makes This Different](#5-what-makes-this-different)
+6. [Research Landscape](#6-research-landscape)
+7. [Critical Gaps in Current Research](#7-critical-gaps-in-current-research)
+8. [Novel Contributions](#8-novel-contributions)
+9. [Positioning and Comparison](#9-positioning-and-comparison)
+10. [Target Capabilities](#10-target-capabilities)
+11. [Long-Term Vision](#11-long-term-vision)
+12. [References](#12-references)
 
 ---
 
@@ -93,7 +94,182 @@ These stages form a loop, not a linear pipeline. Each cycle refines the system's
 
 ---
 
-## 4. What Makes This Different
+## 4. The Universality Argument
+
+This section makes the explicit case for why this system is not limited to any particular domain. The claim is strong and deliberate: **any real-world phenomenon that can be simulated can be learned, explored, and understood by this system.** The architecture is domain-agnostic. Only the simulation backend changes.
+
+### 4.1 The Logical Chain
+
+The argument rests on four observations, each well-established independently:
+
+1. **Every real-world system is a dynamical system.** Whether it is a car on a highway, a protein folding in solution, a hurricane forming over the Atlantic, or an economy responding to policy changes -- every system has a state that evolves over time according to some dynamics. Those dynamics may be deterministic or stochastic, continuous or discrete, well-understood or unknown. But they exist, and they can be described mathematically. This is not a philosophical claim. It is the foundational assumption of all physics, biology, chemistry, economics, and engineering.
+
+2. **Every dynamical system can be simulated.** If a system has state and dynamics, it can be simulated on a computer. The simulation may be approximate. The simulation may be expensive. The simulation may require simplifying assumptions. But a simulation can be constructed. This is also well-established: we simulate weather systems, nuclear reactors, protein dynamics, galactic collisions, traffic networks, financial markets, epidemics, and quantum systems. For virtually every domain of human inquiry, simulators already exist -- often multiple competing ones at different fidelity levels.
+
+3. **Every simulation can train a world model.** A world model learns from sequences of states. It observes state(t), state(t+1), state(t+2), and learns the transition function that generates these sequences. It does not care what those states represent. A 128x128 concentration field, a 12-dimensional robot joint configuration, a 1000-agent economic network, a 3D protein backbone -- to the world model, they are all tensors evolving over time. The RSSM architecture (and its successors) has been proven across 150+ diverse environments in DreamerV3. The learning algorithm is genuinely domain-agnostic.
+
+4. **Discoveries from the world model transfer to the real world.** If the simulation faithfully captures the relevant physics, then equations, phase boundaries, and scaling laws discovered within the simulation are equations, phase boundaries, and scaling laws of the real system. This is how computational science has always worked: we trust simulations because they are grounded in validated physical laws. A governing equation discovered from Gray-Scott simulation data is the actual Gray-Scott equation. A scaling law discovered from projectile simulation data is the actual projectile scaling law. The world model adds efficiency (dreaming is faster than simulating), not a new layer of approximation.
+
+The chain is: **Real World -> Dynamical System -> Simulation -> World Model -> Discovery -> Back to Real World.**
+
+The system does not need to understand the domain. It needs a simulator. Everything else follows.
+
+### 4.2 Why the Architecture Is Domain-Agnostic
+
+Every component in the pipeline operates on generic mathematical objects, not domain-specific representations:
+
+| Component | What It Sees | Domain-Specific? |
+|-----------|-------------|-----------------|
+| Problem Architect | Natural language text | No -- LLM handles any domain |
+| Domain Classifier | Keywords and physics descriptors | Routing only -- does not constrain learning |
+| Simulation Builder | Parameter dictionaries and config | Template selection only |
+| Simulation Environment | State arrays, timesteps, parameters | **Yes -- this is the only domain-specific component** |
+| World Model (RSSM) | Tensors of shape (T, *state_shape) | No -- learns from any state sequence |
+| Encoder/Decoder | Input/output tensors | Architecture selection (CNN vs MLP), not learning algorithm |
+| Explorer | Parameter ranges, uncertainty scores | No -- operates on scalar parameter values |
+| Analyst (PySR/SINDy) | Numerical arrays (features, targets) | No -- fits equations to any data |
+| Ablation Study | Metric function over parameters | No -- domain enters only through the metric |
+| Communicator | Equations, plots, text | No -- reports findings from any domain |
+
+**The only domain-specific component is the simulation backend itself.** Everything upstream (problem parsing) and downstream (learning, exploration, analysis, reporting) is generic. Adding a new domain means writing one new class: a `SimulationEnvironment` subclass with `reset()`, `step()`, and `observe()` methods. The rest of the pipeline works unchanged.
+
+### 4.3 Concrete Domain Applications
+
+The following table is not speculative. For every domain listed, production-quality simulators already exist, the state representation is well-defined, and the type of discoveries the system would make are scientifically meaningful.
+
+#### Physical Sciences and Engineering
+
+| Domain | State Representation | Existing Simulators | What the System Would Discover |
+|--------|---------------------|--------------------|-----------------------------|
+| **Fluid dynamics** | Velocity/pressure fields on 3D grid | OpenFOAM, PhiFlow, JAX-CFD | Turbulence scaling laws, drag coefficients, vortex shedding frequencies, Reynolds number transitions |
+| **Structural engineering** | Stress/strain tensors, displacement fields | FEniCS, Abaqus, ANSYS | Failure mode boundaries, load-bearing capacity scaling, resonance frequencies, fatigue life equations |
+| **Thermodynamics** | Temperature/entropy fields, phase fractions | COMSOL, OpenFOAM | Phase transition boundaries, heat transfer coefficients, critical point equations, efficiency scaling |
+| **Electromagnetics** | Electric/magnetic field vectors on grid | MEEP, COMSOL, CST | Antenna gain patterns, waveguide mode equations, resonance conditions, scattering cross-sections |
+| **Acoustics** | Pressure fields, wave amplitudes | k-Wave, COMSOL | Room resonance modes, absorption coefficients, diffraction patterns, noise reduction scaling |
+| **Plasma physics** | Particle distributions, field potentials | GENE, GS2, BOUT++ | Instability thresholds, confinement scaling laws, turbulent transport coefficients |
+| **Quantum systems** | Wave functions, density matrices | QuTiP, Qiskit Aer, PennyLane | Entanglement dynamics, decoherence rates, optimal control pulses, phase diagram of quantum materials |
+
+#### Robotics and Autonomous Systems
+
+| Domain | State Representation | Existing Simulators | What the System Would Discover |
+|--------|---------------------|--------------------|-----------------------------|
+| **Robotic manipulation** | Joint angles, velocities, contact forces | MuJoCo, Isaac Sim, PyBullet | Grasp stability boundaries, force scaling laws, optimal trajectory equations, workspace reachability maps |
+| **Legged locomotion** | Body pose, joint torques, ground contacts | MuJoCo, Brax, Isaac Gym | Gait phase diagrams, energy-optimal speed equations, stability margins, terrain adaptation scaling |
+| **Autonomous vehicles** | Vehicle state (x, y, v, theta), traffic state | CARLA, SUMO, LGSVL | Braking distance equations, traffic flow phase transitions, collision avoidance boundaries, fuel-optimal speed profiles |
+| **Drone dynamics** | 6-DOF pose, rotor speeds, wind field | AirSim, Flightmare, PyFlyt | Lift-to-drag scaling, stability boundaries vs wind speed, energy-optimal hover equations, payload capacity curves |
+| **Swarm robotics** | Multi-agent positions, velocities, communications | NetLogo, Mesa, custom JAX | Emergent formation equations, consensus convergence rates, optimal swarm density, communication range scaling |
+
+#### Life Sciences
+
+| Domain | State Representation | Existing Simulators | What the System Would Discover |
+|--------|---------------------|--------------------|-----------------------------|
+| **Protein dynamics** | Atomic coordinates, velocities | OpenMM, GROMACS, AMBER | Folding rate equations, stability phase diagrams, binding affinity scaling, allosteric pathway identification |
+| **Drug interactions** | Molecular conformations, binding energies | AutoDock, Schrodinger, RDKit | Dose-response curves, synergy/antagonism boundaries, selectivity equations, pharmacokinetic scaling |
+| **Gene regulatory networks** | Expression levels, promoter states | BioNetGen, COPASI, custom ODE | Bistability conditions, oscillation period equations, noise filtering thresholds, network motif functions |
+| **Epidemiology** | Compartment populations (S, I, R, ...) | EpiModel, GLEAM, Mesa | R0 formulas, herd immunity thresholds, intervention timing optimization, variant competition dynamics |
+| **Ecology** | Species populations, resource levels | NetLogo, EcoSim, custom ODE | Coexistence boundaries, trophic cascade equations, biodiversity-stability relationships, extinction thresholds |
+| **Neuroscience** | Neuron membrane potentials, synaptic weights | NEURON, Brian2, NEST | Firing rate equations, synchronization boundaries, learning rule scaling, information capacity formulas |
+
+#### Earth and Climate Sciences
+
+| Domain | State Representation | Existing Simulators | What the System Would Discover |
+|--------|---------------------|--------------------|-----------------------------|
+| **Weather prediction** | Atmospheric fields (T, P, wind, humidity) | WRF, MPAS, FV3 | Storm formation conditions, jet stream scaling, precipitation thresholds, teleconnection equations |
+| **Climate modeling** | Global temperature, CO2, ice extent, ocean state | CESM, GFDL, E3SM | Climate sensitivity equations, tipping point boundaries, carbon cycle feedback strengths, sea level scaling |
+| **Ocean dynamics** | Current velocities, temperature, salinity | MOM6, NEMO, ROMS | Thermohaline circulation stability, eddy transport scaling, upwelling condition equations |
+| **Seismology** | Stress fields, fault slip, wave propagation | SPECFEM3D, SW4 | Earthquake scaling laws (Gutenberg-Richter), rupture propagation speed equations, aftershock rate formulas |
+| **Hydrology** | Water table, soil moisture, river flow | ParFlow, MODFLOW, HEC-RAS | Flood threshold equations, groundwater recharge rates, drought propagation scaling |
+
+#### Social Sciences and Economics
+
+| Domain | State Representation | Existing Simulators | What the System Would Discover |
+|--------|---------------------|--------------------|-----------------------------|
+| **Financial markets** | Asset prices, order books, agent wealth | Agent-based models, custom ODE | Volatility scaling laws, crash precursor equations, market microstructure phase transitions |
+| **Urban traffic** | Vehicle counts, signal states, road network | SUMO, MATSim, VISSIM | Congestion phase transitions, optimal signal timing equations, capacity scaling laws, route choice equilibria |
+| **Supply chains** | Inventory levels, demand, transport state | AnyLogic, SimPy, custom | Bullwhip effect equations, optimal inventory formulas, disruption propagation speed, resilience scaling |
+| **Social dynamics** | Opinion vectors, network connections | Mesa, NetLogo, custom | Polarization tipping points, consensus convergence rates, information cascade thresholds, influence scaling |
+| **Energy systems** | Grid load, generation, storage levels | PyPSA, PLEXOS, GridLAB-D | Renewable integration thresholds, storage sizing equations, grid stability boundaries, pricing equilibria |
+
+#### Materials Science and Chemistry
+
+| Domain | State Representation | Existing Simulators | What the System Would Discover |
+|--------|---------------------|--------------------|-----------------------------|
+| **Molecular dynamics** | Atomic positions and velocities | LAMMPS, GROMACS, JAX-MD | Phase transition temperatures, diffusion coefficients, crystal growth rates, mechanical property scaling |
+| **Crystal growth** | Lattice site occupancies, temperature field | KMC codes, phase-field models | Growth rate equations, morphology phase diagrams, defect formation thresholds, supersaturation scaling |
+| **Battery chemistry** | Ion concentrations, electrode potentials | PyBaMM, COMSOL | Degradation rate equations, capacity fade scaling, optimal charging profiles, thermal runaway boundaries |
+| **Polymer dynamics** | Chain conformations, entanglement state | HOOMD-blue, LAMMPS | Viscosity scaling laws, glass transition equations, self-assembly phase diagrams |
+| **Catalysis** | Surface coverage, reaction intermediates | CANTERA, custom KMC | Reaction rate equations, selectivity phase diagrams, poisoning thresholds, turnover frequency scaling |
+
+### 4.4 The Self-Driving Car Example
+
+To make the universality argument concrete, consider autonomous vehicles in detail.
+
+**The dynamical system.** A car on a road has state: position (x, y), heading (theta), velocity (v), steering angle (delta), plus the state of surrounding vehicles, pedestrians, traffic signals, and road geometry. The dynamics: tire-road friction models, engine torque curves, aerodynamic drag, suspension response, and the decision-making of other road users. All of this is well-characterized physics and well-studied behavioral models.
+
+**The simulation.** CARLA, SUMO, and LGSVL are production-quality open-source simulators. They model vehicle dynamics, sensor physics (camera, lidar, radar), traffic behavior, weather effects, and road networks. Billions of simulation miles have been run by Waymo, Cruise, and Tesla for autonomous vehicle development.
+
+**What the world model learns.** The RSSM trains on trajectories: sequences of (vehicle_state, traffic_state, action, next_state). It learns a compressed representation of how the driving environment evolves. From this, it can dream: "What happens if I brake now? What if the car ahead swerves? What if it starts raining?"
+
+**What the system discovers.** Not a driving policy (that is a control problem, not a discovery problem). Instead:
+- **Braking distance equations** as a function of speed, road surface, tire condition, and vehicle mass. The system would rediscover and refine the standard braking distance formula, and potentially find corrections for conditions not well-characterized analytically.
+- **Traffic flow phase transitions.** At what vehicle density does free flow transition to congested flow? The system would discover the fundamental diagram of traffic flow and its dependence on road geometry, speed limits, and driver behavior distributions.
+- **Collision probability boundaries.** For a given speed, following distance, and reaction time, what is the boundary between safe and unsafe? The system would map this as a phase diagram in (speed, distance, reaction_time) space.
+- **Fuel/energy-optimal speed profiles.** What velocity trajectory minimizes energy consumption for a given route, traffic pattern, and vehicle? The system would discover the governing equations of eco-driving.
+- **Sensor degradation scaling.** How does perception accuracy degrade with rain intensity, fog density, or sun angle? The system would find the scaling laws that govern sensor reliability.
+
+These discoveries are genuinely useful for autonomous vehicle engineering. They are not the driving policy itself, but the scientific understanding that informs better policies, better testing, and better safety analysis.
+
+### 4.5 The Robotics Example
+
+Consider a robotic arm performing pick-and-place tasks.
+
+**The dynamical system.** State: 7 joint angles, 7 joint velocities, end-effector pose, gripper state, object pose, contact forces. Dynamics: rigid body mechanics, joint actuator models, contact and friction physics, object inertia.
+
+**The simulation.** MuJoCo, Isaac Sim, and PyBullet provide high-fidelity physics simulation with differentiable contact models. Thousands of robotics researchers use these daily.
+
+**What the system discovers:**
+- **Grasp stability phase diagrams.** For a given object geometry and friction coefficient, what gripper configurations produce stable grasps? The system maps this as a phase boundary in (grip_force, contact_angle, friction) space.
+- **Workspace reachability equations.** What is the analytical boundary of the robot's reachable workspace as a function of link lengths? The system rediscovers forward kinematics equations.
+- **Energy-optimal trajectory scaling.** How does the minimum-energy trajectory between two points scale with distance, payload mass, and speed constraint? The system finds the governing equations.
+- **Force-accuracy tradeoffs.** What is the relationship between applied force, contact stiffness, and positioning accuracy? The system discovers the compliance equations that govern precision manipulation.
+- **Failure mode boundaries.** At what combination of speed, payload, and joint angle does the robot lose stability or exceed torque limits? The system maps these as phase boundaries.
+
+### 4.6 Why "Any Situation" Is Not an Exaggeration
+
+The claim "any situation" has a precise meaning: **any situation whose dynamics can be simulated on a computer.** This covers:
+
+- **Any physical system** governed by known or partially known laws of physics. This includes everything from quantum mechanics to cosmology, and every engineering discipline: mechanical, electrical, chemical, civil, aerospace, biomedical, nuclear, environmental.
+
+- **Any biological system** that can be modeled as interacting components with quantifiable state. This includes molecular biology, cell biology, physiology, ecology, epidemiology, and neuroscience.
+
+- **Any social/economic system** that can be modeled as agents with defined behaviors and interactions. This includes markets, traffic, supply chains, social networks, elections, and urban systems.
+
+- **Any abstract mathematical system** that can be evolved forward in time. This includes cellular automata, graph dynamics, game theory, and any computable dynamical system.
+
+The only situations excluded are those that cannot be simulated at all:
+- Systems whose fundamental laws are unknown AND no empirical model exists (e.g., quantum gravity -- but even here, proposed models can be simulated)
+- Systems that require exponential computational resources just to represent the state (e.g., exact quantum simulation of >50 qubits -- though approximate methods exist)
+- Systems where the relevant variables cannot be identified or measured
+
+For everything else -- which encompasses virtually all of science, engineering, medicine, economics, and social science -- the system applies. The V1 implementation supports three domains. The architecture supports all of them. Adding each new domain requires writing one simulation backend class. The learning, exploration, analysis, and communication pipeline works unchanged.
+
+### 4.7 From Three Domains to Unlimited
+
+The path from V1 (3 domains) to universal coverage is not a change in architecture. It is a matter of:
+
+1. **Adding simulation backends.** Each new domain needs a `SimulationEnvironment` subclass. For domains with existing JAX-compatible simulators (Brax for robotics, JAX-MD for molecular dynamics, diffrax for ODEs), this is straightforward wrapping. For other domains, it requires a JAX reimplementation or a bridge to external simulators.
+
+2. **Expanding encoder/decoder architectures.** The CNN encoder handles spatial fields. The MLP encoder handles vector states. Future domains may need graph neural network encoders (for molecular structures), point cloud encoders (for particle systems), or sequence encoders (for time series). The RSSM core and training loop remain unchanged.
+
+3. **Growing the composable dynamics library.** Each domain studied adds reusable dynamics modules (gravity, diffusion, reaction, friction, advection) that accelerate future domain construction. The 100th domain is easier than the 10th.
+
+4. **Accumulating cross-domain analogies.** As the system studies more domains, its library of mathematical structures grows. The Cross-Domain Analogy Engine (Section 8.2) automatically identifies when a new domain shares mathematical structure with a previously studied one, enabling transfer of solution techniques and discovered equations.
+
+The architecture was designed for this scaling from day one. V1 proves it works on three domains. The universality is inherent in the design.
+
+---
+
+## 5. What Makes This Different
 
 ### Multi-Agent Architecture with Specialized Roles
 
@@ -133,11 +309,11 @@ This separation preserves the LLM's strengths (reasoning, planning, communicatio
 
 ---
 
-## 5. Research Landscape
+## 6. Research Landscape
 
 This section surveys the key areas of active research that form the technical foundation of the project: world models, AI for scientific discovery, equation discovery, simulation infrastructure, and exploration methods.
 
-### 5.1 World Models (State of the Art 2024-2025)
+### 6.1 World Models (State of the Art 2024-2025)
 
 World models learn to predict future states of an environment given actions, enabling planning, imagination, and data-efficient reinforcement learning. The field has seen rapid architectural diversification since 2023, moving beyond recurrent state-space models toward transformers, diffusion models, and hybrid approaches.
 
@@ -175,7 +351,7 @@ World models learn to predict future states of an environment given actions, ena
 | Spatial consistency in 3D | View-dependent inconsistencies, geometry violations | Multi-view or navigation |
 | Hallucination of plausible states | Visually plausible but physically impossible states | Increases with horizon |
 
-### 5.2 AI for Scientific Discovery
+### 6.2 AI for Scientific Discovery
 
 - **FunSearch** (Romera-Paredes et al., 2024). Combines LLMs with evolutionary search to discover new mathematical constructions by searching in program space. Discovered results for the cap set problem and online bin packing surpassing previously known bounds. Requires automatically computable evaluation functions, limiting applicability to broader science.
 - **AlphaFold 2/3** (Jumper et al., 2021; Abramson et al., 2024). Near-experimental accuracy for protein structure prediction (AF2) and biomolecular complex prediction (AF3, using diffusion-based generation). Predicts static structures only; does not model dynamics or function.
@@ -193,7 +369,7 @@ World models learn to predict future states of an environment given actions, ena
 
 Julia SciML is the most complete and integrated ecosystem. NVIDIA Modulus is the primary production-oriented framework. Key challenge: training PINNs is notoriously finicky; neural operators require large training datasets; UDEs require differentiable solvers.
 
-### 5.3 Equation Discovery
+### 6.3 Equation Discovery
 
 | Tool | Method | Speed | Interpretability | Variable Scalability | Novelty Potential |
 |---|---|---|---|---|---|
@@ -205,7 +381,7 @@ Julia SciML is the most complete and integrated ecosystem. NVIDIA Modulus is the
 
 PySR is the current best-in-class tool for symbolic regression, using multi-population evolutionary search with Pareto front optimization. SINDy discovers governing equations by sparse regression over candidate function libraries -- fast but limited to functions in the library. KANs (Kolmogorov-Arnold Networks) replace fixed MLP activations with learnable edge functions, offering improved interpretability but remaining unproven at scale.
 
-### 5.4 Simulation Infrastructure and Transfer
+### 6.4 Simulation Infrastructure and Transfer
 
 **Differentiable simulation frameworks:**
 
@@ -242,7 +418,7 @@ Key limitation: gradient quality degrades over long horizons. In chaotic systems
 
 Weather foundation models (GraphCast, GenCast, Aurora, Pangu-Weather) are the flagship success: operationally deployed at weather services, producing skillful 10-day forecasts in minutes rather than hours.
 
-### 5.5 Exploration and Causal Discovery
+### 6.5 Exploration and Causal Discovery
 
 **Exploration methods:** Random Network Distillation (RND) is the most widely used curiosity method due to simplicity and effectiveness. Go-Explore separates "returning to frontier" from "exploring beyond frontier," solving hard exploration problems where all other methods failed. LLM-guided exploration combines language-level world knowledge with RL exploration but remains experimental.
 
@@ -259,39 +435,39 @@ Production frameworks include DoWhy (Microsoft), EconML, CausalML, and causal-le
 
 ---
 
-## 6. Critical Gaps in Current Research
+## 7. Critical Gaps in Current Research
 
 These are areas where no existing research program provides a satisfactory solution, ordered roughly by importance to the project's mission.
 
-### 6.1 Natural Language to Validated Simulation
+### 7.1 Natural Language to Validated Simulation
 
 **Maturity: Very Low.** No existing system takes a natural language description of a physical system and produces a validated, quantitatively accurate simulation. Individual pieces exist (LLMs for code generation, physics engines, testing frameworks) but nobody has assembled and validated the end-to-end pipeline for scientific simulation. The core gap is validation and verification of generated simulations.
 
-### 6.2 Composable Dynamics Modules
+### 7.2 Composable Dynamics Modules
 
 **Maturity: Very Low.** Current world models are trained end-to-end on specific domains. There is no modular system where learned "rigid body dynamics," "fluid dynamics," and "electromagnetic field" modules can be composed to simulate a new multi-physics scenario. Genesis (2024) integrates multiple physics engines but through engineering, not learned composition. The gap is learned modules with interface contracts that ensure physical consistency.
 
-### 6.3 Automated Model Selection and Theory Competition
+### 7.3 Automated Model Selection and Theory Competition
 
 **Maturity: Very Low.** No system automatically generates multiple competing models, evaluates them on held-out data, and selects or synthesizes the best explanation. Bayesian model selection is well-established but requires human-specified candidate models. The gap is an automated system that maintains a portfolio of candidate models and identifies discriminating experiments.
 
-### 6.4 Cross-Domain Transfer of Mathematical Patterns
+### 7.4 Cross-Domain Transfer of Mathematical Patterns
 
 **Maturity: Very Low.** When symbolic regression discovers that a biological system follows diffusion dynamics, that insight could transfer to other domains with similar structure. No existing system captures and transfers structural mathematical patterns across domains. The gap is a mathematical pattern library with tools for recognizing and applying structural analogies.
 
-### 6.5 Symbolic-Numeric Computation Bridging
+### 7.5 Symbolic-Numeric Computation Bridging
 
 **Maturity: Low.** Symbolic computation and numeric computation remain largely separate worlds. Julia's ModelingToolkit.jl comes closest to bridging them, but no system provides a seamless AI-driven bridge that automatically decides when symbolic versus numeric approaches are appropriate.
 
-### 6.6 Automated Progressive Fidelity
+### 7.6 Automated Progressive Fidelity
 
 **Maturity: Low.** Starting with the simplest possible model and automatically escalating fidelity only when needed. Multi-fidelity optimization combines fidelity levels but does not automatically select or escalate. The gap is a meta-controller that manages a hierarchy of models and decides when to invest in higher fidelity.
 
-### 6.7 Reproducibility Infrastructure for AI-Generated Science
+### 7.7 Reproducibility Infrastructure for AI-Generated Science
 
 **Maturity: Very Low.** AI-generated scientific claims lack standardized infrastructure for reproducibility. Existing experiment tracking tools (MLflow, Weights & Biases) cover general ML but nothing specific to AI-generated scientific claims, provenance tracking, or automated verification.
 
-### 6.8 Collaborative AI-Human Discovery Interface
+### 7.8 Collaborative AI-Human Discovery Interface
 
 **Maturity: Low.** Current AI science tools are either fully automated or fully manual. The middle ground -- where AI and human scientists collaborate as peers -- lacks dedicated interface design, interaction patterns, and workflow support. Notebook assistants are tool-use patterns, not collaboration patterns.
 
@@ -310,11 +486,11 @@ These are areas where no existing research program provides a satisfactory solut
 
 ---
 
-## 7. Novel Contributions
+## 8. Novel Contributions
 
 This section catalogs nine original architectural contributions that address the critical gaps identified above. None of these exist in published literature as described here, though they build on and extend established foundations. Each idea addresses a specific failure mode or opens a new capability. Together, they form a discovery engine qualitatively different from anything in the literature.
 
-### 7.1 Adversarial Dream Debate
+### 8.1 Adversarial Dream Debate
 
 Two world models, trained independently on the same problem (different architectures, random seeds, data orderings), propose competing hypotheses about the system's behavior. When their predictions diverge, a judge agent designs discriminating experiments within the ground-truth simulation to determine which model is correct. The losing model is corrected; the winning model's reliability is reinforced.
 
@@ -324,7 +500,7 @@ This addresses the hallucinated consensus problem in multi-agent AI systems. Whe
 
 **Research gap filled:** No existing system pits world models against each other for scientific verification. Ensemble methods average predictions rather than resolving disagreements. GAN adversarial training targets realistic generation, not scientific accuracy. AI safety debate operates in language/reasoning contexts, not physical world models. This combines the independence of ensembles, the adversarial pressure of GANs, and the verification logic of debate protocols.
 
-### 7.2 Cross-Domain Analogy Engine
+### 8.2 Cross-Domain Analogy Engine
 
 When the system discovers a mathematical pattern in one domain -- a governing equation, a dynamical structure, a symmetry -- it automatically searches for isomorphic structures across every other domain it has studied. Many of the most important scientific breakthroughs came from recognizing such structural analogies: Maxwell's equations and fluid dynamics, Black-Scholes and the heat equation, Shannon entropy and Boltzmann entropy, predator-prey dynamics appearing in ecology, epidemiology, chemical kinetics, and economics. These are exact mathematical isomorphisms, not metaphors, and solution techniques transfer directly across them.
 
@@ -332,7 +508,7 @@ When the system discovers a mathematical pattern in one domain -- a governing eq
 
 **Research gap filled:** No existing system searches across scientific domains for structural mathematical analogies. Symbolic regression discovers equations within a single domain. Transfer learning transfers statistical features, not mathematical structure. The Cross-Domain Analogy Engine maintains a growing library of mathematical structures and systematically searches for isomorphisms.
 
-### 7.3 FunSearch-Style Program Discovery for Physical Problems
+### 8.3 FunSearch-Style Program Discovery for Physical Problems
 
 Instead of discovering numerical solutions or symbolic equations, the system discovers programs: executable algorithms, control strategies, and optimization policies. The world model serves as a fast evaluation function, and evolutionary search over LLM-generated programs provides the exploration mechanism.
 
@@ -340,7 +516,7 @@ This extends DeepMind's FunSearch from pure mathematics to physical and scientif
 
 **Research gap filled:** FunSearch demonstrated LLM-guided evolutionary search for mathematical constructions, but only where evaluation is exact and instant. No one has combined FunSearch-style program evolution with learned world models to make this tractable for physical problems.
 
-### 7.4 Dream Journaling and Pattern Mining
+### 8.4 Dream Journaling and Pattern Mining
 
 Every trajectory imagined by the world model is logged in a structured database with full metadata. A background process continuously mines this archive for patterns that recur across many independent dreams, flagging recurring structures as candidate discoveries and one-off patterns as potential artifacts.
 
@@ -350,7 +526,7 @@ Current world model systems treat each dream as an isolated event. This is waste
 
 **Research gap filled:** No world model system maintains and mines a historical archive of imagined trajectories. MuZero, Dreamer, and curiosity-driven exploration all treat dreaming as stateless. Dream Journaling adds a memory layer that transforms the system from a stateless exploration engine into a cumulative knowledge-building system.
 
-### 7.5 Socratic Discovery Mode
+### 8.5 Socratic Discovery Mode
 
 Instead of operating as fully autonomous, the system periodically pauses its exploration to present its current understanding to the human researcher and ask targeted questions. It seeks human input on where to explore next, which hypotheses to prioritize, and whether intermediate findings align with domain intuition.
 
@@ -360,7 +536,7 @@ The landscape of AI-assisted science is polarized between fully autonomous syste
 
 **Research gap filled:** No existing AI science tool supports genuine bidirectional collaboration during the discovery process. Fully autonomous systems have no human-in-the-loop. Notebook assistants respond to requests but do not proactively contribute hypotheses or ask questions. Active learning asks for labels, not strategic scientific questions.
 
-### 7.6 Uncertainty-Driven Exploration
+### 8.6 Uncertainty-Driven Exploration
 
 The world model's own predictive uncertainty is used as the primary signal for directing exploration, with a critical distinction between epistemic uncertainty (lack of knowledge, worth exploring) and aleatoric uncertainty (inherent stochasticity, not reducible by more data).
 
@@ -370,7 +546,7 @@ Curiosity-driven exploration conflates these: an agent can get permanently stuck
 
 **Research gap filled:** Bayesian optimization uses uncertainty for function optimization, not world model training. RND and curiosity methods do not distinguish epistemic from aleatoric uncertainty. Active learning operates in supervised contexts, not world model dreaming. The novel contribution is principled epistemic/aleatoric decomposition applied to world model dreaming for systematically expanding the frontier of reliable knowledge about a physical system.
 
-### 7.7 Composable Dynamics Modules
+### 8.7 Composable Dynamics Modules
 
 Rather than training a monolithic world model from scratch for every new problem, the system maintains a library of reusable learned dynamics components. Each module captures an isolated physical phenomenon -- gravity, friction, diffusion, reaction kinetics -- with a standardized interface. New problems are solved by composing relevant modules and training only a small residual network to capture their interactions.
 
@@ -380,7 +556,7 @@ Every world model in the current literature is trained from scratch on a single 
 
 **Research gap filled:** No one is building world models from reusable, composable physics components. Monolithic world models (Dreamer, IRIS) have no cross-domain reuse. PINNs hardcode physics as loss constraints, not reusable modules. Foundation model proposals aim for one large model; composable modules offer the modular alternative with independent validation, updating, and debugging.
 
-### 7.8 Automated Ablation Studies
+### 8.8 Automated Ablation Studies
 
 Whenever the system makes a discovery, it automatically conducts ablation studies -- systematically removing or modifying individual factors to determine which are essential and which are incidental. This transforms correlational observations into causal claims.
 
@@ -388,7 +564,7 @@ Whenever the system makes a discovery, it automatically conducts ablation studie
 
 **Research gap filled:** Ablation studies are standard in ML research but have never been automated for scientific discoveries made by AI systems. AI Scientist reports findings without testing which factors are essential. Symbolic regression discovers equations without testing which terms are necessary. Causal discovery algorithms infer from observation; automated ablation tests through direct intervention. The two are complementary.
 
-### 7.9 Progressive Trust Architecture
+### 8.9 Progressive Trust Architecture
 
 The system maintains explicit, quantitative trust scores for every component: each world model (and each region of each world model's state space), each dynamics module, each agent, each analysis type. Trust scores increase when predictions match ground truth and decrease when they fail. These scores directly influence resource allocation and validation requirements.
 
@@ -414,9 +590,9 @@ The system maintains explicit, quantitative trust scores for every component: ea
 
 ---
 
-## 8. Positioning and Comparison
+## 9. Positioning and Comparison
 
-### 8.1 Comparison Matrix
+### 9.1 Comparison Matrix
 
 | Dimension | Simulating Anything | AI Scientist (Sakana) | FunSearch (DeepMind) | DreamerV3 | SciML.jl | Traditional Simulation |
 |-----------|--------------------|-----------------------|---------------------|-----------|----------|----------------------|
@@ -431,7 +607,7 @@ The system maintains explicit, quantitative trust scores for every component: ea
 | **Human involvement** | Collaborative: Socratic check-ins, human redirects | Minimal: fully autonomous | Minimal: human defines objective | None during training | High: human specifies everything | Total: human drives every step |
 | **Reproducibility** | Built-in: provenance ledger, dream journal, versioned checkpoints | Ad-hoc | Reproducible (deterministic programs) | Standard ML reproducibility | Standard computational reproducibility | Often poor |
 
-### 8.2 Detailed Comparisons
+### 9.2 Detailed Comparisons
 
 #### vs. AI Scientist (Sakana AI, 2024)
 
@@ -469,7 +645,7 @@ AlphaFold and GNoME are single-domain prediction systems with deep domain-specif
 
 What is learned: the most successful AI-for-science systems combine strong inductive biases with large-scale data. Validation against established experimental data is essential for credibility.
 
-### 8.3 Unique Positioning
+### 9.3 Unique Positioning
 
 This project occupies a position that no existing system occupies. It is the only proposed system that combines:
 
@@ -496,7 +672,7 @@ It is not the best at any single component. DreamerV3 has more battle-tested wor
 | Lab manager | Coordinator Agent | Allocates resources, manages budgets |
 | Communications officer | Communication Agent | Writes reports, makes figures |
 
-### 8.4 What This System Is Not
+### 9.4 What This System Is Not
 
 - **Not a replacement for domain expertise.** It augments domain expertise by automating computational infrastructure. The human provides the questions worth asking and the judgment about what constitutes a meaningful finding.
 - **Not a physics engine.** It orchestrates existing physics engines (MuJoCo, PhiFlow, JAX-MD, Brax) and learns world models from their output.
@@ -507,7 +683,7 @@ It is not the best at any single component. DreamerV3 has more battle-tested wor
 
 ---
 
-## 9. Target Capabilities
+## 10. Target Capabilities
 
 ### Natural Language Problem Specification
 
@@ -544,7 +720,7 @@ When the system encounters dynamics structurally similar to dynamics in another 
 
 ---
 
-## 10. Long-Term Vision
+## 11. Long-Term Vision
 
 ### A Research Partner, Not a Tool
 
@@ -572,7 +748,7 @@ The path is incremental: start with well-understood domains where ground truth i
 
 ---
 
-## 11. References
+## 12. References
 
 ### World Models
 - Hafner, D. et al. (2023). "Mastering Diverse Domains through World Models." arXiv:2301.04104.
