@@ -1,0 +1,26 @@
+# Simulating Anything - Global Configuration
+output_dir: output
+log_level: INFO
+device: cpu
+dtype: float32
+seed: 42
+
+world_model:
+  learning_rate: 1.0e-4
+  batch_size: 16
+  sequence_length: 50
+  n_epochs: 300
+  warmup_steps: 1000
+  grad_clip_norm: 100.0
+  kl_free_bits: 1.0
+  hidden_size: 512
+  stochastic_classes: 32
+  stochastic_vars: 32
+  seed: 42
+
+exploration:
+  n_rounds: 5
+  trajectories_per_round: 20
+  uncertainty_threshold: 0.3
+  novelty_weight: 0.5
+  mc_dropout_samples: 10

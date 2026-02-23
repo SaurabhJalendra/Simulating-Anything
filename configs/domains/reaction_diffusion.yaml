@@ -1,0 +1,18 @@
+# Reaction-Diffusion domain configuration (Gray-Scott model)
+domain: reaction_diffusion
+backend: jax_finite_differences
+grid_resolution: [128, 128]
+domain_size: [2.5, 2.5]
+dt: 1.0
+n_steps: 10000
+boundary_conditions: periodic
+
+default_parameters:
+  D_u: 0.16
+  D_v: 0.08
+  f: 0.035
+  k: 0.065
+
+sweep_ranges:
+  f: [0.01, 0.08]
+  k: [0.03, 0.07]
