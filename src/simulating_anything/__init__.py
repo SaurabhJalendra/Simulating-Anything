@@ -1,0 +1,3 @@
+"""Simulating Anything: World models as a general-purpose scientific discovery engine."""
+
+__version__ = "0.1.0"
