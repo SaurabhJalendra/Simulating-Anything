@@ -41,9 +41,9 @@ class ClaudeCodeBackend:
         Returns:
             The response text from Claude.
         """
-        cmd = ["claude", "-p", prompt, "--output-format", self.output_format]
-        if system:
-            cmd.extend(["--system", system])
+        # Prepend system prompt to user prompt (CLI doesn't have --system flag)
+        full_prompt = f"{system}\n\n{prompt}" if system else prompt
+        cmd = ["claude", "-p", full_prompt, "--output-format", self.output_format]
 
         for attempt in range(1, self.max_retries + 1):
             try:
