@@ -43,13 +43,51 @@ class LotkaVolterraSimulation(SimulationEnvironment):
         return self._state
 
     def step(self) -> np.ndarray:
-        """Advance one timestep using RK4 or diffrax."""
-        if _HAS_DIFFRAX:
-            self._diffrax_step()
-        else:
-            self._rk4_step()
+        """Advance one timestep using RK4.
+
+        Note: RK4 is used for individual steps because diffrax has significant
+        per-call overhead from solver setup and JIT compilation. For batch ODE
+        solving across many timesteps, use solve_trajectory() which calls
+        diffrax once over the full time span when available.
+        """
+        self._rk4_step()
         self._step_count += 1
         return self._state
+
+    def solve_trajectory(self, n_steps: int) -> np.ndarray:
+        """Solve the full trajectory at once using diffrax (if available).
+
+        This is much faster than calling step() repeatedly because diffrax
+        only JIT-compiles once for the entire solve.
+
+        Returns array of shape (n_steps + 1, 2) including initial state.
+        """
+        if not _HAS_DIFFRAX:
+            return self.run(n_steps)
+
+        alpha, beta, gamma, delta = self.alpha, self.beta, self.gamma, self.delta
+
+        def vector_field(t, y, args):
+            prey, pred = y
+            dprey = alpha * prey - beta * prey * pred
+            dpred = delta * prey * pred - gamma * pred
+            return jnp.array([dprey, dpred])
+
+        t0 = 0.0
+        t1 = n_steps * self.config.dt
+        term = diffrax.ODETerm(vector_field)
+        solver = diffrax.Dopri5()
+        saveat = diffrax.SaveAt(ts=jnp.linspace(t0, t1, n_steps + 1))
+        y0 = jnp.array(self._state)
+
+        sol = diffrax.diffeqsolve(
+            term, solver, t0=t0, t1=t1, dt0=self.config.dt, y0=y0, saveat=saveat
+        )
+        trajectory = np.asarray(sol.ys)
+        trajectory = np.maximum(trajectory, 0.0)
+        self._state = trajectory[-1]
+        self._step_count += n_steps
+        return trajectory
 
     def _rk4_step(self) -> None:
         """Classical Runge-Kutta 4th order step (numpy fallback)."""
@@ -71,26 +109,6 @@ class LotkaVolterraSimulation(SimulationEnvironment):
         dprey = self.alpha * prey - self.beta * prey * pred
         dpred = self.delta * prey * pred - self.gamma * pred
         return np.array([dprey, dpred])
-
-    def _diffrax_step(self) -> None:
-        """Single step using diffrax ODE solver."""
-        alpha, beta, gamma, delta = self.alpha, self.beta, self.gamma, self.delta
-
-        def vector_field(t, y, args):
-            prey, pred = y
-            dprey = alpha * prey - beta * prey * pred
-            dpred = delta * prey * pred - gamma * pred
-            return jnp.array([dprey, dpred])
-
-        t0 = self._step_count * self.config.dt
-        t1 = t0 + self.config.dt
-        term = diffrax.ODETerm(vector_field)
-        solver = diffrax.Dopri5()
-        y0 = jnp.array(self._state)
-
-        sol = diffrax.diffeqsolve(term, solver, t0=t0, t1=t1, dt0=self.config.dt, y0=y0)
-        self._state = np.asarray(sol.ys[-1])
-        self._state = np.maximum(self._state, 0.0)
 
     def observe(self) -> np.ndarray:
         """Return current populations [prey, predator]."""
