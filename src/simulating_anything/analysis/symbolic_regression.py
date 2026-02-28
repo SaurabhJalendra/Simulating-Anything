@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 import numpy as np
 
@@ -27,6 +26,8 @@ def run_symbolic_regression(
     binary_operators: list[str] | None = None,
     unary_operators: list[str] | None = None,
     max_complexity: int = 20,
+    populations: int = 15,
+    population_size: int = 33,
 ) -> list[Discovery]:
     """Run PySR symbolic regression to find equations relating X to y.
 
@@ -38,6 +39,8 @@ def run_symbolic_regression(
         binary_operators: Allowed binary ops (default: +, -, *, /).
         unary_operators: Allowed unary ops (default: sin, cos, exp, log, sqrt).
         max_complexity: Maximum expression complexity.
+        populations: Number of independent populations for search.
+        population_size: Size of each population.
 
     Returns:
         List of Discovery objects ordered by fit quality.
@@ -56,28 +59,40 @@ def run_symbolic_regression(
         binary_operators=binary_operators,
         unary_operators=unary_operators,
         maxsize=max_complexity,
-        variable_names=variable_names,
+        populations=populations,
+        population_size=population_size,
         verbosity=0,
+        progress=False,
     )
 
-    model.fit(X, y)
+    model.fit(X, y, variable_names=variable_names)
+
+    # Compute R2 from the best model
+    y_pred = model.predict(X)
+    ss_res = np.sum((y - y_pred) ** 2)
+    ss_tot = np.sum((y - np.mean(y)) ** 2)
+    best_r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else 0.0
 
     discoveries = []
     equations = model.equations_
     if equations is not None:
         for i, row in equations.iterrows():
-            r2 = float(row.get("score", 0.0))
             expr = str(row.get("equation", ""))
             complexity = int(row.get("complexity", 0))
+            loss = float(row.get("loss", 1.0))
+
+            # Compute per-equation R2: R2 = 1 - loss/variance(y)
+            var_y = np.var(y) if np.var(y) > 0 else 1.0
+            eq_r2 = max(0.0, 1.0 - loss / var_y)
 
             discovery = Discovery(
                 id=f"sr_{i}",
                 type=DiscoveryType.GOVERNING_EQUATION,
-                confidence=min(r2, 1.0),
+                confidence=min(eq_r2, 1.0),
                 expression=expr,
-                description=f"Symbolic regression (complexity={complexity})",
+                description=f"Symbolic regression (complexity={complexity}, loss={loss:.6g})",
                 evidence=Evidence(
-                    fit_r_squared=r2,
+                    fit_r_squared=eq_r2,
                     n_supporting=len(y),
                 ),
             )
