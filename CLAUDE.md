@@ -211,7 +211,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (268 passing, 14 skipped):
+# Full suite in WSL (284 passing, 14 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -452,7 +452,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 268 tests across 20 files
+tests/unit/                # 284 tests across 22 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
