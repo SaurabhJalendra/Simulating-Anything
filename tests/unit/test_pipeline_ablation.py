@@ -11,6 +11,7 @@ from simulating_anything.analysis.pipeline_ablation import (
     AblationExperiment,
     ablate_analysis_harmonic,
     ablate_data_quantity_lv,
+    ablate_feature_engineering,
     ablate_sampling_projectile,
     run_pipeline_ablation,
 )
@@ -135,6 +136,40 @@ class TestDataQuantityAblation:
             assert r.component == "data_quantity"
 
 
+class TestFeatureEngineering:
+    """Test feature engineering ablation for projectile."""
+
+    def test_returns_four_variants(self):
+        results = ablate_feature_engineering()
+        assert len(results) == 4
+
+    def test_engineered_has_perfect_r2(self):
+        results = ablate_feature_engineering()
+        eng = [r for r in results if "engineered" in r.variant][0]
+        assert eng.r_squared > 0.999
+
+    def test_engineered_has_correct_form(self):
+        results = ablate_feature_engineering()
+        eng = [r for r in results if "engineered" in r.variant][0]
+        assert eng.correct_form
+
+    def test_v0_only_poor_r2(self):
+        results = ablate_feature_engineering()
+        v0 = [r for r in results if "v0 only" in r.variant][0]
+        assert v0.r_squared < 0.9, "v0 alone should not explain angle dependence"
+
+    def test_raw_poly_wrong_form(self):
+        results = ablate_feature_engineering()
+        poly = [r for r in results if "polynomial" in r.variant][0]
+        assert poly.correct_form is False
+
+    def test_all_labeled_correctly(self):
+        results = ablate_feature_engineering()
+        for r in results:
+            assert r.domain == "projectile"
+            assert r.component == "feature_engineering"
+
+
 class TestFullAblation:
     """Test the full ablation pipeline."""
 
@@ -144,6 +179,7 @@ class TestFullAblation:
         assert "sampling_strategy" in results
         assert "analysis_method" in results
         assert "data_quantity" in results
+        assert "feature_engineering" in results
 
     def test_saves_json(self, tmp_path):
         out = tmp_path / "ablation"

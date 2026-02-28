@@ -112,30 +112,49 @@ Our key contributions are:
 
 \paragraph{Symbolic Regression.}
 \pysr{}~\cite{cranmer2023pysr} uses multi-population evolutionary search
-to find interpretable mathematical expressions. AI Feynman~\cite{udrescu2020ai}
-uses neural networks to discover symmetries before symbolic regression.
-Both operate on pre-collected datasets; our system generates its own data
-through simulation and exploration.
+to find interpretable mathematical expressions from data.
+\sindy{}~\cite{brunton2016sindy} identifies governing ODEs via sparse
+regression on a library of candidate functions, with extensions to
+PDEs~\cite{rudy2017pdefind} and weak formulations~\cite{messenger2021weak}.
+AI Feynman~\cite{udrescu2020ai} exploits dimensional analysis and symmetry
+detection as inductive biases for symbolic regression.
+A common limitation is that all three approaches require pre-collected,
+curated datasets and domain-specific feature engineering (e.g., choosing
+candidate function libraries for \sindy{}, or variable transformations
+for AI Feynman). Our system generates, curates, and explores its own
+data autonomously.
 
-\paragraph{Sparse Identification of Dynamical Systems.}
-\sindy{}~\cite{brunton2016sindy} identifies governing ODEs from time-series
-data using sparse regression on a library of candidate functions.
-Extensions include PDE-FIND~\cite{rudy2017pdefind} and weak-form
-SINDy~\cite{messenger2021weak}. These methods require trajectory data
-as input; our pipeline generates and curates this data autonomously.
-
-\paragraph{World Models for Control.}
+\paragraph{World Models for Science.}
 DreamerV3~\cite{hafner2023dreamerv3} trains RSSM world models for
-reinforcement learning policies. We repurpose the same architecture
-for scientific \emph{discovery} rather than control: the world model
-enables efficient parameter space exploration without re-running
-expensive simulations.
+reinforcement learning \emph{policies}, achieving superhuman performance
+across diverse game domains. However, the world model is used exclusively
+for action selection, not for extracting interpretable scientific
+knowledge. Foundation models for science~\cite{bommasani2022foundation}
+learn general representations but do not produce symbolic equations.
+We repurpose the RSSM architecture for scientific \emph{discovery}:
+the world model enables efficient parameter space exploration and
+dream-based hypothesis testing without re-running expensive simulations.
 
-\paragraph{AI for Scientific Discovery.}
-ScienceWorld~\cite{wang2022scienceworld} evaluates agents on procedural
-science tasks. DARWIN~\cite{lu2024darwin} generates research hypotheses.
-Neither includes simulation, world model training, or equation discovery.
-Our system is the first to integrate all four stages end-to-end.
+\paragraph{Automated Scientific Discovery.}
+The AI Scientist~\cite{lu2024darwin} uses LLMs to generate research
+hypotheses, write code, and produce papers, but does not discover
+governing equations from dynamical systems. The pioneering work of
+Schmidt and Lipson~\cite{schmidt2009distilling} demonstrated automated
+equation discovery from experimental data using genetic programming,
+but required carefully designed experiments and manual feature selection.
+Neural ODEs~\cite{chen2018neuralode} and universal differential
+equations~\cite{rackauckas2021ude} learn continuous dynamics from data
+but produce black-box neural network representations rather than
+human-interpretable symbolic expressions.
+
+\paragraph{Multi-Domain Frameworks.}
+Existing frameworks tend to be domain-specific: JAX-MD for molecular
+dynamics, Brax for robotics, DiffTaichi for differentiable physics.
+Our contribution is the integration of simulation, world model training,
+uncertainty-driven exploration, and symbolic analysis into a single
+pipeline that operates across 8 mathematical classes---from algebraic
+equations to chaotic ODEs to PDEs---with only the simulation layer
+being domain-specific.
 
 % ============================================================================
 % 3. ARCHITECTURE
@@ -427,6 +446,16 @@ $(x^* = \gamma/\delta = 4.0, y^* = \alpha/\beta = 2.75)$.
 Short trajectories ($<$1000 steps) fail completely ($R^2 \approx 0$) because the
 system hasn't completed enough oscillation cycles.
 
+\paragraph{Feature engineering.}
+Providing the correct functional form as an engineered feature
+($v_0^2 \sin 2\theta$) yields $R^2 = 1.0$ with a single coefficient.
+Raw polynomial features (degree 3) achieve $R^2 = 0.994$ but miss
+the trigonometric dependence entirely. Including trigonometric features
+alongside raw inputs recovers $R^2 = 1.0$, while using $v_0$ alone
+($R^2 = 0.69$) confirms that angular dependence is essential.
+This motivates \pysr{}'s approach of searching over functional forms
+rather than fitting pre-specified bases.
+
 % ============================================================================
 % 6. DISCUSSION
 % ============================================================================
@@ -522,11 +551,78 @@ S.-M. Udrescu and M.~Tegmark.
 \newblock AI Feynman: A physics-inspired method for symbolic regression.
 \newblock \emph{Science Advances}, 6(16):eaay2631, 2020.
 
-\bibitem{wang2022scienceworld}
-R.~Wang et al.
-\newblock ScienceWorld: Is your agent smarter than a 5th grader?
-\newblock \emph{arXiv preprint arXiv:2203.07540}, 2022.
+\bibitem{chen2018neuralode}
+R.~T.~Q. Chen, Y.~Rubanova, J.~Bettencourt, and D.~Duvenaud.
+\newblock Neural ordinary differential equations.
+\newblock \emph{NeurIPS}, 31, 2018.
+
+\bibitem{rackauckas2021ude}
+C.~Rackauckas et al.
+\newblock Universal differential equations for scientific machine learning.
+\newblock \emph{arXiv preprint arXiv:2001.04385}, 2021.
+
+\bibitem{schmidt2009distilling}
+M.~Schmidt and H.~Lipson.
+\newblock Distilling free-form natural laws from experimental data.
+\newblock \emph{Science}, 324(5923):81--85, 2009.
+
+\bibitem{bommasani2022foundation}
+R.~Bommasani et al.
+\newblock On the opportunities and risks of foundation models.
+\newblock \emph{arXiv preprint arXiv:2108.07258}, 2022.
 
 \end{thebibliography}
+
+% ============================================================================
+% APPENDIX
+% ============================================================================
+\appendix
+
+\section{Per-Domain Discovery Details}
+\label{app:domains}
+
+Table~\ref{tab:full_results} provides the complete per-domain results
+with discovered equations and simulation parameters.
+
+\begin{table*}[h]
+\centering
+\caption{Full 14-domain rediscovery results with discovered equations.}
+\label{tab:full_results}
+\small
+\begin{tabular}{llccp{5cm}}
+\toprule
+Domain & Math Class & Method & $R^2$ & Discovered Equation \\
+\midrule
+Projectile & Algebraic & \pysr{} & 1.0000 & $R = 0.1019 \cdot v_0^2 \sin(2\theta)$ \\
+Lotka-Volterra & Nonlinear ODE & \sindy{} & 1.0000 & $\dot{x} = 1.1x - 0.4xy$, $\dot{y} = -0.4y + 0.1xy$ \\
+Gray-Scott & PDE & \pysr{} & 0.9851 & $\lambda \sim \sqrt{D_v}$, correlation = 0.927 \\
+SIR Epidemic & Nonlinear ODE & Both & 1.0000 & $R_0 = \beta/\gamma$; $\dot{S} = -\beta SI$ \\
+Double Pendulum & Chaotic ODE & \pysr{} & 0.9999 & $T = \sqrt{4.03 L} \approx 2\pi\sqrt{L/g}$ \\
+Harmonic Osc. & Linear ODE & Both & 1.0000 & $\omega_0 = \sqrt{k/m}$; $\dot{x} = v$, $\dot{v} = -kx/m - cv/m$ \\
+Lorenz & Chaotic ODE & \sindy{} & 0.9999 & $\sigma = 9.98$, $\rho = 27.8$, $\beta = 2.66$ \\
+Navier-Stokes & PDE & \pysr{} & 1.0000 & Decay rate $= 4\nu$ \\
+Van der Pol & Nonlinear ODE & \pysr{} & 0.9999 & $T(\mu)$, amplitude $A = 2.01$ \\
+Kuramoto & Collective ODE & \pysr{} & 0.9695 & Sync transition $r(K)$ \\
+Brusselator & Nonlinear ODE & Both & 0.9964 & $b_c \approx a^2 + 0.91$ \\
+FitzHugh-Nagumo & Nonlinear ODE & \sindy{} & 1.0000 & $\dot{v} = 0.5 + v - w - v^3/3$ \\
+Heat Equation & Linear PDE & \pysr{} & 1.0000 & Decay rate $\lambda = D$ \\
+Logistic Map & Discrete Chaos & \pysr{} & 0.6287 & $\delta \in [4.0, 4.75]$, $\lambda(r\!=\!4) = \ln 2$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Reproducibility}
+\label{app:reproducibility}
+
+All 15 simulation domains (14 domains plus the Duffing template) are
+verified deterministic: identical initial conditions produce identical
+trajectories with maximum absolute difference of $0.0$ across all
+state dimensions. The verification completes in 0.32 seconds for all
+domains. Random number generators are seeded explicitly where applicable
+(Kuramoto natural frequencies).
+
+The full test suite contains 402 passing tests across 26 test files,
+with 15 tests skipped (JAX-dependent world model tests on CPU-only
+environments). All tests are deterministic and reproducible.
 
 \end{document}

@@ -174,6 +174,49 @@ def fig_data_quantity(results: dict) -> None:
     plt.close(fig)
 
 
+def fig_feature_engineering(results: dict) -> None:
+    """Bar chart comparing feature sets for projectile."""
+    if "feature_engineering" not in results:
+        logger.info("No feature engineering data, skipping figure")
+        return
+
+    data = results["feature_engineering"]
+    variants = [d["variant"] for d in data]
+    r2_vals = [d["r_squared"] for d in data]
+    correct = [d["correct_form"] for d in data]
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    colors = [COLORS["correct"] if c else COLORS["danger"] for c in correct]
+    bars = ax.bar(range(len(variants)), r2_vals, color=colors, edgecolor="white",
+                  linewidth=0.5, alpha=0.85)
+
+    ax.set_xticks(range(len(variants)))
+    ax.set_xticklabels(variants, rotation=15, ha="right", fontsize=9)
+    ax.set_ylabel("R$^2$", fontsize=12)
+    ax.set_title("Feature Engineering Ablation (Projectile)", fontsize=14, fontweight="bold")
+
+    for bar, r2 in zip(bars, r2_vals):
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.01,
+                f"{r2:.4f}", ha="center", va="bottom", fontsize=9)
+
+    from matplotlib.patches import Patch
+    legend_elements = [
+        Patch(facecolor=COLORS["correct"], label="Correct form identified"),
+        Patch(facecolor=COLORS["danger"], label="Wrong/missing form"),
+    ]
+    ax.legend(handles=legend_elements, loc="lower left", fontsize=9)
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    plt.tight_layout()
+
+    for ext in ["png", "pdf"]:
+        path = OUTPUT_DIR / f"ablation_feature_engineering.{ext}"
+        fig.savefig(path, dpi=300, bbox_inches="tight")
+        logger.info(f"Saved {path}")
+    plt.close(fig)
+
+
 def fig_combined(results: dict) -> None:
     """2x2 combined ablation figure for paper."""
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
@@ -228,29 +271,27 @@ def fig_combined(results: dict) -> None:
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
-    # Bottom-right: Summary table
+    # Bottom-right: Feature engineering
     ax = axes[1, 1]
-    ax.axis("off")
-    summary_text = (
-        "ABLATION SUMMARY\n"
-        "=" * 40 + "\n\n"
-        "Sampling Strategy:\n"
-        "  Grid > Random > Edge > Clustered\n"
-        "  All strategies achieve R$^2$ > 0.999\n\n"
-        "Analysis Method:\n"
-        "  FFT $\\approx$ Zero-crossing > Autocorrelation\n"
-        "  Polynomial fits data but wrong physics\n\n"
-        "Data Quantity:\n"
-        "  5000+ steps needed for convergence\n"
-        "  Short trajectories miss equilibrium\n\n"
-        "Key Insight:\n"
-        "  Correct functional form matters more\n"
-        "  than fitting accuracy (R$^2$)"
-    )
-    ax.text(0.1, 0.95, summary_text, transform=ax.transAxes, fontsize=10,
-            verticalalignment="top", fontfamily="monospace",
-            bbox=dict(boxstyle="round,pad=0.5", facecolor="#f0f0f0", alpha=0.8))
-    ax.set_title("(d) Summary", fontsize=11, fontweight="bold")
+    if "feature_engineering" in results:
+        data = results["feature_engineering"]
+        variants = [d["variant"].replace("(v0^2*sin(2t))", "\n(v0^2*sin(2t))")
+                    .replace("(deg 3)", "\n(deg 3)")
+                    .replace("(no angle)", "\n(no angle)")
+                    for d in data]
+        r2_vals = [d["r_squared"] for d in data]
+        correct = [d["correct_form"] for d in data]
+        colors = [COLORS["correct"] if c else COLORS["danger"] for c in correct]
+        ax.bar(range(len(variants)), r2_vals, color=colors, alpha=0.85)
+        ax.set_xticks(range(len(variants)))
+        ax.set_xticklabels(variants, fontsize=7)
+        ax.set_ylabel("R$^2$", fontsize=10)
+    else:
+        ax.text(0.5, 0.5, "No feature engineering data", ha="center", va="center",
+                transform=ax.transAxes)
+    ax.set_title("(d) Feature Engineering", fontsize=11, fontweight="bold")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
 
     plt.tight_layout(pad=2.0)
 
@@ -272,6 +313,7 @@ def main():
     fig_sampling_strategy(results)
     fig_analysis_method(results)
     fig_data_quantity(results)
+    fig_feature_engineering(results)
     fig_combined(results)
 
     logger.info(f"\nAll ablation figures saved to {OUTPUT_DIR}")
