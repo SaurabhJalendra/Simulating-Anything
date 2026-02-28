@@ -1,4 +1,4 @@
-"""Unified rediscovery runner -- runs all five domain rediscoveries."""
+"""Unified rediscovery runner -- runs all seven domain rediscoveries."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def run_all_rediscoveries(
     Args:
         output_dir: Base output directory.
         pysr_iterations: Number of PySR iterations per run.
-        domains: Which domains to run (default: all six).
+        domains: Which domains to run (default: all seven).
 
     Returns:
         Combined results dict with all discoveries.
@@ -51,6 +51,7 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
     from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
+    from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -85,6 +86,11 @@ def run_all_rediscoveries(
         "harmonic_oscillator": {
             "label": "Harmonic Oscillator Frequency & Damping",
             "fn": run_harmonic_oscillator_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "lorenz": {
+            "label": "Lorenz Attractor ODE & Chaos Transition",
+            "fn": run_lorenz_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
