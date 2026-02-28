@@ -21,37 +21,46 @@ logger = logging.getLogger(__name__)
 
 
 def compute_dominant_wavelength(field: np.ndarray, domain_size: float) -> float:
-    """Compute dominant spatial wavelength from 2D field using FFT.
+    """Compute dominant spatial wavelength from 2D field using radial power spectrum.
 
     Args:
         field: 2D array (nx, ny).
         domain_size: Physical size of the domain.
 
     Returns:
-        Dominant wavelength (physical units), or 0 if no pattern.
+        Dominant wavelength (in grid units), or 0 if no pattern.
     """
     # Remove mean
     field_centered = field - np.mean(field)
+    if np.std(field_centered) < 1e-10:
+        return 0.0
 
-    # 2D FFT
+    # 2D FFT and power spectrum
     fft2 = np.fft.fft2(field_centered)
     power = np.abs(fft2) ** 2
+    power_shifted = np.fft.fftshift(power)
 
     nx, ny = field.shape
-    freq_x = np.fft.fftfreq(nx, d=domain_size / nx)
-    freq_y = np.fft.fftfreq(ny, d=domain_size / ny)
-    kx, ky = np.meshgrid(freq_x, freq_y, indexing="ij")
-    k_mag = np.sqrt(kx**2 + ky**2)
+    cx, cy = nx // 2, ny // 2
 
-    # Exclude DC component
-    power[0, 0] = 0
+    # Compute radial power spectrum (average power at each wavenumber)
+    Y, X = np.ogrid[-cx:nx - cx, -cy:ny - cy]
+    R = np.sqrt(X**2 + Y**2).astype(int)
+    max_r = min(cx, cy)
 
-    # Find peak wavenumber
-    peak_idx = np.unravel_index(np.argmax(power), power.shape)
-    k_peak = k_mag[peak_idx]
+    radial_power = np.zeros(max_r)
+    for r_val in range(1, max_r):  # Skip DC (r=0)
+        mask = R == r_val
+        if np.any(mask):
+            radial_power[r_val] = np.mean(power_shifted[mask])
 
-    if k_peak > 0:
-        return 1.0 / k_peak
+    # Find peak wavenumber (skip very low frequencies r < 2)
+    if np.max(radial_power[2:]) > 0:
+        peak_r = np.argmax(radial_power[2:]) + 2
+        # Convert wavenumber index to wavelength: lambda = N / k
+        wavelength = domain_size / peak_r
+        return float(wavelength)
+
     return 0.0
 
 
@@ -108,6 +117,58 @@ def classify_pattern(v_field: np.ndarray, threshold: float = 1e-4) -> str:
     return "complex"
 
 
+def _run_gray_scott_jax(
+    u_init: np.ndarray,
+    v_init: np.ndarray,
+    D_u: float,
+    D_v: float,
+    f: float,
+    k: float,
+    dt: float,
+    dx: float,
+    n_steps: int,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Run Gray-Scott simulation entirely in JAX for speed.
+
+    Uses unscaled discrete Laplacian (Karl Sims convention): the diffusion
+    coefficient directly controls the mixing rate per timestep without
+    normalizing by grid spacing. This is the standard convention for
+    Gray-Scott pattern formation studies.
+    """
+    try:
+        import jax
+        import jax.numpy as jnp
+
+        def step_fn(carry, _):
+            u, v = carry
+            # Unscaled discrete Laplacian (no /dx^2)
+            lap_u = (jnp.roll(u, 1, 0) + jnp.roll(u, -1, 0)
+                     + jnp.roll(u, 1, 1) + jnp.roll(u, -1, 1) - 4.0 * u)
+            lap_v = (jnp.roll(v, 1, 0) + jnp.roll(v, -1, 0)
+                     + jnp.roll(v, 1, 1) + jnp.roll(v, -1, 1) - 4.0 * v)
+            uvv = u * v * v
+            u_new = u + dt * (D_u * lap_u - uvv + f * (1.0 - u))
+            v_new = v + dt * (D_v * lap_v + uvv - (f + k) * v)
+            return (u_new, v_new), None
+
+        u_jax = jnp.array(u_init)
+        v_jax = jnp.array(v_init)
+        (u_final, v_final), _ = jax.lax.scan(step_fn, (u_jax, v_jax), None, length=n_steps)
+        return np.asarray(u_final), np.asarray(v_final)
+
+    except ImportError:
+        u, v = u_init.copy(), v_init.copy()
+        for _ in range(n_steps):
+            lap_u = (np.roll(u, 1, 0) + np.roll(u, -1, 0)
+                     + np.roll(u, 1, 1) + np.roll(u, -1, 1) - 4 * u)
+            lap_v = (np.roll(v, 1, 0) + np.roll(v, -1, 0)
+                     + np.roll(v, 1, 1) + np.roll(v, -1, 1) - 4 * v)
+            uvv = u * v * v
+            u = u + dt * (D_u * lap_u - uvv + f * (1 - u))
+            v = v + dt * (D_v * lap_v + uvv - (f + k) * v)
+        return u, v
+
+
 def run_gray_scott_analysis(
     output_dir: str | Path = "output/rediscovery/gray_scott",
     grid_size: int = 128,
@@ -126,15 +187,21 @@ def run_gray_scott_analysis(
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    domain_size = 2.5
-    dx = domain_size / grid_size
+    # Standard Gray-Scott parameters (Karl Sims / web convention)
+    # Unscaled discrete Laplacian: D controls mixing rate per timestep
+    # D_u = 0.16, D_v = 0.08 are standard values
+    # CFL: dt < 1/(4*D_u) = 1.5625 for stability, so dt=1.0 is fine
+    # Patterns develop in ~5000-20000 timesteps
     D_u, D_v = 0.16, 0.08
-    # CFL-safe dt
-    dt = min(0.5 * dx**2 / (4 * D_u), 0.0005)
+    dx = 1.0
+    domain_size = float(grid_size)
+    dt = 1.0  # Stable: dt < 1/(4*D_u) = 1.5625
 
-    # Scan (f, k) parameter space -- known interesting region
-    f_values = np.linspace(0.01, 0.07, 13)
-    k_values = np.linspace(0.04, 0.07, 13)
+    # Scan (f, k) parameter space -- Pearson's known interesting region
+    # Key regimes: spots (~0.035, 0.065), stripes (~0.04, 0.06),
+    #              waves (~0.014, 0.045), mitosis (~0.028, 0.062)
+    f_values = np.linspace(0.01, 0.06, 11)
+    k_values = np.linspace(0.04, 0.07, 11)
 
     phase_diagram = []
     wavelength_data = []
@@ -142,32 +209,30 @@ def run_gray_scott_analysis(
     total = len(f_values) * len(k_values)
     count = 0
 
+    # Generate initial condition once: u=1, v=0 with random square seed
+    rng = np.random.default_rng(42)
+    u_init = np.ones((grid_size, grid_size), dtype=np.float64)
+    v_init = np.zeros((grid_size, grid_size), dtype=np.float64)
+    cx, cy = grid_size // 2, grid_size // 2
+    r = max(grid_size // 10, 2)
+    u_init[cx - r:cx + r, cy - r:cy + r] = 0.50
+    v_init[cx - r:cx + r, cy - r:cy + r] = 0.25
+    # Small random perturbation across whole domain to break symmetry
+    u_init += 0.05 * rng.standard_normal(u_init.shape)
+    v_init += 0.05 * rng.standard_normal(v_init.shape)
+    v_init = np.clip(v_init, 0, 1)
+
     for f_val in f_values:
         for k_val in k_values:
             count += 1
-            config = SimulationConfig(
-                domain=Domain.REACTION_DIFFUSION,
-                grid_resolution=(grid_size, grid_size),
-                domain_size=(domain_size, domain_size),
-                dt=dt,
-                n_steps=n_steps,
-                parameters={
-                    "D_u": D_u,
-                    "D_v": D_v,
-                    "f": float(f_val),
-                    "k": float(k_val),
-                },
-                seed=42,
+
+            # Run using fast JAX lax.scan
+            u_final, v_final = _run_gray_scott_jax(
+                u_init, v_init, D_u, D_v, float(f_val), float(k_val),
+                dt, dx, n_steps
             )
 
-            sim = GrayScottSimulation(config)
-            state = sim.reset()
-
-            # Run simulation
-            for _ in range(n_steps):
-                state = sim.step()
-
-            v_field = state[:, :, 1]  # v concentration
+            v_field = v_final
             energy = compute_pattern_energy(v_field)
             pattern_type = classify_pattern(v_field)
             wavelength = compute_dominant_wavelength(v_field, domain_size)
@@ -191,37 +256,64 @@ def run_gray_scott_analysis(
             if count % 20 == 0 or count == total:
                 logger.info(f"  Scanned {count}/{total} parameter combinations")
 
+    # --- Part 2: Wavelength vs D_v scaling ---
+    # Fix (f, k) in spots regime and vary D_v to measure wavelength dependence
+    logger.info("Running D_v variation for wavelength scaling...")
+    dv_wavelength_data = []
+    f_fixed, k_fixed = 0.035, 0.065  # Standard spots regime
+    D_v_values = np.linspace(0.03, 0.12, 15)
+    for dv_val in D_v_values:
+        u_f, v_f = _run_gray_scott_jax(
+            u_init, v_init, D_u, float(dv_val), f_fixed, k_fixed,
+            dt, dx, n_steps
+        )
+        wl = compute_dominant_wavelength(v_f, domain_size)
+        energy = compute_pattern_energy(v_f)
+        ptype = classify_pattern(v_f)
+        if ptype != "uniform" and wl > 0 and wl < domain_size * 0.9:
+            dv_wavelength_data.append({
+                "D_v": float(dv_val),
+                "wavelength": wl,
+                "energy": energy,
+            })
+    logger.info(f"  D_v scan: {len(dv_wavelength_data)} patterned points from {len(D_v_values)} D_v values")
+
     # Analyze wavelength scaling
     scaling_results = {}
-    if wavelength_data:
-        wl_arr = np.array([d["wavelength"] for d in wavelength_data])
-        k_arr = np.array([d["k"] for d in wavelength_data])
-        f_arr = np.array([d["f"] for d in wavelength_data])
-        Dv_arr = np.array([d["D_v"] for d in wavelength_data])
+    use_data = dv_wavelength_data if dv_wavelength_data else wavelength_data
+    if use_data:
+        wl_arr = np.array([d["wavelength"] for d in use_data])
+        Dv_arr = np.array([d["D_v"] for d in use_data])
 
-        # Test lambda ~ sqrt(D_v / k)
-        predicted_scale = np.sqrt(Dv_arr / k_arr)
-        corr_Dv_k = np.corrcoef(wl_arr, predicted_scale)[0, 1] if len(wl_arr) > 2 else 0.0
+        if len(use_data) == len(dv_wavelength_data) and len(dv_wavelength_data) > 2:
+            # For D_v variation: test lambda ~ sqrt(D_v)
+            predicted_scale = np.sqrt(Dv_arr)
+            corr_sqrt_Dv = float(np.corrcoef(wl_arr, predicted_scale)[0, 1])
+        else:
+            corr_sqrt_Dv = float("nan")
 
-        # Try PySR on wavelength data if enough points
         scaling_results = {
-            "n_patterned_points": len(wavelength_data),
-            "correlation_lambda_vs_sqrt_Dv_over_k": float(corr_Dv_k),
+            "n_patterned_points": len(use_data),
+            "correlation_lambda_vs_sqrt_Dv": corr_sqrt_Dv,
             "mean_wavelength": float(np.mean(wl_arr)),
             "std_wavelength": float(np.std(wl_arr)),
+            "dv_wavelength_pairs": [
+                {"D_v": d["D_v"], "wavelength": d["wavelength"]}
+                for d in dv_wavelength_data
+            ],
         }
 
-        if len(wavelength_data) >= 10:
+        if len(use_data) >= 5:
             try:
                 from simulating_anything.analysis.symbolic_regression import (
                     run_symbolic_regression,
                 )
 
-                X_wl = np.column_stack([f_arr, k_arr, Dv_arr])
+                X_wl = Dv_arr.reshape(-1, 1)
                 discoveries = run_symbolic_regression(
                     X_wl,
                     wl_arr,
-                    variable_names=["f", "k", "D_v"],
+                    variable_names=["Dv"],
                     n_iterations=30,
                     binary_operators=["+", "-", "*", "/"],
                     unary_operators=["sqrt", "square"],
@@ -286,9 +378,9 @@ def run_gray_scott_analysis(
     logger.info(f"Pattern types found: {type_counts}")
     logger.info(f"Instability boundary: {len(boundary_points)} points")
     if scaling_results:
-        logger.info(
-            f"Wavelength correlation with sqrt(D_v/k): "
-            f"{scaling_results.get('correlation_lambda_vs_sqrt_Dv_over_k', 'N/A'):.4f}"
-        )
+        corr = scaling_results.get("correlation_lambda_vs_sqrt_Dv", None)
+        if corr is not None and not (isinstance(corr, float) and corr != corr):
+            logger.info(f"Wavelength correlation with sqrt(D_v): {corr:.4f}")
+        logger.info(f"Patterned points: {scaling_results.get('n_patterned_points', 0)}")
 
     return results

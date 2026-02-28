@@ -196,11 +196,14 @@ def run_lotka_volterra_rediscovery(
     logger.info(f"  Pred avg vs alpha/beta: mean error = {np.mean(pred_err):.2%}")
 
     # PySR for prey equilibrium
+    # Note: PySR rejects 'alpha', 'beta', 'gamma', 'delta' as they conflict
+    # with sympy function names. Use a_, b_, g_, d_ instead.
+    pysr_var_names = ["a_", "b_", "g_", "d_"]
     logger.info("Running PySR for prey equilibrium (target: gamma/delta)...")
     prey_discoveries = run_symbolic_regression(
         X_eq,
         eq_data["prey_avg"],
-        variable_names=["alpha", "beta", "gamma", "delta"],
+        variable_names=pysr_var_names,
         n_iterations=n_iterations,
         binary_operators=["+", "-", "*", "/"],
         unary_operators=[],
@@ -227,7 +230,7 @@ def run_lotka_volterra_rediscovery(
     pred_discoveries = run_symbolic_regression(
         X_eq,
         eq_data["pred_avg"],
-        variable_names=["alpha", "beta", "gamma", "delta"],
+        variable_names=pysr_var_names,
         n_iterations=n_iterations,
         binary_operators=["+", "-", "*", "/"],
         unary_operators=[],
