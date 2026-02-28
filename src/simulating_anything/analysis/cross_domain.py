@@ -172,8 +172,12 @@ def build_domain_signatures() -> list[DomainSignature]:
             symmetries=["time_translation"],
             phase_portrait_type="limit_cycle",
             characteristic_timescale="2*pi (small mu), mu (large mu)",
-            discovered_equations=["x'' - mu*(1-x^2)*x' + x = 0"],
-            r_squared=[],  # To be filled after rediscovery
+            discovered_equations=[
+                "x'' - mu*(1-x^2)*x' + x = 0",
+                "T(mu) scaling via PySR",
+                "A = 2.01 (limit cycle amplitude)",
+            ],
+            r_squared=[0.9999],
         ),
         DomainSignature(
             name="kuramoto",
@@ -184,8 +188,11 @@ def build_domain_signatures() -> list[DomainSignature]:
             symmetries=["phase_shift", "permutation"],
             phase_portrait_type="fixed_point",  # Synchronized state
             characteristic_timescale="1/K",
-            discovered_equations=["K_c = 4*omega_std/pi"],
-            r_squared=[],  # To be filled after rediscovery
+            discovered_equations=[
+                "r(K) sync transition via PySR",
+                "K_c = 1.10 (theory: 4*omega_std/pi)",
+            ],
+            r_squared=[0.9695],
         ),
         DomainSignature(
             name="brusselator",
@@ -196,8 +203,12 @@ def build_domain_signatures() -> list[DomainSignature]:
             symmetries=["time_translation"],
             phase_portrait_type="limit_cycle",
             characteristic_timescale="1/a",
-            discovered_equations=["b_c = 1 + a^2"],
-            r_squared=[],
+            discovered_equations=[
+                "b_c ~ a^2 + 0.91 (Hopf threshold, theory: 1+a^2)",
+                "du/dt = 1.00 + u^2*v - 4.00*u (SINDy)",
+                "dv/dt = 3.00*u - u^2*v (SINDy)",
+            ],
+            r_squared=[0.9964, 0.9999],
         ),
         DomainSignature(
             name="fitzhugh_nagumo",
@@ -208,8 +219,11 @@ def build_domain_signatures() -> list[DomainSignature]:
             symmetries=[],
             phase_portrait_type="limit_cycle",  # For I > I_c
             characteristic_timescale="1/eps",
-            discovered_equations=["f-I curve (firing frequency vs current)"],
-            r_squared=[],
+            discovered_equations=[
+                "dv/dt = 0.500 + 1.000v - 1.000w - 0.333v^3 (SINDy, exact)",
+                "dw/dt = 0.056 + 0.080v - 0.064w (SINDy, exact)",
+            ],
+            r_squared=[1.0, 1.0],
         ),
         DomainSignature(
             name="heat_equation",
@@ -220,8 +234,8 @@ def build_domain_signatures() -> list[DomainSignature]:
             symmetries=["translation", "reflection"],
             phase_portrait_type="fixed_point",  # Converges to uniform
             characteristic_timescale="1/(D*k^2)",
-            discovered_equations=["decay_rate = D*k^2"],
-            r_squared=[],
+            discovered_equations=["decay_rate = D (PySR, exact spectral)"],
+            r_squared=[1.0],
         ),
         DomainSignature(
             name="logistic_map",
@@ -232,8 +246,11 @@ def build_domain_signatures() -> list[DomainSignature]:
             symmetries=[],
             phase_portrait_type="chaotic",  # For r > 3.57
             characteristic_timescale="1 (discrete)",
-            discovered_equations=["Feigenbaum delta ~ 4.669", "lambda(r=4) = ln(2)"],
-            r_squared=[],
+            discovered_equations=[
+                "Feigenbaum delta in [4.0, 4.75] (theory: 4.669)",
+                "lambda(r=4) = ln(2) (Lyapunov exponent)",
+            ],
+            r_squared=[0.6287],
         ),
     ]
     return signatures
