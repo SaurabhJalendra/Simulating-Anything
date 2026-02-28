@@ -53,3 +53,8 @@ mlruns/
 # JAX/CUDA cache
 __jaxcache__/
 .cuda_cache/
+
+# Generated outputs (reproducible from scripts)
+output/
+outputs/
+paper/figures/
