@@ -94,6 +94,58 @@ These stages form a loop, not a linear pipeline. Each cycle refines the system's
 
 ---
 
+## 3.1 Experimental Validation: Three-Domain Rediscovery
+
+The following results demonstrate that the system can autonomously rediscover
+known scientific laws across three unrelated domains using the same pipeline
+infrastructure. Only the simulation backend changes.
+
+### Projectile Range Equation (Rigid Body)
+
+**Target:** R = v²sin(2θ)/g
+
+**Method:** Generated 225 trajectories (15 speeds × 15 angles, no drag),
+computed landing range, ran PySR symbolic regression (50 iterations).
+
+**Result:** PySR discovered `v0² × 0.1019 × sin(2 × theta)` with R² = 0.9999999.
+The coefficient 0.1019 matches 1/g = 1/9.81 = 0.10194 to 4 significant figures.
+Simulation vs analytical solution mean error: 0.04%.
+
+### Lotka-Volterra Equilibrium and ODE (Population Dynamics)
+
+**Target:** Equilibrium prey* = γ/δ, pred* = α/β; ODE coefficients.
+
+**Method:** Generated 200 trajectories with randomized (α, β, γ, δ), computed
+time-averaged populations (skipping initial transient), ran PySR. Also ran
+SINDy on a single reference trajectory (α=1.1, β=0.4, γ=0.4, δ=0.1).
+
+**PySR Results:**
+- Prey equilibrium: `g_/d_` (γ/δ) with R² = 0.9999 (from 200 parameter sweeps)
+- Predator equilibrium: `a_/b_` (α/β) with R² = 0.9999
+- Time-average error vs theory: 0.31% prey, 0.19% predator
+
+**SINDy Results (ODE recovery):**
+- `d(prey)/dt = 1.100 prey − 0.400 prey·pred` (true α=1.1, β=0.4) R² = 1.0
+- `d(pred)/dt = −0.400 pred + 0.100 prey·pred` (true γ=0.4, δ=0.1) R² = 1.0
+
+All four ODE coefficients recovered exactly.
+
+### Gray-Scott Pattern Analysis (Reaction-Diffusion)
+
+**Target:** Turing instability boundary, wavelength scaling λ ~ √D_v.
+
+**Method:** Scanned 121 (f, k) parameter combinations on 128×128 grid (10,000
+timesteps each). Classified patterns via FFT power spectrum. Varied D_v at
+fixed (f=0.035, k=0.065) for wavelength scaling.
+
+**Results:**
+- Phase diagram: 83 uniform, 26 spots, 6 stripes, 6 complex (4 pattern types)
+- 35 Turing instability boundary points mapped in (f, k) space
+- D_v wavelength scaling: correlation with √D_v = 0.927 (9 data points)
+- PySR wavelength equation: R² = 0.985
+
+---
+
 ## 4. The Universality Argument
 
 This section makes the explicit case for why this system is not limited to any particular domain. The claim is strong and deliberate: **any real-world phenomenon that can be simulated can be learned, explored, and understood by this system.** The architecture is domain-agnostic. Only the simulation backend changes.

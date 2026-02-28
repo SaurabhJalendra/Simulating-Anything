@@ -37,7 +37,7 @@ sim = [
     "mujoco>=3.0",
 ]
 analysis = [
-    "pysr>=0.18",
+    "pysr>=1.0",
     "pysindy>=2.0",
     "scikit-learn>=1.4",
 ]

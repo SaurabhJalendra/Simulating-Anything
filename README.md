@@ -169,10 +169,25 @@ To illustrate the universality, consider autonomous vehicles:
 These are scientific discoveries about driving physics -- not a driving policy,
 but the understanding that informs better policies, testing, and safety analysis.
 
+## Rediscovery Results
+
+The system has autonomously rediscovered known scientific laws across all three
+V1 domains, using the same pipeline infrastructure:
+
+| Domain | Target Law | Discovered | R² |
+|--------|-----------|-----------|-----|
+| Projectile | R = v²sin(2θ)/g | `v0² × 0.1019 × sin(2θ)` | 0.9999 |
+| Lotka-Volterra (equilibrium) | prey* = γ/δ | `g_/d_` | 0.9999 |
+| Lotka-Volterra (equilibrium) | pred* = α/β | `a_/b_` | 0.9999 |
+| Lotka-Volterra (ODE) | d(prey)/dt = αx - βxy | `1.100 prey - 0.400 prey·pred` | 1.0 |
+| Lotka-Volterra (ODE) | d(pred)/dt = δxy - γy | `0.100 prey·pred - 0.400 pred` | 1.0 |
+| Gray-Scott (phase diagram) | Turing boundary | 35 boundary points, 4 pattern types | -- |
+| Gray-Scott (wavelength) | λ ~ √D_v | correlation = 0.927 | 0.985 |
+
 ## Status
 
-V1 implementation complete. All simulation engines, world model, exploration,
-analysis, and agent pipeline implemented and tested (87 tests passing).
+V1 implementation complete with three-domain rediscovery demonstrated.
+113 tests passing. Full pipeline runs end-to-end in ~6.5 minutes on RTX 5090.
 
 ## License
 
