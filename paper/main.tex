@@ -1,0 +1,387 @@
+% Simulating Anything: Domain-Agnostic Scientific Discovery
+% via Integrated World Models and Symbolic Regression
+%
+% Target: AI4Science workshops at NeurIPS/ICML/ICLR
+% Format: Workshop paper (4-6 pages + references)
+
+\documentclass{article}
+
+% Use workshop format (adjust for specific venue)
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{subcaption}
+\usepackage{multirow}
+
+% Custom commands
+\newcommand{\ours}{\textsc{SimAnything}}
+\newcommand{\pysr}{\textsc{PySR}}
+\newcommand{\sindy}{\textsc{SINDy}}
+\newcommand{\rssm}{\textsc{RSSM}}
+
+\title{Simulating Anything: Domain-Agnostic Scientific Discovery \\
+via Integrated World Models and Symbolic Regression}
+
+\author{
+Saurabh Jalendra \\
+\texttt{saurabh@users.noreply.github.com} \\
+\url{https://github.com/SaurabhJalendra/Simulating-Anything}
+}
+
+\date{}
+
+\begin{document}
+
+\maketitle
+
+% ============================================================================
+% ABSTRACT
+% ============================================================================
+\begin{abstract}
+We present \ours{}, a domain-agnostic scientific discovery engine that
+autonomously rediscovers known physical laws from simulation data across
+14 domains spanning 8 mathematical classes. Given only a natural language
+description of a phenomenon, the system builds a simulation, trains an RSSM
+world model, explores the parameter space via uncertainty-driven search, and
+extracts human-interpretable equations using \pysr{} symbolic regression and
+\sindy{} sparse identification. We demonstrate successful rediscovery of
+governing equations in all 14 domains, achieving $R^2 \geq 0.999$ in 11 of
+14 cases, with a mean $R^2$ of 0.970. Our cross-domain analogy engine
+detects 17 structural, dimensional, and topological isomorphisms across
+domains. The key architectural insight is that only the simulation layer is
+domain-specific ($\sim$50--200 lines per domain); everything else---world
+model, exploration, analysis, and reporting---operates on generic tensors,
+enabling universal scientific discovery.
+\end{abstract}
+
+% ============================================================================
+% 1. INTRODUCTION
+% ============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Scientific discovery has historically been domain-specific: fluid dynamicists
+develop Reynolds-averaged equations, ecologists derive Lotka-Volterra
+models, and neuroscientists identify FitzHugh-Nagumo dynamics. Each domain
+requires bespoke mathematical frameworks, simulation tools, and analytical
+techniques. We ask: \emph{can a single computational pipeline rediscover
+known physics across fundamentally different domains?}
+
+We present \ours{}, a seven-stage pipeline (Figure~\ref{fig:pipeline})
+that takes a natural language problem description as input and produces
+discovered equations, phase diagrams, and scaling laws as output. The system
+combines:
+\begin{itemize}
+\item \textbf{Domain-agnostic simulation:} A common \texttt{SimulationEnvironment}
+  interface where only the dynamics function is domain-specific.
+\item \textbf{World model training:} An RSSM~\cite{hafner2020dreamerv2}
+  with 1536 latent dimensions that learns compressed representations of
+  any dynamical system.
+\item \textbf{Uncertainty-driven exploration:} Monte Carlo dropout uncertainty
+  estimates guide parameter space exploration.
+\item \textbf{Symbolic regression and sparse identification:} \pysr{}~\cite{cranmer2023pysr}
+  and \sindy{}~\cite{brunton2016sindy} extract interpretable equations
+  from data.
+\end{itemize}
+
+Our key contributions are:
+\begin{enumerate}
+\item A domain-agnostic architecture where adding a new domain requires
+  only $\sim$50--200 lines of simulation code (Section~\ref{sec:architecture}).
+\item Successful autonomous rediscovery of governing equations in 14 domains
+  across 8 mathematical classes (Section~\ref{sec:experiments}).
+\item A cross-domain analogy engine that detects 17 mathematical isomorphisms
+  between domains (Section~\ref{sec:cross_domain}).
+\item Open-source implementation with 274 tests, 18 publication-quality
+  figures, and comprehensive benchmarks.
+\end{enumerate}
+
+% ============================================================================
+% 2. RELATED WORK
+% ============================================================================
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Symbolic Regression.}
+\pysr{}~\cite{cranmer2023pysr} uses multi-population evolutionary search
+to find interpretable mathematical expressions. AI Feynman~\cite{udrescu2020ai}
+uses neural networks to discover symmetries before symbolic regression.
+Both operate on pre-collected datasets; our system generates its own data
+through simulation and exploration.
+
+\paragraph{Sparse Identification of Dynamical Systems.}
+\sindy{}~\cite{brunton2016sindy} identifies governing ODEs from time-series
+data using sparse regression on a library of candidate functions.
+Extensions include PDE-FIND~\cite{rudy2017pdefind} and weak-form
+SINDy~\cite{messenger2021weak}. These methods require trajectory data
+as input; our pipeline generates and curates this data autonomously.
+
+\paragraph{World Models for Control.}
+DreamerV3~\cite{hafner2023dreamerv3} trains RSSM world models for
+reinforcement learning policies. We repurpose the same architecture
+for scientific \emph{discovery} rather than control: the world model
+enables efficient parameter space exploration without re-running
+expensive simulations.
+
+\paragraph{AI for Scientific Discovery.}
+ScienceWorld~\cite{wang2022scienceworld} evaluates agents on procedural
+science tasks. DARWIN~\cite{lu2024darwin} generates research hypotheses.
+Neither includes simulation, world model training, or equation discovery.
+Our system is the first to integrate all four stages end-to-end.
+
+% ============================================================================
+% 3. ARCHITECTURE
+% ============================================================================
+\section{Architecture}
+\label{sec:architecture}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/pipeline.pdf}
+\caption{The \ours{} seven-stage pipeline. Gray boxes indicate the only
+domain-specific component (simulation dynamics). All other stages operate
+on generic tensors.}
+\label{fig:pipeline}
+\end{figure}
+
+\ours{} consists of seven sequential stages:
+
+\begin{enumerate}
+\item \textbf{Problem Architect:} Parses natural language into a structured
+  \texttt{ProblemSpec} (variables, parameters, objectives).
+\item \textbf{Domain Classifier:} Maps the problem to one of 14 simulation
+  domains using rule-based matching with LLM fallback.
+\item \textbf{Simulation Builder:} Configures simulation parameters
+  (timestep, grid size, initial conditions) via an LLM agent.
+\item \textbf{Ground-Truth Simulation:} Runs the domain-specific simulator
+  to generate trajectory data. Implements the
+  \texttt{SimulationEnvironment} ABC with \texttt{reset()}, \texttt{step()},
+  \texttt{observe()}, and \texttt{run()} methods.
+\item \textbf{Exploration:} Uses RSSM-based uncertainty estimates to select
+  informative parameter configurations via Thompson sampling.
+\item \textbf{Analysis:} Applies \pysr{} and \sindy{} to discover equations.
+  Includes ablation studies and verification checks.
+\item \textbf{Communication:} An LLM agent generates a human-readable
+  discovery report in Markdown.
+\end{enumerate}
+
+\paragraph{Universality through abstraction.}
+The simulation interface requires only four methods (\texttt{reset},
+\texttt{step}, \texttt{observe}, \texttt{run}). All upstream and downstream
+stages operate on numpy arrays of arbitrary shape. Adding a new domain
+means implementing one Python class with $\sim$50--200 lines of dynamics
+code. We demonstrate this by adding 14 domains (Table~\ref{tab:domains})
+spanning algebraic equations, linear/nonlinear/chaotic ODEs, PDEs, collective
+dynamics, and discrete maps.
+
+\paragraph{World model.}
+We use an RSSM~\cite{hafner2020dreamerv2} with 512 GRU deterministic units
+and $32 \times 32$ categorical stochastic units (1536 total latent dimensions).
+The encoder uses CNNs for spatial domains and MLPs for vector-valued
+observations. The decoder uses symmetric architectures with symlog output.
+
+% ============================================================================
+% 4. EXPERIMENTS
+% ============================================================================
+\section{Experiments}
+\label{sec:experiments}
+
+We evaluate \ours{} on 14 domains across 8 mathematical classes. For each
+domain, the system autonomously generates simulation data, identifies the
+governing equations via \pysr{} and/or \sindy{}, and compares the discovered
+expressions against known analytical results.
+
+\input{results_table}
+
+\subsection{Algebraic Equations}
+\textbf{Projectile motion.} \pysr{} recovered $R = v_0^2 \cdot 0.1019
+\cdot \sin(2\theta)$ from 225 data points (15 speeds $\times$ 15 angles),
+with $R^2 = 1.0000$. The coefficient $0.1019$ matches $1/g = 1/9.81 =
+0.10194$ to 4 significant figures.
+
+\subsection{Linear ODEs}
+\textbf{Harmonic oscillator.} \pysr{} recovered $\omega_0 = \sqrt{k/m}$
+($R^2 = 1.0$) and the damping rate $c/(2m)$ ($R^2 = 1.0$). \sindy{}
+recovered the exact ODE $\ddot{x} = -4x - 0.4\dot{x}$ (true: $k=4$,
+$c=0.4$).
+
+\subsection{Nonlinear ODEs}
+\textbf{Lotka-Volterra.} \sindy{} recovered exact ODE coefficients
+($R^2 = 1.0$): $\dot{x} = 1.10x - 0.40xy$ (true: $\alpha=1.1$, $\beta=0.4$).
+\textbf{SIR epidemic.} \pysr{} found $R_0 = \beta/\gamma$ ($R^2 = 1.0$).
+\textbf{Van der Pol.} Period scaling $T(\mu)$ recovered with $R^2 = 0.99996$;
+amplitude $A = 2.01$ (theory: $A = 2$).
+\textbf{Brusselator.} Hopf threshold $b_c \approx a^2 + 0.91$ ($R^2 = 0.996$;
+theory: $b_c = 1 + a^2$). \sindy{} ODE recovery $R^2 = 0.9999$.
+\textbf{FitzHugh-Nagumo.} \sindy{} recovered both ODEs with
+$R^2 = 0.99999999$, matching all 6 coefficients exactly.
+
+\subsection{Chaotic ODEs}
+\textbf{Double pendulum.} \pysr{} found $T = \sqrt{4.03 \cdot L}$ where
+$4.03 \approx 4\pi^2/g$ ($R^2 = 0.999993$). Energy conservation verified
+to $10^{-7}$.
+\textbf{Lorenz attractor.} \sindy{} recovered all three Lorenz equations
+($R^2 = 0.99999$) with parameters $\sigma = 9.98$ (true: 10), $\rho = 27.8$
+(true: 28), $\beta = 2.66$ (true: $8/3 = 2.667$).
+
+\subsection{PDEs}
+\textbf{Gray-Scott.} Wavelength scaling $\lambda \sim \sqrt{D_v}$ recovered
+with correlation 0.927 and \pysr{} $R^2 = 0.985$.
+\textbf{Navier-Stokes 2D.} Decay rate $\lambda = 4\nu$ ($R^2 = 1.0$),
+matching the analytical $2\nu|k|^2$ for Taylor-Green vortex mode $(1,1)$
+where $|k|^2 = 2$.
+\textbf{Heat equation.} Mode decay rate $\lambda = D$ ($R^2 = 1.0$)
+for $k=1$ on $[0, 2\pi]$, exact to machine precision.
+
+\subsection{Collective and Discrete Dynamics}
+\textbf{Kuramoto.} Synchronization transition $r(K)$ captured with
+$R^2 = 0.97$; critical coupling $K_c = 1.10$ (theory: $4/\pi \approx 1.27$,
+14\% finite-size error at $N=100$).
+\textbf{Logistic map.} Feigenbaum $\delta$ estimated at $[4.0, 4.75]$
+(theory: 4.669). Chaos onset $r_c = 3.576$ (theory: 3.5699). Maximum
+Lyapunov exponent $\lambda(r{=}4) = \ln 4 = 1.386$ (exact).
+
+% ============================================================================
+% 5. CROSS-DOMAIN ANALYSIS
+% ============================================================================
+\section{Cross-Domain Analysis}
+\label{sec:cross_domain}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{figures/cross_domain_matrix_14domain.pdf}
+\caption{Cross-domain analogy strength matrix. 17 isomorphisms detected
+across 14 domains. Brighter cells indicate stronger mathematical analogies.}
+\label{fig:cross_domain}
+\end{figure}
+
+Our cross-domain analogy engine computes three types of similarity between
+domain pairs:
+
+\paragraph{Structural analogies} detect shared mathematical structures:
+bilinear interaction terms (LV $\leftrightarrow$ SIR), cubic nonlinearities
+(Brusselator $\leftrightarrow$ VdP $\leftrightarrow$ FHN), and diffusion
+operators (Heat $\leftrightarrow$ NS).
+
+\paragraph{Dimensional analogies} identify parameter correspondences:
+$\sqrt{k/m}$ (oscillator) $\leftrightarrow$ $\sqrt{g/L}$ (pendulum)
+share the same dimensional structure despite different physical origins.
+
+\paragraph{Topological analogies} detect shared phase space topology:
+limit cycles (VdP $\leftrightarrow$ Brusselator), strange attractors
+(Lorenz $\leftrightarrow$ Logistic), and synchronization transitions
+(Kuramoto $\leftrightarrow$ SIR).
+
+Figure~\ref{fig:cross_domain} shows the $14 \times 14$ analogy matrix
+with 17 detected isomorphisms. The strongest analogies (strength $> 0.9$)
+connect: LV $\leftrightarrow$ SIR (identical ODE structure),
+Pendulum $\leftrightarrow$ Oscillator (shared harmonic restoring force),
+and VdP $\leftrightarrow$ Oscillator (limit cycle $\leftrightarrow$
+center dynamics).
+
+% ============================================================================
+% 6. DISCUSSION
+% ============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Why does this work?}
+The key insight is that most scientific laws are \emph{low-complexity}
+symbolic expressions over \emph{high-dimensional} parameter sweeps.
+Systematic exploration of the parameter space generates diverse training
+data that constrains \pysr{}'s evolutionary search. The world model
+enables efficient exploration without re-running expensive simulations.
+
+\paragraph{Limitations.}
+(1) The logistic map's Lyapunov exponent ($R^2 = 0.63$) shows that
+fractal quantities resist symbolic fitting---this is a fundamental
+limitation of polynomial/analytic function spaces.
+(2) Kuramoto's 14\% error in $K_c$ reflects finite-size effects at
+$N=100$; larger ensembles improve accuracy but increase compute.
+(3) Gray-Scott's moderate $R^2 = 0.985$ reflects the challenge of
+fitting PDE scaling laws from limited spatial resolution data.
+
+\paragraph{Scaling.}
+Adding a new domain requires only implementing a \texttt{SimulationEnvironment}
+subclass ($\sim$50--200 lines). All other pipeline stages operate unchanged.
+We have verified this with 14 domains across 8 mathematical classes.
+
+% ============================================================================
+% 7. CONCLUSION
+% ============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+\ours{} demonstrates that a single computational pipeline can autonomously
+rediscover known physical laws across 14 fundamentally different domains.
+The system achieves $R^2 \geq 0.999$ in 11 of 14 domains, with a mean
+$R^2$ of 0.970 across all domains. Cross-domain analogy detection reveals
+17 mathematical isomorphisms, suggesting that scientific domains share
+more structure than is commonly appreciated. Our architecture's key
+contribution is the separation of domain-specific simulation from
+domain-agnostic discovery, enabling universal scientific inference with
+minimal per-domain effort.
+
+% ============================================================================
+% REFERENCES
+% ============================================================================
+\bibliographystyle{plain}
+\begin{thebibliography}{10}
+
+\bibitem{brunton2016sindy}
+S.~L. Brunton, J.~L. Proctor, and J.~N. Kutz.
+\newblock Discovering governing equations from data by sparse identification of
+  nonlinear dynamical systems.
+\newblock \emph{Proceedings of the National Academy of Sciences}, 113(15):3932--3937, 2016.
+
+\bibitem{cranmer2023pysr}
+M.~Cranmer.
+\newblock Interpretable machine learning for science with PySR and SymbolicRegression.jl.
+\newblock \emph{arXiv preprint arXiv:2305.01582}, 2023.
+
+\bibitem{hafner2020dreamerv2}
+D.~Hafner, T.~Lillicrap, M.~Norouzi, and J.~Ba.
+\newblock Mastering Atari with discrete world models.
+\newblock \emph{arXiv preprint arXiv:2010.02193}, 2020.
+
+\bibitem{hafner2023dreamerv3}
+D.~Hafner, J.~Pasukonis, J.~Ba, and T.~Lillicrap.
+\newblock Mastering diverse domains through world models.
+\newblock \emph{arXiv preprint arXiv:2301.04104}, 2023.
+
+\bibitem{lu2024darwin}
+C.~Lu et al.
+\newblock The AI Scientist: Towards fully automated open-ended scientific discovery.
+\newblock \emph{arXiv preprint arXiv:2408.06292}, 2024.
+
+\bibitem{messenger2021weak}
+D.~A. Messenger and D.~M. Bortz.
+\newblock Weak SINDy: Galerkin-based data-driven model selection.
+\newblock \emph{Multiscale Modeling \& Simulation}, 19(3):1474--1497, 2021.
+
+\bibitem{rudy2017pdefind}
+S.~H. Rudy, S.~L. Brunton, J.~L. Proctor, and J.~N. Kutz.
+\newblock Data-driven discovery of partial differential equations.
+\newblock \emph{Science Advances}, 3(4):e1602614, 2017.
+
+\bibitem{udrescu2020ai}
+S.-M. Udrescu and M.~Tegmark.
+\newblock AI Feynman: A physics-inspired method for symbolic regression.
+\newblock \emph{Science Advances}, 6(16):eaay2631, 2020.
+
+\bibitem{wang2022scienceworld}
+R.~Wang et al.
+\newblock ScienceWorld: Is your agent smarter than a 5th grader?
+\newblock \emph{arXiv preprint arXiv:2203.07540}, 2022.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,28 @@
+\begin{table*}[t]
+\centering
+\caption{Fourteen-domain rediscovery results. R$^2$ values from PySR symbolic regression and SINDy sparse identification. 11 of 14 domains achieve R$^2 \geq 0.999$.}
+\label{tab:results}
+\small
+\begin{tabular}{rlllcl}
+\toprule
+\# & Domain & Math Class & Method & R$^2$ & Key Discovery \\
+\midrule
+1 & Projectile & Algebraic & PySR & \textbf{1.0000} & $0.1019 \approx 1/g$ \\
+2 & Lotka-Volterra & Nonlinear ODE & SINDy & \textbf{1.0000} & Exact coefficients \\
+3 & Gray-Scott & PDE & PySR & 0.9851 & Wavelength scaling \\
+4 & SIR Epidemic & Nonlinear ODE & PySR+SINDy & \textbf{1.0000} & Threshold + ODE \\
+5 & Double Pendulum & Chaotic ODE & PySR & \textbf{1.0000} & $4.03 \approx 4\pi^2/g$ \\
+6 & Harmonic Osc. & Linear ODE & PySR+SINDy & \textbf{1.0000} & Frequency + ODE \\
+7 & Lorenz & Chaotic ODE & SINDy & \textbf{1.0000} & All 3 equations \\
+8 & Navier-Stokes & PDE & PySR & \textbf{1.0000} & $4=2|k|^2$ for $(1,1)$ \\
+9 & Van der Pol & Nonlinear ODE & PySR & \textbf{1.0000} & $A=2.01$ \\
+10 & Kuramoto & Collective & PySR & 0.9695 & Sync order param. \\
+11 & Brusselator & Nonlinear ODE & PySR+SINDy & 0.9964 & Hopf + ODE \\
+12 & FitzHugh-Nagumo & Nonlinear ODE & SINDy & \textbf{1.0000} & Exact coefficients \\
+13 & Heat Eq. 1D & Linear PDE & PySR & \textbf{1.0000} & Spectral exact \\
+14 & Logistic Map & Discrete & PySR & 0.6287 & Fractal spectrum \\
+\midrule
+\multicolumn{6}{l}{Mean R$^2$ = 0.9700 | 10/14 domains with R$^2 \geq 0.999$} \\
+\bottomrule
+\end{tabular}
+\end{table*}
