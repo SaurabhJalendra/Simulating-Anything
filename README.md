@@ -83,14 +83,32 @@ pip install -e ".[dev]"
 pip install "jax[cuda12]" equinox optax diffrax pandas
 ```
 
+### Quick Demo (no GPU/Julia needed)
+
+```bash
+# Runs 3-domain demo in ~2 seconds on CPU:
+python scripts/demo_pipeline.py
+
+# Or via CLI:
+python -m simulating_anything demo
+```
+
 ### Run Tests
 
 ```bash
-# All 284 tests:
+# All 293 tests:
 python -m pytest tests/unit/ -v
 
 # Quick smoke test:
 python -m pytest tests/unit/test_simulation.py -v
+```
+
+### Generate Dashboard
+
+```bash
+# Interactive HTML dashboard with all results:
+python scripts/generate_dashboard.py
+# Open output/dashboard.html in browser
 ```
 
 ### Run Rediscoveries
@@ -173,7 +191,7 @@ notebooks/                 # Interactive demos
 |--------|-------|
 | Domains | 14 |
 | Mathematical classes | 8 |
-| Tests | 284 passing, 14 skipped |
+| Tests | 293 passing, 14 skipped |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
 | Cross-domain analogies | 17 |
