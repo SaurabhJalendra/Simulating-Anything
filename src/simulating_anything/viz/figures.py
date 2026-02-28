@@ -91,7 +91,7 @@ def plot_projectile_equation_fit(
         axes = [ax, ax]
 
     R_theory = data["v0"]**2 * np.sin(2 * data["theta"]) / data["g"]
-    R_sim = data["range"]
+    R_sim = data.get("range", data.get("range_sim", data.get("range_theory", R_theory)))
 
     # Left: scatter plot
     ax1 = axes[0]
