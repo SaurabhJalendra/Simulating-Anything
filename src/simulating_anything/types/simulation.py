@@ -15,6 +15,7 @@ class Domain(str, Enum):
     AGENT_BASED = "agent_based"
     EPIDEMIOLOGICAL = "epidemiological"
     CHAOTIC_ODE = "chaotic_ode"
+    HARMONIC_OSCILLATOR = "harmonic_oscillator"
 
 
 class SimulationBackend(str, Enum):
