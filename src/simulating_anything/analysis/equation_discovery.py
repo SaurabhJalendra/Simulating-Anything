@@ -56,9 +56,8 @@ def run_sindy(
     model = ps.SINDy(
         optimizer=optimizer,
         feature_library=library,
-        feature_names=feature_names,
     )
-    model.fit(states, t=dt)
+    model.fit(states, t=dt, feature_names=feature_names)
 
     # Score the model
     score = model.score(states, t=dt)

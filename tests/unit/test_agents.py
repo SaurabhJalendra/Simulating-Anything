@@ -49,8 +49,10 @@ class TestClaudeCodeBackend:
         backend = ClaudeCodeBackend()
         backend.ask("test", system="You are a scientist")
         cmd = mock_run.call_args[0][0]
-        assert "--system" in cmd
-        assert "You are a scientist" in cmd
+        # System prompt is prepended to user prompt (CLI has no --system flag)
+        prompt_arg = cmd[cmd.index("-p") + 1]
+        assert "You are a scientist" in prompt_arg
+        assert "test" in prompt_arg
 
     @patch("subprocess.run")
     def test_ask_structured(self, mock_run):
