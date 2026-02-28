@@ -26,8 +26,8 @@ capability.
 
 ## 2. What We're Trying to Prove (Rediscovery Targets)
 
-Success means the system autonomously rediscovers known physics across 5
-domains spanning 4 mathematical classes -- proving universality with concrete evidence.
+Success means the system autonomously rediscovers known physics across 6
+domains spanning 5 mathematical classes -- proving universality with concrete evidence.
 
 ### Projectile (rigid body) -- REDISCOVERED
 - **Target:** Recover R = v²sin(2θ)/g from simulation data via PySR
@@ -64,6 +64,13 @@ domains spanning 4 mathematical classes -- proving universality with concrete ev
   - Constant 4.0298 matches 4π²/g = 4.0254 (0.1% error)
 - 50 energy trajectories, 100 period measurements across L1 range [0.3, 3.0]
 
+### Harmonic Oscillator (linear ODE) -- REDISCOVERED
+- **Target:** Recover ω₀ = √(k/m), damping rate = c/(2m), and ODE
+- **Result (PySR):** Found `sqrt(k/m)` equivalent with R² = 1.0
+- **Result (PySR):** Found `c/(2m)` damping rate with R² = 1.0
+- **Result (SINDy):** Recovered `d(v)/dt = -4.000*x - 0.400*v` exactly (k=4, c=0.4)
+- 200 frequency measurements, 100 damping measurements
+
 ---
 
 ## 3. The Universality Argument
@@ -71,6 +78,12 @@ domains spanning 4 mathematical classes -- proving universality with concrete ev
 Only the `SimulationEnvironment` subclass is domain-specific. Everything
 else -- problem parsing, world model, exploration, analysis, reporting --
 operates on generic tensors. Adding a domain = one new class (~50-200 lines).
+
+**Cross-domain analogy engine** detects 7 mathematical isomorphisms:
+- LV ↔ SIR (bilinear interaction terms)
+- Pendulum ↔ Oscillator (harmonic restoring force, T ~ √(inertia/force))
+- Projectile ↔ Oscillator (energy conservation)
+- Gray-Scott wavelength ↔ Oscillator period (same dimensional scaling)
 
 Full argument with 40+ concrete domains: `docs/RESEARCH.md` Section 4.
 Domain expansion architecture: `docs/DESIGN.md` Section 11.
@@ -125,7 +138,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (131 passing, 0 skipped):
+# Full suite in WSL (156 passing, 0 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -251,13 +264,14 @@ These are things that broke in previous sessions. Do not repeat them:
 - ~~Demonstrate 3 rediscoveries~~ DONE (projectile R²=0.9999, LV R²=1.0, GS boundary+scaling)
 - ~~Add SIR epidemic domain~~ DONE (R0 = β/γ, R²=1.0)
 - ~~Add double pendulum domain~~ DONE (T = 2π√(L/g), R²=0.999993)
+- ~~Add harmonic oscillator domain~~ DONE (ω₀=√(k/m), R²=1.0)
 - ~~Train RSSM world models on all 3 V1 domains~~ DONE
-- Uncertainty-driven exploration demo
-- Dream-based discovery pipeline (compare dreamed vs simulated discoveries)
-- Ablation studies (data amount, PySR iterations, noise robustness)
+- ~~Uncertainty-driven exploration demo~~ DONE (LV + SIR, R0 boundary detection)
+- ~~Dream-based discovery pipeline~~ DONE (dreamed vs simulated comparison)
+- ~~Cross-Domain Analogy Engine~~ DONE (7 isomorphisms across 6 domains)
+- Ablation studies with PySR (data generated, awaiting PySR evaluation)
 - Add more JAX-native domains: molecular dynamics (JAX-MD), robotics (Brax)
 - Adversarial Dream Debate: two world models validating each other
-- Cross-Domain Analogy Engine: detect mathematical isomorphisms
 
 ### V3 (Medium-term)
 - Bridge to non-JAX simulators: OpenFOAM (CFD), GROMACS (MD), SUMO (traffic)
@@ -296,6 +310,7 @@ src/simulating_anything/
     agent_based.py         # Lotka-Volterra (RK4 + diffrax batch)
     epidemiological.py     # SIR epidemic model (RK4)
     chaotic_ode.py         # Double pendulum (Lagrangian + RK4)
+    harmonic_oscillator.py # Damped harmonic oscillator (RK4)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -308,6 +323,7 @@ src/simulating_anything/
     symbolic_regression.py # PySR wrapper (variable_names in fit())
     equation_discovery.py  # PySINDy wrapper (v2.1.0 API)
     ablation.py            # Single-factor ablation studies
+    cross_domain.py        # Cross-domain analogy engine (7 isomorphisms)
   rediscovery/
     __init__.py            # Exports all rediscovery runners
     projectile.py          # Range equation R=v²sin(2θ)/g recovery
@@ -315,7 +331,8 @@ src/simulating_anything/
     gray_scott.py          # Phase diagram + wavelength scaling analysis
     sir_epidemic.py        # R0 = β/γ + SIR ODE recovery
     double_pendulum.py     # Period T = 2π√(L/g) + energy conservation
-    runner.py              # Unified runner for all 5 domains
+    harmonic_oscillator.py # ω₀ = √(k/m) + damping + ODE recovery
+    runner.py              # Unified runner for all 6 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -337,7 +354,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 131 tests across 8 files
+tests/unit/                # 156 tests across 11 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -346,6 +363,9 @@ tests/unit/                # 131 tests across 8 files
   test_pipeline.py         # 20 tests — Verification, stores, exploration
   test_rediscovery.py      # 15 tests — Data gen, PySR, PySINDy integration
   test_new_domains.py      # 18 tests — SIR epidemic + double pendulum
+  test_exploration.py      # 13 tests — Explorer + ablation module
+  test_harmonic_oscillator.py # 14 tests — Oscillator sim + rediscovery data
+  test_cross_domain.py     # 12 tests — Analogy detection + similarity
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
@@ -353,6 +373,7 @@ output/rediscovery/          # Rediscovery results (not committed to git)
   gray_scott/results.json    # Phase diagram + wavelength scaling
   sir_epidemic/results.json  # R0 = β/γ + SIR ODEs
   double_pendulum/results.json # Period T = 2π√(L/g) + energy
+  harmonic_oscillator/results.json # ω₀ = √(k/m), c/(2m), SINDy ODE
 
 output/world_models/         # Trained RSSM checkpoints (not committed)
   projectile/model.eqx      # Recon MSE 0.38, dream MSE 0.61
