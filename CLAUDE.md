@@ -26,8 +26,8 @@ capability.
 
 ## 2. What We're Trying to Prove (Rediscovery Targets)
 
-Success means the system autonomously rediscovers known physics across 8
-domains spanning 5 mathematical classes -- proving universality with concrete evidence.
+Success means the system autonomously rediscovers known physics across 14
+domains spanning 6 mathematical classes -- proving universality with concrete evidence.
 
 ### Projectile (rigid body) -- REDISCOVERED
 - **Target:** Recover R = v²sin(2θ)/g from simulation data via PySR
@@ -89,6 +89,34 @@ domains spanning 5 mathematical classes -- proving universality with concrete ev
 - Energy vs analytical: 4.8% mean relative error over 500 steps
 - 30 viscosity sweeps, correlation with theory = 1.0
 
+### Van der Pol Oscillator (nonlinear ODE) -- REDISCOVERED
+- **Target:** Limit cycle amplitude A~2, period scaling T(mu)
+- **Result (PySR):** Period: `mu*1.662 + 8.09 - sqrt(sqrt(mu))*3.16` R²=0.99996
+  - Coefficient 1.662 close to theoretical (3-2ln(2)) = 1.614 for large mu
+- Mean amplitude = 2.0098 (theory: 2.0 exact)
+- 30 mu values from 0.1 to 31.6, period range [6.3, 53.1]
+
+### Kuramoto Coupled Oscillators (collective dynamics) -- IN PROGRESS
+- **Target:** Critical coupling K_c = 4/pi for synchronization transition
+- Simulation: N coupled phase oscillators with sin coupling
+- Order parameter r, finite-size scaling analysis
+
+### Brusselator (chemical oscillator) -- IN PROGRESS
+- **Target:** Hopf bifurcation b_c = 1 + a², ODE recovery
+- Simulation with bifurcation sweep, period measurement
+
+### FitzHugh-Nagumo (neuroscience) -- IN PROGRESS
+- **Target:** f-I curve (firing frequency vs current), excitation threshold
+- Simulation with cubic nonlinearity, slow recovery variable
+
+### Heat Equation 1D (pure diffusion PDE) -- IN PROGRESS
+- **Target:** Mode decay rate = D*k² (exact spectral)
+- FFT-based exact solver, conservation of total heat verified
+
+### Logistic Map (discrete chaos) -- IN PROGRESS
+- **Target:** Feigenbaum constant delta~4.669, chaos onset r_c~3.57
+- lambda(r=4) = ln(2) verified, period detection, bifurcation diagram
+
 ---
 
 ## 3. The Universality Argument
@@ -97,13 +125,19 @@ Only the `SimulationEnvironment` subclass is domain-specific. Everything
 else -- problem parsing, world model, exploration, analysis, reporting --
 operates on generic tensors. Adding a domain = one new class (~50-200 lines).
 
-**Cross-domain analogy engine** detects 11 mathematical isomorphisms across 8 domains:
+**Cross-domain analogy engine** detects 17 mathematical isomorphisms across 14 domains:
 - LV ↔ SIR (bilinear interaction terms)
 - Pendulum ↔ Oscillator (harmonic restoring force, T ~ √(inertia/force))
 - Projectile ↔ Oscillator (energy conservation)
 - Gray-Scott wavelength ↔ Oscillator period (same dimensional scaling)
 - Lorenz ↔ Double Pendulum (chaotic ODEs with strange attractors)
 - Gray-Scott ↔ Navier-Stokes (PDE diffusion operators)
+- VdP ↔ Lotka-Volterra (limit cycles)
+- Brusselator ↔ VdP (Hopf bifurcation)
+- FHN ↔ VdP (same mathematical origin)
+- Heat equation ↔ NS (linear vs nonlinear diffusion)
+- Logistic map ↔ Lorenz (chaos, positive Lyapunov)
+- Kuramoto ↔ SIR (threshold/phase transitions)
 
 Full argument with 40+ concrete domains: `docs/RESEARCH.md` Section 4.
 Domain expansion architecture: `docs/DESIGN.md` Section 11.
@@ -158,7 +192,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (198 passing, 14 skipped):
+# Full suite in WSL (268 passing, 14 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -290,10 +324,15 @@ These are things that broke in previous sessions. Do not repeat them:
 - ~~Dream-based discovery pipeline~~ DONE (dreamed vs simulated comparison)
 - ~~Cross-Domain Analogy Engine~~ DONE (11 isomorphisms across 8 domains)
 - ~~Add Lorenz attractor domain~~ DONE (SINDy R²=0.99999, Lyapunov 1.1% error)
-- ~~Add Navier-Stokes 2D domain~~ DONE (spectral vorticity solver, 13 tests)
+- ~~Add Navier-Stokes 2D domain~~ DONE (decay_rate=4*nu, R²=1.0)
 - ~~Adversarial Dream Debate~~ DONE (simulation debate + divergence metrics)
-- Ablation studies with PySR (data generated, awaiting PySR evaluation)
-- Run Navier-Stokes PySR rediscovery for decay rate λ = 2νk²
+- ~~Add Van der Pol oscillator~~ DONE (period R²=0.99996, amplitude~2.01)
+- ~~Add Kuramoto oscillators~~ DONE (sync transition, K_c detection)
+- ~~Add Brusselator~~ DONE (Hopf bifurcation b_c=1+a²)
+- ~~Add FitzHugh-Nagumo~~ DONE (f-I curve, neural spiking)
+- ~~Add Heat Equation 1D~~ DONE (exact spectral, D*k² decay)
+- ~~Add Logistic Map~~ DONE (Feigenbaum, ln(2) Lyapunov at r=4)
+- Ablation studies with PySR (data generated, awaiting evaluation)
 - Add more JAX-native domains: molecular dynamics (JAX-MD), robotics (Brax)
 
 ### V3 (Medium-term)
@@ -336,6 +375,12 @@ src/simulating_anything/
     harmonic_oscillator.py # Damped harmonic oscillator (RK4)
     lorenz.py              # Lorenz strange attractor (RK4 + Lyapunov)
     navier_stokes.py       # 2D incompressible NS (spectral vorticity-streamfunction)
+    van_der_pol.py         # Van der Pol oscillator (limit cycle, RK4)
+    kuramoto.py            # Kuramoto coupled oscillators (sync transition)
+    brusselator.py         # Brusselator chemical oscillator (Hopf bifurcation)
+    fitzhugh_nagumo.py     # FitzHugh-Nagumo neuron model (excitable)
+    heat_equation.py       # 1D heat equation (spectral FFT)
+    logistic_map.py        # Logistic map (discrete chaos, Feigenbaum)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -348,7 +393,7 @@ src/simulating_anything/
     symbolic_regression.py # PySR wrapper (variable_names in fit())
     equation_discovery.py  # PySINDy wrapper (v2.1.0 API)
     ablation.py            # Single-factor ablation studies
-    cross_domain.py        # Cross-domain analogy engine (11 isomorphisms)
+    cross_domain.py        # Cross-domain analogy engine (17 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
   rediscovery/
     __init__.py            # Exports all rediscovery runners
@@ -360,7 +405,13 @@ src/simulating_anything/
     harmonic_oscillator.py # ω₀ = √(k/m) + damping + ODE recovery
     lorenz.py              # Lorenz ODE recovery + chaos transition
     navier_stokes.py       # NS 2D viscous decay rate recovery
-    runner.py              # Unified runner for all 8 domains
+    van_der_pol.py         # VdP period/amplitude + SINDy ODE
+    kuramoto.py            # Sync transition + order parameter r(K)
+    brusselator.py         # Hopf bifurcation b_c = 1+a^2
+    fitzhugh_nagumo.py     # f-I curve + SINDy ODE
+    heat_equation.py       # Mode decay rate D*k^2
+    logistic_map.py        # Feigenbaum + Lyapunov + chaos onset
+    runner.py              # Unified runner for all 14 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -382,7 +433,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 198 tests across 14 files
+tests/unit/                # 268 tests across 20 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -397,6 +448,12 @@ tests/unit/                # 198 tests across 14 files
   test_lorenz.py           # 20 tests — Lorenz sim, fixed points, Lyapunov
   test_dream_debate.py     # 9 tests — Adversarial dream debate
   test_navier_stokes.py    # 13 tests — NS 2D spectral solver
+  test_van_der_pol.py      # 12 tests — VdP limit cycle, period
+  test_kuramoto.py         # 13 tests — Sync transition, order parameter
+  test_brusselator.py      # 11 tests — Hopf bifurcation
+  test_fitzhugh_nagumo.py  # 10 tests — FHN neuron model
+  test_heat_equation.py    # 12 tests — Heat equation 1D spectral
+  test_logistic_map.py     # 13 tests — Logistic map, Lyapunov, periods
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
