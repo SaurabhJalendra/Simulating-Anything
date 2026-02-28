@@ -29,20 +29,26 @@ capability.
 Success means the system autonomously rediscovers known physics across 3
 unrelated domains -- proving the universality claim with concrete evidence.
 
-### Projectile (rigid body)
+### Projectile (rigid body) -- REDISCOVERED
 - **Target:** Recover R = v²sin(2θ)/g from simulation data via PySR
-- **Also:** Pendulum period T = 2π√(L/g), optimal angle < 45° with drag
-- **Current:** Simulation validated to 0.14% error against theory
+- **Result:** PySR found `v0² * 0.1019 * sin(2*theta)` with R² = 0.9999
+- The coefficient 0.1019 matches 1/g = 1/9.81 = 0.10194 to 4 significant figures
+- 225 data points (15 speeds x 15 angles), simulation error vs theory: 0.04%
 
-### Lotka-Volterra (agent-based)
+### Lotka-Volterra (agent-based) -- REDISCOVERED
 - **Target:** Recover equilibrium point (γ/δ, α/β) from population dynamics
-- **Also:** SIR R0 = β/γ, herd immunity threshold 1 - 1/R0
-- **Current:** Time-averages match equilibrium within 1.7%
+- **Result (PySR):** Found `g_/d_` (γ/δ, R²=0.9999) and `a_/b_` (α/β, R²=0.9999)
+- **Result (SINDy):** Recovered exact ODE coefficients with R² = 1.0:
+  - `d(prey)/dt = 1.100 prey - 0.400 prey*pred` (true: α=1.1, β=0.4)
+  - `d(pred)/dt = -0.400 pred + 0.100 prey*pred` (true: γ=0.4, δ=0.1)
+- 200 parameter sweeps, time-average error vs theory: 0.31% prey, 0.19% pred
 
-### Gray-Scott (reaction-diffusion)
-- **Target:** Turing instability threshold, wavelength scaling λ ~ sqrt(D/k)
-- **Also:** Phase diagram with 4+ of 12 known Pearson regimes
-- **Current:** Simulation stable, patterns forming with CFL-safe dt
+### Gray-Scott (reaction-diffusion) -- ANALYZED
+- **Target:** Turing instability threshold, wavelength scaling λ ~ sqrt(D_v)
+- **Result:** Phase diagram with 4 pattern types (uniform, spots, stripes, complex)
+- 35 Turing instability boundary points mapped in (f, k) space
+- Wavelength scaling: correlation with √(D_v) = 0.927
+- PySR wavelength equation R² = 0.985 from 9 D_v variation data points
 
 ---
 
@@ -105,8 +111,8 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (98 passing, 0 skipped):
-wsl.exe -d Ubuntu -e bash -c "cd /mnt/d/'Git Repos'/Simulating-Anything && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
+# Full suite in WSL (113 passing, 0 skipped):
+wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
 python -m pytest tests/unit/ -v
@@ -118,6 +124,18 @@ python -m pytest tests/unit/ -v
 from simulating_anything import Pipeline
 pipeline = Pipeline()
 report = pipeline.run("How do patterns form in a two-chemical activator-inhibitor system?")
+```
+
+### Rediscovery
+```python
+# Run all three domain rediscoveries (requires WSL + Julia + PySR)
+from simulating_anything.rediscovery.runner import run_all_rediscoveries
+results = run_all_rediscoveries(pysr_iterations=50)
+
+# Or run individually:
+from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
+from simulating_anything.rediscovery.lotka_volterra import run_lotka_volterra_rediscovery
+from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
 ```
 
 ### Lint
@@ -204,14 +222,19 @@ These are things that broke in previous sessions. Do not repeat them:
 | RSSM action | Passed `jnp.zeros(1)` with action_size=0 | Use scalar `jnp.float32(0)` for no-action case |
 | Parquet load | Missing pandas | `pip install pandas` (pyarrow alone can't do `to_pandas()`) |
 | Projectile params | Used `v0` instead of `initial_speed` | Check exact param names in simulation `__init__` |
+| PySR var names | `alpha`, `beta` conflict with sympy | Use `a_`, `b_`, `g_`, `d_` as PySR variable names |
+| PySINDy v2.1.0 | `feature_names` moved from `__init__` to `fit()` | Pass `feature_names` to `model.fit()`, not `SINDy()` |
+| PySR `variable_names` | FutureWarning in PySR 1.5.9 | Pass `variable_names` to `model.fit()`, not constructor |
+| Gray-Scott convention | Pearson D_u=2e-5 gives unresolvable wavelengths | Use Karl Sims convention: D_u=0.16, D_v=0.08, unscaled Laplacian |
+| WSL bash -c PATH | Windows PATH with parentheses breaks bash -c | Use `wsl.exe -d Ubuntu -- bash -lc "..."` instead |
 
 ---
 
 ## 11. Future Roadmap
 
 ### V2 (Near-term)
-- Install Julia + PySR for symbolic regression
-- Demonstrate 3 rediscoveries (projectile, Lotka-Volterra, Gray-Scott)
+- ~~Install Julia + PySR for symbolic regression~~ DONE
+- ~~Demonstrate 3 rediscoveries~~ DONE (projectile R²=0.9999, LV R²=1.0, GS boundary+scaling)
 - Add more JAX-native domains: molecular dynamics (JAX-MD), robotics (Brax)
 - Adversarial Dream Debate: two world models validating each other
 - Cross-Domain Analogy Engine: detect mathematical isomorphisms
@@ -260,9 +283,15 @@ src/simulating_anything/
     base.py                # Explorer ABC
     uncertainty_driven.py  # MC-dropout uncertainty explorer
   analysis/
-    symbolic_regression.py # PySR wrapper
-    equation_discovery.py  # PySINDy wrapper
+    symbolic_regression.py # PySR wrapper (variable_names in fit())
+    equation_discovery.py  # PySINDy wrapper (v2.1.0 API)
     ablation.py            # Single-factor ablation studies
+  rediscovery/
+    __init__.py            # Exports all rediscovery runners
+    projectile.py          # Range equation R=v²sin(2θ)/g recovery
+    lotka_volterra.py      # Equilibrium + ODE recovery via PySR/SINDy
+    gray_scott.py          # Phase diagram + wavelength scaling analysis
+    runner.py              # Unified runner for all domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -284,13 +313,19 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 98 tests across 6 files
+tests/unit/                # 113 tests across 7 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — All 3 simulation engines
   test_world_model.py      # 11 tests — RSSM shapes, gradients
   test_agents.py           # 11 tests — Backend, classifier, communicator
   test_pipeline.py         # 20 tests — Verification, stores, exploration
+  test_rediscovery.py      # 15 tests — Data gen, PySR, PySINDy integration
+
+output/rediscovery/          # Rediscovery results (not committed to git)
+  projectile/results.json    # R = v²sin(2θ)/g recovered
+  lotka_volterra/results.json # Equilibrium + ODE equations recovered
+  gray_scott/results.json    # Phase diagram + wavelength scaling
 
 docs/
   RESEARCH.md              # Vision, universality argument (Section 4), contributions
