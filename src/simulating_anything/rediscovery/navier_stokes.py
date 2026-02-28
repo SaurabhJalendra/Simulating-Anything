@@ -143,8 +143,8 @@ def run_navier_stokes_rediscovery(
     results = {
         "domain": "navier_stokes_2d",
         "targets": {
-            "decay_rate": "lambda = 2 * nu * k^2",
-            "energy_decay": "E(t) = E_0 * exp(-2*nu*k^2*t)",
+            "decay_rate": "lambda = 2 * nu * |k|^2 = 4*nu for Taylor-Green mode (1,1)",
+            "energy_decay": "E(t) = E_0 * exp(-4*nu*t) for Taylor-Green mode (1,1)",
         },
     }
 
@@ -152,9 +152,11 @@ def run_navier_stokes_rediscovery(
     logger.info("Part 1: Generating decay rate data...")
     data = generate_decay_rate_data(n_samples=30, n_steps=500, dt=0.01, N=64)
 
-    # Theoretical decay rate
+    # Theoretical decay rate for Taylor-Green vortex with mode (1,1):
+    # |k|^2 = kx^2 + ky^2 = 1 + 1 = 2, so decay_rate = 2 * nu * |k|^2 = 4 * nu
     k = data["k_fundamental"]
-    theory_rate = 2 * data["nu"] * k**2
+    k_sq_total = 2 * k**2  # kx^2 + ky^2 for mode (1,1)
+    theory_rate = 2 * data["nu"] * k_sq_total
 
     # Filter valid data (finite decay rates)
     valid = np.isfinite(data["decay_rate"]) & (data["decay_rate"] > 0)
@@ -208,8 +210,8 @@ def run_navier_stokes_rediscovery(
     logger.info("Part 2: Generating energy time series...")
     ts_data = generate_energy_timeseries(nu=0.01, n_steps=500, dt=0.01, N=64)
 
-    # Compare with analytical solution
-    E_theory = ts_data["energy"][0] * np.exp(-2 * 0.01 * k**2 * ts_data["time"])
+    # Compare with analytical solution: E(t) = E_0 * exp(-2*nu*|k|^2*t), |k|^2=2
+    E_theory = ts_data["energy"][0] * np.exp(-2 * 0.01 * k_sq_total * ts_data["time"])
     rel_err_ts = np.abs(ts_data["energy"] - E_theory) / np.maximum(E_theory, 1e-15)
 
     results["energy_timeseries"] = {
