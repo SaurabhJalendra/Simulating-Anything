@@ -9,6 +9,7 @@ from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
 from simulating_anything.rediscovery.double_pendulum import run_double_pendulum_rediscovery
 from simulating_anything.rediscovery.harmonic_oscillator import run_harmonic_oscillator_rediscovery
 from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
+from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
 
 __all__ = [
     "run_projectile_rediscovery",
@@ -18,4 +19,5 @@ __all__ = [
     "run_double_pendulum_rediscovery",
     "run_harmonic_oscillator_rediscovery",
     "run_lorenz_rediscovery",
+    "run_navier_stokes_rediscovery",
 ]

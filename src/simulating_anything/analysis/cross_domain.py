@@ -149,6 +149,18 @@ def build_domain_signatures() -> list[DomainSignature]:
                 "dy/dt = x*(rho-z) - y",
                 "dz/dt = x*y - beta*z",
             ],
+            r_squared=[0.99999, 0.99999, 0.99999],
+        ),
+        DomainSignature(
+            name="navier_stokes",
+            math_type="pde",
+            state_dim=1,  # vorticity field (NxN flattened)
+            n_parameters=2,  # nu, N (viscosity, resolution)
+            conserved_quantities=["energy (inviscid limit)"],
+            symmetries=["rotation", "translation", "Galilean_invariance"],
+            phase_portrait_type="fixed_point",  # Decaying flow converges to rest
+            characteristic_timescale="1/(nu*k^2)",
+            discovered_equations=["decay_rate = 2*nu*k^2"],
             r_squared=[],  # To be filled after rediscovery
         ),
     ]
@@ -223,7 +235,26 @@ def detect_structural_analogies(
         },
     ))
 
-    # Analogy 4: Lorenz <-> Double Pendulum (both chaotic nonlinear ODEs)
+    # Analogy 4: Gray-Scott <-> Navier-Stokes (both PDEs with diffusion)
+    analogies.append(Analogy(
+        domain_a="gray_scott",
+        domain_b="navier_stokes",
+        analogy_type="structural",
+        description=(
+            "Both are PDEs with diffusive transport on 2D domains. "
+            "Gray-Scott: u_t = Du*Lap(u) - uv^2 + f(1-u). "
+            "Navier-Stokes: omega_t = nu*Lap(omega) - (u.grad)omega. "
+            "Both have diffusion (Laplacian) plus nonlinear advection/reaction."
+        ),
+        strength=0.7,
+        mapping={
+            "Du*Lap(u) [chemical diffusion]": "nu*Lap(omega) [viscous diffusion]",
+            "uv^2 [reaction]": "(u.grad)omega [advection]",
+            "f, k [feed/kill rates]": "boundary conditions / forcing",
+        },
+    ))
+
+    # Analogy 5: Lorenz <-> Double Pendulum (both chaotic nonlinear ODEs)
     analogies.append(Analogy(
         domain_a="lorenz",
         domain_b="double_pendulum",
