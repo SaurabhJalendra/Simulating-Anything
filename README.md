@@ -96,7 +96,7 @@ python -m simulating_anything demo
 ### Run Tests
 
 ```bash
-# All 293 tests:
+# All 376 tests:
 python -m pytest tests/unit/ -v
 
 # Quick smoke test:
@@ -164,8 +164,9 @@ src/simulating_anything/
   analysis/
     symbolic_regression.py # PySR wrapper
     equation_discovery.py  # SINDy wrapper
-    cross_domain.py        # 14-domain analogy engine
+    cross_domain.py        # 14-domain analogy engine (17 isomorphisms)
     baseline_comparison.py # Benchmark vs baselines
+    sensitivity.py         # Noise/data/range sensitivity analysis
   rediscovery/             # Per-domain PySR/SINDy runners
   agents/                  # LLM agents (Claude Code CLI)
 
@@ -173,7 +174,13 @@ paper/
   main.tex                 # Workshop paper draft
 
 scripts/
+  demo_pipeline.py                    # 3-domain CPU demo (1.6s)
+  generate_dashboard.py               # Interactive HTML dashboard
   generate_paper_figures_14domain.py  # 18 publication figures
+  generate_cross_domain_figures.py    # 5 cross-domain figures
+  generate_sensitivity_figures.py     # 3 sensitivity plots
+  verify_reproducibility.py           # 15-domain determinism check
+  evaluate_world_models.py            # World model evaluation
   build_14domain_notebook.py          # 48-cell Jupyter notebook
   aggregate_results.py                # Results aggregation
   generate_latex_table.py             # LaTeX results table
@@ -191,7 +198,7 @@ notebooks/                 # Interactive demos
 |--------|-------|
 | Domains | 14 |
 | Mathematical classes | 8 |
-| Tests | 293 passing, 14 skipped |
+| Tests | 376 passing, 15 skipped |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
 | Cross-domain analogies | 17 |
