@@ -117,17 +117,27 @@ def run_van_der_pol_rediscovery(
     data = generate_ode_data(mu=1.0, n_steps=10000, dt=0.005)
 
     try:
-        from simulating_anything.analysis.equation_discovery import run_sindy_discovery
+        from simulating_anything.analysis.equation_discovery import run_sindy
 
-        sindy_results = run_sindy_discovery(
-            data["time"],
+        sindy_discoveries = run_sindy(
             data["states"],
+            dt=data["dt"],
             feature_names=["x", "v"],
             threshold=0.05,
             poly_degree=3,
         )
-        results["sindy_ode"] = sindy_results
-        logger.info(f"  SINDy results: {sindy_results}")
+        results["sindy_ode"] = {
+            "n_discoveries": len(sindy_discoveries),
+            "discoveries": [
+                {"expression": d.expression, "r_squared": d.evidence.fit_r_squared}
+                for d in sindy_discoveries[:5]
+            ],
+        }
+        if sindy_discoveries:
+            best = sindy_discoveries[0]
+            results["sindy_ode"]["best"] = best.expression
+            results["sindy_ode"]["best_r2"] = best.evidence.fit_r_squared
+            logger.info(f"  SINDy best: {best.expression} (R2={best.evidence.fit_r_squared:.6f})")
     except Exception as e:
         logger.warning(f"SINDy failed: {e}")
         results["sindy_ode"] = {"error": str(e)}

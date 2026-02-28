@@ -187,6 +187,30 @@ def build_domain_signatures() -> list[DomainSignature]:
             discovered_equations=["K_c = 4*omega_std/pi"],
             r_squared=[],  # To be filled after rediscovery
         ),
+        DomainSignature(
+            name="brusselator",
+            math_type="ode_nonlinear",
+            state_dim=2,  # u, v
+            n_parameters=2,  # a, b
+            conserved_quantities=[],
+            symmetries=["time_translation"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/a",
+            discovered_equations=["b_c = 1 + a^2"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="fitzhugh_nagumo",
+            math_type="ode_nonlinear",
+            state_dim=2,  # v, w
+            n_parameters=4,  # a, b, eps, I
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",  # For I > I_c
+            characteristic_timescale="1/eps",
+            discovered_equations=["f-I curve (firing frequency vs current)"],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -297,7 +321,47 @@ def detect_structural_analogies(
         },
     ))
 
-    # Analogy 6: Lorenz <-> Double Pendulum (both chaotic nonlinear ODEs)
+    # Analogy 6: Brusselator <-> Van der Pol (both Hopf bifurcation to limit cycle)
+    analogies.append(Analogy(
+        domain_a="brusselator",
+        domain_b="van_der_pol",
+        analogy_type="structural",
+        description=(
+            "Both undergo Hopf bifurcation from stable fixed point to limit cycle. "
+            "Brusselator: b > 1+a^2 triggers oscillation. "
+            "Van der Pol: any mu > 0 has a limit cycle. "
+            "Both are 2D nonlinear systems with unique equilibrium."
+        ),
+        strength=0.8,
+        mapping={
+            "b [control parameter]": "mu [nonlinearity parameter]",
+            "b_c = 1+a^2 [Hopf threshold]": "mu > 0 [always oscillatory]",
+            "(a, b/a) [fixed point]": "(0, 0) [fixed point]",
+        },
+    ))
+
+    # Analogy 7: FitzHugh-Nagumo <-> Van der Pol (same mathematical origin)
+    analogies.append(Analogy(
+        domain_a="fitzhugh_nagumo",
+        domain_b="van_der_pol",
+        analogy_type="structural",
+        description=(
+            "FitzHugh-Nagumo is a direct generalization of the Van der Pol oscillator. "
+            "VdP: x'' - mu(1-x^2)x' + x = 0. "
+            "FHN adds a slow recovery variable and external current: "
+            "dv/dt = v - v^3/3 - w + I. The cubic nonlinearity v - v^3/3 "
+            "is the FHN version of the VdP self-excitation."
+        ),
+        strength=0.9,
+        mapping={
+            "v [voltage]": "x [displacement]",
+            "w [recovery]": "integral of damping",
+            "I [current]": "external forcing",
+            "v - v^3/3 [cubic]": "mu*(1-x^2) [quadratic damping]",
+        },
+    ))
+
+    # Analogy 8: Lorenz <-> Double Pendulum (both chaotic nonlinear ODEs)
     analogies.append(Analogy(
         domain_a="lorenz",
         domain_b="double_pendulum",

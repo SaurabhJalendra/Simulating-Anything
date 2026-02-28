@@ -19,7 +19,7 @@ from simulating_anything.analysis.cross_domain import (
 class TestDomainSignatures:
     def test_build_signatures(self):
         sigs = build_domain_signatures()
-        assert len(sigs) == 10
+        assert len(sigs) == 12
         names = [s.name for s in sigs]
         assert "projectile" in names
         assert "lotka_volterra" in names
@@ -31,6 +31,8 @@ class TestDomainSignatures:
         assert "navier_stokes" in names
         assert "van_der_pol" in names
         assert "kuramoto" in names
+        assert "brusselator" in names
+        assert "fitzhugh_nagumo" in names
 
     def test_signature_fields(self):
         sigs = build_domain_signatures()
@@ -46,7 +48,7 @@ class TestAnalogyDetection:
     def test_structural_analogies(self):
         sigs = build_domain_signatures()
         analogies = detect_structural_analogies(sigs)
-        assert len(analogies) >= 5
+        assert len(analogies) >= 7
         # LV <-> SIR should be detected
         lv_sir = [a for a in analogies
                   if {"lotka_volterra", "sir_epidemic"} == {a.domain_a, a.domain_b}]
@@ -102,10 +104,10 @@ class TestEquationSimilarity:
 class TestRunAnalysis:
     def test_run_produces_results(self, tmp_path):
         results = run_cross_domain_analysis(output_dir=tmp_path)
-        assert results["n_domains"] == 10
+        assert results["n_domains"] == 12
         assert results["n_analogies"] > 0
         assert "similarity_matrix" in results
-        assert len(results["similarity_matrix"]["domain_names"]) == 10
+        assert len(results["similarity_matrix"]["domain_names"]) == 12
 
     def test_similarity_matrix_symmetric(self, tmp_path):
         results = run_cross_domain_analysis(output_dir=tmp_path)
@@ -115,4 +117,4 @@ class TestRunAnalysis:
     def test_similarity_matrix_diagonal(self, tmp_path):
         results = run_cross_domain_analysis(output_dir=tmp_path)
         matrix = np.array(results["similarity_matrix"]["matrix"])
-        np.testing.assert_array_equal(np.diag(matrix), np.ones(10))
+        np.testing.assert_array_equal(np.diag(matrix), np.ones(12))
