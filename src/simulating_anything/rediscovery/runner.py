@@ -57,6 +57,8 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
     from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
+    from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
+    from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -121,6 +123,16 @@ def run_all_rediscoveries(
         "fitzhugh_nagumo": {
             "label": "FitzHugh-Nagumo f-I Curve",
             "fn": run_fitzhugh_nagumo_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "heat_equation": {
+            "label": "Heat Equation 1D Mode Decay",
+            "fn": run_heat_equation_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "logistic_map": {
+            "label": "Logistic Map Feigenbaum & Chaos",
+            "fn": run_logistic_map_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

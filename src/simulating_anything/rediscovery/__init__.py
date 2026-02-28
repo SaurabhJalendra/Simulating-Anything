@@ -14,6 +14,8 @@ from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscov
 from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
 from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
+from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
+from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
 
 __all__ = [
     "run_projectile_rediscovery",
@@ -28,4 +30,6 @@ __all__ = [
     "run_kuramoto_rediscovery",
     "run_brusselator_rediscovery",
     "run_fitzhugh_nagumo_rediscovery",
+    "run_heat_equation_rediscovery",
+    "run_logistic_map_rediscovery",
 ]

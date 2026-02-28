@@ -211,6 +211,30 @@ def build_domain_signatures() -> list[DomainSignature]:
             discovered_equations=["f-I curve (firing frequency vs current)"],
             r_squared=[],
         ),
+        DomainSignature(
+            name="heat_equation",
+            math_type="pde",
+            state_dim=1,  # u(x) on 1D grid
+            n_parameters=1,  # D (diffusion coefficient)
+            conserved_quantities=["total_heat"],
+            symmetries=["translation", "reflection"],
+            phase_portrait_type="fixed_point",  # Converges to uniform
+            characteristic_timescale="1/(D*k^2)",
+            discovered_equations=["decay_rate = D*k^2"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="logistic_map",
+            math_type="chaotic",
+            state_dim=1,  # x
+            n_parameters=1,  # r
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",  # For r > 3.57
+            characteristic_timescale="1 (discrete)",
+            discovered_equations=["Feigenbaum delta ~ 4.669", "lambda(r=4) = ln(2)"],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -361,7 +385,26 @@ def detect_structural_analogies(
         },
     ))
 
-    # Analogy 8: Lorenz <-> Double Pendulum (both chaotic nonlinear ODEs)
+    # Analogy 8: Heat equation <-> Navier-Stokes (linear vs nonlinear diffusion)
+    analogies.append(Analogy(
+        domain_a="heat_equation",
+        domain_b="navier_stokes",
+        analogy_type="structural",
+        description=(
+            "Heat equation is the linear diffusion limit of Navier-Stokes. "
+            "Heat: u_t = D*u_xx (pure diffusion). "
+            "NS: omega_t = nu*Lap(omega) - (u.grad)omega (diffusion + advection). "
+            "Same spectral decay rate D*k^2 for each Fourier mode."
+        ),
+        strength=0.85,
+        mapping={
+            "D [diffusion coeff]": "nu [kinematic viscosity]",
+            "u [temperature]": "omega [vorticity]",
+            "D*k^2 [mode decay]": "nu*k^2 [viscous decay]",
+        },
+    ))
+
+    # Analogy 9: Lorenz <-> Double Pendulum (both chaotic nonlinear ODEs)
     analogies.append(Analogy(
         domain_a="lorenz",
         domain_b="double_pendulum",
@@ -512,6 +555,25 @@ def detect_topological_analogies(
             "limit cycle": "center (undamped)",
             "mu=0 (harmonic limit)": "c=0 (undamped)",
             "spiral in/out": "ellipse",
+        },
+    ))
+
+    # Logistic map <-> Lorenz (both chaotic with Lyapunov > 0)
+    analogies.append(Analogy(
+        domain_a="logistic_map",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both exhibit chaos with positive Lyapunov exponents. "
+            "Logistic map: period-doubling route to chaos, lambda(r=4)=ln(2). "
+            "Lorenz: Hopf bifurcation route, lambda~0.9 at standard parameters. "
+            "Both show sensitive dependence on initial conditions."
+        ),
+        strength=0.7,
+        mapping={
+            "r [growth rate]": "rho [Rayleigh number]",
+            "r_c ~ 3.57 [chaos onset]": "rho_c ~ 24.74 [chaos onset]",
+            "Feigenbaum cascade": "bifurcation sequence",
         },
     ))
 
