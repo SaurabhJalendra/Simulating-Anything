@@ -98,8 +98,13 @@ class WorldModelTrainer:
         feature_size = self.rssm.feature_size
         if self.is_spatial:
             out_channels = obs_shape[0] if len(obs_shape) == 3 else 1
+            # CNNDecoder has 4 upsample layers (stride=2 each), so output = spatial * 16
+            target_h = obs_shape[-2] if len(obs_shape) == 3 else obs_shape[-2]
+            spatial_h = max(target_h // 16, 2)
+            spatial_w = max((obs_shape[-1] if len(obs_shape) == 3 else obs_shape[-1]) // 16, 2)
             self.decoder = CNNDecoder(
-                latent_size=feature_size, out_channels=out_channels, key=keys[2]
+                latent_size=feature_size, out_channels=out_channels,
+                spatial_shape=(spatial_h, spatial_w), key=keys[2],
             )
         else:
             obs_flat = int(np.prod(obs_shape))
@@ -120,7 +125,8 @@ class WorldModelTrainer:
 
         # Combine all parameters
         self.params = (self.encoder, self.rssm, self.decoder)
-        self.opt_state = self.optimizer.init(self.params)
+        # Only initialize optimizer on differentiable (array) leaves
+        self.opt_state = self.optimizer.init(eqx.filter(self.params, eqx.is_array))
         self.step_count = 0
 
     def compute_loss(
@@ -179,12 +185,9 @@ class WorldModelTrainer:
         kl_loss = total_kl / seq_len
         total_loss = recon_loss + kl_loss
 
-        metrics = {
-            "loss": float(total_loss),
-            "recon_loss": float(recon_loss),
-            "kl_loss": float(kl_loss),
-        }
-        return total_loss, metrics
+        # Return JAX arrays (not float) so this function is JIT-traceable
+        aux = {"recon_loss": recon_loss, "kl_loss": kl_loss}
+        return total_loss, aux
 
     def train_step(
         self, observations: jax.Array, actions: jax.Array | None = None
@@ -201,12 +204,23 @@ class WorldModelTrainer:
         key = jax.random.PRNGKey(self.config.seed + self.step_count)
 
         loss_fn = lambda params: self.compute_loss(params, observations, actions, key=key)
-        (loss, metrics), grads = eqx.filter_value_and_grad(loss_fn, has_aux=True)(self.params)
+        (loss, aux), grads = eqx.filter_value_and_grad(loss_fn, has_aux=True)(self.params)
 
-        updates, self.opt_state = self.optimizer.update(grads, self.opt_state, self.params)
+        # Filter to only differentiable leaves for optimizer (matches init)
+        updates, self.opt_state = self.optimizer.update(
+            eqx.filter(grads, eqx.is_array),
+            self.opt_state,
+            eqx.filter(self.params, eqx.is_array),
+        )
         self.params = eqx.apply_updates(self.params, updates)
 
         self.step_count += 1
+        # Convert to Python float after exiting JIT
+        metrics = {
+            "loss": float(loss),
+            "recon_loss": float(aux["recon_loss"]),
+            "kl_loss": float(aux["kl_loss"]),
+        }
         return metrics
 
     def save_checkpoint(self, path: str | Path, model_id: str = "") -> WorldModelCheckpoint:
@@ -240,11 +254,11 @@ class WorldModelTrainer:
     ) -> ValidationMetrics:
         """Compute validation metrics on held-out data."""
         key = jax.random.PRNGKey(0)
-        _, metrics = self.compute_loss(self.params, observations, actions, key=key)
+        loss, aux = self.compute_loss(self.params, observations, actions, key=key)
 
         return ValidationMetrics(
-            reconstruction_mse=metrics["recon_loss"],
-            kl_divergence=metrics["kl_loss"],
-            prediction_error_1step=metrics["recon_loss"],
+            reconstruction_mse=float(aux["recon_loss"]),
+            kl_divergence=float(aux["kl_loss"]),
+            prediction_error_1step=float(aux["recon_loss"]),
             best_epoch=self.step_count,
         )
