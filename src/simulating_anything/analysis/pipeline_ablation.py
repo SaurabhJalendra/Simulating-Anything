@@ -284,6 +284,106 @@ def ablate_data_quantity_lv() -> list[AblationExperiment]:
 
 
 # ============================================================================
+# FEATURE ENGINEERING ABLATION
+# ============================================================================
+
+def ablate_feature_engineering() -> list[AblationExperiment]:
+    """Compare raw vs engineered features for projectile range prediction.
+
+    Tests whether providing the correct functional form (v0^2 * sin(2*theta))
+    as a feature matters vs letting the model figure it out from raw inputs.
+    """
+    results = []
+    rng = np.random.default_rng(42)
+
+    # Generate data
+    n_per_dim = 15
+    v0_grid = np.linspace(5, 50, n_per_dim)
+    theta_grid = np.linspace(10, 80, n_per_dim)
+    v0_all, theta_all, R_all = [], [], []
+    for v0 in v0_grid:
+        for theta in theta_grid:
+            R = _projectile_range(v0, theta)
+            v0_all.append(v0)
+            theta_all.append(theta)
+            R_all.append(R)
+    v0_arr = np.array(v0_all)
+    theta_arr = np.array(theta_all)
+    y = np.array(R_all)
+
+    # Feature set 1: Engineered (correct form) -- single feature
+    X_eng = np.array([[v**2 * np.sin(2 * np.radians(t))]
+                      for v, t in zip(v0_arr, theta_arr)])
+    c, _, _, _ = np.linalg.lstsq(X_eng, y, rcond=None)
+    y_pred = X_eng @ c
+    ss_res = np.sum((y - y_pred) ** 2)
+    ss_tot = np.sum((y - np.mean(y)) ** 2)
+    r2 = 1 - ss_res / max(ss_tot, 1e-15)
+    results.append(AblationExperiment(
+        domain="projectile", component="feature_engineering",
+        variant="engineered (v0^2*sin(2t))",
+        r_squared=float(r2), correct_form=True, n_samples=len(y),
+        description=f"Engineered: c={c[0]:.5f}, R²={r2:.6f}",
+    ))
+
+    # Feature set 2: Raw features (v0, theta) -- polynomial regression
+    X_raw = np.column_stack([v0_arr, theta_arr])
+    # Add polynomial features up to degree 3
+    X_poly = np.column_stack([
+        v0_arr, theta_arr,
+        v0_arr**2, theta_arr**2, v0_arr * theta_arr,
+        v0_arr**3, theta_arr**3,
+        v0_arr**2 * theta_arr, v0_arr * theta_arr**2,
+    ])
+    c_poly, _, _, _ = np.linalg.lstsq(X_poly, y, rcond=None)
+    y_pred_poly = X_poly @ c_poly
+    ss_res = np.sum((y - y_pred_poly) ** 2)
+    r2_poly = 1 - ss_res / max(ss_tot, 1e-15)
+    results.append(AblationExperiment(
+        domain="projectile", component="feature_engineering",
+        variant="raw polynomial (deg 3)",
+        r_squared=float(r2_poly), correct_form=False, n_samples=len(y),
+        description=f"Raw poly deg-3: R²={r2_poly:.6f}",
+    ))
+
+    # Feature set 3: Raw with trig features (v0, sin(theta), cos(theta), ...)
+    X_trig = np.column_stack([
+        v0_arr, np.sin(np.radians(theta_arr)), np.cos(np.radians(theta_arr)),
+        v0_arr**2, v0_arr * np.sin(np.radians(theta_arr)),
+        v0_arr**2 * np.sin(np.radians(theta_arr)),
+        v0_arr**2 * np.cos(np.radians(theta_arr)),
+        v0_arr**2 * np.sin(2 * np.radians(theta_arr)),
+    ])
+    c_trig, _, _, _ = np.linalg.lstsq(X_trig, y, rcond=None)
+    y_pred_trig = X_trig @ c_trig
+    ss_res = np.sum((y - y_pred_trig) ** 2)
+    r2_trig = 1 - ss_res / max(ss_tot, 1e-15)
+    # Check if the sin(2*theta) feature dominates
+    correct = bool(abs(c_trig[-1]) > 0.05 and abs(c_trig[-1] - 1/9.81) / (1/9.81) < 0.1)
+    results.append(AblationExperiment(
+        domain="projectile", component="feature_engineering",
+        variant="raw with trig features",
+        r_squared=float(r2_trig), correct_form=correct, n_samples=len(y),
+        description=f"Raw+trig: R²={r2_trig:.6f}, sin(2t) coeff={c_trig[-1]:.5f}",
+    ))
+
+    # Feature set 4: Just v0 (missing angle information entirely)
+    X_v0_only = v0_arr.reshape(-1, 1)
+    c_v0, _, _, _ = np.linalg.lstsq(X_v0_only, y, rcond=None)
+    y_pred_v0 = X_v0_only @ c_v0
+    ss_res = np.sum((y - y_pred_v0) ** 2)
+    r2_v0 = 1 - ss_res / max(ss_tot, 1e-15)
+    results.append(AblationExperiment(
+        domain="projectile", component="feature_engineering",
+        variant="v0 only (no angle)",
+        r_squared=max(0, float(r2_v0)), correct_form=False, n_samples=len(y),
+        description=f"v0 only: R²={r2_v0:.6f}",
+    ))
+
+    return results
+
+
+# ============================================================================
 # FULL ABLATION STUDY
 # ============================================================================
 
@@ -342,6 +442,20 @@ def run_pipeline_ablation(
         for e in data_qty
     ]
 
+    # Feature engineering
+    logger.info("\n--- Feature Engineering (Projectile) ---")
+    features = ablate_feature_engineering()
+    for exp in features:
+        logger.info(f"  {exp.variant}: R²={exp.r_squared:.6f}, form={exp.correct_form}")
+    all_results["feature_engineering"] = [
+        {
+            "variant": e.variant, "r_squared": float(e.r_squared),
+            "correct_form": bool(e.correct_form), "n_samples": int(e.n_samples),
+            "description": e.description,
+        }
+        for e in features
+    ]
+
     # Summary
     logger.info("\n" + "=" * 60)
     logger.info("ABLATION SUMMARY")
@@ -349,6 +463,7 @@ def run_pipeline_ablation(
     logger.info("Sampling: Grid > Random > Edge > Clustered")
     logger.info("Analysis: FFT ≈ Zero-crossing > Autocorrelation >> Polynomial")
     logger.info("Data: 5000+ steps sufficient for LV equilibrium convergence")
+    logger.info("Features: Engineered >> Raw+trig > Raw poly >> v0 only")
 
     # Save
     results_file = output_path / "ablation_results.json"
