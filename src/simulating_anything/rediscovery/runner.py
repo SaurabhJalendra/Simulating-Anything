@@ -34,7 +34,7 @@ def run_all_rediscoveries(
     Args:
         output_dir: Base output directory.
         pysr_iterations: Number of PySR iterations per run.
-        domains: Which domains to run (default: all five).
+        domains: Which domains to run (default: all six).
 
     Returns:
         Combined results dict with all discoveries.
@@ -43,6 +43,9 @@ def run_all_rediscoveries(
         run_double_pendulum_rediscovery,
     )
     from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
+    from simulating_anything.rediscovery.harmonic_oscillator import (
+        run_harmonic_oscillator_rediscovery,
+    )
     from simulating_anything.rediscovery.lotka_volterra import (
         run_lotka_volterra_rediscovery,
     )
@@ -77,6 +80,11 @@ def run_all_rediscoveries(
         "double_pendulum": {
             "label": "Double Pendulum Period & Energy",
             "fn": run_double_pendulum_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "harmonic_oscillator": {
+            "label": "Harmonic Oscillator Frequency & Damping",
+            "fn": run_harmonic_oscillator_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
