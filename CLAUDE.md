@@ -26,7 +26,7 @@ capability.
 
 ## 2. What We're Trying to Prove (Rediscovery Targets)
 
-Success means the system autonomously rediscovers known physics across 7
+Success means the system autonomously rediscovers known physics across 8
 domains spanning 5 mathematical classes -- proving universality with concrete evidence.
 
 ### Projectile (rigid body) -- REDISCOVERED
@@ -81,6 +81,12 @@ domains spanning 5 mathematical classes -- proving universality with concrete ev
 - **Lyapunov exponent:** 0.9155 at classic parameters (known: 0.9056, 1.1% error)
 - 3 fixed points verified, fine Lyapunov sweep with zero-crossing detection
 
+### Navier-Stokes 2D (PDE) -- IN PROGRESS
+- **Target:** Viscous decay rate λ = 2νk² for Taylor-Green vortex
+- **Simulation:** Vorticity-streamfunction formulation, FFT Poisson solver, 2/3 dealiasing, RK4
+- Energy spectrum, enstrophy decay, and divergence-free velocity field verified
+- 13 simulation tests passing; PySR rediscovery pending
+
 ---
 
 ## 3. The Universality Argument
@@ -89,12 +95,13 @@ Only the `SimulationEnvironment` subclass is domain-specific. Everything
 else -- problem parsing, world model, exploration, analysis, reporting --
 operates on generic tensors. Adding a domain = one new class (~50-200 lines).
 
-**Cross-domain analogy engine** detects 9 mathematical isomorphisms across 7 domains:
+**Cross-domain analogy engine** detects 11 mathematical isomorphisms across 8 domains:
 - LV ↔ SIR (bilinear interaction terms)
 - Pendulum ↔ Oscillator (harmonic restoring force, T ~ √(inertia/force))
 - Projectile ↔ Oscillator (energy conservation)
 - Gray-Scott wavelength ↔ Oscillator period (same dimensional scaling)
 - Lorenz ↔ Double Pendulum (chaotic ODEs with strange attractors)
+- Gray-Scott ↔ Navier-Stokes (PDE diffusion operators)
 
 Full argument with 40+ concrete domains: `docs/RESEARCH.md` Section 4.
 Domain expansion architecture: `docs/DESIGN.md` Section 11.
@@ -149,7 +156,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (176 passing, 0 skipped):
+# Full suite in WSL (198 passing, 14 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -279,11 +286,13 @@ These are things that broke in previous sessions. Do not repeat them:
 - ~~Train RSSM world models on all 3 V1 domains~~ DONE
 - ~~Uncertainty-driven exploration demo~~ DONE (LV + SIR, R0 boundary detection)
 - ~~Dream-based discovery pipeline~~ DONE (dreamed vs simulated comparison)
-- ~~Cross-Domain Analogy Engine~~ DONE (9 isomorphisms across 7 domains)
+- ~~Cross-Domain Analogy Engine~~ DONE (11 isomorphisms across 8 domains)
 - ~~Add Lorenz attractor domain~~ DONE (SINDy R²=0.99999, Lyapunov 1.1% error)
+- ~~Add Navier-Stokes 2D domain~~ DONE (spectral vorticity solver, 13 tests)
+- ~~Adversarial Dream Debate~~ DONE (simulation debate + divergence metrics)
 - Ablation studies with PySR (data generated, awaiting PySR evaluation)
+- Run Navier-Stokes PySR rediscovery for decay rate λ = 2νk²
 - Add more JAX-native domains: molecular dynamics (JAX-MD), robotics (Brax)
-- Adversarial Dream Debate: two world models validating each other
 
 ### V3 (Medium-term)
 - Bridge to non-JAX simulators: OpenFOAM (CFD), GROMACS (MD), SUMO (traffic)
@@ -324,6 +333,7 @@ src/simulating_anything/
     chaotic_ode.py         # Double pendulum (Lagrangian + RK4)
     harmonic_oscillator.py # Damped harmonic oscillator (RK4)
     lorenz.py              # Lorenz strange attractor (RK4 + Lyapunov)
+    navier_stokes.py       # 2D incompressible NS (spectral vorticity-streamfunction)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -336,7 +346,8 @@ src/simulating_anything/
     symbolic_regression.py # PySR wrapper (variable_names in fit())
     equation_discovery.py  # PySINDy wrapper (v2.1.0 API)
     ablation.py            # Single-factor ablation studies
-    cross_domain.py        # Cross-domain analogy engine (9 isomorphisms)
+    cross_domain.py        # Cross-domain analogy engine (11 isomorphisms)
+    dream_debate.py        # Adversarial dream debate (divergence metrics)
   rediscovery/
     __init__.py            # Exports all rediscovery runners
     projectile.py          # Range equation R=v²sin(2θ)/g recovery
@@ -346,7 +357,8 @@ src/simulating_anything/
     double_pendulum.py     # Period T = 2π√(L/g) + energy conservation
     harmonic_oscillator.py # ω₀ = √(k/m) + damping + ODE recovery
     lorenz.py              # Lorenz ODE recovery + chaos transition
-    runner.py              # Unified runner for all 7 domains
+    navier_stokes.py       # NS 2D viscous decay rate recovery
+    runner.py              # Unified runner for all 8 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -368,7 +380,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 176 tests across 12 files
+tests/unit/                # 198 tests across 14 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -381,6 +393,8 @@ tests/unit/                # 176 tests across 12 files
   test_harmonic_oscillator.py # 14 tests — Oscillator sim + rediscovery data
   test_cross_domain.py     # 12 tests — Analogy detection + similarity
   test_lorenz.py           # 20 tests — Lorenz sim, fixed points, Lyapunov
+  test_dream_debate.py     # 9 tests — Adversarial dream debate
+  test_navier_stokes.py    # 13 tests — NS 2D spectral solver
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
@@ -390,6 +404,7 @@ output/rediscovery/          # Rediscovery results (not committed to git)
   double_pendulum/results.json # Period T = 2π√(L/g) + energy
   harmonic_oscillator/results.json # ω₀ = √(k/m), c/(2m), SINDy ODE
   lorenz/results.json      # Lorenz ODEs, chaos transition, Lyapunov
+  navier_stokes/results.json # NS 2D viscous decay rate
 
 output/world_models/         # Trained RSSM checkpoints (not committed)
   projectile/model.eqx      # Recon MSE 0.38, dream MSE 0.61
@@ -405,6 +420,8 @@ scripts/
   run_exploration_demo.py    # Uncertainty exploration demo
   run_dream_discovery.py     # Dream-based discovery pipeline
   run_ablation_studies.py    # Systematic ablation studies
+  generate_paper_figures.py  # 8 publication-quality figures (all 7 domains)
+  build_7domain_notebook.py  # Builds 7-domain rediscovery notebook
 
 docs/
   RESEARCH.md              # Vision, universality argument (Section 4), contributions
@@ -413,6 +430,7 @@ docs/
 notebooks/
   demos/demo.ipynb           # Three-domain demo
   rediscovery_results.ipynb  # Flagship 5-domain notebook (43 cells, 14 figures)
+  seven_domain_rediscovery.ipynb # 7-domain notebook (35 cells)
   world_model_training.ipynb # RSSM training results
   cross_domain_analysis.ipynb # Cross-domain comparison
 ```
