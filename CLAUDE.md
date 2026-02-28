@@ -211,7 +211,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (376 passing, 15 skipped):
+# Full suite in WSL (396 passing, 15 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -412,6 +412,8 @@ src/simulating_anything/
     symbolic_regression.py # PySR wrapper (variable_names in fit())
     equation_discovery.py  # PySINDy wrapper (v2.1.0 API)
     ablation.py            # Single-factor ablation studies
+    pipeline_ablation.py   # Pipeline component ablation (sampling, method, data)
+    sensitivity.py         # Noise/data/range sensitivity analysis
     cross_domain.py        # Cross-domain analogy engine (17 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
   rediscovery/
@@ -452,7 +454,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 376 tests across 25 files
+tests/unit/                # 396 tests across 26 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines

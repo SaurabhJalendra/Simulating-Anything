@@ -362,7 +362,7 @@ For the harmonic oscillator, FFT-based frequency extraction achieves
 \subsection{World Model Training}
 \label{sec:world_model_results}
 
-We train RSSM world models on 7 of 14 domains using an RTX 5090 (32GB).
+We train RSSM world models on 12 of 14 domains using an RTX 5090 (32GB).
 Table~\ref{tab:world_models} shows training results with 50 epochs per domain.
 
 \begin{table}[h]
@@ -377,14 +377,55 @@ Lorenz & 3 & 32.15 & 134 \\
 Van der Pol & 2 & 32.01 & 136 \\
 Harmonic Oscillator & 2 & 32.02 & 145 \\
 SIR Epidemic & 3 & 32.01 & 136 \\
+Double Pendulum & 4 & 32.11 & 135 \\
+Projectile & 4 & 32.32 & 136 \\
+Brusselator & 2 & 32.02 & 135 \\
+FitzHugh-Nagumo & 2 & 32.01 & 136 \\
+Lotka-Volterra & 2 & 32.15 & 137 \\
+Kuramoto & 50 & 32.25 & 136 \\
+Heat Equation & 64 & 32.01 & 95 \\
+Logistic Map & 1 & 32.00 & 134 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-All domains converge to similar loss values ($\sim$32) within 50 epochs,
-demonstrating that the RSSM architecture generalizes across state dimensions
-and dynamics types without hyperparameter tuning. The symlog loss transformation
-ensures stable training across domains with different observation scales.
+All 12 domains converge to similar loss values ($32.0\pm0.2$) within
+50 epochs, demonstrating that the RSSM architecture generalizes across
+state dimensions ($d = 1$ to $d = 64$) and dynamics types
+(algebraic, linear/nonlinear/chaotic ODEs, collective dynamics,
+linear PDEs, discrete chaos) without hyperparameter tuning. The symlog loss transformation ensures stable
+training across domains with different observation scales. Training
+takes $\sim$136s per domain on an RTX 5090 (32GB).
+
+\subsection{Pipeline Ablation}
+\label{sec:ablation}
+
+We ablate three pipeline components to isolate their contributions:
+
+\paragraph{Sampling strategy.}
+On the projectile domain, all four strategies (grid, random uniform, clustered,
+edge-focused) achieve $R^2 = 1.0$ and recover the correct coefficient
+$c = 1/g = 0.10194$. Because the analytical form is simple (linear in
+$v_0^2 \sin 2\theta$), even biased sampling suffices. This changes for more
+complex equations---grid sampling is critical when the functional form is
+unknown.
+
+\paragraph{Analysis method.}
+For harmonic oscillator frequency recovery, FFT peak detection and
+zero-crossing analysis both achieve $R^2 > 0.9999$
+($\omega_{\text{FFT}} = 2.010$, $\omega_{\text{ZC}} = 1.990$, true $\omega_0 = 2.0$).
+Autocorrelation gives $R^2 = 0.999$ ($\omega = 2.053$).
+Critically, a degree-5 polynomial achieves $R^2 = 0.9999$ but has the
+\emph{wrong functional form}---it cannot extrapolate or reveal the
+underlying physics. This validates our use of physics-informed methods over
+generic curve fitting.
+
+\paragraph{Data quantity.}
+Lotka-Volterra equilibrium recovery requires $\geq$5000 time steps
+($R^2 = 0.994$) to converge within 10\% of the analytical equilibrium
+$(x^* = \gamma/\delta = 4.0, y^* = \alpha/\beta = 2.75)$.
+Short trajectories ($<$1000 steps) fail completely ($R^2 \approx 0$) because the
+system hasn't completed enough oscillation cycles.
 
 % ============================================================================
 % 6. DISCUSSION
