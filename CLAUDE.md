@@ -81,11 +81,13 @@ domains spanning 5 mathematical classes -- proving universality with concrete ev
 - **Lyapunov exponent:** 0.9155 at classic parameters (known: 0.9056, 1.1% error)
 - 3 fixed points verified, fine Lyapunov sweep with zero-crossing detection
 
-### Navier-Stokes 2D (PDE) -- IN PROGRESS
-- **Target:** Viscous decay rate λ = 2νk² for Taylor-Green vortex
+### Navier-Stokes 2D (PDE) -- REDISCOVERED
+- **Target:** Viscous decay rate λ = 2ν|k|² = 4ν for Taylor-Green vortex mode (1,1)
 - **Simulation:** Vorticity-streamfunction formulation, FFT Poisson solver, 2/3 dealiasing, RK4
-- Energy spectrum, enstrophy decay, and divergence-free velocity field verified
-- 13 simulation tests passing; PySR rediscovery pending
+- **Result (PySR):** Found `nu * 4.0` with R² = 1.0
+  - Coefficient 4.0 = 2|k|² where |k|² = kx² + ky² = 2 for mode (1,1)
+- Energy vs analytical: 4.8% mean relative error over 500 steps
+- 30 viscosity sweeps, correlation with theory = 1.0
 
 ---
 
