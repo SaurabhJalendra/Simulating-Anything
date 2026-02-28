@@ -4,11 +4,26 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simulating-anything"
-version = "0.1.0"
-description = "World models as a general-purpose scientific discovery engine"
+version = "0.2.0"
+description = "Domain-agnostic scientific discovery via world models and symbolic regression"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.11"
+authors = [
+    {name = "Saurabh Jalendra", email = "saurabh@users.noreply.github.com"},
+]
+keywords = [
+    "scientific-discovery", "symbolic-regression", "world-models",
+    "equation-discovery", "simulation", "PySR", "SINDy", "RSSM",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
 dependencies = [
     "numpy>=1.26",
     "pydantic>=2.0",
@@ -16,7 +31,16 @@ dependencies = [
     "pyarrow>=14.0",
     "pandas>=2.0",
     "matplotlib>=3.8",
+    "scipy>=1.12",
 ]
+
+[project.urls]
+Homepage = "https://github.com/SaurabhJalendra/Simulating-Anything"
+Repository = "https://github.com/SaurabhJalendra/Simulating-Anything"
+Issues = "https://github.com/SaurabhJalendra/Simulating-Anything/issues"
+
+[project.scripts]
+simulating-anything = "simulating_anything.__main__:main"
 
 [project.optional-dependencies]
 gpu = [
@@ -40,6 +64,9 @@ analysis = [
     "pysr>=1.0",
     "pysindy>=2.0",
     "scikit-learn>=1.4",
+]
+viz = [
+    "networkx>=3.0",
 ]
 dev = [
     "pytest>=8.0",

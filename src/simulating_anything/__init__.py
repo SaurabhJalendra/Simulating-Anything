@@ -1,6 +1,6 @@
-"""Simulating Anything: World models as a general-purpose scientific discovery engine."""
+"""Simulating Anything: Domain-agnostic scientific discovery via world models and symbolic regression."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 from simulating_anything.pipeline import Pipeline
 
