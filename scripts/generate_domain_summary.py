@@ -98,9 +98,9 @@ DOMAINS = [
         "math_class": "ODE (collective)",
         "dim": "N phases",
         "method": "PySR",
-        "target": r"$K_c = 4/\pi$",
-        "best_r2": None,
-        "status": "In Progress",
+        "target": r"$r(K)$ sync transition",
+        "best_r2": 0.9695,
+        "status": "Rediscovered",
     },
     {
         "name": "Brusselator",
@@ -108,17 +108,17 @@ DOMAINS = [
         "dim": 2,
         "method": "PySR + SINDy",
         "target": r"$b_c = 1 + a^2$",
-        "best_r2": None,
-        "status": "In Progress",
+        "best_r2": 0.9964,
+        "status": "Rediscovered",
     },
     {
         "name": "FitzHugh-Nagumo",
         "math_class": "ODE (nonlinear)",
         "dim": 2,
-        "method": "PySR + SINDy",
-        "target": "f-I curve",
-        "best_r2": None,
-        "status": "In Progress",
+        "method": "SINDy",
+        "target": "Full ODE system",
+        "best_r2": 0.99999999,
+        "status": "Rediscovered",
     },
     {
         "name": "Heat Equation 1D",
@@ -126,17 +126,17 @@ DOMAINS = [
         "dim": "N points",
         "method": "PySR",
         "target": r"$\lambda_k = Dk^2$",
-        "best_r2": None,
-        "status": "In Progress",
+        "best_r2": 1.0,
+        "status": "Rediscovered",
     },
     {
         "name": "Logistic Map",
         "math_class": "Discrete chaos",
         "dim": 1,
         "method": "PySR",
-        "target": r"$\delta \approx 4.669$",
-        "best_r2": None,
-        "status": "In Progress",
+        "target": r"$\lambda(r)$ Lyapunov",
+        "best_r2": 0.6287,
+        "status": "Analyzed",
     },
 ]
 
@@ -234,7 +234,7 @@ def generate_r2_barplot(output_dir: str = "output/figures"):
     ax.set_xticks(range(len(names)))
     ax.set_xticklabels(names, rotation=45, ha="right", fontsize=10)
     ax.set_ylabel("Best R²", fontsize=12)
-    ax.set_title("Rediscovery Performance: Best R² Across 9 Completed Domains",
+    ax.set_title("Rediscovery Performance: Best R² Across 14 Domains",
                  fontsize=14, fontweight="bold")
     ax.set_ylim(0.97, 1.002)
     ax.axhline(y=1.0, color="gray", linestyle="--", alpha=0.3)

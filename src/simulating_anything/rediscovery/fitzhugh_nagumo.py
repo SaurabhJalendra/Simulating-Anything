@@ -156,7 +156,7 @@ def run_fitzhugh_nagumo_rediscovery(
                 logger.info("  Running PySR: freq = f(I)...")
                 discoveries = run_symbolic_regression(
                     X, y,
-                    variable_names=["I"],
+                    variable_names=["I_ext"],
                     n_iterations=n_iterations,
                     binary_operators=["+", "-", "*", "/"],
                     unary_operators=["sqrt", "square"],
