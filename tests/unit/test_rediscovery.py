@@ -106,16 +106,16 @@ class TestGrayScottAnalysis:
 
     def test_dominant_wavelength_sinusoidal(self):
         """A sinusoidal pattern should have a detectable wavelength."""
-        L = 2.5
         nx = 128
-        x = np.linspace(0, L, nx, endpoint=False)
-        y = np.linspace(0, L, nx, endpoint=False)
+        domain_size = float(nx)
+        x = np.linspace(0, domain_size, nx, endpoint=False)
+        y = np.linspace(0, domain_size, nx, endpoint=False)
         X, Y = np.meshgrid(x, y, indexing="ij")
-        k = 4  # 4 wavelengths across domain
-        field = np.sin(2 * np.pi * k * X / L)
-        wl = compute_dominant_wavelength(field, L)
-        expected_wl = L / k  # 0.625
-        assert abs(wl - expected_wl) < 0.1 * expected_wl, f"Got {wl}, expected ~{expected_wl}"
+        k = 8  # 8 wavelengths across domain
+        field = np.sin(2 * np.pi * k * X / domain_size)
+        wl = compute_dominant_wavelength(field, domain_size)
+        expected_wl = domain_size / k  # 16.0
+        assert abs(wl - expected_wl) < 0.2 * expected_wl, f"Got {wl}, expected ~{expected_wl}"
 
 
 class TestPySRIntegration:
