@@ -160,7 +160,31 @@ def build_domain_signatures() -> list[DomainSignature]:
             symmetries=["rotation", "translation", "Galilean_invariance"],
             phase_portrait_type="fixed_point",  # Decaying flow converges to rest
             characteristic_timescale="1/(nu*k^2)",
-            discovered_equations=["decay_rate = 2*nu*k^2"],
+            discovered_equations=["decay_rate = 4*nu"],
+            r_squared=[1.0],
+        ),
+        DomainSignature(
+            name="van_der_pol",
+            math_type="ode_nonlinear",
+            state_dim=2,  # x, v
+            n_parameters=1,  # mu
+            conserved_quantities=[],
+            symmetries=["time_translation"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="2*pi (small mu), mu (large mu)",
+            discovered_equations=["x'' - mu*(1-x^2)*x' + x = 0"],
+            r_squared=[],  # To be filled after rediscovery
+        ),
+        DomainSignature(
+            name="kuramoto",
+            math_type="ode_nonlinear",
+            state_dim=50,  # N oscillator phases
+            n_parameters=2,  # K, omega_std
+            conserved_quantities=[],
+            symmetries=["phase_shift", "permutation"],
+            phase_portrait_type="fixed_point",  # Synchronized state
+            characteristic_timescale="1/K",
+            discovered_equations=["K_c = 4*omega_std/pi"],
             r_squared=[],  # To be filled after rediscovery
         ),
     ]
@@ -254,7 +278,26 @@ def detect_structural_analogies(
         },
     ))
 
-    # Analogy 5: Lorenz <-> Double Pendulum (both chaotic nonlinear ODEs)
+    # Analogy 5: Van der Pol <-> Lotka-Volterra (both have limit cycles)
+    analogies.append(Analogy(
+        domain_a="van_der_pol",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "Both are nonlinear ODE systems with stable limit cycles. "
+            "Van der Pol has a single limit cycle in the x-v phase plane. "
+            "Lotka-Volterra has closed orbits in the prey-predator plane. "
+            "Both feature nonlinear self-regulation (VdP: x^2 damping, LV: predation)."
+        ),
+        strength=0.75,
+        mapping={
+            "x (displacement)": "prey population",
+            "v (velocity)": "predator population",
+            "mu*(1-x^2) [nonlinear damping]": "beta*prey*pred [nonlinear coupling]",
+        },
+    ))
+
+    # Analogy 6: Lorenz <-> Double Pendulum (both chaotic nonlinear ODEs)
     analogies.append(Analogy(
         domain_a="lorenz",
         domain_b="double_pendulum",
@@ -386,6 +429,45 @@ def detect_topological_analogies(
             "butterfly attractor (2 lobes)": "chaotic orbit in (theta1, theta2, omega1, omega2)",
             "rho > rho_c (chaos onset)": "E > E_c (chaos onset)",
             "Lyapunov ~ 0.9": "Lyapunov > 0",
+        },
+    ))
+
+    # Van der Pol <-> Harmonic Oscillator (same phase plane topology)
+    analogies.append(Analogy(
+        domain_a="van_der_pol",
+        domain_b="harmonic_oscillator",
+        analogy_type="topological",
+        description=(
+            "Both are second-order oscillators in the x-v phase plane. "
+            "Harmonic oscillator: elliptical orbits (center). "
+            "Van der Pol: limit cycle with spiral approach. "
+            "VdP reduces to harmonic oscillator as mu -> 0."
+        ),
+        strength=0.85,
+        mapping={
+            "limit cycle": "center (undamped)",
+            "mu=0 (harmonic limit)": "c=0 (undamped)",
+            "spiral in/out": "ellipse",
+        },
+    ))
+
+    # Kuramoto <-> SIR (threshold/phase transition)
+    analogies.append(Analogy(
+        domain_a="kuramoto",
+        domain_b="sir_epidemic",
+        analogy_type="topological",
+        description=(
+            "Both exhibit a critical threshold transition. "
+            "Kuramoto: K > K_c triggers synchronization (r jumps from 0). "
+            "SIR: R0 > 1 triggers epidemic outbreak (I grows). "
+            "Below threshold: stable incoherent/disease-free state. "
+            "Above threshold: collective synchronized/epidemic behavior."
+        ),
+        strength=0.7,
+        mapping={
+            "K (coupling)": "R0 = beta/gamma",
+            "K_c (critical coupling)": "R0 = 1 (epidemic threshold)",
+            "r (order parameter)": "I_peak (infected peak)",
         },
     ))
 

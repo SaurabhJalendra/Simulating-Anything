@@ -34,7 +34,7 @@ def run_all_rediscoveries(
     Args:
         output_dir: Base output directory.
         pysr_iterations: Number of PySR iterations per run.
-        domains: Which domains to run (default: all eight).
+        domains: Which domains to run (default: all ten).
 
     Returns:
         Combined results dict with all discoveries.
@@ -53,6 +53,8 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
     from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
     from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
+    from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
+    from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -97,6 +99,16 @@ def run_all_rediscoveries(
         "navier_stokes": {
             "label": "Navier-Stokes 2D Viscous Decay",
             "fn": run_navier_stokes_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "van_der_pol": {
+            "label": "Van der Pol Oscillator Limit Cycle",
+            "fn": run_van_der_pol_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "kuramoto": {
+            "label": "Kuramoto Synchronization Transition",
+            "fn": run_kuramoto_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
