@@ -34,7 +34,7 @@ def run_all_rediscoveries(
     Args:
         output_dir: Base output directory.
         pysr_iterations: Number of PySR iterations per run.
-        domains: Which domains to run (default: all ten).
+        domains: Which domains to run (default: all twelve).
 
     Returns:
         Combined results dict with all discoveries.
@@ -55,6 +55,8 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
     from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
     from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
+    from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+    from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -109,6 +111,16 @@ def run_all_rediscoveries(
         "kuramoto": {
             "label": "Kuramoto Synchronization Transition",
             "fn": run_kuramoto_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "brusselator": {
+            "label": "Brusselator Hopf Bifurcation",
+            "fn": run_brusselator_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "fitzhugh_nagumo": {
+            "label": "FitzHugh-Nagumo f-I Curve",
+            "fn": run_fitzhugh_nagumo_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

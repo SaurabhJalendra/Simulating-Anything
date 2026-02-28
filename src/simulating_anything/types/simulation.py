@@ -20,6 +20,8 @@ class Domain(str, Enum):
     NAVIER_STOKES_2D = "navier_stokes_2d"
     VAN_DER_POL = "van_der_pol"
     KURAMOTO = "kuramoto"
+    BRUSSELATOR = "brusselator"
+    FITZHUGH_NAGUMO = "fitzhugh_nagumo"
 
 
 class SimulationBackend(str, Enum):
