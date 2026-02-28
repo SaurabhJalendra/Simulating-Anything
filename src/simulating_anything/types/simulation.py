@@ -13,6 +13,8 @@ class Domain(str, Enum):
     REACTION_DIFFUSION = "reaction_diffusion"
     RIGID_BODY = "rigid_body"
     AGENT_BASED = "agent_based"
+    EPIDEMIOLOGICAL = "epidemiological"
+    CHAOTIC_ODE = "chaotic_ode"
 
 
 class SimulationBackend(str, Enum):
