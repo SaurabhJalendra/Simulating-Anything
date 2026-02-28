@@ -26,8 +26,8 @@ capability.
 
 ## 2. What We're Trying to Prove (Rediscovery Targets)
 
-Success means the system autonomously rediscovers known physics across 3
-unrelated domains -- proving the universality claim with concrete evidence.
+Success means the system autonomously rediscovers known physics across 5
+domains spanning 4 mathematical classes -- proving universality with concrete evidence.
 
 ### Projectile (rigid body) -- REDISCOVERED
 - **Target:** Recover R = v²sin(2θ)/g from simulation data via PySR
@@ -49,6 +49,20 @@ unrelated domains -- proving the universality claim with concrete evidence.
 - 35 Turing instability boundary points mapped in (f, k) space
 - Wavelength scaling: correlation with √(D_v) = 0.927
 - PySR wavelength equation R² = 0.985 from 9 D_v variation data points
+
+### SIR Epidemic (epidemiological) -- REDISCOVERED
+- **Target:** Recover R0 = β/γ and SIR ODEs from simulation data
+- **Result (PySR):** Found `b_/g_` (β/γ, R²=1.0) for basic reproduction number
+- **Result (SINDy):** Recovered `dR/dt = 0.100*I` exactly (true γ=0.1)
+- 200 parameter sweeps covering R0 range [0.33, 40]
+- Final epidemic size and peak infected relationships captured
+
+### Double Pendulum (chaotic ODE) -- REDISCOVERED
+- **Target:** Energy conservation and small-angle period T = 2π√(L/g)
+- **Result:** Energy conservation verified: drift < 1e-7 over 10,000 RK4 steps
+- **Result (PySR):** Found `sqrt(L * 4.0298)` with R² = 0.999993
+  - Constant 4.0298 matches 4π²/g = 4.0254 (0.1% error)
+- 50 energy trajectories, 100 period measurements across L1 range [0.3, 3.0]
 
 ---
 
@@ -111,7 +125,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (113 passing, 0 skipped):
+# Full suite in WSL (131 passing, 0 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -235,6 +249,12 @@ These are things that broke in previous sessions. Do not repeat them:
 ### V2 (Near-term)
 - ~~Install Julia + PySR for symbolic regression~~ DONE
 - ~~Demonstrate 3 rediscoveries~~ DONE (projectile R²=0.9999, LV R²=1.0, GS boundary+scaling)
+- ~~Add SIR epidemic domain~~ DONE (R0 = β/γ, R²=1.0)
+- ~~Add double pendulum domain~~ DONE (T = 2π√(L/g), R²=0.999993)
+- ~~Train RSSM world models on all 3 V1 domains~~ DONE
+- Uncertainty-driven exploration demo
+- Dream-based discovery pipeline (compare dreamed vs simulated discoveries)
+- Ablation studies (data amount, PySR iterations, noise robustness)
 - Add more JAX-native domains: molecular dynamics (JAX-MD), robotics (Brax)
 - Adversarial Dream Debate: two world models validating each other
 - Cross-Domain Analogy Engine: detect mathematical isomorphisms
@@ -274,6 +294,8 @@ src/simulating_anything/
     reaction_diffusion.py  # Gray-Scott (JAX finite differences)
     rigid_body.py          # Projectile (symplectic Euler + drag)
     agent_based.py         # Lotka-Volterra (RK4 + diffrax batch)
+    epidemiological.py     # SIR epidemic model (RK4)
+    chaotic_ode.py         # Double pendulum (Lagrangian + RK4)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -291,7 +313,9 @@ src/simulating_anything/
     projectile.py          # Range equation R=v²sin(2θ)/g recovery
     lotka_volterra.py      # Equilibrium + ODE recovery via PySR/SINDy
     gray_scott.py          # Phase diagram + wavelength scaling analysis
-    runner.py              # Unified runner for all domains
+    sir_epidemic.py        # R0 = β/γ + SIR ODE recovery
+    double_pendulum.py     # Period T = 2π√(L/g) + energy conservation
+    runner.py              # Unified runner for all 5 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -313,23 +337,45 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 113 tests across 7 files
+tests/unit/                # 131 tests across 8 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
-  test_simulation.py       # 14 tests — All 3 simulation engines
+  test_simulation.py       # 14 tests — 3 V1 simulation engines
   test_world_model.py      # 11 tests — RSSM shapes, gradients
   test_agents.py           # 11 tests — Backend, classifier, communicator
   test_pipeline.py         # 20 tests — Verification, stores, exploration
   test_rediscovery.py      # 15 tests — Data gen, PySR, PySINDy integration
+  test_new_domains.py      # 18 tests — SIR epidemic + double pendulum
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
   lotka_volterra/results.json # Equilibrium + ODE equations recovered
   gray_scott/results.json    # Phase diagram + wavelength scaling
+  sir_epidemic/results.json  # R0 = β/γ + SIR ODEs
+  double_pendulum/results.json # Period T = 2π√(L/g) + energy
+
+output/world_models/         # Trained RSSM checkpoints (not committed)
+  projectile/model.eqx      # Recon MSE 0.38, dream MSE 0.61
+  lotka_volterra/model.eqx   # Recon MSE 0.39, dream MSE 0.22
+  gray_scott/model.eqx       # Recon MSE 0.06, dream MSE 0.10
+
+scripts/
+  generate_figures.py        # 14 publication-quality figures
+  build_notebook.py          # Builds flagship rediscovery notebook
+  train_world_models.py      # RSSM training on all domains (WSL)
+  build_wm_notebook.py       # World model training notebook
+  build_crossdomain_notebook.py # Cross-domain analysis notebook
+  run_exploration_demo.py    # Uncertainty exploration demo
+  run_dream_discovery.py     # Dream-based discovery pipeline
+  run_ablation_studies.py    # Systematic ablation studies
 
 docs/
   RESEARCH.md              # Vision, universality argument (Section 4), contributions
   DESIGN.md                # Architecture, domain expansion (Section 11), evaluation
 
-notebooks/demos/demo.ipynb # Three-domain demo
+notebooks/
+  demos/demo.ipynb           # Three-domain demo
+  rediscovery_results.ipynb  # Flagship 5-domain notebook (43 cells, 14 figures)
+  world_model_training.ipynb # RSSM training results
+  cross_domain_analysis.ipynb # Cross-domain comparison
 ```
