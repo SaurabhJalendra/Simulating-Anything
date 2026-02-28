@@ -1,193 +1,199 @@
 # Simulating Anything
 
-**World Models as a General-Purpose Scientific Discovery Engine**
+**Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
-Given **any** problem -- from reaction-diffusion chemistry to self-driving cars
-to protein folding to climate modeling -- build a custom simulation, train a
-world model on it, dream through millions of scenarios, and surface optimal
-solutions, governing equations, phase boundaries, and scaling laws that humans
-might never find.
-
-**The core insight:** any real-world phenomenon is a dynamical system; any
-dynamical system can be simulated; any simulation can train a world model; and
-discoveries from world models transfer back to the real world. The architecture
-is domain-agnostic. Only the simulation backend changes per domain.
+A multi-agent pipeline that autonomously rediscovers known physical laws from
+simulation data across **14 domains** spanning **8 mathematical classes**.
+Given a natural language description of any phenomenon, the system builds a
+simulation, trains an RSSM world model, explores the parameter space, and
+extracts human-interpretable equations using PySR and SINDy.
 
 ---
 
-## Core Pipeline
+## Results: 14-Domain Rediscovery
 
-```
-Problem Definition (natural language)
-       |
-       v
-Simulation Environment Construction (auto-generated JAX code)
-       |
-       v
-World Model Training (physics backbone + neural residual)
-       |
-       v
-Dreaming / Exploration (uncertainty-driven)
-       |
-       v
-Pattern Discovery & Insight Extraction (PySR, SINDy)
-       |
-       v
-Validation (ground-truth checks, conservation laws)
-       |
-       v
-Human-Readable Scientific Report
-```
+**11 of 14 domains achieve R² >= 0.999. Mean R² = 0.970 across all domains.**
 
-## Key Principles
+| # | Domain | Math Class | Method | R² | Key Discovery |
+|---|--------|------------|--------|-----|---------------|
+| 1 | Projectile | Algebraic | PySR | **1.0000** | R = v₀² · 0.1019 · sin(2θ) -- 0.1019 ≈ 1/g |
+| 2 | Lotka-Volterra | Nonlinear ODE | SINDy | **1.0000** | Exact ODE coefficients recovered |
+| 3 | Gray-Scott | PDE | PySR | 0.9851 | Wavelength scaling λ ~ √D_v |
+| 4 | SIR Epidemic | Nonlinear ODE | PySR+SINDy | **1.0000** | R₀ = β/γ threshold + ODEs |
+| 5 | Double Pendulum | Chaotic ODE | PySR | **0.9999** | T = √(4.03·L) ≈ 2π√(L/g) |
+| 6 | Harmonic Oscillator | Linear ODE | PySR+SINDy | **1.0000** | ω₀ = √(k/m), damping = c/(2m) |
+| 7 | Lorenz Attractor | Chaotic ODE | SINDy | **0.9999** | All 3 equations: σ=9.98, ρ=27.8, β=2.66 |
+| 8 | Navier-Stokes 2D | PDE | PySR | **1.0000** | Decay rate = 4ν (= 2ν\|k\|² for mode (1,1)) |
+| 9 | Van der Pol | Nonlinear ODE | PySR | **0.9999** | Period T(μ), amplitude A = 2.01 |
+| 10 | Kuramoto | Collective ODE | PySR | 0.9695 | Sync transition r(K) |
+| 11 | Brusselator | Nonlinear ODE | PySR+SINDy | 0.9964 | Hopf threshold b_c ≈ a² + 0.91 |
+| 12 | FitzHugh-Nagumo | Nonlinear ODE | SINDy | **1.0000** | Exact ODE: dv/dt = 0.5 + v - w - v³/3 |
+| 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ = D (exact spectral) |
+| 14 | Logistic Map | Discrete Chaos | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(2) |
 
-- **Multi-agent architecture**: 8 specialized agents (V1), each owning one step
-- **Verification-first**: Every discovery validated before reporting
-- **Progressive fidelity**: Start simple, escalate only as needed
-- **Physics-grounded**: Conservation laws enforced as hard constraints
-- **LLM as conductor**: Agents orchestrate specialized tools -- never do math
+**Cross-domain analysis:** 17 mathematical isomorphisms detected across 14 domains
+(structural, dimensional, and topological analogies).
 
-## Why "Any" Problem?
-
-The system is not limited to specific domains. The architecture is genuinely
-universal:
-
-| Component | Domain-Specific? | What It Sees |
-|-----------|-----------------|-------------|
-| Problem Architect (LLM) | No | Natural language -- any domain |
-| Domain Classifier | No | Routing only -- keywords |
-| World Model (RSSM) | No | Tensors evolving over time -- any state sequence |
-| Explorer | No | Parameter ranges and uncertainty scores |
-| Analyst (PySR/SINDy) | No | Numerical arrays -- fits equations to any data |
-| Communicator | No | Equations, plots, text |
-| **Simulation Environment** | **Yes** | **This is the only component that changes** |
-
-Adding a new domain = writing one `SimulationEnvironment` subclass (~50-200
-lines). The rest of the pipeline works unchanged. See
-[RESEARCH.md Section 4](docs/RESEARCH.md#4-the-universality-argument) for the
-full universality argument.
-
-### Domains the System Can Address
-
-| Category | Example Domains |
-|----------|----------------|
-| **Physical sciences** | Fluid dynamics, structural mechanics, thermodynamics, electromagnetics, plasma physics, quantum systems, acoustics |
-| **Robotics & autonomous systems** | Robotic manipulation, legged locomotion, self-driving cars, drones, swarm robotics |
-| **Life sciences** | Protein dynamics, drug interactions, gene networks, epidemiology, ecology, neuroscience |
-| **Earth & climate** | Weather prediction, climate modeling, ocean dynamics, seismology, hydrology |
-| **Social sciences & economics** | Financial markets, urban traffic, supply chains, social dynamics, energy systems |
-| **Materials science** | Molecular dynamics, crystal growth, battery chemistry, polymer dynamics, catalysis |
-
-For each domain, the system discovers governing equations, phase boundaries,
-scaling laws, and optimal strategies -- not by being told the physics, but by
-learning from simulation data.
-
-## V1 Scope
-
-V1 proves the pipeline on three domains. This is a scope decision, not an
-architectural limitation:
-
-| Domain | Backend | Validation |
-|--------|---------|-----------|
-| Reaction-Diffusion | PhiFlow / JAX | Turing instability, wavelength selection |
-| Rigid-Body Mechanics | Brax / MJX | Projectile range, pendulum period |
-| Agent-Based / Population | Custom JAX + diffrax | Lotka-Volterra, SIR R0 |
+---
 
 ## Architecture
 
 ```
-Problem Architect --> Domain Classifier --> Simulation Builder
-                                                    |
-                                                    v
-                                           Simulation Validator
-                                                    |
-                                                    v
-                                           World Model Trainer (RSSM)
-                                                    |
-                                                    v
-                                           Explorer (uncertainty-driven)
-                                                    |
-                                                    v
-                                           Analyst (PySR + SINDy)
-                                                    |
-                                                    v
-                                           Communication Agent --> Report
+Natural Language Query
+       |
+       v
+[Problem Architect] --> [Domain Classifier] --> [Simulation Builder]
+       (LLM)               (Rules + LLM)           (LLM)
+                                                      |
+                                                      v
+                                              [Ground-Truth Simulation]
+                                              (Domain-specific, ~50-200 lines)
+                                                      |
+                                                      v
+                                              [Exploration (RSSM World Model)]
+                                              (Uncertainty-driven, domain-agnostic)
+                                                      |
+                                                      v
+                                              [Analysis (PySR + SINDy)]
+                                              (Symbolic regression, domain-agnostic)
+                                                      |
+                                                      v
+                                              [Communication Agent]
+                                              (LLM --> Markdown Report)
 ```
 
-## Three-Tier Simulation Hierarchy
+**Only the Simulation Environment is domain-specific.** Everything else
+operates on generic numpy arrays. Adding a new domain requires implementing
+one Python class with ~50-200 lines of dynamics code. See
+[simulation/template.py](src/simulating_anything/simulation/template.py) for
+a working example (Duffing oscillator in 54 lines).
 
-| Tier | Engine | Speed | Use |
-|------|--------|-------|-----|
-| 1 | Neural Surrogate (RSSM) | ~1ms/step | Exploration |
-| 2 | Differentiable Sim (JAX) | ~100ms/step | Training + Validation |
-| 3 | Full-Fidelity Solver | ~10s/step | V2 |
+---
 
-## Documentation
+## Quick Start
 
-| Document | Description |
-|----------|-------------|
-| [Research](docs/RESEARCH.md) | Vision, motivation, research landscape, novel contributions, positioning |
-| [Design](docs/DESIGN.md) | Architecture, V1 scope, tech stack, roadmap, evaluation |
+### Install
+
+```bash
+# In WSL2 (required for GPU/JAX):
+cd /mnt/d/'Git Repos'/Simulating-Anything
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+pip install "jax[cuda12]" equinox optax diffrax pandas
+```
+
+### Run Tests
+
+```bash
+# All 284 tests:
+python -m pytest tests/unit/ -v
+
+# Quick smoke test:
+python -m pytest tests/unit/test_simulation.py -v
+```
+
+### Run Rediscoveries
+
+```python
+# In WSL (requires Julia + PySR):
+from simulating_anything.rediscovery.runner import run_all_rediscoveries
+results = run_all_rediscoveries(pysr_iterations=50)
+```
+
+### Generate Paper Figures
+
+```bash
+# Generates 18 publication-quality figures (300dpi PNG + PDF):
+python scripts/generate_paper_figures_14domain.py
+
+# Aggregate results across all 14 domains:
+python scripts/aggregate_results.py
+```
+
+### Train World Models
+
+```bash
+# In WSL (GPU required):
+python scripts/train_world_models_14domain.py --domain lorenz --epochs 100
+```
+
+---
+
+## Project Structure
+
+```
+src/simulating_anything/
+  pipeline.py              # 7-stage orchestrator
+  simulation/
+    base.py                # SimulationEnvironment ABC
+    template.py            # Template + Duffing example (54 lines)
+    rigid_body.py          # Projectile
+    agent_based.py         # Lotka-Volterra
+    reaction_diffusion.py  # Gray-Scott (JAX)
+    epidemiological.py     # SIR
+    chaotic_ode.py         # Double pendulum
+    harmonic_oscillator.py # Damped harmonic oscillator
+    lorenz.py              # Lorenz attractor
+    navier_stokes.py       # 2D spectral solver
+    van_der_pol.py         # Relaxation oscillator
+    kuramoto.py            # Coupled oscillators
+    brusselator.py         # Chemical oscillator
+    fitzhugh_nagumo.py     # Neural excitable
+    heat_equation.py       # 1D spectral diffusion
+    logistic_map.py        # Discrete chaos
+  world_model/             # RSSM (Equinox), 1536 latent dims
+  analysis/
+    symbolic_regression.py # PySR wrapper
+    equation_discovery.py  # SINDy wrapper
+    cross_domain.py        # 14-domain analogy engine
+    baseline_comparison.py # Benchmark vs baselines
+  rediscovery/             # Per-domain PySR/SINDy runners
+  agents/                  # LLM agents (Claude Code CLI)
+
+paper/
+  main.tex                 # Workshop paper draft
+
+scripts/
+  generate_paper_figures_14domain.py  # 18 publication figures
+  build_14domain_notebook.py          # 48-cell Jupyter notebook
+  aggregate_results.py                # Results aggregation
+  generate_latex_table.py             # LaTeX results table
+  train_world_models_14domain.py      # RSSM training (14 domains)
+
+tests/unit/                # 284 tests, 21 files
+notebooks/                 # Interactive demos
+```
+
+---
+
+## Key Metrics
+
+| Metric | Value |
+|--------|-------|
+| Domains | 14 |
+| Mathematical classes | 8 |
+| Tests | 284 passing, 14 skipped |
+| Domains with R² >= 0.999 | 11/14 |
+| Mean R² | 0.970 |
+| Cross-domain analogies | 17 |
+| Publication figures | 18 |
+| Lines per new domain | ~50-200 |
 
 ## Technology Stack
 
 ```
-Core:          Python 3.11 | JAX | Equinox | Optax | diffrax
-Simulation:    PhiFlow | Brax/MJX | Custom JAX
-World Model:   DreamerV3-style RSSM (JAX + Equinox)
-Discovery:     PySR | PySINDy | HDBSCAN
-LLM:           Claude Code CLI (subprocess)
-Data:          Pydantic | PyArrow (Parquet) | YAML | Matplotlib
+Core:       Python 3.12 | JAX | Equinox | Optax | diffrax
+Simulation: Custom JAX + NumPy (domain-specific)
+World Model: RSSM (DreamerV3-style, Equinox)
+Discovery:  PySR 1.5.9 (Julia) | PySINDy 2.1.0
+LLM:        Claude Code CLI (subprocess)
+GPU:        RTX 5090 32GB via WSL2
 ```
 
-## Novel Contributions
+## Paper
 
-1. **Domain-Agnostic Discovery Architecture** -- one pipeline for any simulatable phenomenon
-2. **Adversarial Dream Debate** -- competing world models resolve discoveries
-3. **Cross-Domain Analogy Engine** -- isomorphic structures across fields
-4. **FunSearch-Style Program Discovery** -- evolving verifiable solutions
-5. **Dream Journaling** -- mining trajectories for recurring patterns
-6. **Socratic Discovery Mode** -- bidirectional human-AI exploration
-7. **Composable Dynamics Modules** -- reusable physics building blocks
-8. **Uncertainty-Driven Exploration** -- Bayesian exploration at knowledge boundaries
-9. **Automated Ablation Studies** -- causal isolation of discovery factors
-10. **Progressive Trust Architecture** -- reliability tracking across components
-
-## Concrete Example: Self-Driving Cars
-
-To illustrate the universality, consider autonomous vehicles:
-
-1. **Simulation**: CARLA/SUMO models vehicle dynamics, traffic, weather, sensors
-2. **World Model**: RSSM trains on (vehicle_state, traffic_state, action, next_state) trajectories
-3. **System Discovers**:
-   - Braking distance equations as f(speed, surface, tire_condition, mass)
-   - Traffic flow phase transitions (free flow -> congestion thresholds)
-   - Collision probability boundaries in (speed, distance, reaction_time) space
-   - Fuel-optimal speed profiles for given route/traffic patterns
-   - Sensor degradation scaling laws vs rain/fog/sun angle
-
-These are scientific discoveries about driving physics -- not a driving policy,
-but the understanding that informs better policies, testing, and safety analysis.
-
-## Rediscovery Results
-
-The system has autonomously rediscovered known scientific laws across all three
-V1 domains, using the same pipeline infrastructure:
-
-| Domain | Target Law | Discovered | R² |
-|--------|-----------|-----------|-----|
-| Projectile | R = v²sin(2θ)/g | `v0² × 0.1019 × sin(2θ)` | 0.9999 |
-| Lotka-Volterra (equilibrium) | prey* = γ/δ | `g_/d_` | 0.9999 |
-| Lotka-Volterra (equilibrium) | pred* = α/β | `a_/b_` | 0.9999 |
-| Lotka-Volterra (ODE) | d(prey)/dt = αx - βxy | `1.100 prey - 0.400 prey·pred` | 1.0 |
-| Lotka-Volterra (ODE) | d(pred)/dt = δxy - γy | `0.100 prey·pred - 0.400 pred` | 1.0 |
-| Gray-Scott (phase diagram) | Turing boundary | 35 boundary points, 4 pattern types | -- |
-| Gray-Scott (wavelength) | λ ~ √D_v | correlation = 0.927 | 0.985 |
-
-## Status
-
-V1 implementation complete with three-domain rediscovery demonstrated.
-113 tests passing. Full pipeline runs end-to-end in ~6.5 minutes on RTX 5090.
+Workshop paper targeting AI4Science at NeurIPS/ICML/ICLR. See `paper/main.tex`.
 
 ## License
 
