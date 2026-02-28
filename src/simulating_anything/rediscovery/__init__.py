@@ -10,6 +10,8 @@ from simulating_anything.rediscovery.double_pendulum import run_double_pendulum_
 from simulating_anything.rediscovery.harmonic_oscillator import run_harmonic_oscillator_rediscovery
 from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
 from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
+from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
+from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
 
 __all__ = [
     "run_projectile_rediscovery",
@@ -20,4 +22,6 @@ __all__ = [
     "run_harmonic_oscillator_rediscovery",
     "run_lorenz_rediscovery",
     "run_navier_stokes_rediscovery",
+    "run_van_der_pol_rediscovery",
+    "run_kuramoto_rediscovery",
 ]

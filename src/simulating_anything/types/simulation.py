@@ -18,6 +18,8 @@ class Domain(str, Enum):
     HARMONIC_OSCILLATOR = "harmonic_oscillator"
     LORENZ_ATTRACTOR = "lorenz_attractor"
     NAVIER_STOKES_2D = "navier_stokes_2d"
+    VAN_DER_POL = "van_der_pol"
+    KURAMOTO = "kuramoto"
 
 
 class SimulationBackend(str, Enum):
