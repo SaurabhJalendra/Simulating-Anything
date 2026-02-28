@@ -133,6 +133,22 @@ def build_domain_signatures() -> list[DomainSignature]:
             phase_portrait_type="limit_cycle",  # Undamped: center; damped: spiral
             characteristic_timescale="sqrt(m/k)",
             discovered_equations=["omega_0 = sqrt(k/m)", "decay = c/(2m)"],
+            r_squared=[1.0, 1.0],
+        ),
+        DomainSignature(
+            name="lorenz",
+            math_type="chaotic",
+            state_dim=3,  # x, y, z
+            n_parameters=3,  # sigma, rho, beta
+            conserved_quantities=[],
+            symmetries=["rotation_symmetry_z_axis"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/sigma",
+            discovered_equations=[
+                "dx/dt = sigma*(y-x)",
+                "dy/dt = x*(rho-z) - y",
+                "dz/dt = x*y - beta*z",
+            ],
             r_squared=[],  # To be filled after rediscovery
         ),
     ]
@@ -204,6 +220,26 @@ def detect_structural_analogies(
             "m*g*h (gravitational PE)": "0.5*k*x^2 (elastic PE)",
             "0.5*m*v^2 (KE)": "0.5*m*v^2 (KE)",
             "g (gravity)": "k/m (spring constant ratio)",
+        },
+    ))
+
+    # Analogy 4: Lorenz <-> Double Pendulum (both chaotic nonlinear ODEs)
+    analogies.append(Analogy(
+        domain_a="lorenz",
+        domain_b="double_pendulum",
+        analogy_type="structural",
+        description=(
+            "Both are chaotic nonlinear ODE systems with sensitive dependence "
+            "on initial conditions and positive Lyapunov exponents. "
+            "Lorenz: 3D flow with quadratic nonlinearity (x*y, x*z terms). "
+            "Double pendulum: 4D flow with trigonometric nonlinearity. "
+            "Both exhibit strange attractors in phase space."
+        ),
+        strength=0.75,
+        mapping={
+            "sigma*(y-x) [linear coupling]": "omega1 coupling",
+            "x*z, x*y [quadratic nonlinearity]": "sin(theta) [trig nonlinearity]",
+            "rho [bifurcation parameter]": "energy [bifurcation parameter]",
         },
     ))
 
@@ -299,6 +335,26 @@ def detect_topological_analogies(
             "S -> S_inf": "x -> 0",
             "I -> 0": "v -> 0",
             "epidemic end": "equilibrium",
+        },
+    ))
+
+    # Lorenz strange attractor and double pendulum chaos
+    analogies.append(Analogy(
+        domain_a="lorenz",
+        domain_b="double_pendulum",
+        analogy_type="topological",
+        description=(
+            "Both have strange attractors with fractal dimension > 2. "
+            "Lorenz: two-lobe butterfly attractor with Hausdorff dimension ~2.06. "
+            "Double pendulum: chaotic trajectories fill phase space regions. "
+            "Both show sensitive dependence on initial conditions with "
+            "positive largest Lyapunov exponent (~0.9 for Lorenz)."
+        ),
+        strength=0.85,
+        mapping={
+            "butterfly attractor (2 lobes)": "chaotic orbit in (theta1, theta2, omega1, omega2)",
+            "rho > rho_c (chaos onset)": "E > E_c (chaos onset)",
+            "Lyapunov ~ 0.9": "Lyapunov > 0",
         },
     ))
 
