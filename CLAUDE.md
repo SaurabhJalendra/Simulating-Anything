@@ -144,7 +144,7 @@ Only the `SimulationEnvironment` subclass is domain-specific. Everything
 else -- problem parsing, world model, exploration, analysis, reporting --
 operates on generic tensors. Adding a domain = one new class (~50-200 lines).
 
-**Cross-domain analogy engine** detects 53 mathematical isomorphisms across 27 domains:
+**Cross-domain analogy engine** detects 66 mathematical isomorphisms across 31 domains:
 - LV ↔ SIR (bilinear interaction terms)
 - Pendulum ↔ Oscillator (harmonic restoring force, T ~ √(inertia/force))
 - Projectile ↔ Oscillator (energy conservation)
@@ -161,6 +161,10 @@ operates on generic tensors. Adding a domain = one new class (~50-200 lines).
 - Cart-pole ↔ Harmonic oscillator (linearized small-angle oscillation)
 - Three-species ↔ LV (trophic cascade extension)
 - Three-species ↔ SIR (3-compartment coupled nonlinear ODEs)
+- Elastic pendulum ↔ Harmonic oscillator (radial mode omega_r=sqrt(k/m))
+- Rossler ↔ Lorenz (3D chaotic attractors)
+- Brusselator-diffusion ↔ Gray-Scott (Turing instability RD-PDEs)
+- Henon map ↔ Logistic map (discrete chaotic maps)
 
 Full argument with 40+ concrete domains: `docs/RESEARCH.md` Section 4.
 Domain expansion architecture: `docs/DESIGN.md` Section 11.
@@ -426,6 +430,10 @@ src/simulating_anything/
     ising_model.py         # 2D Ising model (Metropolis Monte Carlo)
     cart_pole.py           # Cart-pole (Lagrangian, mass matrix inversion)
     three_species.py       # Three-species food chain (trophic cascade)
+    elastic_pendulum.py    # Elastic pendulum (spring-pendulum, 2 coupled DOFs)
+    rossler.py             # Rossler attractor (3D chaotic ODE)
+    brusselator_diffusion.py # Spatial Brusselator PDE (Turing patterns)
+    henon_map.py           # Henon map (2D discrete chaos)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -474,7 +482,11 @@ src/simulating_anything/
     ising_model.py         # Phase transition T_c, Onsager magnetization
     cart_pole.py           # omega=sqrt(g*(M+m)/(M*L)), energy
     three_species.py       # Trophic cascade, SINDy ODE recovery
-    runner.py              # Unified runner for all 27 domains
+    elastic_pendulum.py    # omega_r=sqrt(k/m), energy conservation
+    rossler.py             # SINDy ODE recovery, period-doubling
+    brusselator_diffusion.py # Turing wavelength scaling
+    henon_map.py           # Lyapunov spectrum, bifurcation
+    runner.py              # Unified runner for all 31 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -496,7 +508,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 762 tests across 42 files
+tests/unit/                # 857 tests across 46 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -533,6 +545,10 @@ tests/unit/                # 762 tests across 42 files
   test_ising_model.py      # 26 tests — Metropolis MC, phase transition
   test_cart_pole.py        # 20 tests — Cart-pole mechanics, frequency
   test_three_species.py    # 20 tests — Food chain, equilibrium
+  test_elastic_pendulum.py # 21 tests — Spring-pendulum, energy
+  test_rossler.py          # 21 tests — Rossler chaos, Lyapunov
+  test_brusselator_diffusion.py # 26 tests — Turing patterns PDE
+  test_henon_map.py        # 19 tests — Discrete chaos, bifurcation
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
