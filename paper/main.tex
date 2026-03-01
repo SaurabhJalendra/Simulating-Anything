@@ -55,8 +55,8 @@ extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations in all 14 domains, achieving $R^2 \geq 0.999$ in 11 of
 14 cases, with a mean $R^2$ of 0.970. Our cross-domain analogy engine
-detects 26 structural, dimensional, and topological isomorphisms across
-domains. The key architectural insight is that only the simulation layer is
+detects 39 structural, dimensional, and topological isomorphisms across
+23 domains. The key architectural insight is that only the simulation layer is
 domain-specific ($\sim$50--200 lines per domain); everything else---world
 model, exploration, analysis, and reporting---operates on generic tensors,
 enabling universal scientific discovery.
@@ -98,9 +98,9 @@ Our key contributions are:
   only $\sim$50--200 lines of simulation code (Section~\ref{sec:architecture}).
 \item Successful autonomous rediscovery of governing equations in 14 domains
   across 8 mathematical classes (Section~\ref{sec:experiments}).
-\item A cross-domain analogy engine that detects 26 mathematical isomorphisms
-  between domains (Section~\ref{sec:cross_domain}).
-\item Open-source implementation with 548 tests, 24 publication-quality
+\item A cross-domain analogy engine that detects 39 mathematical isomorphisms
+  across 23 domains (Section~\ref{sec:cross_domain}).
+\item Open-source implementation with 666 tests, 24 publication-quality
   figures, and comprehensive benchmarks.
 \end{enumerate}
 
@@ -296,8 +296,8 @@ Lyapunov exponent $\lambda(r{=}4) = \ln 4 = 1.386$ (exact).
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.8\linewidth]{figures/cross_domain_matrix_14domain.pdf}
-\caption{Cross-domain analogy strength matrix. 26 isomorphisms detected
-across 14 domains. Brighter cells indicate stronger mathematical analogies.}
+\caption{Cross-domain analogy strength matrix. 39 isomorphisms detected
+across 23 domains. Brighter cells indicate stronger mathematical analogies.}
 \label{fig:cross_domain}
 \end{figure}
 
@@ -318,11 +318,16 @@ limit cycles (VdP $\leftrightarrow$ Brusselator), strange attractors
 (Lorenz $\leftrightarrow$ Logistic), and synchronization transitions
 (Kuramoto $\leftrightarrow$ SIR).
 
-Figure~\ref{fig:cross_domain} shows the $14 \times 14$ analogy matrix
-with 17 detected isomorphisms. The strongest analogies (strength $> 0.9$)
+Figure~\ref{fig:cross_domain} shows the analogy matrix with 39 detected
+isomorphisms across 23 domains. The strongest analogies (strength $> 0.9$)
 connect: LV $\leftrightarrow$ SIR (identical ODE structure),
 Pendulum $\leftrightarrow$ Oscillator (shared harmonic restoring force),
-and FHN $\leftrightarrow$ VdP (shared cubic nonlinearity origin).
+FHN $\leftrightarrow$ VdP (shared cubic nonlinearity origin),
+Kepler $\leftrightarrow$ Schwarzschild (Newtonian vs.\ GR gravity),
+and Coupled Oscillators $\leftrightarrow$ Spring-Mass Chain (linear mode coupling).
+Extended domains further validate universality: the diffusive Lotka-Volterra
+PDE shares reaction-diffusion structure with Gray-Scott, and coupled
+oscillators generalize the single harmonic oscillator to multi-body systems.
 
 % ============================================================================
 % 5.5 BASELINE COMPARISONS
@@ -537,15 +542,16 @@ would enable general-relativistic discoveries with no pipeline changes.
 \paragraph{Scaling and extensibility.}
 Adding a new domain requires only implementing a \texttt{SimulationEnvironment}
 subclass ($\sim$50--200 lines). All other pipeline stages operate unchanged.
-We have verified this with 17 domains across 10 mathematical classes.
+We have verified this with 23 domains across 16 mathematical classes.
 To concretely demonstrate extensibility, we implemented a Duffing
 oscillator ($x'' + \delta x' + \alpha x + \beta x^3 = \gamma\cos\omega t$)
 in 54 lines of Python, including RK4 integration, energy computation, and
 trajectory collection. All pipeline stages (world model, exploration,
 analysis) work immediately on this new domain with zero additional code.
-The total simulation code across all 15 domains is $\sim$1,700 lines,
+The total simulation code across all 23 domains is $\sim$3,500 lines,
 while the domain-agnostic infrastructure (world model, exploration,
-analysis, agents) spans $\sim$5,000 lines---a 3:1 ratio favoring reuse.
+analysis, agents) spans $\sim$5,000 lines---a 1.4:1 ratio still favoring
+reuse, even as the number of domains has grown to 23.
 
 \paragraph{Statistical rigor.}
 We compute bootstrap confidence intervals ($n = 1000$ resamples) on
@@ -614,17 +620,19 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 rediscover known physical laws across 14 fundamentally different domains.
 The system achieves $R^2 \geq 0.999$ in 11 of 14 domains, with a mean
 $R^2$ of 0.970 across all domains. Cross-domain analogy detection reveals
-26 mathematical isomorphisms, suggesting that scientific domains share
-more structure than is commonly appreciated. A six-layer validation
-framework---conservation checks, dimensional analysis, reproducibility tests,
-theory comparison, adversarial dream debate, and cross-domain consistency---ensures
-simulation correctness and result reliability. Our architecture's key
-contribution is the separation of domain-specific simulation from
-domain-agnostic discovery, enabling universal scientific inference with
-minimal per-domain effort. The pipeline has been extended to 17 domains
-spanning 10 mathematical classes---including general relativity (Schwarzschild
-geodesics) and quantum mechanics (harmonic oscillator)---with zero changes
-to the discovery infrastructure.
+39 mathematical isomorphisms across 23 domains, suggesting that scientific
+domains share more structure than is commonly appreciated. A six-layer
+validation framework---conservation checks, dimensional analysis,
+reproducibility tests, theory comparison, adversarial dream debate, and
+cross-domain consistency---ensures simulation correctness and result
+reliability. Our architecture's key contribution is the separation of
+domain-specific simulation from domain-agnostic discovery, enabling
+universal scientific inference with minimal per-domain effort. The pipeline
+has been extended to 23 domains spanning 16 mathematical classes---including
+general relativity (Schwarzschild geodesics), quantum mechanics (harmonic
+oscillator), statistical mechanics (Boltzmann gas), wave physics (damped
+wave, spring-mass chain), and celestial mechanics (Kepler orbits)---with
+zero changes to the discovery infrastructure.
 
 % ============================================================================
 % REFERENCES
@@ -818,8 +826,8 @@ Python 3.12) and GPU (RTX 5090 via WSL2 Ubuntu 24.04, JAX 0.4.x).
 stochastic due to its evolutionary search; we report results from the
 best-of-3 runs where the correct functional form was recovered in all
 3 trials for 13 of 14 domains (all except the logistic map Lyapunov fit).
-The full codebase, including 548 unit tests covering all simulation
-engines and analysis methods, is available at
+The full codebase, including 666 unit tests covering all 23 simulation
+domains and analysis methods, is available at
 \url{https://github.com/SaurabhJalendra/Simulating-Anything}.
 
 \end{document}
