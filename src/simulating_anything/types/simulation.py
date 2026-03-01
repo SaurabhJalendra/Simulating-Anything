@@ -37,6 +37,10 @@ class Domain(str, Enum):
     ISING_MODEL = "ising_model"
     THREE_SPECIES = "three_species"
     CART_POLE = "cart_pole"
+    ELASTIC_PENDULUM = "elastic_pendulum"
+    ROSSLER = "rossler"
+    HENON_MAP = "henon_map"
+    BRUSSELATOR_DIFFUSION = "brusselator_diffusion"
 
 
 class SimulationBackend(str, Enum):
