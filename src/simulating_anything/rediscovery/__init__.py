@@ -9,6 +9,7 @@ from simulating_anything.rediscovery.bak_sneppen import run_bak_sneppen_rediscov
 from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
 from simulating_anything.rediscovery.bouncing_ball import run_bouncing_ball_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+from simulating_anything.rediscovery.cahn_hilliard import run_cahn_hilliard_rediscovery
 from simulating_anything.rediscovery.brusselator_diffusion import (
     run_brusselator_diffusion_rediscovery,
 )
@@ -21,10 +22,16 @@ from simulating_anything.rediscovery.competitive_lv import run_competitive_lv_re
 from simulating_anything.rediscovery.coupled_lorenz import run_coupled_lorenz_rediscovery
 from simulating_anything.rediscovery.coupled_oscillators import run_coupled_oscillators_rediscovery
 from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
+from simulating_anything.rediscovery.delayed_predator_prey import (
+    run_delayed_predator_prey_rediscovery,
+)
 from simulating_anything.rediscovery.diffusive_lv import run_diffusive_lv_rediscovery
 from simulating_anything.rediscovery.double_pendulum import run_double_pendulum_rediscovery
 from simulating_anything.rediscovery.driven_pendulum import run_driven_pendulum_rediscovery
 from simulating_anything.rediscovery.duffing import run_duffing_rediscovery
+from simulating_anything.rediscovery.duffing_van_der_pol import (
+    run_duffing_van_der_pol_rediscovery,
+)
 from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
 from simulating_anything.rediscovery.elastic_pendulum import run_elastic_pendulum_rediscovery
 from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscovery
@@ -72,6 +79,7 @@ from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_redisc
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
 from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
 from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
+from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
 from simulating_anything.rediscovery.wilson_cowan import run_wilson_cowan_rediscovery
 
 __all__ = [
@@ -138,4 +146,8 @@ __all__ = [
     "run_sine_gordon_rediscovery",
     "run_ikeda_map_rediscovery",
     "run_thomas_rediscovery",
+    "run_cahn_hilliard_rediscovery",
+    "run_network_sis_rediscovery",
+    "run_delayed_predator_prey_rediscovery",
+    "run_duffing_van_der_pol_rediscovery",
 ]

@@ -48,6 +48,9 @@ def run_all_rediscoveries(
         run_bouncing_ball_rediscovery,
     )
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+    from simulating_anything.rediscovery.cahn_hilliard import (
+        run_cahn_hilliard_rediscovery,
+    )
     from simulating_anything.rediscovery.brusselator_diffusion import (
         run_brusselator_diffusion_rediscovery,
     )
@@ -68,6 +71,9 @@ def run_all_rediscoveries(
         run_coupled_oscillators_rediscovery,
     )
     from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
+    from simulating_anything.rediscovery.delayed_predator_prey import (
+        run_delayed_predator_prey_rediscovery,
+    )
     from simulating_anything.rediscovery.diffusive_lv import run_diffusive_lv_rediscovery
     from simulating_anything.rediscovery.double_pendulum import (
         run_double_pendulum_rediscovery,
@@ -76,6 +82,9 @@ def run_all_rediscoveries(
         run_driven_pendulum_rediscovery,
     )
     from simulating_anything.rediscovery.duffing import run_duffing_rediscovery
+    from simulating_anything.rediscovery.duffing_van_der_pol import (
+        run_duffing_van_der_pol_rediscovery,
+    )
     from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
     from simulating_anything.rediscovery.elastic_pendulum import (
         run_elastic_pendulum_rediscovery,
@@ -114,6 +123,7 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.may_leonard import run_may_leonard_rediscovery
     from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
+    from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
     from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
     from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
     from simulating_anything.rediscovery.quantum_oscillator import (
@@ -463,6 +473,26 @@ def run_all_rediscoveries(
         "thomas": {
             "label": "Thomas Cyclically Symmetric Attractor",
             "fn": run_thomas_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "cahn_hilliard": {
+            "label": "Cahn-Hilliard Phase Separation & Coarsening",
+            "fn": run_cahn_hilliard_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "network_sis": {
+            "label": "Network SIS Epidemic Threshold",
+            "fn": run_network_sis_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "delayed_predator_prey": {
+            "label": "Delayed Predator-Prey Hopf Bifurcation & Period",
+            "fn": run_delayed_predator_prey_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "duffing_van_der_pol": {
+            "label": "Duffing-Van der Pol Hybrid Oscillator",
+            "fn": run_duffing_van_der_pol_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

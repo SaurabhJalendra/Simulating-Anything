@@ -596,6 +596,45 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.01, "n_steps": 500, "math_class": "Competitive ODE",
     },
+    "cahn_hilliard": {
+        "module": "simulating_anything.simulation.cahn_hilliard",
+        "cls": "CahnHilliardSimulation",
+        "domain": Domain.CAHN_HILLIARD,
+        "params": {
+            "M": 1.0, "epsilon": 0.05, "N": 32.0, "L": 1.0,
+        },
+        "dt": 1e-4, "n_steps": 500, "math_class": "Phase Field PDE",
+    },
+    "delayed_predator_prey": {
+        "module": "simulating_anything.simulation.delayed_predator_prey",
+        "cls": "DelayedPredatorPreySimulation",
+        "domain": Domain.DELAYED_PREDATOR_PREY,
+        "params": {
+            "r": 1.0, "K": 3.0, "a": 0.5, "h": 0.1,
+            "e": 0.6, "m": 0.4, "tau": 2.0, "N_0": 2.0, "P_0": 1.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "DDE",
+    },
+    "network_sis": {
+        "module": "simulating_anything.simulation.network_sis",
+        "cls": "NetworkSISSimulation",
+        "domain": Domain.NETWORK_SIS,
+        "params": {
+            "N": 50.0, "beta": 0.3, "gamma": 0.1,
+            "mean_degree": 6.0, "initial_fraction": 0.1,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Network Epidemiology",
+    },
+    "duffing_van_der_pol": {
+        "module": "simulating_anything.simulation.duffing_van_der_pol",
+        "cls": "DuffingVanDerPolSimulation",
+        "domain": Domain.DUFFING_VAN_DER_POL,
+        "params": {
+            "mu": 1.0, "alpha": 1.0, "beta": 0.2,
+            "F": 0.3, "omega": 1.0, "x_0": 0.1, "y_0": 0.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Nonlinear ODE",
+    },
 }
 
 
