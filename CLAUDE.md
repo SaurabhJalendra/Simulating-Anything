@@ -474,6 +474,10 @@ src/simulating_anything/
     schnakenberg.py        # Schnakenberg reaction-diffusion (Turing patterns)
     kapitza_pendulum.py    # Kapitza inverted pendulum (parametric stabilization)
     fitzhugh_rinzel.py     # FitzHugh-Rinzel 3-timescale bursting neuron
+    lorenz84.py            # Lorenz-84 atmospheric circulation (Hadley)
+    rabinovich_fabrikant.py # Rabinovich-Fabrikant plasma chaos
+    sprott.py              # Sprott minimal chaotic flows (A-S)
+    gray_scott_1d.py       # Gray-Scott 1D pulse dynamics
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -488,7 +492,7 @@ src/simulating_anything/
     ablation.py            # Single-factor ablation studies
     pipeline_ablation.py   # Pipeline component ablation (sampling, method, data)
     sensitivity.py         # Noise/data/range sensitivity analysis
-    cross_domain.py        # Cross-domain analogy engine (175 isomorphisms)
+    cross_domain.py        # Cross-domain analogy engine (187 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
     domain_statistics.py   # Runtime benchmarks for all domains
     error_analysis.py      # Bootstrap R², coefficient uncertainty
@@ -566,7 +570,11 @@ src/simulating_anything/
     schnakenberg.py        # Turing patterns, activator-inhibitor
     kapitza_pendulum.py    # Parametric stabilization, inverted equilibrium
     fitzhugh_rinzel.py     # 3-timescale bursting, burst dynamics
-    runner.py              # Unified runner for all 71 domains
+    lorenz84.py            # Hadley fixed point, chaos transition
+    rabinovich_fabrikant.py # Multiscroll attractor, gamma sweep
+    sprott.py              # Minimal chaos, Lyapunov comparison
+    gray_scott_1d.py       # Pulse splitting, pulse speed
+    runner.py              # Unified runner for all 75 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -588,7 +596,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 1985 tests across 75+ files
+tests/unit/                # 2131 tests across 79+ files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -669,6 +677,10 @@ tests/unit/                # 1985 tests across 75+ files
   test_schnakenberg.py     # 20 tests — Turing patterns RD
   test_kapitza_pendulum.py # 24 tests — Parametric stabilization
   test_fitzhugh_rinzel.py  # 24 tests — 3-timescale bursting
+  test_lorenz84.py         # 36 tests — Atmospheric chaos
+  test_rabinovich_fabrikant.py # 28 tests — Plasma chaos
+  test_sprott.py           # 26 tests — Minimal chaotic flows
+  test_gray_scott_1d.py    # 40 tests — 1D RD pulse dynamics
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
