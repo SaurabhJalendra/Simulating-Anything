@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-953%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-1049%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-35-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-39-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **35 domains** spanning **23 mathematical classes**.
+simulation data across **39 domains** spanning **27 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 77 mathematical isomorphisms detected across 35 domains
+**Cross-domain analysis:** 88 mathematical isomorphisms detected across 39 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -65,6 +65,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #33: Chua's circuit** -- double-scroll strange attractor, piecewise-linear chaos, Lyapunov >0.
 **Domain #34: Shallow water equations** -- 1D Lax-Friedrichs, gravity waves c=sqrt(gh), mass/energy conservation.
 **Domain #35: Toda lattice** -- integrable nonlinear chain, solitons, harmonic limit omega=2*sqrt(a)*sin(pi*n/N).
+**Domain #36: Kuramoto-Sivashinsky** -- spatiotemporal chaos PDE, ETDRK4 spectral solver, Lyapunov exponent.
+**Domain #37: Complex Ginzburg-Landau** -- amplitude equation, Benjamin-Feir instability, phase turbulence.
+**Domain #38: Oregonator** -- BZ chemical reaction oscillator, relaxation oscillations, Hopf bifurcation.
+**Domain #39: Bak-Sneppen** -- self-organized criticality, fitness threshold f_c~2/3, power-law avalanches.
 
 ---
 
@@ -156,7 +160,7 @@ python scripts/demo_pipeline.py
 ### Run Tests
 
 ```bash
-# Full suite (953 tests):
+# Full suite (1049 tests):
 python -m pytest tests/unit/ -v
 
 # Quick smoke test:
@@ -262,6 +266,10 @@ src/simulating_anything/
     chua.py                # Chua's circuit (double-scroll chaos)
     shallow_water.py       # 1D shallow water equations
     toda_lattice.py        # Toda lattice (integrable solitons)
+    kuramoto_sivashinsky.py # KS equation (spatiotemporal chaos)
+    ginzburg_landau.py     # Complex Ginzburg-Landau (CGLE)
+    oregonator.py          # Oregonator BZ reaction
+    bak_sneppen.py         # Bak-Sneppen SOC model
   world_model/             # RSSM (Equinox), 1536 latent dims
   analysis/
     symbolic_regression.py # PySR wrapper
@@ -291,7 +299,7 @@ scripts/
   aggregate_all_results.py            # Unified JSON + LaTeX table
   train_world_models_14domain.py      # RSSM training (14 domains)
 
-tests/unit/                # 953 tests, 50 files
+tests/unit/                # 1049 tests, 54 files
 notebooks/                 # Interactive demos
 docs/                      # Research and design documentation
 ```
@@ -302,12 +310,12 @@ docs/                      # Research and design documentation
 
 | Metric | Value |
 |--------|-------|
-| Simulation domains | 35 (14 core + 21 extended) |
-| Mathematical classes | 23 |
-| Tests | 953 passing, 57 skipped |
+| Simulation domains | 39 (14 core + 25 extended) |
+| Mathematical classes | 27 |
+| Tests | 1049 passing, 65 skipped |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
-| Cross-domain analogies | 77 |
+| Cross-domain analogies | 88 |
 | Publication figures | 24 |
 | World models trained | 14/14 |
 | Lines per new domain | ~50-200 |
