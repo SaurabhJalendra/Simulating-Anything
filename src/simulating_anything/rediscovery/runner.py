@@ -39,26 +39,27 @@ def run_all_rediscoveries(
     Returns:
         Combined results dict with all discoveries.
     """
+    from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
     from simulating_anything.rediscovery.double_pendulum import (
         run_double_pendulum_rediscovery,
     )
+    from simulating_anything.rediscovery.duffing import run_duffing_rediscovery
+    from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
     from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
     from simulating_anything.rediscovery.harmonic_oscillator import (
         run_harmonic_oscillator_rediscovery,
     )
+    from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
+    from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
+    from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
+    from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
     from simulating_anything.rediscovery.lotka_volterra import (
         run_lotka_volterra_rediscovery,
     )
+    from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
     from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
     from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
-    from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
-    from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
     from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
-    from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
-    from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
-    from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
-    from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
-    from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -133,6 +134,11 @@ def run_all_rediscoveries(
         "logistic_map": {
             "label": "Logistic Map Feigenbaum & Chaos",
             "fn": run_logistic_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "duffing": {
+            "label": "Duffing Oscillator Chaos & ODE",
+            "fn": run_duffing_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
