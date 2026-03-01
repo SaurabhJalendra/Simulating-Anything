@@ -42,6 +42,7 @@ from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_
 from simulating_anything.rediscovery.fitzhugh_rinzel import run_fitzhugh_rinzel_rediscovery
 from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
+from simulating_anything.rediscovery.gray_scott_1d import run_gray_scott_1d_rediscovery
 from simulating_anything.rediscovery.harmonic_oscillator import run_harmonic_oscillator_rediscovery
 from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
 from simulating_anything.rediscovery.henon_map import run_henon_map_rediscovery
@@ -57,6 +58,7 @@ from simulating_anything.rediscovery.kuramoto_sivashinsky import (
 )
 from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
 from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
+from simulating_anything.rediscovery.lorenz84 import run_lorenz84_rediscovery
 from simulating_anything.rediscovery.lorenz96 import run_lorenz96_rediscovery
 from simulating_anything.rediscovery.lotka_volterra import run_lotka_volterra_rediscovery
 from simulating_anything.rediscovery.mackey_glass import run_mackey_glass_rediscovery
@@ -67,12 +69,16 @@ from simulating_anything.rediscovery.network_sis import run_network_sis_rediscov
 from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
 from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
 from simulating_anything.rediscovery.quantum_oscillator import run_quantum_oscillator_rediscovery
+from simulating_anything.rediscovery.rabinovich_fabrikant import (
+    run_rabinovich_fabrikant_rediscovery,
+)
 from simulating_anything.rediscovery.rayleigh_benard import run_rayleigh_benard_rediscovery
 from simulating_anything.rediscovery.rosenzweig_macarthur import (
     run_rosenzweig_macarthur_rediscovery,
 )
 from simulating_anything.rediscovery.rossler import run_rossler_rediscovery
 from simulating_anything.rediscovery.schnakenberg import run_schnakenberg_rediscovery
+from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
 from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
 from simulating_anything.rediscovery.shallow_water import run_shallow_water_rediscovery
 from simulating_anything.rediscovery.sine_gordon import run_sine_gordon_rediscovery
@@ -160,4 +166,8 @@ __all__ = [
     "run_schnakenberg_rediscovery",
     "run_kapitza_pendulum_rediscovery",
     "run_fitzhugh_rinzel_rediscovery",
+    "run_lorenz84_rediscovery",
+    "run_gray_scott_1d_rediscovery",
+    "run_rabinovich_fabrikant_rediscovery",
+    "run_sprott_rediscovery",
 ]

@@ -673,6 +673,42 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"N": 100.0, "r": 3.9, "eps": 0.3},
         "dt": 1.0, "n_steps": 500, "math_class": "Spatiotemporal Chaos",
     },
+    "lorenz_84": {
+        "module": "simulating_anything.simulation.lorenz84",
+        "cls": "Lorenz84Simulation",
+        "domain": Domain.LORENZ_84,
+        "params": {"a": 0.25, "b": 4.0, "F": 8.0, "G": 1.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Low-dim. Atmosphere",
+    },
+    "gray_scott_1d": {
+        "module": "simulating_anything.simulation.gray_scott_1d",
+        "cls": "GrayScott1DSimulation",
+        "domain": Domain.GRAY_SCOTT_1D,
+        "params": {
+            "D_u": 0.16, "D_v": 0.08, "f": 0.04, "k": 0.06,
+            "N": 64.0, "L": 2.5,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "1D RD-PDE",
+    },
+    "rabinovich_fabrikant": {
+        "module": "simulating_anything.simulation.rabinovich_fabrikant",
+        "cls": "RabinovichFabrikantSimulation",
+        "domain": Domain.RABINOVICH_FABRIKANT,
+        "params": {
+            "alpha": 1.1, "gamma": 0.87,
+            "x_0": -1.0, "y_0": 0.0, "z_0": 0.5,
+        },
+        "dt": 0.005, "n_steps": 500, "math_class": "Plasma Chaos",
+    },
+    "sprott": {
+        "module": "simulating_anything.simulation.sprott",
+        "cls": "SprottSimulation",
+        "domain": Domain.SPROTT,
+        "params": {
+            "x_0": 0.1, "y_0": 0.1, "z_0": 0.1,
+        },
+        "dt": 0.05, "n_steps": 500, "math_class": "Minimal Chaos",
+    },
 }
 
 

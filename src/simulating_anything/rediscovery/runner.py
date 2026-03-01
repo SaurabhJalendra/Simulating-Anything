@@ -101,6 +101,9 @@ def run_all_rediscoveries(
         run_ginzburg_landau_rediscovery,
     )
     from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
+    from simulating_anything.rediscovery.gray_scott_1d import (
+        run_gray_scott_1d_rediscovery,
+    )
     from simulating_anything.rediscovery.harmonic_oscillator import (
         run_harmonic_oscillator_rediscovery,
     )
@@ -122,6 +125,7 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
     from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
+    from simulating_anything.rediscovery.lorenz84 import run_lorenz84_rediscovery
     from simulating_anything.rediscovery.lorenz96 import run_lorenz96_rediscovery
     from simulating_anything.rediscovery.lotka_volterra import (
         run_lotka_volterra_rediscovery,
@@ -138,6 +142,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.quantum_oscillator import (
         run_quantum_oscillator_rediscovery,
     )
+    from simulating_anything.rediscovery.rabinovich_fabrikant import (
+        run_rabinovich_fabrikant_rediscovery,
+    )
     from simulating_anything.rediscovery.rayleigh_benard import (
         run_rayleigh_benard_rediscovery,
     )
@@ -148,6 +155,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.schnakenberg import (
         run_schnakenberg_rediscovery,
     )
+    from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
     from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
     from simulating_anything.rediscovery.shallow_water import (
         run_shallow_water_rediscovery,
@@ -372,6 +380,11 @@ def run_all_rediscoveries(
             "fn": run_lorenz96_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
+        "lorenz_84": {
+            "label": "Lorenz-84 Atmospheric Circulation",
+            "fn": run_lorenz84_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
         "chemostat": {
             "label": "Chemostat Washout Bifurcation & Monod Kinetics",
             "fn": run_chemostat_rediscovery,
@@ -525,6 +538,21 @@ def run_all_rediscoveries(
         "coupled_map_lattice": {
             "label": "Coupled Map Lattice Spatiotemporal Chaos",
             "fn": run_coupled_map_lattice_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "gray_scott_1d": {
+            "label": "Gray-Scott 1D Pulse Dynamics",
+            "fn": run_gray_scott_1d_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "rabinovich_fabrikant": {
+            "label": "Rabinovich-Fabrikant Multiscroll Chaos",
+            "fn": run_rabinovich_fabrikant_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sprott": {
+            "label": "Sprott Minimal Chaotic Flows",
+            "fn": run_sprott_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
