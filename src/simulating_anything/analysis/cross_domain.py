@@ -874,6 +874,69 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="mackey_glass",
+            math_type="chaotic",  # Delay differential equation
+            state_dim=1,  # x (with delay embedding)
+            n_parameters=4,  # beta, gamma, n, tau
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",  # Chaotic for large tau
+            characteristic_timescale="tau",
+            discovered_equations=[
+                "dx/dt = beta*x(t-tau)/(1+x(t-tau)^n) - gamma*x",
+                "Period-doubling cascade with increasing tau",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="bouncing_ball",
+            math_type="discrete",  # Impact map
+            state_dim=2,  # [height, velocity]
+            n_parameters=3,  # g, e (restitution), omega (table freq)
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",  # Period-doubling chaos
+            characteristic_timescale="sqrt(2*h/g)",
+            discovered_equations=[
+                "v_n+1 = e*v_n + impulse",
+                "Period-doubling cascade with table amplitude",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="wilson_cowan",
+            math_type="ode_nonlinear",  # Neural population model
+            state_dim=2,  # [E, I]
+            n_parameters=8,  # w_ee, w_ei, w_ie, w_ii, tau_e, tau_i, I_ext_E, I_ext_I
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",  # E-I oscillation
+            characteristic_timescale="tau_e, tau_i",
+            discovered_equations=[
+                "tau_e*dE/dt = -E + S(w_ee*E - w_ei*I + I_ext_E)",
+                "tau_i*dI/dt = -I + S(w_ie*E - w_ii*I + I_ext_I)",
+                "S(x) = 1/(1+exp(-a*(x-theta)))",
+                "Hopf bifurcation at critical I_ext",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="cable_equation",
+            math_type="pde",  # Linear parabolic PDE
+            state_dim=1,  # V(x,t) membrane potential
+            n_parameters=3,  # lambda_e, tau_m, R_m
+            conserved_quantities=[],
+            symmetries=["translation"],
+            phase_portrait_type="fixed_point",  # Exponential decay to steady state
+            characteristic_timescale="tau_m",
+            discovered_equations=[
+                "tau_m*dV/dt = lambda^2*V_xx - V + R_m*I_ext",
+                "V(x) ~ exp(-|x|/lambda) steady state",
+                "lambda = sqrt(r_m/r_i) space constant",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -2096,6 +2159,98 @@ def detect_structural_analogies(
         },
     ))
 
+    # Mackey-Glass <-> Logistic Map (period-doubling chaos)
+    analogies.append(Analogy(
+        domain_a="mackey_glass",
+        domain_b="logistic_map",
+        analogy_type="structural",
+        description=(
+            "Both exhibit period-doubling route to chaos. Mackey-Glass has "
+            "unimodal feedback function x^n/(1+x^n) analogous to the logistic "
+            "map's parabolic iteration f(x) = r*x*(1-x)."
+        ),
+        strength=0.8,
+        mapping={
+            "beta*x^n/(1+x^n)": "r*x*(1-x)",
+            "tau (delay)": "r (bifurcation parameter)",
+            "period-doubling": "period-doubling",
+        },
+    ))
+
+    # Wilson-Cowan <-> FitzHugh-Nagumo (excitable neural models)
+    analogies.append(Analogy(
+        domain_a="wilson_cowan",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="structural",
+        description=(
+            "Both model excitable neural dynamics with fast-slow structure. "
+            "WC uses sigmoid nonlinearity for population firing rates; FHN uses "
+            "cubic nullcline. Both exhibit Hopf bifurcation to oscillation."
+        ),
+        strength=0.85,
+        mapping={
+            "E (excitatory)": "v (fast variable)",
+            "I (inhibitory)": "w (slow variable)",
+            "sigmoid S(x)": "cubic v-v^3/3",
+            "Hopf at I_ext_c": "Hopf at I_c",
+        },
+    ))
+
+    # Wilson-Cowan <-> Brusselator (Hopf bifurcation oscillators)
+    analogies.append(Analogy(
+        domain_a="wilson_cowan",
+        domain_b="brusselator",
+        analogy_type="structural",
+        description=(
+            "Both are 2D nonlinear ODE systems exhibiting Hopf bifurcation "
+            "from fixed point to limit cycle. WC uses E-I neural populations; "
+            "Brusselator uses chemical concentrations u-v."
+        ),
+        strength=0.75,
+        mapping={
+            "E-I oscillation": "u-v oscillation",
+            "I_ext bifurcation": "b bifurcation",
+            "sigmoid activation": "cubic autocatalysis",
+        },
+    ))
+
+    # Cable Equation <-> Heat Equation (linear diffusion PDEs)
+    analogies.append(Analogy(
+        domain_a="cable_equation",
+        domain_b="heat_equation",
+        analogy_type="structural",
+        description=(
+            "Both are linear parabolic PDEs with diffusion. Cable equation "
+            "tau*dV/dt = lambda^2*V_xx - V + source is heat equation with "
+            "decay term. Same spectral solution structure."
+        ),
+        strength=0.9,
+        mapping={
+            "lambda^2 (space constant^2)": "D (diffusivity)",
+            "V (membrane potential)": "u (temperature)",
+            "tau_m (membrane time constant)": "1 (time scale)",
+            "R_m*I_ext (source)": "source term",
+        },
+    ))
+
+    # Bouncing Ball <-> Standard Map (kicked Hamiltonian systems)
+    analogies.append(Analogy(
+        domain_a="bouncing_ball",
+        domain_b="standard_map",
+        analogy_type="structural",
+        description=(
+            "Both are periodically kicked systems with discrete maps. "
+            "Bouncing ball has impact map with restitution; Standard Map "
+            "has area-preserving kick. Both show period-doubling to chaos."
+        ),
+        strength=0.8,
+        mapping={
+            "v_n+1 = e*v_n + kick": "p_n+1 = p_n + K*sin(theta_n)",
+            "table amplitude A": "kick strength K",
+            "restitution e": "area preservation",
+        },
+    ))
+
     return analogies
 
 
@@ -2482,6 +2637,58 @@ def detect_dimensional_analogies(
         mapping={
             "1/r [prey growth]": "1/alpha [prey growth]",
             "K [carrying capacity]": "gamma/delta [prey equilibrium]",
+        },
+    ))
+
+    # Dimensional: Wilson-Cowan <-> Hodgkin-Huxley (neural timescales)
+    analogies.append(Analogy(
+        domain_a="wilson_cowan",
+        domain_b="hodgkin_huxley",
+        analogy_type="dimensional",
+        description=(
+            "Both model neural dynamics with millisecond timescales. "
+            "WC uses population-level tau_e~tau_i; HH uses membrane "
+            "capacitance C_m and channel conductances. Both have "
+            "oscillation frequency ~ 1/tau_m."
+        ),
+        strength=0.8,
+        mapping={
+            "tau_e [excitatory time constant]": "C_m/g_Na [activation time]",
+            "tau_i [inhibitory time constant]": "C_m/g_K [recovery time]",
+        },
+    ))
+
+    # Dimensional: Cable Equation <-> Heat Equation (diffusion scaling)
+    analogies.append(Analogy(
+        domain_a="cable_equation",
+        domain_b="heat_equation",
+        analogy_type="dimensional",
+        description=(
+            "Both have diffusive spreading with L ~ sqrt(D*t) scaling. "
+            "Cable equation space constant lambda = sqrt(r_m/r_i) maps to "
+            "heat diffusion length sqrt(D*t)."
+        ),
+        strength=0.9,
+        mapping={
+            "lambda [space constant]": "sqrt(D*t) [diffusion length]",
+            "tau_m [membrane time constant]": "L^2/D [diffusion time]",
+        },
+    ))
+
+    # Dimensional: Mackey-Glass <-> Lorenz (chaotic timescale)
+    analogies.append(Analogy(
+        domain_a="mackey_glass",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both are chaotic with characteristic timescale set by system "
+            "parameters. MG: tau (delay) sets oscillation period. Lorenz: "
+            "1/sigma sets fast mixing time. Both have positive Lyapunov exponents."
+        ),
+        strength=0.7,
+        mapping={
+            "tau [delay time]": "1/sigma [mixing time]",
+            "1/gamma [decay time]": "1/beta [z decay time]",
         },
     ))
 
@@ -3325,6 +3532,78 @@ def detect_topological_analogies(
         mapping={
             "Allee threshold A": "period-doubling r values",
             "extinction vs survival": "periodic vs chaotic",
+        },
+    ))
+
+    # Mackey-Glass <-> Lorenz (chaotic attractor topology)
+    analogies.append(Analogy(
+        domain_a="mackey_glass",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both produce chaotic strange attractors with positive Lyapunov "
+            "exponents and fractal dimension. MG attractor lives in delay "
+            "embedding space; Lorenz in 3D ODE space. Both have period-doubling "
+            "cascade route to chaos."
+        ),
+        strength=0.8,
+        mapping={
+            "delay embedding attractor": "butterfly attractor",
+            "tau bifurcation": "rho bifurcation",
+            "Lyapunov > 0": "Lyapunov > 0",
+        },
+    ))
+
+    # Bouncing Ball <-> Logistic Map (period-doubling)
+    analogies.append(Analogy(
+        domain_a="bouncing_ball",
+        domain_b="logistic_map",
+        analogy_type="topological",
+        description=(
+            "Both are discrete maps exhibiting period-doubling cascade to "
+            "chaos. Bouncing ball with increasing table amplitude parallels "
+            "logistic map with increasing r. Feigenbaum universality applies to both."
+        ),
+        strength=0.85,
+        mapping={
+            "table amplitude": "parameter r",
+            "period-1 bounce": "period-1 orbit",
+            "chaotic bouncing": "chaotic iterations",
+        },
+    ))
+
+    # Wilson-Cowan <-> Van der Pol (limit cycle oscillation)
+    analogies.append(Analogy(
+        domain_a="wilson_cowan",
+        domain_b="van_der_pol",
+        analogy_type="topological",
+        description=(
+            "Both exhibit Hopf bifurcation from stable fixed point to "
+            "limit cycle. WC E-I oscillation has same topological structure "
+            "as VdP relaxation oscillation: 2D system with unique limit cycle."
+        ),
+        strength=0.8,
+        mapping={
+            "E-I limit cycle": "x-v limit cycle",
+            "I_ext (Hopf parameter)": "mu (nonlinearity)",
+            "sigmoid saturation": "cubic damping",
+        },
+    ))
+
+    # Cable Equation <-> Navier-Stokes (diffusive decay)
+    analogies.append(Analogy(
+        domain_a="cable_equation",
+        domain_b="navier_stokes",
+        analogy_type="topological",
+        description=(
+            "Both have exponential modal decay: cable equation modes decay "
+            "as exp(-t/tau_m) * exp(-k^2*lambda^2*t/tau_m); NS vorticity modes "
+            "decay as exp(-nu*k^2*t). Same spectral decay topology."
+        ),
+        strength=0.75,
+        mapping={
+            "lambda^2/tau_m [diffusivity]": "nu [kinematic viscosity]",
+            "exp(-|x|/lambda) spatial": "exp(-nu*k^2*t) temporal",
         },
     ))
 

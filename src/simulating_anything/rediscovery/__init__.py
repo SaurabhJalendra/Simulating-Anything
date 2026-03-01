@@ -65,6 +65,10 @@ from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscov
 from simulating_anything.rediscovery.allee_predator_prey import (
     run_allee_predator_prey_rediscovery,
 )
+from simulating_anything.rediscovery.mackey_glass import run_mackey_glass_rediscovery
+from simulating_anything.rediscovery.bouncing_ball import run_bouncing_ball_rediscovery
+from simulating_anything.rediscovery.wilson_cowan import run_wilson_cowan_rediscovery
+from simulating_anything.rediscovery.cable_equation import run_cable_equation_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -122,4 +126,8 @@ __all__ = [
     "run_coupled_lorenz_rediscovery",
     "run_swinging_atwood_rediscovery",
     "run_allee_predator_prey_rediscovery",
+    "run_mackey_glass_rediscovery",
+    "run_bouncing_ball_rediscovery",
+    "run_wilson_cowan_rediscovery",
+    "run_cable_equation_rediscovery",
 ]

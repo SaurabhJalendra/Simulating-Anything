@@ -131,6 +131,16 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.allee_predator_prey import (
         run_allee_predator_prey_rediscovery,
     )
+    from simulating_anything.rediscovery.mackey_glass import run_mackey_glass_rediscovery
+    from simulating_anything.rediscovery.bouncing_ball import (
+        run_bouncing_ball_rediscovery,
+    )
+    from simulating_anything.rediscovery.wilson_cowan import (
+        run_wilson_cowan_rediscovery,
+    )
+    from simulating_anything.rediscovery.cable_equation import (
+        run_cable_equation_rediscovery,
+    )
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -405,6 +415,26 @@ def run_all_rediscoveries(
         "allee_predator_prey": {
             "label": "Allee Predator-Prey Bistability",
             "fn": run_allee_predator_prey_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "mackey_glass": {
+            "label": "Mackey-Glass Delay DDE Chaos",
+            "fn": run_mackey_glass_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "bouncing_ball": {
+            "label": "Bouncing Ball Impact Map Period-Doubling",
+            "fn": run_bouncing_ball_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "wilson_cowan": {
+            "label": "Wilson-Cowan Neural Population E-I Oscillation",
+            "fn": run_wilson_cowan_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "cable_equation": {
+            "label": "Cable Equation Passive Neurite Space Constant",
+            "fn": run_cable_equation_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

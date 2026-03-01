@@ -522,6 +522,48 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.01, "n_steps": 500, "math_class": "Bistable ODE",
     },
+    "bouncing_ball": {
+        "module": "simulating_anything.simulation.bouncing_ball",
+        "cls": "BouncingBallSimulation",
+        "domain": Domain.BOUNCING_BALL,
+        "params": {
+            "e": 0.5, "A": 0.1, "omega": 6.283185307179586, "g": 9.81,
+        },
+        "dt": 1.0, "n_steps": 500, "math_class": "Impact Map",
+    },
+    "mackey_glass": {
+        "module": "simulating_anything.simulation.mackey_glass",
+        "cls": "MackeyGlassSimulation",
+        "domain": Domain.MACKEY_GLASS,
+        "params": {
+            "beta": 0.2, "gamma": 0.1, "tau": 17.0, "n": 10.0, "x_0": 0.9,
+        },
+        "dt": 0.1, "n_steps": 500, "math_class": "Delay DE",
+    },
+    "wilson_cowan": {
+        "module": "simulating_anything.simulation.wilson_cowan",
+        "cls": "WilsonCowanSimulation",
+        "domain": Domain.WILSON_COWAN,
+        "params": {
+            "tau_E": 1.0, "tau_I": 2.0,
+            "w_EE": 16.0, "w_EI": 12.0,
+            "w_IE": 15.0, "w_II": 3.0,
+            "a": 1.3, "theta": 4.0,
+            "I_ext_E": 1.5, "I_ext_I": 0.0,
+            "E_0": 0.1, "I_0": 0.05,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Neural Population",
+    },
+    "cable_equation": {
+        "module": "simulating_anything.simulation.cable_equation",
+        "cls": "CableEquationSimulation",
+        "domain": Domain.CABLE_EQUATION,
+        "params": {
+            "tau_m": 10.0, "lambda_e": 0.5, "L": 5.0,
+            "N": 100.0, "R_m": 1.0, "I0": 1.0, "inject_x": 0.5,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Linear PDE",
+    },
 }
 
 
