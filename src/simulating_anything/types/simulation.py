@@ -29,6 +29,8 @@ class Domain(str, Enum):
     SCHWARZSCHILD = "schwarzschild"
     QUANTUM_OSCILLATOR = "quantum_oscillator"
     SPRING_MASS_CHAIN = "spring_mass_chain"
+    KEPLER = "kepler"
+    DRIVEN_PENDULUM = "driven_pendulum"
 
 
 class SimulationBackend(str, Enum):

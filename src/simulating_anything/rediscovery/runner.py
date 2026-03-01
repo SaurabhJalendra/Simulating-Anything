@@ -41,6 +41,10 @@ def run_all_rediscoveries(
     """
     from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+    from simulating_anything.rediscovery.driven_pendulum import (
+        run_driven_pendulum_rediscovery,
+    )
+    from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
     from simulating_anything.rediscovery.spring_mass_chain import (
         run_spring_mass_chain_rediscovery,
     )
@@ -167,6 +171,16 @@ def run_all_rediscoveries(
         "spring_mass_chain": {
             "label": "Spring-Mass Chain Dispersion & Phonons",
             "fn": run_spring_mass_chain_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "kepler": {
+            "label": "Kepler Orbit Third Law",
+            "fn": run_kepler_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "driven_pendulum": {
+            "label": "Driven Pendulum Period-Doubling & Chaos",
+            "fn": run_driven_pendulum_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

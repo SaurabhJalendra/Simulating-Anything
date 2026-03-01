@@ -170,6 +170,25 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.001, "n_steps": 500, "math_class": "Coupled ODE",
     },
+    "kepler": {
+        "module": "simulating_anything.simulation.kepler",
+        "cls": "KeplerOrbit",
+        "domain": Domain.KEPLER,
+        "params": {
+            "GM": 1.0, "initial_r": 1.0, "eccentricity": 0.5,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Celestial Mechanics",
+    },
+    "driven_pendulum": {
+        "module": "simulating_anything.simulation.driven_pendulum",
+        "cls": "DrivenPendulum",
+        "domain": Domain.DRIVEN_PENDULUM,
+        "params": {
+            "gamma": 0.5, "omega0": 1.5, "A_drive": 1.2,
+            "omega_d": 0.6667, "theta_0": 0.1, "omega_init": 0.0,
+        },
+        "dt": 0.005, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
 }
 
 
