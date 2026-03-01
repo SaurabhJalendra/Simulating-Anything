@@ -41,6 +41,10 @@ def run_all_rediscoveries(
     """
     from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+    from simulating_anything.rediscovery.diffusive_lv import run_diffusive_lv_rediscovery
+    from simulating_anything.rediscovery.coupled_oscillators import (
+        run_coupled_oscillators_rediscovery,
+    )
     from simulating_anything.rediscovery.driven_pendulum import (
         run_driven_pendulum_rediscovery,
     )
@@ -181,6 +185,16 @@ def run_all_rediscoveries(
         "driven_pendulum": {
             "label": "Driven Pendulum Period-Doubling & Chaos",
             "fn": run_driven_pendulum_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "coupled_oscillators": {
+            "label": "Coupled Oscillators Normal Modes & Beats",
+            "fn": run_coupled_oscillators_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "diffusive_lv": {
+            "label": "Diffusive Lotka-Volterra Wave Speed & Patterns",
+            "fn": run_diffusive_lv_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

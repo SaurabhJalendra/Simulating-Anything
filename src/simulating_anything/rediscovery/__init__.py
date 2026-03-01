@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+from simulating_anything.rediscovery.coupled_oscillators import run_coupled_oscillators_rediscovery
+from simulating_anything.rediscovery.diffusive_lv import run_diffusive_lv_rediscovery
 from simulating_anything.rediscovery.double_pendulum import run_double_pendulum_rediscovery
 from simulating_anything.rediscovery.driven_pendulum import run_driven_pendulum_rediscovery
 from simulating_anything.rediscovery.duffing import run_duffing_rediscovery
@@ -46,4 +48,6 @@ __all__ = [
     "run_quantum_oscillator_rediscovery",
     "run_spring_mass_chain_rediscovery",
     "run_driven_pendulum_rediscovery",
+    "run_coupled_oscillators_rediscovery",
+    "run_diffusive_lv_rediscovery",
 ]

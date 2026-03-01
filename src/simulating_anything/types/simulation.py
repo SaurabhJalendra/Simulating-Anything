@@ -31,6 +31,8 @@ class Domain(str, Enum):
     SPRING_MASS_CHAIN = "spring_mass_chain"
     KEPLER = "kepler"
     DRIVEN_PENDULUM = "driven_pendulum"
+    COUPLED_OSCILLATORS = "coupled_oscillators"
+    DIFFUSIVE_LV = "diffusive_lv"
 
 
 class SimulationBackend(str, Enum):
