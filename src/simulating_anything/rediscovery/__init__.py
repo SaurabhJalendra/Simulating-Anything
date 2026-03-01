@@ -58,7 +58,13 @@ from simulating_anything.rediscovery.rayleigh_benard import run_rayleigh_benard_
 from simulating_anything.rediscovery.magnetic_pendulum import run_magnetic_pendulum_rediscovery
 from simulating_anything.rediscovery.competitive_lv import run_competitive_lv_rediscovery
 from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
+from simulating_anything.rediscovery.bz_spiral import run_bz_spiral_rediscovery
+from simulating_anything.rediscovery.coupled_lorenz import run_coupled_lorenz_rediscovery
+from simulating_anything.rediscovery.swinging_atwood import run_swinging_atwood_rediscovery
 from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
+from simulating_anything.rediscovery.allee_predator_prey import (
+    run_allee_predator_prey_rediscovery,
+)
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -112,4 +118,8 @@ __all__ = [
     "run_magnetic_pendulum_rediscovery",
     "run_competitive_lv_rediscovery",
     "run_vicsek_rediscovery",
+    "run_bz_spiral_rediscovery",
+    "run_coupled_lorenz_rediscovery",
+    "run_swinging_atwood_rediscovery",
+    "run_allee_predator_prey_rediscovery",
 ]

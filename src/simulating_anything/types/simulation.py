@@ -61,6 +61,10 @@ class Domain(str, Enum):
     MAGNETIC_PENDULUM = "magnetic_pendulum"
     VICSEK = "vicsek"
     COMPETITIVE_LV = "competitive_lv"
+    BZ_SPIRAL = "bz_spiral"
+    COUPLED_LORENZ = "coupled_lorenz"
+    SWINGING_ATWOOD = "swinging_atwood"
+    ALLEE_PREDATOR_PREY = "allee_predator_prey"
 
 
 class SimulationBackend(str, Enum):

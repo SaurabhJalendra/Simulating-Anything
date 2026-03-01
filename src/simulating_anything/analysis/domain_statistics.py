@@ -477,6 +477,51 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.01, "n_steps": 500, "math_class": "Fractal Basin",
     },
+    "bz_spiral": {
+        "module": "simulating_anything.simulation.bz_spiral",
+        "cls": "BZSpiralSimulation",
+        "domain": Domain.BZ_SPIRAL,
+        "params": {
+            "eps": 0.01, "f": 1.0, "q": 0.002,
+            "D_u": 1.0, "D_v": 0.0,
+            "Nx": 64.0, "Ny": 64.0, "dx": 0.5,
+        },
+        "dt": 0.01, "n_steps": 200, "math_class": "Excitable PDE",
+    },
+    "coupled_lorenz": {
+        "module": "simulating_anything.simulation.coupled_lorenz",
+        "cls": "CoupledLorenzSimulation",
+        "domain": Domain.COUPLED_LORENZ,
+        "params": {
+            "sigma": 10.0, "rho": 28.0, "beta": 2.667,
+            "eps": 5.0,
+            "x1_0": 1.0, "y1_0": 1.0, "z1_0": 1.0,
+            "x2_0": -5.0, "y2_0": 5.0, "z2_0": 25.0,
+        },
+        "dt": 0.005, "n_steps": 500, "math_class": "Chaos Sync",
+    },
+    "swinging_atwood": {
+        "module": "simulating_anything.simulation.swinging_atwood",
+        "cls": "SwingingAtwoodSimulation",
+        "domain": Domain.SWINGING_ATWOOD,
+        "params": {
+            "M": 3.0, "m": 1.0, "g": 9.81,
+            "r_min": 0.1, "r_0": 1.0, "theta_0": 0.5,
+            "r_dot_0": 0.0, "theta_dot_0": 0.0,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Lagrangian ODE",
+    },
+    "allee_predator_prey": {
+        "module": "simulating_anything.simulation.allee_predator_prey",
+        "cls": "AlleePredatorPreySimulation",
+        "domain": Domain.ALLEE_PREDATOR_PREY,
+        "params": {
+            "r": 1.0, "A": 10.0, "K": 100.0,
+            "a": 0.01, "h": 0.1, "e": 0.5, "m": 0.3,
+            "N_0": 50.0, "P_0": 5.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Bistable ODE",
+    },
 }
 
 

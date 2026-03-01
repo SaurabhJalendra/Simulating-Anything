@@ -810,6 +810,70 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="coupled_lorenz",
+            math_type="chaotic",  # Coupled chaotic ODEs
+            state_dim=6,  # [x1,y1,z1, x2,y2,z2]
+            n_parameters=4,  # sigma, rho, beta, eps
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/sigma",
+            discovered_equations=[
+                "dx2/dt = sigma*(y2-x2) + eps*(x1-x2)",
+                "Sync at eps > eps_c",
+                "Conditional Lyapunov < 0 for sync",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="bz_spiral",
+            math_type="pde",  # 2D excitable PDE
+            state_dim=8192,  # 2 * 64 * 64
+            n_parameters=5,  # eps, f, q, D_u, D_v
+            conserved_quantities=[],
+            symmetries=["rotation"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="eps",
+            discovered_equations=[
+                "du/dt = D_u*lap(u) + (1/eps)*(u-u^2-f*v*(u-q)/(u+q))",
+                "dv/dt = u - v",
+                "Spiral wave frequency and wavelength",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="swinging_atwood",
+            math_type="chaotic",  # Lagrangian chaotic ODE
+            state_dim=4,  # [r, theta, r_dot, theta_dot]
+            n_parameters=3,  # M, m, g
+            conserved_quantities=["energy"],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="sqrt(r0/g)",
+            discovered_equations=[
+                "(M+m)*r'' = m*r*theta'^2 + m*g*cos(theta) - M*g",
+                "r^2*theta'' = -2*r*r'*theta' - g*r*sin(theta)",
+                "E = T + V = const",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="allee_predator_prey",
+            math_type="ode_nonlinear",  # Bistable predator-prey
+            state_dim=2,  # [N, P]
+            n_parameters=7,  # r, A, K, a, h, e, m
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="none",  # Bistable: extinction or coexistence
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN/dt = r*N*(N/A-1)*(1-N/K) - a*N*P/(1+h*a*N)",
+                "Strong Allee effect at N=A",
+                "Bistability: extinction vs coexistence",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -1925,6 +1989,110 @@ def detect_structural_analogies(
             "magnet basins": "chaotic regions",
             "damping -> attractor": "energy -> trajectory",
             "fractal boundaries": "Lyapunov divergence",
+        },
+    ))
+
+    # Coupled Lorenz <-> Lorenz (drive system is standard Lorenz)
+    analogies.append(Analogy(
+        domain_a="coupled_lorenz",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "The drive subsystem of coupled Lorenz IS the standard Lorenz system. "
+            "Coupling adds eps*(x1-x2) diffusive term to the response."
+        ),
+        strength=0.95,
+        mapping={
+            "drive (x1,y1,z1)": "(x,y,z) Lorenz",
+            "sigma, rho, beta": "sigma, rho, beta",
+            "eps (coupling)": "0 (uncoupled)",
+        },
+    ))
+
+    # BZ Spiral <-> Oregonator (same model, different dimension)
+    analogies.append(Analogy(
+        domain_a="bz_spiral",
+        domain_b="oregonator",
+        analogy_type="structural",
+        description=(
+            "BZ spiral is the 2D PDE extension of the Oregonator ODE. "
+            "Same reaction kinetics but with spatial diffusion of the activator."
+        ),
+        strength=0.95,
+        mapping={
+            "u (activator, 2D)": "u (activator, 0D)",
+            "v (catalyst, 2D)": "v (catalyst, 0D)",
+            "eps, f, q": "eps, f, q",
+            "spiral waves": "relaxation oscillations",
+        },
+    ))
+
+    # BZ Spiral <-> FHN Spatial (excitable reaction-diffusion PDEs)
+    analogies.append(Analogy(
+        domain_a="bz_spiral",
+        domain_b="fhn_spatial",
+        analogy_type="structural",
+        description=(
+            "Both are 2D excitable reaction-diffusion systems that produce "
+            "spiral waves. BZ: chemical excitability. FHN: neural excitability."
+        ),
+        strength=0.85,
+        mapping={
+            "u (HBrO2 activator)": "v (voltage)",
+            "v (Ce4+ inhibitor)": "w (recovery)",
+            "spiral tip": "spiral tip",
+        },
+    ))
+
+    # Swinging Atwood <-> Double Pendulum (Lagrangian chaotic mechanics)
+    analogies.append(Analogy(
+        domain_a="swinging_atwood",
+        domain_b="double_pendulum",
+        analogy_type="structural",
+        description=(
+            "Both are Lagrangian mechanical systems with 2 DOF that exhibit chaos. "
+            "Both conserve energy with chaotic trajectory structure."
+        ),
+        strength=0.8,
+        mapping={
+            "r, theta (generalized coords)": "theta1, theta2",
+            "M/m (mass ratio)": "m1/m2 (mass ratio)",
+            "energy conservation": "energy conservation",
+        },
+    ))
+
+    # Allee <-> Eco-Epidemic (predator-prey with Holling Type II)
+    analogies.append(Analogy(
+        domain_a="allee_predator_prey",
+        domain_b="eco_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both feature predator-prey dynamics with Holling Type II functional "
+            "response. Allee adds positive density dependence (critical threshold); "
+            "eco-epidemic adds disease transmission."
+        ),
+        strength=0.8,
+        mapping={
+            "a*N/(1+h*a*N)": "a*S/(1+h*a*S)",
+            "Allee threshold A": "disease threshold R0",
+            "prey extinction": "disease-free equilibrium",
+        },
+    ))
+
+    # Allee <-> Rosenzweig-MacArthur (predator-prey with functional response)
+    analogies.append(Analogy(
+        domain_a="allee_predator_prey",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Both are predator-prey with Holling Type II. Allee has cubic prey "
+            "nullcline (strong Allee effect); RM has logistic prey growth."
+        ),
+        strength=0.85,
+        mapping={
+            "r*N*(N/A-1)*(1-N/K)": "r*N*(1-N/K)",
+            "bistability": "Hopf bifurcation",
+            "Holling II": "Holling II",
         },
     ))
 
@@ -3087,6 +3255,76 @@ def detect_topological_analogies(
             "fractal basin boundaries": "KAM tori / chaotic seas",
             "3 attractors": "regular islands / chaos",
             "sensitive IC dependence": "sensitive IC dependence",
+        },
+    ))
+
+    # Coupled Lorenz <-> Kuramoto (synchronization transitions)
+    analogies.append(Analogy(
+        domain_a="coupled_lorenz",
+        domain_b="kuramoto",
+        analogy_type="topological",
+        description=(
+            "Both exhibit synchronization transitions. Coupled Lorenz: "
+            "chaotic synchronization above eps_c. Kuramoto: phase sync "
+            "above K_c. Both have order parameters measuring coherence."
+        ),
+        strength=0.75,
+        mapping={
+            "sync error -> 0": "r -> 1",
+            "eps_c (critical coupling)": "K_c (critical coupling)",
+            "desync (eps<eps_c)": "incoherence (K<K_c)",
+        },
+    ))
+
+    # BZ Spiral <-> Gray-Scott (pattern-forming RD-PDEs)
+    analogies.append(Analogy(
+        domain_a="bz_spiral",
+        domain_b="gray_scott",
+        analogy_type="topological",
+        description=(
+            "Both are reaction-diffusion systems producing spatially "
+            "organized patterns. BZ: spiral waves in excitable medium. "
+            "Gray-Scott: spots and stripes in bistable medium."
+        ),
+        strength=0.75,
+        mapping={
+            "spiral waves": "spots/stripes/labyrinths",
+            "excitable dynamics": "activator-inhibitor dynamics",
+            "Oregonator kinetics": "Gray-Scott kinetics",
+        },
+    ))
+
+    # Swinging Atwood <-> Elastic Pendulum (2-DOF chaotic mechanics)
+    analogies.append(Analogy(
+        domain_a="swinging_atwood",
+        domain_b="elastic_pendulum",
+        analogy_type="topological",
+        description=(
+            "Both are 2-DOF Lagrangian systems with radial and angular "
+            "degrees of freedom that can exchange energy and exhibit chaos."
+        ),
+        strength=0.8,
+        mapping={
+            "r (string length)": "l (spring length)",
+            "theta (swing angle)": "theta (pendulum angle)",
+            "mass ratio M/m": "spring/gravity ratio",
+        },
+    ))
+
+    # Allee <-> Logistic Map (bistability / threshold dynamics)
+    analogies.append(Analogy(
+        domain_a="allee_predator_prey",
+        domain_b="logistic_map",
+        analogy_type="topological",
+        description=(
+            "Both exhibit threshold behavior: Allee has critical population "
+            "below which extinction occurs. Logistic map has period-doubling "
+            "threshold. Both show bifurcation-driven qualitative transitions."
+        ),
+        strength=0.6,
+        mapping={
+            "Allee threshold A": "period-doubling r values",
+            "extinction vs survival": "periodic vs chaotic",
         },
     ))
 

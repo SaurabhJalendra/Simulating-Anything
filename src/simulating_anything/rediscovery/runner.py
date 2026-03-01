@@ -120,7 +120,17 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.magnetic_pendulum import (
         run_magnetic_pendulum_rediscovery,
     )
+    from simulating_anything.rediscovery.bz_spiral import run_bz_spiral_rediscovery
+    from simulating_anything.rediscovery.coupled_lorenz import (
+        run_coupled_lorenz_rediscovery,
+    )
     from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
+    from simulating_anything.rediscovery.swinging_atwood import (
+        run_swinging_atwood_rediscovery,
+    )
+    from simulating_anything.rediscovery.allee_predator_prey import (
+        run_allee_predator_prey_rediscovery,
+    )
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -375,6 +385,26 @@ def run_all_rediscoveries(
         "magnetic_pendulum": {
             "label": "Magnetic Pendulum Fractal Basin Boundaries",
             "fn": run_magnetic_pendulum_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "bz_spiral": {
+            "label": "BZ Spiral Wave 2D Oregonator PDE",
+            "fn": run_bz_spiral_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "coupled_lorenz": {
+            "label": "Coupled Lorenz Chaos Synchronization",
+            "fn": run_coupled_lorenz_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "swinging_atwood": {
+            "label": "Swinging Atwood Machine Lagrangian Chaos",
+            "fn": run_swinging_atwood_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "allee_predator_prey": {
+            "label": "Allee Predator-Prey Bistability",
+            "fn": run_allee_predator_prey_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
