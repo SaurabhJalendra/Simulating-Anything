@@ -312,6 +312,30 @@ def build_domain_signatures() -> list[DomainSignature]:
             discovered_equations=["omega(k) = 2*sqrt(K/m)*sin(k*a/2)", "c = a*sqrt(K/m)"],
             r_squared=[],
         ),
+        DomainSignature(
+            name="kepler",
+            math_type="ode_nonlinear",
+            state_dim=4,  # r, theta, v_r, v_theta
+            n_parameters=2,  # GM, eccentricity
+            conserved_quantities=["energy", "angular_momentum"],
+            symmetries=["time_translation", "azimuthal", "Laplace-Runge-Lenz"],
+            phase_portrait_type="limit_cycle",  # Closed orbits
+            characteristic_timescale="2*pi*a^(3/2)/sqrt(GM)",
+            discovered_equations=["T^2 = (4*pi^2/GM) * a^3"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="driven_pendulum",
+            math_type="chaotic",
+            state_dim=3,  # theta, omega, t
+            n_parameters=4,  # gamma, omega0, A_drive, omega_d
+            conserved_quantities=[],
+            symmetries=["time_translation (modulo drive period)"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="2*pi/omega_d",
+            discovered_equations=["period-doubling route to chaos, A_c detection"],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -501,7 +525,45 @@ def detect_structural_analogies(
         },
     ))
 
-    # Analogy 10: Duffing <-> Van der Pol (forced nonlinear oscillators)
+    # Analogy 10: Kepler <-> Schwarzschild (Newtonian vs GR gravity)
+    analogies.append(Analogy(
+        domain_a="kepler",
+        domain_b="schwarzschild",
+        analogy_type="structural",
+        description=(
+            "Both are central force orbital mechanics with conserved energy and "
+            "angular momentum. Kepler: V_eff = -GM/r + L^2/(2*m*r^2). "
+            "Schwarzschild adds GR correction: -GM*L^2/(m*c^2*r^3). "
+            "In the weak-field limit, Schwarzschild reduces to Kepler."
+        ),
+        strength=0.95,
+        mapping={
+            "-GM/r [Newtonian potential]": "-M/r [Schwarzschild potential]",
+            "L^2/(2mr^2) [centrifugal]": "L^2/(2r^2) [centrifugal]",
+            "T^2 ~ a^3": "ISCO = 6M",
+        },
+    ))
+
+    # Analogy 11: Driven pendulum <-> Duffing (forced nonlinear oscillators with chaos)
+    analogies.append(Analogy(
+        domain_a="driven_pendulum",
+        domain_b="duffing",
+        analogy_type="structural",
+        description=(
+            "Both are forced nonlinear oscillators exhibiting period-doubling "
+            "route to chaos. Driven pendulum: sin(theta) nonlinearity. "
+            "Duffing: x^3 nonlinearity. Both share the same Feigenbaum "
+            "universal constants at the period-doubling cascade."
+        ),
+        strength=0.9,
+        mapping={
+            "omega0^2*sin(theta) [pendulum]": "alpha*x + beta*x^3 [Duffing]",
+            "A*cos(omega_d*t) [forcing]": "gamma*cos(omega*t) [forcing]",
+            "gamma [damping]": "delta [damping]",
+        },
+    ))
+
+    # Analogy 12: Duffing <-> Van der Pol (forced nonlinear oscillators)
     analogies.append(Analogy(
         domain_a="duffing",
         domain_b="van_der_pol",
@@ -641,6 +703,25 @@ def detect_dimensional_analogies(
             "K [spring constant]": "k [spring constant]",
             "m [mass per site]": "m [mass]",
             "omega_max = 2*sqrt(K/m)": "omega_0 = sqrt(k/m)",
+        },
+    ))
+
+    # Kepler <-> Pendulum (sqrt period-timescale)
+    analogies.append(Analogy(
+        domain_a="kepler",
+        domain_b="double_pendulum",
+        analogy_type="dimensional",
+        description=(
+            "Both have period scaling as power of characteristic length. "
+            "Kepler: T ~ a^(3/2)/sqrt(GM). "
+            "Pendulum: T ~ sqrt(L/g). "
+            "Both follow from dimensional analysis of central/gravitational forces."
+        ),
+        strength=0.7,
+        mapping={
+            "a [semi-major axis]": "L [pendulum length]",
+            "GM [gravitational parameter]": "g [gravity]",
+            "T ~ a^(3/2)": "T ~ L^(1/2)",
         },
     ))
 
@@ -825,6 +906,45 @@ def detect_topological_analogies(
             "r [growth rate]": "gamma [driving amplitude]",
             "period-doubling cascade": "period-doubling cascade",
             "Feigenbaum delta": "Feigenbaum delta (same universal constant)",
+        },
+    ))
+
+    # Driven pendulum <-> Logistic map (both period-doubling with Feigenbaum)
+    analogies.append(Analogy(
+        domain_a="driven_pendulum",
+        domain_b="logistic_map",
+        analogy_type="topological",
+        description=(
+            "Both exhibit the period-doubling route to chaos with the same "
+            "Feigenbaum universal constants (delta=4.669, alpha=2.503). "
+            "Driven pendulum: A increasing causes period 1->2->4->chaos. "
+            "Logistic map: r increasing causes same cascade. "
+            "Feigenbaum universality connects all period-doubling systems."
+        ),
+        strength=0.85,
+        mapping={
+            "A [driving amplitude]": "r [growth parameter]",
+            "period-doubling cascade": "period-doubling cascade",
+            "Feigenbaum delta = 4.669": "Feigenbaum delta = 4.669",
+        },
+    ))
+
+    # Kepler <-> LV (closed orbits with conserved integral)
+    analogies.append(Analogy(
+        domain_a="kepler",
+        domain_b="lotka_volterra",
+        analogy_type="topological",
+        description=(
+            "Both have closed orbits in 2D phase space constrained by a "
+            "conserved quantity. Kepler: energy E constrains r-v_r plane. "
+            "LV: Hamiltonian H constrains prey-predator plane. "
+            "Both have a family of nested closed curves around an equilibrium."
+        ),
+        strength=0.65,
+        mapping={
+            "energy [conserved]": "LV Hamiltonian [conserved]",
+            "r-v_r phase plane": "prey-predator phase plane",
+            "perihelion/aphelion": "population extrema",
         },
     ))
 

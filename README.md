@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 26 mathematical isomorphisms detected across 19 domains
+**Cross-domain analysis:** 31 mathematical isomorphisms detected across 19 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -279,7 +279,7 @@ docs/                      # Research and design documentation
 | Tests | 629 passing, 29 skipped |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
-| Cross-domain analogies | 26 |
+| Cross-domain analogies | 31 |
 | Publication figures | 24 |
 | World models trained | 14/14 |
 | Lines per new domain | ~50-200 |
