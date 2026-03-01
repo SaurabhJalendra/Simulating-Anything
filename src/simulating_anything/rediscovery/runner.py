@@ -40,7 +40,9 @@ def run_all_rediscoveries(
         Combined results dict with all discoveries.
     """
     from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
+    from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+    from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
     from simulating_anything.rediscovery.diffusive_lv import run_diffusive_lv_rediscovery
     from simulating_anything.rediscovery.coupled_oscillators import (
         run_coupled_oscillators_rediscovery,
@@ -195,6 +197,16 @@ def run_all_rediscoveries(
         "diffusive_lv": {
             "label": "Diffusive Lotka-Volterra Wave Speed & Patterns",
             "fn": run_diffusive_lv_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "damped_wave": {
+            "label": "Damped Wave Equation Dispersion & Decay",
+            "fn": run_damped_wave_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "ising_model": {
+            "label": "2D Ising Model Phase Transition",
+            "fn": run_ising_model_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

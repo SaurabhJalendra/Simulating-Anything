@@ -364,6 +364,36 @@ def build_domain_signatures() -> list[DomainSignature]:
             discovered_equations=["c_wave ~ 2*sqrt(alpha*D_u) (Fisher-KPP)"],
             r_squared=[],
         ),
+        DomainSignature(
+            name="damped_wave",
+            math_type="pde",
+            state_dim=2,  # u(x), u_dot(x) on 1D grid
+            n_parameters=3,  # c, gamma, L
+            conserved_quantities=["energy (undamped)"],
+            symmetries=["translation", "reflection"],
+            phase_portrait_type="fixed_point",  # Decays to rest
+            characteristic_timescale="L/c",
+            discovered_equations=[
+                "omega_k = sqrt(c^2*k^2 - gamma^2/4)",
+                "decay_rate = gamma/2",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="ising_model",
+            math_type="ode_nonlinear",  # Monte Carlo dynamics (not ODE but discrete stochastic)
+            state_dim=1,  # N*N spins (flattened)
+            n_parameters=3,  # J, h, T
+            conserved_quantities=[],
+            symmetries=["rotation_90", "reflection", "spin_flip (h=0)"],
+            phase_portrait_type="fixed_point",  # Equilibrium via MC
+            characteristic_timescale="1/T",
+            discovered_equations=[
+                "T_c = 2*J/ln(1+sqrt(2))",
+                "m(T) = (1 - 1/sinh(2J/T)^4)^(1/8) (Onsager)",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -728,7 +758,88 @@ def detect_structural_analogies(
         },
     ))
 
-    # Analogy 17: Boltzmann gas <-> Kuramoto (collective N-body dynamics)
+    # Analogy 17: Damped wave <-> Heat equation (wave vs diffusion)
+    analogies.append(Analogy(
+        domain_a="damped_wave",
+        domain_b="heat_equation",
+        analogy_type="structural",
+        description=(
+            "Both are linear PDEs with spectral mode decay. "
+            "Damped wave: u_tt + gamma*u_t = c^2*u_xx (oscillatory decay). "
+            "Heat: u_t = D*u_xx (pure diffusion). "
+            "In the overdamped limit (gamma >> c*k), the wave equation "
+            "reduces to diffusion: the inertial term becomes negligible."
+        ),
+        strength=0.8,
+        mapping={
+            "c^2*u_xx [wave propagation]": "D*u_xx [diffusion]",
+            "gamma*u_t [damping]": "(implicit in first-order PDE)",
+            "oscillatory decay": "exponential decay",
+        },
+    ))
+
+    # Analogy 18: Damped wave <-> Spring-mass chain (discrete vs continuous wave)
+    analogies.append(Analogy(
+        domain_a="damped_wave",
+        domain_b="spring_mass_chain",
+        analogy_type="structural",
+        description=(
+            "Spring-mass chain is the discrete version of the wave equation. "
+            "Chain: m*u_i'' = K*(u_{i+1}-2u_i+u_{i-1}) -- discrete wave. "
+            "Wave: u_tt = c^2*u_xx -- continuous wave. "
+            "In the continuum limit, c = a*sqrt(K/m) and the chain becomes "
+            "the wave equation exactly."
+        ),
+        strength=0.9,
+        mapping={
+            "c^2 [wave speed squared]": "K*a^2/m [effective c^2]",
+            "u_xx [continuous Laplacian]": "(u_{i+1}-2u_i+u_{i-1})/a^2 [discrete Laplacian]",
+            "gamma [damping]": "(no damping in chain)",
+        },
+    ))
+
+    # Analogy 19: Ising <-> Kuramoto (phase transition in collective systems)
+    analogies.append(Analogy(
+        domain_a="ising_model",
+        domain_b="kuramoto",
+        analogy_type="structural",
+        description=(
+            "Both are N-body systems with a collective phase transition. "
+            "Ising: spin alignment transition at T_c = 2J/ln(1+sqrt(2)). "
+            "Kuramoto: phase synchronization at K_c = 2/(pi*g(0)). "
+            "Both have an order parameter (magnetization/sync r) that "
+            "jumps from 0 to finite above the critical point."
+        ),
+        strength=0.85,
+        mapping={
+            "T [temperature]": "1/K [inverse coupling]",
+            "T_c [critical temp]": "K_c [critical coupling]",
+            "magnetization m": "order parameter r",
+            "spin-spin coupling J": "phase coupling K",
+        },
+    ))
+
+    # Analogy 20: Ising <-> Boltzmann gas (statistical mechanics)
+    analogies.append(Analogy(
+        domain_a="ising_model",
+        domain_b="boltzmann_gas",
+        analogy_type="structural",
+        description=(
+            "Both are statistical mechanical systems described by the "
+            "Boltzmann distribution P ~ exp(-E/kT). Ising uses Monte Carlo "
+            "sampling; gas uses Newtonian dynamics that ergodically explores "
+            "the microcanonical ensemble. Both exhibit thermal equilibrium."
+        ),
+        strength=0.75,
+        mapping={
+            "spin configuration": "particle positions/velocities",
+            "Metropolis acceptance": "elastic collisions",
+            "T [temperature]": "T [temperature]",
+            "E = -J*sum(s_i*s_j)": "E = sum(0.5*m*v^2)",
+        },
+    ))
+
+    # Analogy 21: Boltzmann gas <-> Kuramoto (collective N-body dynamics)
     analogies.append(Analogy(
         domain_a="boltzmann_gas",
         domain_b="kuramoto",
@@ -867,6 +978,25 @@ def detect_dimensional_analogies(
             "k [spring constant]": "k [spring constant]",
             "m [mass]": "m [mass]",
             "omega_s = sqrt(k/m)": "omega_0 = sqrt(k/m)",
+        },
+    ))
+
+    # Damped wave <-> Harmonic oscillator (same dispersion relation)
+    analogies.append(Analogy(
+        domain_a="damped_wave",
+        domain_b="harmonic_oscillator",
+        analogy_type="dimensional",
+        description=(
+            "Each Fourier mode of the damped wave equation is a damped harmonic "
+            "oscillator: u_k'' + gamma*u_k' + c^2*k^2*u_k = 0. "
+            "The wave equation is an infinite collection of oscillators. "
+            "Oscillator: omega_0 = sqrt(k_spring/m). Wave mode: omega_k = c*k."
+        ),
+        strength=0.9,
+        mapping={
+            "c*k [mode frequency]": "sqrt(k/m) [natural frequency]",
+            "gamma [wave damping]": "c/(m) [oscillator damping]",
+            "u_k [mode amplitude]": "x [displacement]",
         },
     ))
 
@@ -1129,6 +1259,25 @@ def detect_topological_analogies(
             "traveling waves": "vortex structures",
             "reaction-diffusion patterns": "turbulent eddies",
             "D_u, D_v [diffusion]": "nu [viscosity]",
+        },
+    ))
+
+    # Ising <-> SIR (phase transition / threshold behavior)
+    analogies.append(Analogy(
+        domain_a="ising_model",
+        domain_b="sir_epidemic",
+        analogy_type="topological",
+        description=(
+            "Both exhibit critical threshold behavior. "
+            "Ising: below T_c, magnetization is nonzero (ordered). "
+            "SIR: above R0=1, epidemic spreads (outbreak). "
+            "Both have a sharp transition from inactive to active state."
+        ),
+        strength=0.7,
+        mapping={
+            "T < T_c [ordered]": "R0 > 1 [epidemic]",
+            "magnetization jump": "infected peak",
+            "spin clusters": "infection clusters",
         },
     ))
 

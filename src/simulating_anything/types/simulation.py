@@ -33,6 +33,8 @@ class Domain(str, Enum):
     DRIVEN_PENDULUM = "driven_pendulum"
     COUPLED_OSCILLATORS = "coupled_oscillators"
     DIFFUSIVE_LV = "diffusive_lv"
+    DAMPED_WAVE = "damped_wave"
+    ISING_MODEL = "ising_model"
 
 
 class SimulationBackend(str, Enum):

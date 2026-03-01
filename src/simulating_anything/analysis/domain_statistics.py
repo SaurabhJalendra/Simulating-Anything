@@ -209,6 +209,24 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.005, "n_steps": 500, "math_class": "Reaction-Diffusion PDE",
     },
+    "damped_wave": {
+        "module": "simulating_anything.simulation.damped_wave",
+        "cls": "DampedWave1D",
+        "domain": Domain.DAMPED_WAVE,
+        "params": {
+            "c": 1.0, "gamma": 0.1, "N": 64.0, "L": 6.283185307179586,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Wave PDE",
+    },
+    "ising_model": {
+        "module": "simulating_anything.simulation.ising_model",
+        "cls": "IsingModel2D",
+        "domain": Domain.ISING_MODEL,
+        "params": {
+            "N": 16.0, "J": 1.0, "h": 0.0, "T": 2.0,
+        },
+        "dt": 1.0, "n_steps": 100, "math_class": "Statistical Mechanics",
+    },
 }
 
 
