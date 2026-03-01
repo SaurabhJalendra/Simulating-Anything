@@ -106,6 +106,12 @@ def run_all_rediscoveries(
         run_shallow_water_rediscovery,
     )
     from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
+    from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
+    from simulating_anything.rediscovery.hodgkin_huxley import run_hodgkin_huxley_rediscovery
+    from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
+    from simulating_anything.rediscovery.rayleigh_benard import (
+        run_rayleigh_benard_rediscovery,
+    )
     from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
 
     output_path = Path(output_dir)
@@ -321,6 +327,26 @@ def run_all_rediscoveries(
         "wilberforce": {
             "label": "Wilberforce Pendulum Coupled Spring-Torsion",
             "fn": run_wilberforce_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "standard_map": {
+            "label": "Chirikov Standard Map KAM Chaos",
+            "fn": run_standard_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "hodgkin_huxley": {
+            "label": "Hodgkin-Huxley Neuron Action Potential",
+            "fn": run_hodgkin_huxley_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "eco_epidemic": {
+            "label": "Eco-Epidemiological Predator-Prey with Disease",
+            "fn": run_eco_epidemic_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "rayleigh_benard": {
+            "label": "Rayleigh-Benard Convection Onset & Nusselt",
+            "fn": run_rayleigh_benard_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

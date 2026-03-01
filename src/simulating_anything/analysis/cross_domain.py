@@ -682,6 +682,70 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="standard_map",
+            math_type="discrete",  # 2D area-preserving map
+            state_dim=2,  # [theta, p] per particle
+            n_parameters=1,  # K (stochasticity parameter)
+            conserved_quantities=["phase_space_area"],
+            symmetries=["area_preserving", "translation_mod_2pi"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1",  # Discrete map, one iteration
+            discovered_equations=[
+                "p_{n+1} = p_n + K*sin(theta_n)",
+                "theta_{n+1} = theta_n + p_{n+1}",
+                "K_c ~ 0.9716 (last KAM torus)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="hodgkin_huxley",
+            math_type="ode_nonlinear",  # 4D biophysical neuron
+            state_dim=4,  # [V, n, m, h]
+            n_parameters=7,  # g_Na, g_K, g_L, E_Na, E_K, E_L, C_m
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1ms",  # Action potential duration
+            discovered_equations=[
+                "C_m*dV/dt = I - g_Na*m^3*h*(V-E_Na) - g_K*n^4*(V-E_K) - g_L*(V-E_L)",
+                "dn/dt = alpha_n(V)*(1-n) - beta_n(V)*n",
+                "f-I curve: monotonic firing frequency",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="rayleigh_benard",
+            math_type="pde",  # 2D convection PDE
+            state_dim=4096,  # Vorticity + temperature on grid
+            n_parameters=3,  # Ra, Pr, Lx
+            conserved_quantities=[],
+            symmetries=["horizontal_translation"],
+            phase_portrait_type="none",
+            characteristic_timescale="H^2/kappa",
+            discovered_equations=[
+                "Ra_c = (27/4)*pi^4 ~ 657.5 (free-slip)",
+                "Nu(Ra) ~ (Ra/Ra_c)^gamma above onset",
+                "Convection roll wavelength ~ 2H",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="eco_epidemic",
+            math_type="ode_nonlinear",  # 3D eco-epidemiological
+            state_dim=3,  # [S, I, P]
+            n_parameters=10,  # r, K, beta, a1, a2, h1, h2, e1, e2, d, m
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dS/dt = rS(1-(S+I)/K) - beta*S*I - a1*S*P/(1+h1*a1*S)",
+                "R0 = beta*K/d (without predators)",
+                "Predator-mediated disease control",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -1615,6 +1679,116 @@ def detect_structural_analogies(
         },
     ))
 
+    # Standard Map <-> Henon Map (area-preserving 2D discrete maps with chaos)
+    analogies.append(Analogy(
+        domain_a="standard_map",
+        domain_b="henon_map",
+        analogy_type="structural",
+        description=(
+            "Both are 2D discrete maps exhibiting chaos through period-doubling. "
+            "Standard map is area-preserving (Hamiltonian); Henon map is dissipative."
+        ),
+        strength=0.8,
+        mapping={
+            "theta": "x",
+            "p": "y",
+            "K (stochasticity)": "a (nonlinearity)",
+            "KAM tori": "strange attractor",
+        },
+    ))
+
+    # Hodgkin-Huxley <-> FitzHugh-Nagumo (neuron models)
+    analogies.append(Analogy(
+        domain_a="hodgkin_huxley",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="structural",
+        description=(
+            "FitzHugh-Nagumo is a 2D reduction of the 4D Hodgkin-Huxley model. "
+            "Both exhibit excitability, threshold behavior, and action potentials."
+        ),
+        strength=0.95,
+        mapping={
+            "V (membrane voltage)": "v (fast variable)",
+            "gating variables n,m,h": "w (recovery variable)",
+            "I_ext": "I_ext",
+            "f-I curve": "f-I curve",
+        },
+    ))
+
+    # Rayleigh-Benard <-> Lorenz (RB convection gives rise to Lorenz equations)
+    analogies.append(Analogy(
+        domain_a="rayleigh_benard",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "The Lorenz equations are a 3-mode truncation of Rayleigh-Benard "
+            "convection. Lorenz derived his famous chaotic system from the "
+            "Boussinesq convection equations."
+        ),
+        strength=0.95,
+        mapping={
+            "Ra (Rayleigh)": "rho (control parameter)",
+            "Pr (Prandtl)": "sigma",
+            "convection amplitude": "X (Lorenz)",
+            "Ra_c (onset)": "rho_c (chaos onset)",
+        },
+    ))
+
+    # Eco-epidemic <-> SIR (disease transmission dynamics)
+    analogies.append(Analogy(
+        domain_a="eco_epidemic",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both models feature disease transmission via beta*S*I terms. "
+            "Eco-epidemic extends SIR with predator-prey dynamics and "
+            "Holling Type II functional responses."
+        ),
+        strength=0.85,
+        mapping={
+            "S (susceptible prey)": "S (susceptible)",
+            "I (infected prey)": "I (infected)",
+            "beta (transmission)": "beta (transmission)",
+            "R0 = beta*K/d": "R0 = beta/gamma",
+        },
+    ))
+
+    # Eco-epidemic <-> Rosenzweig-MacArthur (predator-prey with Holling II)
+    analogies.append(Analogy(
+        domain_a="eco_epidemic",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Both feature Holling Type II functional response for predation. "
+            "Eco-epidemic splits prey into susceptible and infected classes."
+        ),
+        strength=0.85,
+        mapping={
+            "a*S/(1+h*a*S)": "a*N/(1+a*h*N)",
+            "predator P": "predator P",
+            "prey S+I": "prey N",
+            "carrying capacity K": "carrying capacity K",
+        },
+    ))
+
+    # Rayleigh-Benard <-> Navier-Stokes (fluid dynamics PDEs)
+    analogies.append(Analogy(
+        domain_a="rayleigh_benard",
+        domain_b="navier_stokes",
+        analogy_type="structural",
+        description=(
+            "Rayleigh-Benard convection is governed by the Navier-Stokes equations "
+            "with Boussinesq buoyancy. Both use vorticity-streamfunction formulation."
+        ),
+        strength=0.9,
+        mapping={
+            "omega (vorticity)": "omega (vorticity)",
+            "psi (streamfunction)": "psi (streamfunction)",
+            "Pr*nabla^2(omega)": "nu*nabla^2(omega)",
+            "Pr*Ra*dT/dx (buoyancy)": "0 (no buoyancy)",
+        },
+    ))
+
     return analogies
 
 
@@ -1950,6 +2124,57 @@ def detect_dimensional_analogies(
         mapping={
             "D_c [washout]": "1/R_0 [epidemic threshold]",
             "mu_max [max growth]": "beta [infection rate]",
+        },
+    ))
+
+    # Dimensional: HH <-> FHN (excitable neuron threshold scaling)
+    analogies.append(Analogy(
+        domain_a="hodgkin_huxley",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="dimensional",
+        description=(
+            "Both have a threshold current for action potential generation. "
+            "HH rheobase current scales with conductance parameters; FHN "
+            "critical current I_c has analogous threshold scaling."
+        ),
+        strength=0.85,
+        mapping={
+            "I_rheobase [HH]": "I_c [FHN]",
+            "spike amplitude ~100mV": "spike amplitude ~2v units",
+        },
+    ))
+
+    # Dimensional: Rayleigh-Benard <-> Gray-Scott (pattern wavelength scaling)
+    analogies.append(Analogy(
+        domain_a="rayleigh_benard",
+        domain_b="gray_scott",
+        analogy_type="dimensional",
+        description=(
+            "Both exhibit pattern formation with characteristic wavelength "
+            "set by diffusion-reaction balance. RB: roll width ~ 2H. "
+            "Gray-Scott: pattern wavelength ~ sqrt(D/k)."
+        ),
+        strength=0.75,
+        mapping={
+            "roll wavelength ~ 2H": "pattern wavelength ~ sqrt(D/k)",
+            "Ra/Ra_c (supercriticality)": "distance from Turing boundary",
+        },
+    ))
+
+    # Dimensional: Eco-epidemic <-> LV (population timescale)
+    analogies.append(Analogy(
+        domain_a="eco_epidemic",
+        domain_b="lotka_volterra",
+        analogy_type="dimensional",
+        description=(
+            "Both have characteristic timescale 1/r (prey growth rate). "
+            "Predator-prey oscillation period scales with 1/sqrt(r*m) in "
+            "both models."
+        ),
+        strength=0.8,
+        mapping={
+            "1/r [prey growth]": "1/alpha [prey growth]",
+            "K [carrying capacity]": "gamma/delta [prey equilibrium]",
         },
     ))
 
@@ -2579,6 +2804,78 @@ def detect_topological_analogies(
         mapping={
             "washout (D_c)": "Hopf (K_c)",
             "stable node -> extinction": "stable node -> limit cycle",
+        },
+    ))
+
+    # Standard Map <-> Logistic Map (KAM/Feigenbaum routes to chaos)
+    analogies.append(Analogy(
+        domain_a="standard_map",
+        domain_b="logistic_map",
+        analogy_type="topological",
+        description=(
+            "Both are discrete maps transitioning from regular to chaotic "
+            "as control parameter increases. Standard map: K_c ~ 0.97. "
+            "Logistic map: r_c ~ 3.57. Both exhibit positive Lyapunov exponents."
+        ),
+        strength=0.8,
+        mapping={
+            "K (stochasticity)": "r (growth rate)",
+            "KAM tori -> chaos": "period doubling -> chaos",
+            "lambda(K) > 0": "lambda(r) > 0",
+        },
+    ))
+
+    # HH <-> VdP (relaxation oscillation limit cycles)
+    analogies.append(Analogy(
+        domain_a="hodgkin_huxley",
+        domain_b="van_der_pol",
+        analogy_type="topological",
+        description=(
+            "Both exhibit relaxation oscillation limit cycles with fast-slow "
+            "dynamics. HH: fast V spike + slow gating recovery. "
+            "VdP: fast excursion + slow return. Both have stable limit cycles."
+        ),
+        strength=0.8,
+        mapping={
+            "V spike (fast)": "x excursion (fast)",
+            "gating recovery (slow)": "relaxation (slow)",
+            "I_ext threshold": "mu parameter",
+        },
+    ))
+
+    # Rayleigh-Benard <-> Brusselator-diffusion (pattern formation via instability)
+    analogies.append(Analogy(
+        domain_a="rayleigh_benard",
+        domain_b="brusselator_diffusion",
+        analogy_type="topological",
+        description=(
+            "Both exhibit pattern formation via symmetry-breaking instability. "
+            "RB: convection rolls at Ra > Ra_c. Brusselator-diffusion: "
+            "Turing patterns at b > b_c. Same supercritical bifurcation topology."
+        ),
+        strength=0.8,
+        mapping={
+            "Ra_c (convection onset)": "b_c (Turing onset)",
+            "convection rolls": "chemical Turing patterns",
+            "conduction state (uniform)": "homogeneous steady state",
+        },
+    ))
+
+    # Eco-epidemic <-> LV (predator-prey oscillations)
+    analogies.append(Analogy(
+        domain_a="eco_epidemic",
+        domain_b="lotka_volterra",
+        analogy_type="topological",
+        description=(
+            "Both exhibit predator-prey oscillations in phase space. "
+            "Eco-epidemic adds disease dynamics but preserves the "
+            "consumer-resource oscillation topology."
+        ),
+        strength=0.85,
+        mapping={
+            "S+I (total prey) vs P": "prey vs predator",
+            "limit cycle/spiral": "center/limit cycle",
+            "coexistence equilibrium": "equilibrium (gamma/delta, alpha/beta)",
         },
     ))
 

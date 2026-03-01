@@ -389,6 +389,48 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.001, "n_steps": 500, "math_class": "Coupled ODE",
     },
+    "standard_map": {
+        "module": "simulating_anything.simulation.standard_map",
+        "cls": "StandardMapSimulation",
+        "domain": Domain.STANDARD_MAP,
+        "params": {"K": 0.9716, "n_particles": 100.0},
+        "dt": 1.0, "n_steps": 500, "math_class": "Hamiltonian",
+    },
+    "hodgkin_huxley": {
+        "module": "simulating_anything.simulation.hodgkin_huxley",
+        "cls": "HodgkinHuxleySimulation",
+        "domain": Domain.HODGKIN_HUXLEY,
+        "params": {
+            "g_Na": 120.0, "g_K": 36.0, "g_L": 0.3,
+            "E_Na": 50.0, "E_K": -77.0, "E_L": -54.387,
+            "C_m": 1.0, "I_ext": 10.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Biophysical ODE",
+    },
+    "eco_epidemic": {
+        "module": "simulating_anything.simulation.eco_epidemic",
+        "cls": "EcoEpidemicSimulation",
+        "domain": Domain.ECO_EPIDEMIC,
+        "params": {
+            "r": 1.0, "K": 100.0, "beta": 0.01,
+            "a1": 0.1, "a2": 0.3, "h1": 0.1, "h2": 0.1,
+            "e1": 0.5, "e2": 0.3, "d_disease": 0.2, "m": 0.3,
+            "S_0": 50.0, "I_0": 10.0, "P_0": 5.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Eco-Epidemiological",
+    },
+    "rayleigh_benard": {
+        "module": "simulating_anything.simulation.rayleigh_benard",
+        "cls": "RayleighBenardSimulation",
+        "domain": Domain.RAYLEIGH_BENARD,
+        "params": {
+            "Ra": 1000.0, "Pr": 1.0,
+            "Lx": 2.0, "H": 1.0,
+            "Nx": 32.0, "Nz": 16.0,
+            "perturbation_amp": 0.01,
+        },
+        "dt": 5e-5, "n_steps": 200, "math_class": "Convection PDE",
+    },
 }
 
 

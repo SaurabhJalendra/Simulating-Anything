@@ -53,6 +53,10 @@ class Domain(str, Enum):
     FHN_SPATIAL = "fhn_spatial"
     CHEMOSTAT = "chemostat"
     WILBERFORCE = "wilberforce"
+    STANDARD_MAP = "standard_map"
+    HODGKIN_HUXLEY = "hodgkin_huxley"
+    ECO_EPIDEMIC = "eco_epidemic"
+    RAYLEIGH_BENARD = "rayleigh_benard"
 
 
 class SimulationBackend(str, Enum):
