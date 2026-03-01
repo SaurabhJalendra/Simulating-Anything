@@ -144,7 +144,7 @@ Only the `SimulationEnvironment` subclass is domain-specific. Everything
 else -- problem parsing, world model, exploration, analysis, reporting --
 operates on generic tensors. Adding a domain = one new class (~50-200 lines).
 
-**Cross-domain analogy engine** detects 66 mathematical isomorphisms across 31 domains:
+**Cross-domain analogy engine** detects 98 mathematical isomorphisms across 43 domains:
 - LV ↔ SIR (bilinear interaction terms)
 - Pendulum ↔ Oscillator (harmonic restoring force, T ~ √(inertia/force))
 - Projectile ↔ Oscillator (energy conservation)
@@ -219,7 +219,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (496 passing, 17 skipped):
+# Full suite in WSL (1142 passing, 71 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -434,6 +434,18 @@ src/simulating_anything/
     rossler.py             # Rossler attractor (3D chaotic ODE)
     brusselator_diffusion.py # Spatial Brusselator PDE (Turing patterns)
     henon_map.py           # Henon map (2D discrete chaos)
+    rosenzweig_macarthur.py # Predator-prey with Holling Type II
+    chua.py                # Chua's circuit (double-scroll chaos)
+    shallow_water.py       # 1D shallow water equations (Lax-Friedrichs)
+    toda_lattice.py        # Toda lattice (integrable solitons)
+    kuramoto_sivashinsky.py # KS equation (spatiotemporal chaos, ETDRK4)
+    ginzburg_landau.py     # Complex Ginzburg-Landau (Benjamin-Feir)
+    oregonator.py          # Oregonator BZ reaction oscillator
+    bak_sneppen.py         # Bak-Sneppen SOC (power-law avalanches)
+    lorenz96.py            # Lorenz-96 atmospheric model (F=8 chaos)
+    chemostat.py           # Chemostat microbial growth (Monod kinetics)
+    fhn_spatial.py         # FHN reaction-diffusion PDE (spiral waves)
+    wilberforce.py         # Wilberforce pendulum (coupled beats)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -448,7 +460,7 @@ src/simulating_anything/
     ablation.py            # Single-factor ablation studies
     pipeline_ablation.py   # Pipeline component ablation (sampling, method, data)
     sensitivity.py         # Noise/data/range sensitivity analysis
-    cross_domain.py        # Cross-domain analogy engine (45 isomorphisms)
+    cross_domain.py        # Cross-domain analogy engine (98 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
     domain_statistics.py   # Runtime benchmarks for all domains
     error_analysis.py      # Bootstrap R², coefficient uncertainty
@@ -486,7 +498,19 @@ src/simulating_anything/
     rossler.py             # SINDy ODE recovery, period-doubling
     brusselator_diffusion.py # Turing wavelength scaling
     henon_map.py           # Lyapunov spectrum, bifurcation
-    runner.py              # Unified runner for all 31 domains
+    rosenzweig_macarthur.py # Holling II functional response
+    chua.py                # Double-scroll attractor analysis
+    shallow_water.py       # Wave speed c=sqrt(gh) recovery
+    toda_lattice.py        # Soliton propagation, harmonic limit
+    kuramoto_sivashinsky.py # Spatiotemporal chaos, Lyapunov
+    ginzburg_landau.py     # Benjamin-Feir instability
+    oregonator.py          # BZ relaxation oscillation analysis
+    bak_sneppen.py         # SOC threshold f_c~2/3
+    lorenz96.py            # High-dim chaos, Lyapunov exponent
+    chemostat.py           # Washout bifurcation, Monod kinetics
+    fhn_spatial.py         # Spiral waves, pattern formation
+    wilberforce.py         # Beat phenomena, energy exchange
+    runner.py              # Unified runner for all 43 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -508,7 +532,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 857 tests across 46 files
+tests/unit/                # 1142 tests across 58 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -549,6 +573,18 @@ tests/unit/                # 857 tests across 46 files
   test_rossler.py          # 21 tests — Rossler chaos, Lyapunov
   test_brusselator_diffusion.py # 26 tests — Turing patterns PDE
   test_henon_map.py        # 19 tests — Discrete chaos, bifurcation
+  test_rosenzweig_macarthur.py # 24 tests — Holling II, paradox of enrichment
+  test_chua.py             # 22 tests — Chua double-scroll attractor
+  test_shallow_water.py    # 18 tests — Shallow water equations
+  test_toda_lattice.py     # 24 tests — Integrable lattice, solitons
+  test_kuramoto_sivashinsky.py # 25 tests — KS spatiotemporal chaos
+  test_ginzburg_landau.py  # 21 tests — CGLE Benjamin-Feir
+  test_oregonator.py       # 19 tests — BZ reaction oscillator
+  test_bak_sneppen.py      # 23 tests — SOC avalanches
+  test_lorenz96.py         # 23 tests — High-dim atmospheric chaos
+  test_chemostat.py        # 24 tests — Monod kinetics, washout
+  test_fhn_spatial.py      # 21 tests — FHN reaction-diffusion
+  test_wilberforce.py      # 19 tests — Coupled torsional-translational
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
