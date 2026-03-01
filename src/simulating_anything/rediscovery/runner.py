@@ -48,15 +48,15 @@ def run_all_rediscoveries(
         run_bouncing_ball_rediscovery,
     )
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
-    from simulating_anything.rediscovery.cahn_hilliard import (
-        run_cahn_hilliard_rediscovery,
-    )
     from simulating_anything.rediscovery.brusselator_diffusion import (
         run_brusselator_diffusion_rediscovery,
     )
     from simulating_anything.rediscovery.bz_spiral import run_bz_spiral_rediscovery
     from simulating_anything.rediscovery.cable_equation import (
         run_cable_equation_rediscovery,
+    )
+    from simulating_anything.rediscovery.cahn_hilliard import (
+        run_cahn_hilliard_rediscovery,
     )
     from simulating_anything.rediscovery.cart_pole import run_cart_pole_rediscovery
     from simulating_anything.rediscovery.chemostat import run_chemostat_rediscovery
@@ -66,6 +66,9 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.coupled_lorenz import (
         run_coupled_lorenz_rediscovery,
+    )
+    from simulating_anything.rediscovery.coupled_map_lattice import (
+        run_coupled_map_lattice_rediscovery,
     )
     from simulating_anything.rediscovery.coupled_oscillators import (
         run_coupled_oscillators_rediscovery,
@@ -91,6 +94,9 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscovery
     from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
+    from simulating_anything.rediscovery.fitzhugh_rinzel import (
+        run_fitzhugh_rinzel_rediscovery,
+    )
     from simulating_anything.rediscovery.ginzburg_landau import (
         run_ginzburg_landau_rediscovery,
     )
@@ -106,6 +112,9 @@ def run_all_rediscoveries(
         run_ikeda_map_rediscovery,
     )
     from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
+    from simulating_anything.rediscovery.kapitza_pendulum import (
+        run_kapitza_pendulum_rediscovery,
+    )
     from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
     from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
     from simulating_anything.rediscovery.kuramoto_sivashinsky import (
@@ -136,6 +145,9 @@ def run_all_rediscoveries(
         run_rosenzweig_macarthur_rediscovery,
     )
     from simulating_anything.rediscovery.rossler import run_rossler_rediscovery
+    from simulating_anything.rediscovery.schnakenberg import (
+        run_schnakenberg_rediscovery,
+    )
     from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
     from simulating_anything.rediscovery.shallow_water import (
         run_shallow_water_rediscovery,
@@ -493,6 +505,26 @@ def run_all_rediscoveries(
         "duffing_van_der_pol": {
             "label": "Duffing-Van der Pol Hybrid Oscillator",
             "fn": run_duffing_van_der_pol_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "schnakenberg": {
+            "label": "Schnakenberg Reaction-Diffusion Turing Patterns",
+            "fn": run_schnakenberg_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "kapitza_pendulum": {
+            "label": "Kapitza Pendulum Inverted Stability",
+            "fn": run_kapitza_pendulum_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "fitzhugh_rinzel": {
+            "label": "FitzHugh-Rinzel Bursting Dynamics",
+            "fn": run_fitzhugh_rinzel_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "coupled_map_lattice": {
+            "label": "Coupled Map Lattice Spatiotemporal Chaos",
+            "fn": run_coupled_map_lattice_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

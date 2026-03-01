@@ -76,6 +76,10 @@ class Domain(str, Enum):
     DELAYED_PREDATOR_PREY = "delayed_predator_prey"
     NETWORK_SIS = "network_sis"
     DUFFING_VAN_DER_POL = "duffing_van_der_pol"
+    FITZHUGH_RINZEL = "fitzhugh_rinzel"
+    COUPLED_MAP_LATTICE = "coupled_map_lattice"
+    SCHNAKENBERG = "schnakenberg"
+    KAPITZA_PENDULUM = "kapitza_pendulum"
 
 
 class SimulationBackend(str, Enum):
