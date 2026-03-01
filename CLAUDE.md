@@ -144,7 +144,7 @@ Only the `SimulationEnvironment` subclass is domain-specific. Everything
 else -- problem parsing, world model, exploration, analysis, reporting --
 operates on generic tensors. Adding a domain = one new class (~50-200 lines).
 
-**Cross-domain analogy engine** detects 45 mathematical isomorphisms across 25 domains:
+**Cross-domain analogy engine** detects 53 mathematical isomorphisms across 27 domains:
 - LV ↔ SIR (bilinear interaction terms)
 - Pendulum ↔ Oscillator (harmonic restoring force, T ~ √(inertia/force))
 - Projectile ↔ Oscillator (energy conservation)
@@ -157,6 +157,10 @@ operates on generic tensors. Adding a domain = one new class (~50-200 lines).
 - Heat equation ↔ NS (linear vs nonlinear diffusion)
 - Logistic map ↔ Lorenz (chaos, positive Lyapunov)
 - Kuramoto ↔ SIR (threshold/phase transitions)
+- Cart-pole ↔ Double pendulum (Lagrangian coupled DOFs)
+- Cart-pole ↔ Harmonic oscillator (linearized small-angle oscillation)
+- Three-species ↔ LV (trophic cascade extension)
+- Three-species ↔ SIR (3-compartment coupled nonlinear ODEs)
 
 Full argument with 40+ concrete domains: `docs/RESEARCH.md` Section 4.
 Domain expansion architecture: `docs/DESIGN.md` Section 11.
@@ -420,6 +424,8 @@ src/simulating_anything/
     diffusive_lv.py        # Spatial predator-prey PDE (FFT Laplacian)
     damped_wave.py         # 1D damped wave equation (spectral FFT)
     ising_model.py         # 2D Ising model (Metropolis Monte Carlo)
+    cart_pole.py           # Cart-pole (Lagrangian, mass matrix inversion)
+    three_species.py       # Three-species food chain (trophic cascade)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -462,7 +468,13 @@ src/simulating_anything/
     spring_mass_chain.py   # Phonon dispersion omega(k) recovery
     kepler.py              # Kepler T^2 ~ a^3, energy/L conservation
     driven_pendulum.py     # Period-doubling, resonance, Lyapunov
-    runner.py              # Unified runner for all 21 domains
+    coupled_oscillators.py # Normal mode splitting, beat frequency
+    diffusive_lv.py        # Fisher-KPP waves, spatial patterns
+    damped_wave.py         # Spectral wave dispersion + decay
+    ising_model.py         # Phase transition T_c, Onsager magnetization
+    cart_pole.py           # omega=sqrt(g*(M+m)/(M*L)), energy
+    three_species.py       # Trophic cascade, SINDy ODE recovery
+    runner.py              # Unified runner for all 27 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -484,7 +496,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 718 tests across 40 files
+tests/unit/                # 762 tests across 42 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -515,6 +527,12 @@ tests/unit/                # 718 tests across 40 files
   test_error_analysis.py   # 18 tests — Bootstrap R², coefficients
   test_kepler.py           # 19 tests — Kepler orbits, T^2~a^3
   test_driven_pendulum.py  # 18 tests — Chaos, resonance, Poincare
+  test_coupled_oscillators.py # 17 tests — Normal modes, beat frequency
+  test_diffusive_lv.py     # 16 tests — Spatial predator-prey PDE
+  test_damped_wave.py      # 22 tests — Spectral wave, dispersion
+  test_ising_model.py      # 26 tests — Metropolis MC, phase transition
+  test_cart_pole.py        # 20 tests — Cart-pole mechanics, frequency
+  test_three_species.py    # 20 tests — Food chain, equilibrium
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
