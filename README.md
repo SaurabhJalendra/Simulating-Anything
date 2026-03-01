@@ -96,7 +96,7 @@ python -m simulating_anything demo
 ### Run Tests
 
 ```bash
-# All 396 tests:
+# All 408 tests:
 python -m pytest tests/unit/ -v
 
 # Quick smoke test:
@@ -187,7 +187,7 @@ scripts/
   generate_latex_table.py             # LaTeX results table
   train_world_models_14domain.py      # RSSM training (14 domains)
 
-tests/unit/                # 396 tests, 26 files
+tests/unit/                # 408 tests, 27 files
 notebooks/                 # Interactive demos
 ```
 
@@ -199,7 +199,7 @@ notebooks/                 # Interactive demos
 |--------|-------|
 | Domains | 14 |
 | Mathematical classes | 8 |
-| Tests | 396 passing, 15 skipped |
+| Tests | 408 passing, 15 skipped |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
 | Cross-domain analogies | 17 |

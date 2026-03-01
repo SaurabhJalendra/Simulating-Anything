@@ -211,7 +211,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (396 passing, 15 skipped):
+# Full suite in WSL (408 passing, 15 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -416,6 +416,7 @@ src/simulating_anything/
     sensitivity.py         # Noise/data/range sensitivity analysis
     cross_domain.py        # Cross-domain analogy engine (17 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
+    domain_statistics.py   # Runtime benchmarks for all 14 domains
   rediscovery/
     __init__.py            # Exports all rediscovery runners
     projectile.py          # Range equation R=v²sin(2θ)/g recovery
@@ -454,7 +455,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 396 tests across 26 files
+tests/unit/                # 408 tests across 27 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -475,6 +476,7 @@ tests/unit/                # 396 tests across 26 files
   test_fitzhugh_nagumo.py  # 10 tests — FHN neuron model
   test_heat_equation.py    # 12 tests — Heat equation 1D spectral
   test_logistic_map.py     # 13 tests — Logistic map, Lyapunov, periods
+  test_cli.py              # 6 tests — CLI entry point commands
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
@@ -486,10 +488,12 @@ output/rediscovery/          # Rediscovery results (not committed to git)
   lorenz/results.json      # Lorenz ODEs, chaos transition, Lyapunov
   navier_stokes/results.json # NS 2D viscous decay rate
 
-output/world_models/         # Trained RSSM checkpoints (not committed)
-  projectile/model.eqx      # Recon MSE 0.38, dream MSE 0.61
-  lotka_volterra/model.eqx   # Recon MSE 0.39, dream MSE 0.22
-  gray_scott/model.eqx       # Recon MSE 0.06, dream MSE 0.10
+output/world_models/         # Trained RSSM checkpoints (all 14 domains)
+  projectile/model.eqx      # loss=32.32
+  lotka_volterra/model.eqx   # loss=32.15
+  gray_scott/model.eqx       # loss=32.06 (obs=8192)
+  navier_stokes/model.eqx    # loss=32.20 (obs=1024)
+  # + 10 more domains (all ~32.0 loss)
 
 scripts/
   generate_figures.py        # 14 publication-quality figures
@@ -501,6 +505,8 @@ scripts/
   run_dream_discovery.py     # Dream-based discovery pipeline
   run_ablation_studies.py    # Systematic ablation studies
   generate_paper_figures.py  # 8 publication-quality figures (all 7 domains)
+  generate_ablation_figures.py # 5 ablation figures (sampling, method, data, features)
+  aggregate_all_results.py   # Unified JSON + LaTeX table for all 14 domains
   build_7domain_notebook.py  # Builds 7-domain rediscovery notebook
 
 docs/
@@ -513,4 +519,5 @@ notebooks/
   seven_domain_rediscovery.ipynb # 7-domain notebook (35 cells)
   world_model_training.ipynb # RSSM training results
   cross_domain_analysis.ipynb # Cross-domain comparison
+  showcase_14domain.ipynb    # 14-domain interactive showcase (24 cells)
 ```
