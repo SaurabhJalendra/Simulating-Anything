@@ -65,6 +65,10 @@ class Domain(str, Enum):
     COUPLED_LORENZ = "coupled_lorenz"
     SWINGING_ATWOOD = "swinging_atwood"
     ALLEE_PREDATOR_PREY = "allee_predator_prey"
+    MACKEY_GLASS = "mackey_glass"
+    BOUNCING_BALL = "bouncing_ball"
+    WILSON_COWAN = "wilson_cowan"
+    CABLE_EQUATION = "cable_equation"
 
 
 class SimulationBackend(str, Enum):
