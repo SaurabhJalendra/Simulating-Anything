@@ -22,6 +22,7 @@ from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscov
 from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
 from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
+from simulating_anything.rediscovery.hindmarsh_rose import run_hindmarsh_rose_rediscovery
 from simulating_anything.rediscovery.harmonic_oscillator import run_harmonic_oscillator_rediscovery
 from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
 from simulating_anything.rediscovery.henon_map import run_henon_map_rediscovery
@@ -54,6 +55,9 @@ from simulating_anything.rediscovery.standard_map import run_standard_map_redisc
 from simulating_anything.rediscovery.hodgkin_huxley import run_hodgkin_huxley_rediscovery
 from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
 from simulating_anything.rediscovery.rayleigh_benard import run_rayleigh_benard_rediscovery
+from simulating_anything.rediscovery.magnetic_pendulum import run_magnetic_pendulum_rediscovery
+from simulating_anything.rediscovery.competitive_lv import run_competitive_lv_rediscovery
+from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
 from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
 
 __all__ = [
@@ -104,4 +108,8 @@ __all__ = [
     "run_eco_epidemic_rediscovery",
     "run_rayleigh_benard_rediscovery",
     "run_wilberforce_rediscovery",
+    "run_hindmarsh_rose_rediscovery",
+    "run_magnetic_pendulum_rediscovery",
+    "run_competitive_lv_rediscovery",
+    "run_vicsek_rediscovery",
 ]

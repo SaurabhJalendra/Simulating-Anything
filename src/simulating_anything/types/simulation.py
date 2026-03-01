@@ -57,6 +57,10 @@ class Domain(str, Enum):
     HODGKIN_HUXLEY = "hodgkin_huxley"
     ECO_EPIDEMIC = "eco_epidemic"
     RAYLEIGH_BENARD = "rayleigh_benard"
+    HINDMARSH_ROSE = "hindmarsh_rose"
+    MAGNETIC_PENDULUM = "magnetic_pendulum"
+    VICSEK = "vicsek"
+    COMPETITIVE_LV = "competitive_lv"
 
 
 class SimulationBackend(str, Enum):
