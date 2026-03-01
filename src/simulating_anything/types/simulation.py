@@ -24,9 +24,11 @@ class Domain(str, Enum):
     FITZHUGH_NAGUMO = "fitzhugh_nagumo"
     HEAT_EQUATION_1D = "heat_equation_1d"
     LOGISTIC_MAP = "logistic_map"
+    BOLTZMANN_GAS = "boltzmann_gas"
     DUFFING = "duffing"
     SCHWARZSCHILD = "schwarzschild"
     QUANTUM_OSCILLATOR = "quantum_oscillator"
+    SPRING_MASS_CHAIN = "spring_mass_chain"
 
 
 class SimulationBackend(str, Enum):
