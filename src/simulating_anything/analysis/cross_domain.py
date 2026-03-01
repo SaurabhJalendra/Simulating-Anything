@@ -1201,6 +1201,72 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="predator_prey_mutualist",
+            math_type="ode_nonlinear",  # 3-species mutualistic ODE
+            state_dim=3,  # [x, y, z] -- prey, predator, mutualist
+            n_parameters=11,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dx/dt = rx(1-x/K) - axy/(1+bx) + mxz/(1+nz)",
+                "dy/dt = -dy + eaxy/(1+bx)",
+                "dz/dt = sz(1-z/C) + pxz/(1+nz)",
+                "Holling II + mutualism stabilization",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="brusselator_2d",
+            math_type="pde",  # 2D reaction-diffusion
+            state_dim=8192,  # 2*64*64
+            n_parameters=4,  # D_u, D_v, a, b
+            conserved_quantities=[],
+            symmetries=["translational", "rotational"],
+            phase_portrait_type="turing_pattern",
+            characteristic_timescale="1/(b-1-a^2)",
+            discovered_equations=[
+                "du/dt = D_u*nabla^2(u) + a-(b+1)u+u^2v",
+                "dv/dt = D_v*nabla^2(v) + bu-u^2v",
+                "Turing wavelength ~ 2pi*sqrt(D_v/(b-1-a^2))",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="fput",
+            math_type="ode_nonlinear",  # Hamiltonian lattice
+            state_dim=64,  # 2*N positions + velocities
+            n_parameters=3,  # k, alpha, beta
+            conserved_quantities=["energy"],
+            symmetries=["time_reversal"],
+            phase_portrait_type="quasi_periodic",
+            characteristic_timescale="2*pi/omega_1",
+            discovered_equations=[
+                "d2x_i/dt2 = F(x_{i+1}-x_i) - F(x_i-x_{i-1})",
+                "F(d) = k*d + alpha*d^2 + beta*d^3",
+                "FPUT recurrence paradox",
+                "omega_n = 2*sqrt(k)*sin(n*pi/(2*(N+1)))",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="selkov",
+            math_type="ode_nonlinear",  # Biochemical oscillator
+            state_dim=2,  # [x, y] -- ADP, F6P
+            n_parameters=2,  # a, b
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = -x + ay + x^2y",
+                "dy/dt = b - ay - x^2y",
+                "Hopf at b_c(a) from trace(J)=0",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -2872,6 +2938,91 @@ def detect_structural_analogies(
         },
     ))
 
+    # PPM <-> Rosenzweig-MacArthur (Holling Type II predation)
+    analogies.append(Analogy(
+        domain_a="predator_prey_mutualist",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Both feature Holling Type II functional response axy/(1+bx). "
+            "PPM adds mutualism term; RM has simpler 2-species structure."
+        ),
+        strength=0.85,
+        mapping={
+            "axy/(1+bx) predation": "axy/(1+bx) predation",
+            "mutualism mxz/(1+nz)": "absent",
+            "3-species": "2-species",
+        },
+    ))
+
+    # Brusselator 2D <-> Brusselator-diffusion 1D (same chemistry, 1D vs 2D)
+    analogies.append(Analogy(
+        domain_a="brusselator_2d",
+        domain_b="brusselator_diffusion",
+        analogy_type="structural",
+        description=(
+            "Identical Brusselator kinetics (a-(b+1)u+u^2v, bu-u^2v) in 2D vs 1D. "
+            "2D shows hexagonal spots and stripes; 1D shows stripe patterns only."
+        ),
+        strength=1.0,
+        mapping={
+            "u^2v (2D)": "u^2v (1D)",
+            "2D Turing patterns": "1D Turing patterns",
+            "hexagonal spots": "periodic stripes",
+        },
+    ))
+
+    # Brusselator 2D <-> Schnakenberg (activator-inhibitor 2D Turing)
+    analogies.append(Analogy(
+        domain_a="brusselator_2d",
+        domain_b="schnakenberg",
+        analogy_type="structural",
+        description=(
+            "Both 2D activator-inhibitor Turing pattern systems with u^2v autocatalysis. "
+            "Same Turing instability mechanism with diffusion ratio threshold."
+        ),
+        strength=0.9,
+        mapping={
+            "u^2v": "u^2v",
+            "a-(b+1)u": "a-u",
+            "D_v/D_u threshold": "D_v/D_u threshold",
+        },
+    ))
+
+    # FPUT <-> Toda lattice (nonlinear lattice dynamics)
+    analogies.append(Analogy(
+        domain_a="fput",
+        domain_b="toda_lattice",
+        analogy_type="structural",
+        description=(
+            "Both are 1D nonlinear lattice chains with nearest-neighbor coupling. "
+            "FPUT uses polynomial nonlinearity; Toda uses exponential. Both are Hamiltonian."
+        ),
+        strength=0.9,
+        mapping={
+            "F=k*d+alpha*d^2": "F=a*(e^(-bd)-1)",
+            "FPUT recurrence": "exact solitons",
+            "energy conservation": "energy conservation",
+        },
+    ))
+
+    # Selkov <-> Brusselator (chemical oscillator with u^2v kinetics)
+    analogies.append(Analogy(
+        domain_a="selkov",
+        domain_b="brusselator",
+        analogy_type="structural",
+        description=(
+            "Both are chemical oscillators with u^2v autocatalytic terms. "
+            "Both exhibit Hopf bifurcation to limit cycle oscillations."
+        ),
+        strength=0.9,
+        mapping={
+            "-x+ay+x^2y": "a-(b+1)u+u^2v",
+            "b-ay-x^2y": "bu-u^2v",
+            "Hopf bifurcation": "Hopf bifurcation",
+        },
+    ))
+
     return analogies
 
 
@@ -3478,6 +3629,54 @@ def detect_dimensional_analogies(
         mapping={
             "1/alpha [z damping]": "1/c [z damping]",
             "gamma [linear growth]": "a [spiral rate]",
+        },
+    ))
+
+    # Dimensional: Brusselator 2D <-> Gray-Scott (pattern wavelength ~ sqrt(D))
+    analogies.append(Analogy(
+        domain_a="brusselator_2d",
+        domain_b="gray_scott",
+        analogy_type="dimensional",
+        description=(
+            "Both 2D RD systems with Turing wavelength scaling as sqrt(D_v/rate). "
+            "Same dimensional analysis: lambda ~ 2*pi*sqrt(D_v/k_eff)."
+        ),
+        strength=0.85,
+        mapping={
+            "sqrt(D_v/(b-1-a^2))": "sqrt(D_v/k)",
+            "2D Turing patterns": "2D Turing patterns",
+        },
+    ))
+
+    # Dimensional: FPUT <-> Spring-mass chain (omega ~ sqrt(k))
+    analogies.append(Analogy(
+        domain_a="fput",
+        domain_b="spring_mass_chain",
+        analogy_type="dimensional",
+        description=(
+            "Both lattice chains with omega_n = 2*sqrt(k)*sin(n*pi/(2*(N+1))). "
+            "FPUT adds nonlinear corrections; spring chain is linear."
+        ),
+        strength=0.9,
+        mapping={
+            "omega ~ sqrt(k) [linear limit]": "omega ~ sqrt(K/m)",
+            "fixed BCs": "periodic/fixed BCs",
+        },
+    ))
+
+    # Dimensional: Selkov <-> Oregonator (chemical oscillation timescale)
+    analogies.append(Analogy(
+        domain_a="selkov",
+        domain_b="oregonator",
+        analogy_type="dimensional",
+        description=(
+            "Both biochemical oscillators with period ~ 1/sqrt(rate). "
+            "Selkov: glycolysis timescale 1/a; Oregonator: BZ timescale 1/epsilon."
+        ),
+        strength=0.75,
+        mapping={
+            "1/a [glycolysis rate]": "1/epsilon [BZ rate]",
+            "x^2y autocatalysis": "xy autocatalysis",
         },
     ))
 
@@ -4678,6 +4877,74 @@ def detect_topological_analogies(
             "pulse solutions": "Turing patterns",
             "pulse splitting": "pattern formation",
             "D_u/D_v ratio": "D_u/D_v ratio",
+        },
+    ))
+
+    # Topological: PPM <-> Three-species (3-species with different interactions)
+    analogies.append(Analogy(
+        domain_a="predator_prey_mutualist",
+        domain_b="three_species",
+        analogy_type="topological",
+        description=(
+            "Both 3-species systems with trophic interactions. PPM adds mutualism, "
+            "stabilizing oscillations. Three-species has trophic cascade only."
+        ),
+        strength=0.8,
+        mapping={
+            "predator-prey-mutualist": "grass-herbivore-predator",
+            "mutualism stabilization": "trophic cascade",
+            "Holling II response": "linear/Holling response",
+        },
+    ))
+
+    # Topological: Brusselator 2D <-> Gray-Scott (2D Turing pattern formation)
+    analogies.append(Analogy(
+        domain_a="brusselator_2d",
+        domain_b="gray_scott",
+        analogy_type="topological",
+        description=(
+            "Both exhibit 2D Turing instability with spots and stripes. "
+            "Same topological pattern classes despite different kinetics."
+        ),
+        strength=0.85,
+        mapping={
+            "hexagonal spots": "hexagonal spots",
+            "stripes": "stripes/labyrinthine",
+            "Turing bifurcation": "Turing bifurcation",
+        },
+    ))
+
+    # Topological: FPUT <-> Toda (near-integrable lattice dynamics)
+    analogies.append(Analogy(
+        domain_a="fput",
+        domain_b="toda_lattice",
+        analogy_type="topological",
+        description=(
+            "Both are Hamiltonian lattice chains with quasi-periodic orbits and "
+            "soliton-like solutions. FPUT shows near-recurrence; Toda is exactly integrable."
+        ),
+        strength=0.85,
+        mapping={
+            "FPUT recurrence": "exact solitons",
+            "quasi-periodic orbits": "action-angle variables",
+            "energy conservation": "energy conservation",
+        },
+    ))
+
+    # Topological: Selkov <-> Van der Pol (limit cycle oscillators)
+    analogies.append(Analogy(
+        domain_a="selkov",
+        domain_b="van_der_pol",
+        analogy_type="topological",
+        description=(
+            "Both exhibit stable limit cycle oscillations via Hopf bifurcation. "
+            "Selkov: glycolysis oscillation; VdP: relaxation oscillation."
+        ),
+        strength=0.75,
+        mapping={
+            "Hopf at b_c(a)": "Hopf at mu=0",
+            "limit cycle": "limit cycle",
+            "metabolic oscillation": "electrical oscillation",
         },
     ))
 

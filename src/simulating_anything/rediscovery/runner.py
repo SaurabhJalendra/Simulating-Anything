@@ -48,6 +48,9 @@ def run_all_rediscoveries(
         run_bouncing_ball_rediscovery,
     )
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+    from simulating_anything.rediscovery.brusselator_2d import (
+        run_brusselator_2d_rediscovery,
+    )
     from simulating_anything.rediscovery.brusselator_diffusion import (
         run_brusselator_diffusion_rediscovery,
     )
@@ -97,6 +100,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.fitzhugh_rinzel import (
         run_fitzhugh_rinzel_rediscovery,
     )
+    from simulating_anything.rediscovery.fput import run_fput_rediscovery
     from simulating_anything.rediscovery.ginzburg_landau import (
         run_ginzburg_landau_rediscovery,
     )
@@ -176,6 +180,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
     from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
     from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
+    from simulating_anything.rediscovery.predator_prey_mutualist import (
+        run_predator_prey_mutualist_rediscovery,
+    )
+    from simulating_anything.rediscovery.selkov import run_selkov_rediscovery
     from simulating_anything.rediscovery.wilson_cowan import (
         run_wilson_cowan_rediscovery,
     )
@@ -338,6 +346,11 @@ def run_all_rediscoveries(
         "brusselator_diffusion": {
             "label": "Brusselator-Diffusion PDE Turing Patterns",
             "fn": run_brusselator_diffusion_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "brusselator_2d": {
+            "label": "2D Brusselator Reaction-Diffusion Turing Patterns",
+            "fn": run_brusselator_2d_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
         "rosenzweig_macarthur": {
@@ -553,6 +566,21 @@ def run_all_rediscoveries(
         "sprott": {
             "label": "Sprott Minimal Chaotic Flows",
             "fn": run_sprott_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "predator_prey_mutualist": {
+            "label": "Predator-Prey-Mutualist Stabilization & ODE",
+            "fn": run_predator_prey_mutualist_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "selkov": {
+            "label": "Selkov Glycolysis Hopf Bifurcation & ODE",
+            "fn": run_selkov_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "fput": {
+            "label": "FPUT Lattice Recurrence & Energy Conservation",
+            "fn": run_fput_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
