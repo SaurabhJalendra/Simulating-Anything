@@ -564,6 +564,38 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.01, "n_steps": 500, "math_class": "Linear PDE",
     },
+    "sine_gordon": {
+        "module": "simulating_anything.simulation.sine_gordon",
+        "cls": "SineGordonSimulation",
+        "domain": Domain.SINE_GORDON,
+        "params": {"c": 1.0, "N": 128.0, "L": 40.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Nonlinear Wave PDE",
+    },
+    "ikeda_map": {
+        "module": "simulating_anything.simulation.ikeda_map",
+        "cls": "IkedaMapSimulation",
+        "domain": Domain.IKEDA_MAP,
+        "params": {"u": 0.9, "x_0": 0.0, "y_0": 0.0},
+        "dt": 1.0, "n_steps": 500, "math_class": "Discrete Chaos",
+    },
+    "thomas": {
+        "module": "simulating_anything.simulation.thomas",
+        "cls": "ThomasSimulation",
+        "domain": Domain.THOMAS,
+        "params": {
+            "b": 0.208186, "x_0": 1.0, "y_0": 0.0, "z_0": 0.0,
+        },
+        "dt": 0.05, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "may_leonard": {
+        "module": "simulating_anything.simulation.may_leonard",
+        "cls": "MayLeonardSimulation",
+        "domain": Domain.MAY_LEONARD,
+        "params": {
+            "n_species": 4.0, "a": 1.5, "b": 0.5, "r": 1.0, "K": 1.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Competitive ODE",
+    },
 }
 
 

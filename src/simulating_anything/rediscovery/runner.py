@@ -39,15 +39,31 @@ def run_all_rediscoveries(
     Returns:
         Combined results dict with all discoveries.
     """
+    from simulating_anything.rediscovery.allee_predator_prey import (
+        run_allee_predator_prey_rediscovery,
+    )
     from simulating_anything.rediscovery.bak_sneppen import run_bak_sneppen_rediscovery
     from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
+    from simulating_anything.rediscovery.bouncing_ball import (
+        run_bouncing_ball_rediscovery,
+    )
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
     from simulating_anything.rediscovery.brusselator_diffusion import (
         run_brusselator_diffusion_rediscovery,
     )
+    from simulating_anything.rediscovery.bz_spiral import run_bz_spiral_rediscovery
+    from simulating_anything.rediscovery.cable_equation import (
+        run_cable_equation_rediscovery,
+    )
     from simulating_anything.rediscovery.cart_pole import run_cart_pole_rediscovery
     from simulating_anything.rediscovery.chemostat import run_chemostat_rediscovery
     from simulating_anything.rediscovery.chua import run_chua_rediscovery
+    from simulating_anything.rediscovery.competitive_lv import (
+        run_competitive_lv_rediscovery,
+    )
+    from simulating_anything.rediscovery.coupled_lorenz import (
+        run_coupled_lorenz_rediscovery,
+    )
     from simulating_anything.rediscovery.coupled_oscillators import (
         run_coupled_oscillators_rediscovery,
     )
@@ -60,6 +76,7 @@ def run_all_rediscoveries(
         run_driven_pendulum_rediscovery,
     )
     from simulating_anything.rediscovery.duffing import run_duffing_rediscovery
+    from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
     from simulating_anything.rediscovery.elastic_pendulum import (
         run_elastic_pendulum_rediscovery,
     )
@@ -74,6 +91,11 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
     from simulating_anything.rediscovery.henon_map import run_henon_map_rediscovery
+    from simulating_anything.rediscovery.hindmarsh_rose import run_hindmarsh_rose_rediscovery
+    from simulating_anything.rediscovery.hodgkin_huxley import run_hodgkin_huxley_rediscovery
+    from simulating_anything.rediscovery.ikeda_map import (
+        run_ikeda_map_rediscovery,
+    )
     from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
     from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
     from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
@@ -86,60 +108,46 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.lotka_volterra import (
         run_lotka_volterra_rediscovery,
     )
+    from simulating_anything.rediscovery.mackey_glass import run_mackey_glass_rediscovery
+    from simulating_anything.rediscovery.magnetic_pendulum import (
+        run_magnetic_pendulum_rediscovery,
+    )
+    from simulating_anything.rediscovery.may_leonard import run_may_leonard_rediscovery
     from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
     from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
     from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
     from simulating_anything.rediscovery.quantum_oscillator import (
         run_quantum_oscillator_rediscovery,
     )
+    from simulating_anything.rediscovery.rayleigh_benard import (
+        run_rayleigh_benard_rediscovery,
+    )
     from simulating_anything.rediscovery.rosenzweig_macarthur import (
         run_rosenzweig_macarthur_rediscovery,
     )
     from simulating_anything.rediscovery.rossler import run_rossler_rediscovery
     from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
+    from simulating_anything.rediscovery.shallow_water import (
+        run_shallow_water_rediscovery,
+    )
+    from simulating_anything.rediscovery.sine_gordon import (
+        run_sine_gordon_rediscovery,
+    )
     from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
     from simulating_anything.rediscovery.spring_mass_chain import (
         run_spring_mass_chain_rediscovery,
     )
-    from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
-    from simulating_anything.rediscovery.shallow_water import (
-        run_shallow_water_rediscovery,
-    )
-    from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
     from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
-    from simulating_anything.rediscovery.hodgkin_huxley import run_hodgkin_huxley_rediscovery
-    from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
-    from simulating_anything.rediscovery.rayleigh_benard import (
-        run_rayleigh_benard_rediscovery,
-    )
-    from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
-    from simulating_anything.rediscovery.hindmarsh_rose import run_hindmarsh_rose_rediscovery
-    from simulating_anything.rediscovery.competitive_lv import (
-        run_competitive_lv_rediscovery,
-    )
-    from simulating_anything.rediscovery.magnetic_pendulum import (
-        run_magnetic_pendulum_rediscovery,
-    )
-    from simulating_anything.rediscovery.bz_spiral import run_bz_spiral_rediscovery
-    from simulating_anything.rediscovery.coupled_lorenz import (
-        run_coupled_lorenz_rediscovery,
-    )
-    from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
     from simulating_anything.rediscovery.swinging_atwood import (
         run_swinging_atwood_rediscovery,
     )
-    from simulating_anything.rediscovery.allee_predator_prey import (
-        run_allee_predator_prey_rediscovery,
-    )
-    from simulating_anything.rediscovery.mackey_glass import run_mackey_glass_rediscovery
-    from simulating_anything.rediscovery.bouncing_ball import (
-        run_bouncing_ball_rediscovery,
-    )
+    from simulating_anything.rediscovery.thomas import run_thomas_rediscovery
+    from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
+    from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
+    from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
+    from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
     from simulating_anything.rediscovery.wilson_cowan import (
         run_wilson_cowan_rediscovery,
-    )
-    from simulating_anything.rediscovery.cable_equation import (
-        run_cable_equation_rediscovery,
     )
 
     output_path = Path(output_dir)
@@ -435,6 +443,26 @@ def run_all_rediscoveries(
         "cable_equation": {
             "label": "Cable Equation Passive Neurite Space Constant",
             "fn": run_cable_equation_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "may_leonard": {
+            "label": "May-Leonard Cyclic Competition Heteroclinic Cycles",
+            "fn": run_may_leonard_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sine_gordon": {
+            "label": "Sine-Gordon Topological Soliton Lorentz Contraction",
+            "fn": run_sine_gordon_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "ikeda_map": {
+            "label": "Ikeda Map Nonlinear Optical Chaos",
+            "fn": run_ikeda_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "thomas": {
+            "label": "Thomas Cyclically Symmetric Attractor",
+            "fn": run_thomas_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

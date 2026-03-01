@@ -937,6 +937,73 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="sine_gordon",
+            math_type="pde",  # Nonlinear wave PDE
+            state_dim=2,  # [u, u_t] field + time derivative
+            n_parameters=2,  # c, N (wave speed, grid points)
+            conserved_quantities=["energy", "topological_charge"],
+            symmetries=["translation", "Lorentz_boost"],
+            phase_portrait_type="none",  # Solitons
+            characteristic_timescale="L/c",
+            discovered_equations=[
+                "u_tt = c^2*u_xx - sin(u)",
+                "kink: u = 4*arctan(exp((x-vt)/sqrt(1-v^2/c^2)))",
+                "E_kink = 8*c/sqrt(1-v^2/c^2)",
+                "topological charge Q = integer",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="thomas",
+            math_type="chaotic",  # Cyclically symmetric chaotic ODE
+            state_dim=3,  # [x, y, z]
+            n_parameters=1,  # b (dissipation)
+            conserved_quantities=[],
+            symmetries=["cyclic_permutation"],  # (x,y,z) -> (y,z,x)
+            phase_portrait_type="chaotic",  # Labyrinth chaos
+            characteristic_timescale="1/b",
+            discovered_equations=[
+                "dx/dt = sin(y) - b*x",
+                "dy/dt = sin(z) - b*y",
+                "dz/dt = sin(x) - b*z",
+                "b_c ~ 0.208186 chaos transition",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="ikeda_map",
+            math_type="discrete",  # Discrete chaos from nonlinear optics
+            state_dim=2,  # [x, y]
+            n_parameters=1,  # u (coupling)
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",  # Strange attractor
+            characteristic_timescale="1 (iteration)",
+            discovered_equations=[
+                "x' = 1 + u*(x*cos(t)-y*sin(t))",
+                "y' = u*(x*sin(t)+y*cos(t))",
+                "t = 0.4 - 6/(1+x^2+y^2)",
+                "det(J) = u^2 (dissipative)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="may_leonard",
+            math_type="ode_nonlinear",  # Cyclic competition
+            state_dim=4,  # [x1, x2, x3, x4]
+            n_parameters=4,  # n_species, a, b, r
+            conserved_quantities=[],
+            symmetries=["cyclic_permutation"],
+            phase_portrait_type="none",  # Heteroclinic cycles
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dx_i/dt = r*x_i*(1 - sum(alpha_ij*x_j/K))",
+                "x* = K/(1+a+(n-2)*b) interior fixed point",
+                "Cyclic dominance: 1->2->3->4->1",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -2251,6 +2318,96 @@ def detect_structural_analogies(
         },
     ))
 
+    # Sine-Gordon <-> Toda Lattice (integrable soliton systems)
+    analogies.append(Analogy(
+        domain_a="sine_gordon",
+        domain_b="toda_lattice",
+        analogy_type="structural",
+        description=(
+            "Both are completely integrable systems supporting exact soliton "
+            "solutions. Sine-Gordon has topological kink solitons; Toda has "
+            "lattice solitons. Both conserve infinitely many integrals."
+        ),
+        strength=0.85,
+        mapping={
+            "kink soliton": "lattice soliton",
+            "topological charge Q": "amplitude/speed relation",
+            "Lorentz contraction": "exponential profile",
+        },
+    ))
+
+    # Thomas <-> Rossler (3D chaotic ODEs with simple structure)
+    analogies.append(Analogy(
+        domain_a="thomas",
+        domain_b="rossler",
+        analogy_type="structural",
+        description=(
+            "Both are 3D chaotic ODEs with period-doubling to chaos. "
+            "Thomas uses sin() nonlinearity with cyclic symmetry; Rossler "
+            "uses simpler polynomial terms. Both have single dissipation parameter."
+        ),
+        strength=0.75,
+        mapping={
+            "sin(y)-b*x": "-y-z",
+            "b (dissipation)": "a, b, c (parameters)",
+            "cyclic symmetry": "no symmetry",
+        },
+    ))
+
+    # Ikeda Map <-> Henon Map (2D dissipative discrete chaos)
+    analogies.append(Analogy(
+        domain_a="ikeda_map",
+        domain_b="henon_map",
+        analogy_type="structural",
+        description=(
+            "Both are 2D dissipative maps with strange attractors. "
+            "Ikeda uses trigonometric nonlinearity (optical resonator); "
+            "Henon uses quadratic nonlinearity. Both have det(J)<1."
+        ),
+        strength=0.85,
+        mapping={
+            "u (coupling)": "a (nonlinearity)",
+            "det(J)=u^2": "det(J)=b",
+            "optical spiral attractor": "banana-shaped attractor",
+        },
+    ))
+
+    # May-Leonard <-> Competitive LV (multi-species competition)
+    analogies.append(Analogy(
+        domain_a="may_leonard",
+        domain_b="competitive_lv",
+        analogy_type="structural",
+        description=(
+            "Both model competitive Lotka-Volterra dynamics. May-Leonard "
+            "has circulant competition matrix creating heteroclinic cycles; "
+            "Competitive LV has general exclusion dynamics."
+        ),
+        strength=0.9,
+        mapping={
+            "cyclic dominance": "competitive exclusion",
+            "circulant alpha_ij": "general alpha_ij",
+            "heteroclinic cycle": "stable coexistence or exclusion",
+        },
+    ))
+
+    # May-Leonard <-> Lotka-Volterra (predator-prey generalization)
+    analogies.append(Analogy(
+        domain_a="may_leonard",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "May-Leonard generalizes 2-species LV to N-species with "
+            "cyclic competition. Both use bilinear x_i*x_j interaction "
+            "terms and share the same mathematical framework."
+        ),
+        strength=0.85,
+        mapping={
+            "N-species competition": "2-species predation",
+            "circulant matrix": "2x2 interaction",
+            "heteroclinic cycles": "closed orbits",
+        },
+    ))
+
     return analogies
 
 
@@ -2689,6 +2846,40 @@ def detect_dimensional_analogies(
         mapping={
             "tau [delay time]": "1/sigma [mixing time]",
             "1/gamma [decay time]": "1/beta [z decay time]",
+        },
+    ))
+
+    # Dimensional: Sine-Gordon <-> Damped Wave (wave speed scaling)
+    analogies.append(Analogy(
+        domain_a="sine_gordon",
+        domain_b="damped_wave",
+        analogy_type="dimensional",
+        description=(
+            "Both are wave equations with characteristic speed c. "
+            "SG kink width ~ c/omega (with relativistic contraction); "
+            "Damped wave has dispersion omega = c*k. Same dimensional structure."
+        ),
+        strength=0.8,
+        mapping={
+            "c [wave speed]": "c [wave speed]",
+            "kink width ~ 1/sqrt(1-v^2/c^2)": "wavelength ~ c/f",
+        },
+    ))
+
+    # Dimensional: Thomas <-> Lorenz (chaotic ODE timescale)
+    analogies.append(Analogy(
+        domain_a="thomas",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both are 3D chaotic ODEs with dissipation parameter controlling "
+            "the chaos transition. Thomas: b_c ~ 0.208, timescale 1/b. "
+            "Lorenz: rho_c ~ 24.74, timescale 1/sigma."
+        ),
+        strength=0.7,
+        mapping={
+            "1/b [dissipation time]": "1/sigma [damping time]",
+            "b_c ~ 0.208": "rho_c ~ 24.74",
         },
     ))
 
@@ -3604,6 +3795,78 @@ def detect_topological_analogies(
         mapping={
             "lambda^2/tau_m [diffusivity]": "nu [kinematic viscosity]",
             "exp(-|x|/lambda) spatial": "exp(-nu*k^2*t) temporal",
+        },
+    ))
+
+    # Thomas <-> Lorenz (3D strange attractor topology)
+    analogies.append(Analogy(
+        domain_a="thomas",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both are 3D dissipative chaotic systems with strange attractors "
+            "and positive Lyapunov exponents. Thomas has labyrinth-like "
+            "attractor with cyclic symmetry; Lorenz has butterfly attractor."
+        ),
+        strength=0.8,
+        mapping={
+            "labyrinth attractor": "butterfly attractor",
+            "b_c chaos transition": "rho_c chaos transition",
+            "cyclic symmetry": "Z2 symmetry",
+        },
+    ))
+
+    # Ikeda Map <-> Henon Map (2D strange attractor)
+    analogies.append(Analogy(
+        domain_a="ikeda_map",
+        domain_b="henon_map",
+        analogy_type="topological",
+        description=(
+            "Both are 2D dissipative maps with fractal strange attractors. "
+            "Ikeda has spiral structure from optical phase; Henon has "
+            "folding structure. Both have positive Lyapunov exponents."
+        ),
+        strength=0.85,
+        mapping={
+            "spiral attractor": "folded attractor",
+            "period-doubling": "period-doubling",
+            "D_corr ~ 1.7": "D_corr ~ 1.26",
+        },
+    ))
+
+    # Sine-Gordon <-> Shallow Water (nonlinear wave PDEs)
+    analogies.append(Analogy(
+        domain_a="sine_gordon",
+        domain_b="shallow_water",
+        analogy_type="topological",
+        description=(
+            "Both are nonlinear wave equations supporting localized traveling "
+            "wave solutions. Sine-Gordon has kink solitons; Shallow water "
+            "has shock waves. Both conserve wave energy."
+        ),
+        strength=0.7,
+        mapping={
+            "kink soliton": "hydraulic bore",
+            "topological charge": "wave amplitude",
+            "Lorentz symmetry": "Galilean symmetry",
+        },
+    ))
+
+    # May-Leonard <-> Three Species (multi-species oscillation)
+    analogies.append(Analogy(
+        domain_a="may_leonard",
+        domain_b="three_species",
+        analogy_type="topological",
+        description=(
+            "Both are multi-species ODE systems with oscillatory dynamics. "
+            "May-Leonard shows heteroclinic cycles (cyclic dominance); "
+            "three-species shows trophic cascade oscillations."
+        ),
+        strength=0.75,
+        mapping={
+            "heteroclinic cycle": "food chain oscillation",
+            "cyclic dominance": "trophic cascade",
+            "biodiversity index H": "population stability",
         },
     ))
 
