@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from enum import Enum
 from pathlib import Path
-from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -69,6 +68,10 @@ class Domain(str, Enum):
     BOUNCING_BALL = "bouncing_ball"
     WILSON_COWAN = "wilson_cowan"
     CABLE_EQUATION = "cable_equation"
+    MAY_LEONARD = "may_leonard"
+    SINE_GORDON = "sine_gordon"
+    IKEDA_MAP = "ikeda_map"
+    THOMAS = "thomas"
 
 
 class SimulationBackend(str, Enum):
