@@ -50,6 +50,10 @@ from simulating_anything.rediscovery.three_species import run_three_species_redi
 from simulating_anything.rediscovery.shallow_water import run_shallow_water_rediscovery
 from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_rediscovery
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
+from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
+from simulating_anything.rediscovery.hodgkin_huxley import run_hodgkin_huxley_rediscovery
+from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
+from simulating_anything.rediscovery.rayleigh_benard import run_rayleigh_benard_rediscovery
 from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
 
 __all__ = [
@@ -95,5 +99,9 @@ __all__ = [
     "run_lorenz96_rediscovery",
     "run_chemostat_rediscovery",
     "run_fhn_spatial_rediscovery",
+    "run_standard_map_rediscovery",
+    "run_hodgkin_huxley_rediscovery",
+    "run_eco_epidemic_rediscovery",
+    "run_rayleigh_benard_rediscovery",
     "run_wilberforce_rediscovery",
 ]
