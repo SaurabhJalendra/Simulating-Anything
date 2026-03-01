@@ -748,6 +748,45 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"a": 0.08, "b": 0.6, "x_0": 0.5, "y_0": 0.5},
         "dt": 0.01, "n_steps": 500, "math_class": "Biochemical ODE",
     },
+    "rikitake": {
+        "module": "simulating_anything.simulation.rikitake",
+        "cls": "RikitakeSimulation",
+        "domain": Domain.RIKITAKE,
+        "params": {
+            "mu": 1.0, "a": 5.0,
+            "x_0": 1.0, "y_0": 1.0, "z_0": 0.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Geophysical ODE",
+    },
+    "oregonator_1d": {
+        "module": "simulating_anything.simulation.oregonator_1d",
+        "cls": "Oregonator1DSimulation",
+        "domain": Domain.OREGONATOR_1D,
+        "params": {
+            "eps": 0.1, "f": 1.0, "q": 0.002,
+            "D_u": 1.0, "D_v": 0.6, "N": 200.0, "L": 100.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "1D Excitable PDE",
+    },
+    "ricker_map": {
+        "module": "simulating_anything.simulation.ricker_map",
+        "cls": "RickerMapSimulation",
+        "domain": Domain.RICKER_MAP,
+        "params": {"r": 2.0, "K": 1.0, "x_0": 0.5},
+        "dt": 1.0, "n_steps": 500, "math_class": "Discrete Population",
+    },
+    "morris_lecar": {
+        "module": "simulating_anything.simulation.morris_lecar",
+        "cls": "MorrisLecarSimulation",
+        "domain": Domain.MORRIS_LECAR,
+        "params": {
+            "C": 20.0, "g_L": 2.0, "g_Ca": 4.0, "g_K": 8.0,
+            "V_L": -60.0, "V_Ca": 120.0, "V_K": -84.0,
+            "V1": -1.2, "V2": 18.0, "V3": 2.0, "V4": 30.0,
+            "phi": 0.04, "I_ext": 100.0,
+        },
+        "dt": 0.1, "n_steps": 500, "math_class": "Conductance Neuron",
+    },
 }
 
 

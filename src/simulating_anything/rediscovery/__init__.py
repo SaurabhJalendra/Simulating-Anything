@@ -66,9 +66,11 @@ from simulating_anything.rediscovery.lotka_volterra import run_lotka_volterra_re
 from simulating_anything.rediscovery.mackey_glass import run_mackey_glass_rediscovery
 from simulating_anything.rediscovery.magnetic_pendulum import run_magnetic_pendulum_rediscovery
 from simulating_anything.rediscovery.may_leonard import run_may_leonard_rediscovery
+from simulating_anything.rediscovery.morris_lecar import run_morris_lecar_rediscovery
 from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
 from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
 from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
+from simulating_anything.rediscovery.oregonator_1d import run_oregonator_1d_rediscovery
 from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
 from simulating_anything.rediscovery.quantum_oscillator import run_quantum_oscillator_rediscovery
 from simulating_anything.rediscovery.rabinovich_fabrikant import (
@@ -97,6 +99,8 @@ from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscov
 from simulating_anything.rediscovery.predator_prey_mutualist import (
     run_predator_prey_mutualist_rediscovery,
 )
+from simulating_anything.rediscovery.ricker_map import run_ricker_map_rediscovery
+from simulating_anything.rediscovery.rikitake import run_rikitake_rediscovery
 from simulating_anything.rediscovery.selkov import run_selkov_rediscovery
 from simulating_anything.rediscovery.wilson_cowan import run_wilson_cowan_rediscovery
 
@@ -180,4 +184,8 @@ __all__ = [
     "run_predator_prey_mutualist_rediscovery",
     "run_selkov_rediscovery",
     "run_fput_rediscovery",
+    "run_oregonator_1d_rediscovery",
+    "run_ricker_map_rediscovery",
+    "run_rikitake_rediscovery",
+    "run_morris_lecar_rediscovery",
 ]

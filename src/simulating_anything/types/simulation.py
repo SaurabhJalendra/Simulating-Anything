@@ -88,6 +88,10 @@ class Domain(str, Enum):
     SELKOV = "selkov"
     PREDATOR_PREY_MUTUALIST = "predator_prey_mutualist"
     FPUT = "fput"
+    OREGONATOR_1D = "oregonator_1d"
+    MORRIS_LECAR = "morris_lecar"
+    RIKITAKE = "rikitake"
+    RICKER_MAP = "ricker_map"
 
 
 class SimulationBackend(str, Enum):
