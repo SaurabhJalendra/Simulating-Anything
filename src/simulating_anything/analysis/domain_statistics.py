@@ -123,6 +123,16 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"r": 3.9, "x_0": 0.5},
         "dt": 1.0, "n_steps": 500, "math_class": "Discrete Chaos",
     },
+    "duffing": {
+        "module": "simulating_anything.simulation.duffing",
+        "cls": "DuffingOscillator",
+        "domain": Domain.DUFFING,
+        "params": {
+            "alpha": 1.0, "beta": 1.0, "delta": 0.2,
+            "gamma_f": 0.3, "omega": 1.0, "x_0": 0.5, "v_0": 0.0,
+        },
+        "dt": 0.005, "n_steps": 500, "math_class": "Nonlinear ODE",
+    },
 }
 
 

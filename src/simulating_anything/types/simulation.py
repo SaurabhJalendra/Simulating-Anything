@@ -24,6 +24,7 @@ class Domain(str, Enum):
     FITZHUGH_NAGUMO = "fitzhugh_nagumo"
     HEAT_EQUATION_1D = "heat_equation_1d"
     LOGISTIC_MAP = "logistic_map"
+    DUFFING = "duffing"
 
 
 class SimulationBackend(str, Enum):

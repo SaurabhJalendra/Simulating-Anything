@@ -100,7 +100,7 @@ Our key contributions are:
   across 8 mathematical classes (Section~\ref{sec:experiments}).
 \item A cross-domain analogy engine that detects 17 mathematical isomorphisms
   between domains (Section~\ref{sec:cross_domain}).
-\item Open-source implementation with 284 tests, 18 publication-quality
+\item Open-source implementation with 496 tests, 18 publication-quality
   figures, and comprehensive benchmarks.
 \end{enumerate}
 
@@ -197,9 +197,18 @@ The simulation interface requires only four methods (\texttt{reset},
 \texttt{step}, \texttt{observe}, \texttt{run}). All upstream and downstream
 stages operate on numpy arrays of arbitrary shape. Adding a new domain
 means implementing one Python class with $\sim$50--200 lines of dynamics
-code. We demonstrate this by adding 14 domains (Table~\ref{tab:domains})
+code. We demonstrate this by adding 14 domains (Table~\ref{tab:results})
 spanning algebraic equations, linear/nonlinear/chaotic ODEs, PDEs, collective
-dynamics, and discrete maps.
+dynamics, and discrete maps (Figure~\ref{fig:taxonomy}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/domain_taxonomy_14.pdf}
+\caption{Taxonomy of 14 domains across 8 mathematical classes. Each domain
+requires only a single \texttt{SimulationEnvironment} subclass; all other
+pipeline stages are shared.}
+\label{fig:taxonomy}
+\end{figure}
 
 \paragraph{World model.}
 We use an RSSM~\cite{hafner2020dreamerv2} with 512 GRU deterministic units
@@ -219,6 +228,16 @@ governing equations via \pysr{} and/or \sindy{}, and compares the discovered
 expressions against known analytical results.
 
 \input{results_table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/rediscovery_summary_14domain.pdf}
+\caption{Rediscovery R$^2$ scores across all 14 domains. 11 domains achieve
+R$^2 \geq 0.999$ (dashed line). The three remaining domains (Gray-Scott,
+Kuramoto, Logistic Map) face intrinsic challenges: PDE spatial resolution,
+finite-size effects, and fractal spectra, respectively.}
+\label{fig:rediscovery}
+\end{figure}
 
 \subsection{Algebraic Equations}
 \textbf{Projectile motion.} \pysr{} recovered $R = v_0^2 \cdot 0.1019
@@ -411,17 +430,30 @@ Navier-Stokes 2D & 1024 & 32.20 & 515 \\
 \end{table}
 
 All 14 domains converge to similar loss values ($32.0\pm0.2$) within
-50 epochs, demonstrating that the RSSM architecture generalizes across
+50 epochs (Figure~\ref{fig:wm_summary}), demonstrating that the RSSM architecture generalizes across
 state dimensions ($d = 1$ to $d = 8192$) and dynamics types
 (algebraic, linear/nonlinear/chaotic ODEs, collective dynamics,
 PDEs, discrete chaos) without hyperparameter tuning. The symlog loss transformation ensures stable
 training across domains with different observation scales. Training
-takes $\sim$136s per domain on an RTX 5090 (32GB).
+takes $\sim$136s per domain on an RTX 5090 (32GB), with PDE domains
+(Gray-Scott: 248s, Navier-Stokes: 515s) requiring more time due to
+larger observation dimensions.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/wm_combined_summary.pdf}
+\caption{RSSM world model training across 14 domains. (a) Best loss by domain.
+(b) Training time scales with observation dimension. (c) Loss by mathematical
+class shows consistent convergence regardless of dynamics type.
+(d) Summary statistics.}
+\label{fig:wm_summary}
+\end{figure}
 
 \subsection{Pipeline Ablation}
 \label{sec:ablation}
 
-We ablate three pipeline components to isolate their contributions:
+We ablate four pipeline components to isolate their contributions
+(Figure~\ref{fig:ablation}):
 
 \paragraph{Sampling strategy.}
 On the projectile domain, all four strategies (grid, random uniform, clustered,
@@ -457,6 +489,16 @@ alongside raw inputs recovers $R^2 = 1.0$, while using $v_0$ alone
 ($R^2 = 0.69$) confirms that angular dependence is essential.
 This motivates \pysr{}'s approach of searching over functional forms
 rather than fitting pre-specified bases.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/ablation_combined.pdf}
+\caption{Pipeline ablation study. (a) All sampling strategies achieve $R^2 = 1.0$
+on projectile. (b) FFT and zero-crossing match physics; polynomial overfits.
+(c) Lotka-Volterra requires $\geq$5000 steps. (d) Engineered features ($v_0^2\sin 2\theta$)
+and trigonometric features match; raw polynomials and $v_0$-only degrade.}
+\label{fig:ablation}
+\end{figure}
 
 % ============================================================================
 % 6. DISCUSSION
@@ -698,7 +740,7 @@ Python 3.12) and GPU (RTX 5090 via WSL2 Ubuntu 24.04, JAX 0.4.x).
 stochastic due to its evolutionary search; we report results from the
 best-of-3 runs where the correct functional form was recovered in all
 3 trials for 13 of 14 domains (all except the logistic map Lyapunov fit).
-The full codebase, including 402 unit tests covering all simulation
+The full codebase, including 496 unit tests covering all simulation
 engines and analysis methods, is available at
 \url{https://github.com/SaurabhJalendra/Simulating-Anything}.
 

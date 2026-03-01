@@ -211,7 +211,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (408 passing, 15 skipped):
+# Full suite in WSL (496 passing, 17 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -400,6 +400,7 @@ src/simulating_anything/
     fitzhugh_nagumo.py     # FitzHugh-Nagumo neuron model (excitable)
     heat_equation.py       # 1D heat equation (spectral FFT)
     logistic_map.py        # Logistic map (discrete chaos, Feigenbaum)
+    duffing.py             # Duffing oscillator (forced nonlinear, chaos)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -433,7 +434,8 @@ src/simulating_anything/
     fitzhugh_nagumo.py     # f-I curve + SINDy ODE
     heat_equation.py       # Mode decay rate D*k^2
     logistic_map.py        # Feigenbaum + Lyapunov + chaos onset
-    runner.py              # Unified runner for all 14 domains
+    duffing.py             # Duffing chaos & ODE recovery
+    runner.py              # Unified runner for all 15 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -455,7 +457,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 408 tests across 27 files
+tests/unit/                # 496 tests across 29 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -477,6 +479,8 @@ tests/unit/                # 408 tests across 27 files
   test_heat_equation.py    # 12 tests — Heat equation 1D spectral
   test_logistic_map.py     # 13 tests — Logistic map, Lyapunov, periods
   test_cli.py              # 6 tests — CLI entry point commands
+  test_duffing.py          # 15 tests — Duffing oscillator sim + rediscovery
+  test_reproducibility.py  # 75 tests — Determinism, invariants, conservation
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
