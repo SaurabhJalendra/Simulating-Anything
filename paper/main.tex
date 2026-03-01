@@ -55,7 +55,7 @@ extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations in all 14 domains, achieving $R^2 \geq 0.999$ in 11 of
 14 cases, with a mean $R^2$ of 0.970. Our cross-domain analogy engine
-detects 17 structural, dimensional, and topological isomorphisms across
+detects 26 structural, dimensional, and topological isomorphisms across
 domains. The key architectural insight is that only the simulation layer is
 domain-specific ($\sim$50--200 lines per domain); everything else---world
 model, exploration, analysis, and reporting---operates on generic tensors,
@@ -98,7 +98,7 @@ Our key contributions are:
   only $\sim$50--200 lines of simulation code (Section~\ref{sec:architecture}).
 \item Successful autonomous rediscovery of governing equations in 14 domains
   across 8 mathematical classes (Section~\ref{sec:experiments}).
-\item A cross-domain analogy engine that detects 17 mathematical isomorphisms
+\item A cross-domain analogy engine that detects 26 mathematical isomorphisms
   between domains (Section~\ref{sec:cross_domain}).
 \item Open-source implementation with 548 tests, 24 publication-quality
   figures, and comprehensive benchmarks.
@@ -296,7 +296,7 @@ Lyapunov exponent $\lambda(r{=}4) = \ln 4 = 1.386$ (exact).
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.8\linewidth]{figures/cross_domain_matrix_14domain.pdf}
-\caption{Cross-domain analogy strength matrix. 17 isomorphisms detected
+\caption{Cross-domain analogy strength matrix. 26 isomorphisms detected
 across 14 domains. Brighter cells indicate stronger mathematical analogies.}
 \label{fig:cross_domain}
 \end{figure}
@@ -614,7 +614,7 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 rediscover known physical laws across 14 fundamentally different domains.
 The system achieves $R^2 \geq 0.999$ in 11 of 14 domains, with a mean
 $R^2$ of 0.970 across all domains. Cross-domain analogy detection reveals
-17 mathematical isomorphisms, suggesting that scientific domains share
+26 mathematical isomorphisms, suggesting that scientific domains share
 more structure than is commonly appreciated. A six-layer validation
 framework---conservation checks, dimensional analysis, reproducibility tests,
 theory comparison, adversarial dream debate, and cross-domain consistency---ensures
