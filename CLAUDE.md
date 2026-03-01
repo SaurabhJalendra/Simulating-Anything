@@ -351,11 +351,20 @@ These are things that broke in previous sessions. Do not repeat them:
 - ~~Add FitzHugh-Nagumo~~ DONE (f-I curve, neural spiking)
 - ~~Add Heat Equation 1D~~ DONE (exact spectral, D*k² decay)
 - ~~Add Logistic Map~~ DONE (Feigenbaum, ln(2) Lyapunov at r=4)
-- Ablation studies with PySR (data generated, awaiting evaluation)
-- Add more JAX-native domains: molecular dynamics (JAX-MD), robotics (Brax)
+- ~~Ablation studies~~ DONE (4 factors: sampling, method, data, features)
+- ~~Add Duffing oscillator~~ DONE (chaos detection, SINDy ODE)
+- ~~Add Schwarzschild geodesic~~ DONE (GR orbits, ISCO=6M, precession)
+- ~~Add Quantum Harmonic Oscillator~~ DONE (E_n=(n+1/2)hbar*omega, FFT propagation)
+- ~~Bootstrap error analysis~~ DONE (confidence intervals on all R²)
+- Add more domains: molecular dynamics (JAX-MD), robotics (Brax)
 
-### V3 (Medium-term)
+### V3 (Medium-term) -- NEW DISCOVERY MODE
+- Upgrade world model to DreamerV4 (longer imagination horizon, better uncertainty)
 - Bridge to non-JAX simulators: OpenFOAM (CFD), GROMACS (MD), SUMO (traffic)
+- **New discovery mode**: apply pipeline to unknown sub-problems in known domains
+  - 3-body gravitational dynamics (no closed-form solution)
+  - Turbulent flow transitions (critical Reynolds number prediction)
+  - Protein folding energy landscapes
 - Graph neural network encoders for molecular structures
 - 3D CNN encoders for volumetric data
 - Persistent knowledge across sessions
@@ -401,6 +410,8 @@ src/simulating_anything/
     heat_equation.py       # 1D heat equation (spectral FFT)
     logistic_map.py        # Logistic map (discrete chaos, Feigenbaum)
     duffing.py             # Duffing oscillator (forced nonlinear, chaos)
+    schwarzschild.py       # Schwarzschild geodesics (GR orbits)
+    quantum_oscillator.py  # Quantum harmonic oscillator (split-operator FFT)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
