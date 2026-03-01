@@ -412,6 +412,8 @@ src/simulating_anything/
     duffing.py             # Duffing oscillator (forced nonlinear, chaos)
     schwarzschild.py       # Schwarzschild geodesics (GR orbits)
     quantum_oscillator.py  # Quantum harmonic oscillator (split-operator FFT)
+    boltzmann_gas.py       # 2D ideal gas (hard-sphere collisions, PV=NkT)
+    spring_mass_chain.py   # 1D coupled springs (phonon dispersion)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -428,7 +430,9 @@ src/simulating_anything/
     sensitivity.py         # Noise/data/range sensitivity analysis
     cross_domain.py        # Cross-domain analogy engine (17 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
-    domain_statistics.py   # Runtime benchmarks for all 14 domains
+    domain_statistics.py   # Runtime benchmarks for all domains
+    error_analysis.py      # Bootstrap R², coefficient uncertainty
+    scaling_analysis.py    # Runtime vs steps, dimension, data quantity
   rediscovery/
     __init__.py            # Exports all rediscovery runners
     projectile.py          # Range equation R=v²sin(2θ)/g recovery
@@ -446,7 +450,11 @@ src/simulating_anything/
     heat_equation.py       # Mode decay rate D*k^2
     logistic_map.py        # Feigenbaum + Lyapunov + chaos onset
     duffing.py             # Duffing chaos & ODE recovery
-    runner.py              # Unified runner for all 15 domains
+    schwarzschild.py       # ISCO, V_eff, energy conservation
+    quantum_oscillator.py  # Energy spectrum E_n = (n+0.5)*hbar*omega
+    boltzmann_gas.py       # PV=NkT ideal gas law recovery
+    spring_mass_chain.py   # Phonon dispersion omega(k) recovery
+    runner.py              # Unified runner for all 19 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -468,7 +476,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 496 tests across 29 files
+tests/unit/                # 588 tests across 34 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -492,6 +500,11 @@ tests/unit/                # 496 tests across 29 files
   test_cli.py              # 6 tests — CLI entry point commands
   test_duffing.py          # 15 tests — Duffing oscillator sim + rediscovery
   test_reproducibility.py  # 75 tests — Determinism, invariants, conservation
+  test_schwarzschild.py    # 15 tests — GR geodesics, ISCO, energy
+  test_quantum_oscillator.py # 15 tests — Quantum HO, norm, spectrum
+  test_boltzmann_gas.py    # 16 tests — 2D ideal gas, collisions
+  test_spring_mass_chain.py # 20 tests — Phonon dispersion, energy
+  test_error_analysis.py   # 18 tests — Bootstrap R², coefficients
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
