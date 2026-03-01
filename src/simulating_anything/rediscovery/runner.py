@@ -113,6 +113,14 @@ def run_all_rediscoveries(
         run_rayleigh_benard_rediscovery,
     )
     from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
+    from simulating_anything.rediscovery.hindmarsh_rose import run_hindmarsh_rose_rediscovery
+    from simulating_anything.rediscovery.competitive_lv import (
+        run_competitive_lv_rediscovery,
+    )
+    from simulating_anything.rediscovery.magnetic_pendulum import (
+        run_magnetic_pendulum_rediscovery,
+    )
+    from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -347,6 +355,26 @@ def run_all_rediscoveries(
         "rayleigh_benard": {
             "label": "Rayleigh-Benard Convection Onset & Nusselt",
             "fn": run_rayleigh_benard_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "hindmarsh_rose": {
+            "label": "Hindmarsh-Rose Neuron Bursting Dynamics",
+            "fn": run_hindmarsh_rose_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "competitive_lv": {
+            "label": "Competitive Lotka-Volterra 4-Species Exclusion",
+            "fn": run_competitive_lv_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "vicsek": {
+            "label": "Vicsek Model Flocking Transition",
+            "fn": run_vicsek_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "magnetic_pendulum": {
+            "label": "Magnetic Pendulum Fractal Basin Boundaries",
+            "fn": run_magnetic_pendulum_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

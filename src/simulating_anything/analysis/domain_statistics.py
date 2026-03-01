@@ -431,6 +431,52 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 5e-5, "n_steps": 200, "math_class": "Convection PDE",
     },
+    "hindmarsh_rose": {
+        "module": "simulating_anything.simulation.hindmarsh_rose",
+        "cls": "HindmarshRoseSimulation",
+        "domain": Domain.HINDMARSH_ROSE,
+        "params": {
+            "a": 1.0, "b": 3.0, "c": 1.0, "d": 5.0,
+            "r": 0.001, "s": 4.0, "x_rest": -1.6, "I_ext": 3.25,
+            "x_0": -1.5, "y_0": -10.0, "z_0": 2.0,
+        },
+        "dt": 0.05, "n_steps": 500, "math_class": "Bursting ODE",
+    },
+    "competitive_lv": {
+        "module": "simulating_anything.simulation.competitive_lv",
+        "cls": "CompetitiveLVSimulation",
+        "domain": Domain.COMPETITIVE_LV,
+        "params": {
+            "n_species": 4.0,
+            "r_0": 1.0, "r_1": 0.72, "r_2": 1.53, "r_3": 1.27,
+            "K_0": 100.0, "K_1": 100.0, "K_2": 100.0, "K_3": 100.0,
+            "alpha_0_0": 1.0, "alpha_0_1": 0.5, "alpha_0_2": 0.4, "alpha_0_3": 0.3,
+            "alpha_1_0": 0.4, "alpha_1_1": 1.0, "alpha_1_2": 0.6, "alpha_1_3": 0.3,
+            "alpha_2_0": 0.3, "alpha_2_1": 0.4, "alpha_2_2": 1.0, "alpha_2_3": 0.5,
+            "alpha_3_0": 0.5, "alpha_3_1": 0.3, "alpha_3_2": 0.4, "alpha_3_3": 1.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Competitive ODE",
+    },
+    "vicsek": {
+        "module": "simulating_anything.simulation.vicsek",
+        "cls": "VicsekSimulation",
+        "domain": Domain.VICSEK,
+        "params": {
+            "N": 100.0, "L": 10.0, "v0": 0.5, "R": 1.0, "eta": 0.3,
+        },
+        "dt": 1.0, "n_steps": 500, "math_class": "Active Matter",
+    },
+    "magnetic_pendulum": {
+        "module": "simulating_anything.simulation.magnetic_pendulum",
+        "cls": "MagneticPendulumSimulation",
+        "domain": Domain.MAGNETIC_PENDULUM,
+        "params": {
+            "gamma": 0.1, "omega0_sq": 0.5, "alpha": 1.0,
+            "R": 1.0, "d": 0.3, "n_magnets": 3.0,
+            "x_0": 0.5, "y_0": 0.5, "vx_0": 0.0, "vy_0": 0.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Fractal Basin",
+    },
 }
 
 

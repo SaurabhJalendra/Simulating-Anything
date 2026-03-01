@@ -746,6 +746,70 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="hindmarsh_rose",
+            math_type="ode_nonlinear",  # 3D bursting neuron
+            state_dim=3,  # [x, y, z]
+            n_parameters=8,  # a, b, c, d, r, s, x_rest, I_ext
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r",  # Slow timescale
+            discovered_equations=[
+                "dx/dt = y - a*x^3 + b*x^2 - z + I_ext",
+                "dy/dt = c - d*x^2 - y",
+                "dz/dt = r*(s*(x-x_rest) - z)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="magnetic_pendulum",
+            math_type="ode_nonlinear",  # Fractal basin ODE
+            state_dim=4,  # [x, y, vx, vy]
+            n_parameters=5,  # gamma, omega0_sq, alpha, R, d
+            conserved_quantities=[],
+            symmetries=["rotation_120"],
+            phase_portrait_type="none",  # Transient chaos -> fixed point
+            characteristic_timescale="1/omega0",
+            discovered_equations=[
+                "x'' = -gamma*x' - omega0^2*x + sum(alpha*(xi-x)/ri^3)",
+                "Fractal basin boundaries",
+                "3-fold rotational symmetry",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="competitive_lv",
+            math_type="ode_nonlinear",  # 4-species competitive
+            state_dim=4,  # [N1, N2, N3, N4]
+            n_parameters=24,  # r(4), K(4), alpha(4x4)
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="none",  # Stable node or exclusion
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dNi/dt = ri*Ni*(1 - sum(alpha_ij*Nj/Ki))",
+                "Competitive exclusion principle",
+                "N* = alpha^(-1) @ K",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="vicsek",
+            math_type="collective",  # Active matter flocking
+            state_dim=300,  # 3*N particles (x,y,theta each)
+            n_parameters=4,  # N, L, v0, R, eta
+            conserved_quantities=["particle_count"],
+            symmetries=["rotation", "translation"],
+            phase_portrait_type="none",
+            characteristic_timescale="L/v0",
+            discovered_equations=[
+                "theta_i(t+1) = <theta_j>_{R} + eta*U(-pi,pi)",
+                "Order parameter phi = |mean(exp(i*theta))|",
+                "Phase transition at eta_c",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -1786,6 +1850,81 @@ def detect_structural_analogies(
             "psi (streamfunction)": "psi (streamfunction)",
             "Pr*nabla^2(omega)": "nu*nabla^2(omega)",
             "Pr*Ra*dT/dx (buoyancy)": "0 (no buoyancy)",
+        },
+    ))
+
+    # Hindmarsh-Rose <-> Hodgkin-Huxley (neuron models with spikes)
+    analogies.append(Analogy(
+        domain_a="hindmarsh_rose",
+        domain_b="hodgkin_huxley",
+        analogy_type="structural",
+        description=(
+            "Both model neuronal spiking with fast excitatory and slow "
+            "recovery variables. HR is a polynomial simplification of HH "
+            "that preserves bursting dynamics."
+        ),
+        strength=0.85,
+        mapping={
+            "x (fast potential)": "V (membrane voltage)",
+            "z (slow adaptation)": "gating variables n,m,h",
+            "I_ext": "I_ext",
+            "bursting": "repetitive firing",
+        },
+    ))
+
+    # Competitive LV <-> Lotka-Volterra (competitive interactions)
+    analogies.append(Analogy(
+        domain_a="competitive_lv",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "Both are Lotka-Volterra systems. Competitive LV has N species "
+            "with logistic growth and pairwise competition, while classic LV "
+            "has predator-prey interactions."
+        ),
+        strength=0.9,
+        mapping={
+            "N_i (competitor)": "prey/predator",
+            "alpha_ij (competition)": "beta, delta (interaction)",
+            "K (carrying capacity)": "equilibrium point",
+            "competitive exclusion": "coexistence dynamics",
+        },
+    ))
+
+    # Vicsek <-> Kuramoto (collective synchronization)
+    analogies.append(Analogy(
+        domain_a="vicsek",
+        domain_b="kuramoto",
+        analogy_type="structural",
+        description=(
+            "Both model synchronization transitions in coupled oscillator systems. "
+            "Vicsek: heading alignment with noise. Kuramoto: phase alignment with "
+            "coupling. Both have order parameters measuring collective coherence."
+        ),
+        strength=0.85,
+        mapping={
+            "theta_i (heading)": "theta_i (phase)",
+            "phi (alignment)": "r (sync order param)",
+            "eta (noise)": "1/K (inverse coupling)",
+            "eta_c (critical noise)": "K_c (critical coupling)",
+        },
+    ))
+
+    # Magnetic Pendulum <-> Double Pendulum (nonlinear pendulum dynamics)
+    analogies.append(Analogy(
+        domain_a="magnetic_pendulum",
+        domain_b="double_pendulum",
+        analogy_type="structural",
+        description=(
+            "Both feature pendulum dynamics with sensitivity to initial conditions. "
+            "Magnetic pendulum has fractal basin boundaries with multiple attractors. "
+            "Double pendulum has chaotic trajectories."
+        ),
+        strength=0.7,
+        mapping={
+            "magnet basins": "chaotic regions",
+            "damping -> attractor": "energy -> trajectory",
+            "fractal boundaries": "Lyapunov divergence",
         },
     ))
 
@@ -2876,6 +3015,78 @@ def detect_topological_analogies(
             "S+I (total prey) vs P": "prey vs predator",
             "limit cycle/spiral": "center/limit cycle",
             "coexistence equilibrium": "equilibrium (gamma/delta, alpha/beta)",
+        },
+    ))
+
+    # HR <-> FHN (excitable neuron topology)
+    analogies.append(Analogy(
+        domain_a="hindmarsh_rose",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="topological",
+        description=(
+            "Both exhibit excitable dynamics: quiescent rest state that can "
+            "produce spikes when perturbed. HR adds a slow variable for "
+            "bursting. Both have Hopf bifurcation at critical I_ext."
+        ),
+        strength=0.85,
+        mapping={
+            "quiescent -> spiking (Hopf)": "rest -> oscillation (Hopf)",
+            "slow z modulation": "no slow variable (2D)",
+            "burst envelope": "single spikes only",
+        },
+    ))
+
+    # Vicsek <-> Ising (order-disorder phase transition)
+    analogies.append(Analogy(
+        domain_a="vicsek",
+        domain_b="ising_model",
+        analogy_type="topological",
+        description=(
+            "Both exhibit order-disorder phase transitions. Vicsek: heading "
+            "alignment vs noise. Ising: spin alignment vs temperature. Both "
+            "have an order parameter transitioning from 0 to 1."
+        ),
+        strength=0.8,
+        mapping={
+            "phi (alignment order)": "m (magnetization)",
+            "eta_c (critical noise)": "T_c (critical temperature)",
+            "flocking (ordered)": "ferromagnetic (ordered)",
+        },
+    ))
+
+    # Competitive LV <-> Chemostat (resource competition dynamics)
+    analogies.append(Analogy(
+        domain_a="competitive_lv",
+        domain_b="chemostat",
+        analogy_type="topological",
+        description=(
+            "Both model competitive exclusion: species competing for shared "
+            "resources. Competitive LV: N species with pairwise competition. "
+            "Chemostat: microbial species competing for substrate."
+        ),
+        strength=0.75,
+        mapping={
+            "alpha_ij (competition)": "mu_max, K_s (competitive ability)",
+            "exclusion principle": "washout bifurcation",
+            "stable coexistence": "coexistence at different substrates",
+        },
+    ))
+
+    # Magnetic Pendulum <-> Standard Map (sensitive dependence topology)
+    analogies.append(Analogy(
+        domain_a="magnetic_pendulum",
+        domain_b="standard_map",
+        analogy_type="topological",
+        description=(
+            "Both feature intricate dependence on initial conditions. "
+            "Magnetic pendulum: fractal basin boundaries. Standard map: "
+            "KAM tori and chaotic seas. Both produce complex phase space."
+        ),
+        strength=0.7,
+        mapping={
+            "fractal basin boundaries": "KAM tori / chaotic seas",
+            "3 attractors": "regular islands / chaos",
+            "sensitive IC dependence": "sensitive IC dependence",
         },
     ))
 
