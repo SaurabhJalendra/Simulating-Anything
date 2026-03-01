@@ -45,6 +45,7 @@ def run_all_rediscoveries(
         run_brusselator_diffusion_rediscovery,
     )
     from simulating_anything.rediscovery.cart_pole import run_cart_pole_rediscovery
+    from simulating_anything.rediscovery.chua import run_chua_rediscovery
     from simulating_anything.rediscovery.coupled_oscillators import (
         run_coupled_oscillators_rediscovery,
     )
@@ -80,6 +81,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.quantum_oscillator import (
         run_quantum_oscillator_rediscovery,
     )
+    from simulating_anything.rediscovery.rosenzweig_macarthur import (
+        run_rosenzweig_macarthur_rediscovery,
+    )
     from simulating_anything.rediscovery.rossler import run_rossler_rediscovery
     from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
     from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
@@ -87,6 +91,9 @@ def run_all_rediscoveries(
         run_spring_mass_chain_rediscovery,
     )
     from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
+    from simulating_anything.rediscovery.shallow_water import (
+        run_shallow_water_rediscovery,
+    )
     from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
 
     output_path = Path(output_dir)
@@ -247,6 +254,21 @@ def run_all_rediscoveries(
         "brusselator_diffusion": {
             "label": "Brusselator-Diffusion PDE Turing Patterns",
             "fn": run_brusselator_diffusion_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "rosenzweig_macarthur": {
+            "label": "Rosenzweig-MacArthur Hopf Bifurcation",
+            "fn": run_rosenzweig_macarthur_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "chua": {
+            "label": "Chua Circuit Double-Scroll Chaos",
+            "fn": run_chua_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "shallow_water": {
+            "label": "Shallow Water Equations Wave Speed",
+            "fn": run_shallow_water_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

@@ -8,6 +8,7 @@ from simulating_anything.rediscovery.brusselator_diffusion import (
     run_brusselator_diffusion_rediscovery,
 )
 from simulating_anything.rediscovery.cart_pole import run_cart_pole_rediscovery
+from simulating_anything.rediscovery.chua import run_chua_rediscovery
 from simulating_anything.rediscovery.coupled_oscillators import run_coupled_oscillators_rediscovery
 from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
 from simulating_anything.rediscovery.diffusive_lv import run_diffusive_lv_rediscovery
@@ -29,11 +30,16 @@ from simulating_anything.rediscovery.lotka_volterra import run_lotka_volterra_re
 from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
 from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
 from simulating_anything.rediscovery.quantum_oscillator import run_quantum_oscillator_rediscovery
+from simulating_anything.rediscovery.rosenzweig_macarthur import (
+    run_rosenzweig_macarthur_rediscovery,
+)
 from simulating_anything.rediscovery.rossler import run_rossler_rediscovery
 from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
 from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
 from simulating_anything.rediscovery.spring_mass_chain import run_spring_mass_chain_rediscovery
 from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
+from simulating_anything.rediscovery.shallow_water import run_shallow_water_rediscovery
+from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_rediscovery
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
 
 __all__ = [
@@ -68,4 +74,8 @@ __all__ = [
     "run_rossler_rediscovery",
     "run_henon_map_rediscovery",
     "run_brusselator_diffusion_rediscovery",
+    "run_rosenzweig_macarthur_rediscovery",
+    "run_shallow_water_rediscovery",
+    "run_chua_rediscovery",
+    "run_toda_lattice_rediscovery",
 ]

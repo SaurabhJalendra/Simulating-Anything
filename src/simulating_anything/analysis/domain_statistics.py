@@ -287,6 +287,46 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.01, "n_steps": 500, "math_class": "Reaction-Diffusion PDE",
     },
+    "rosenzweig_macarthur": {
+        "module": "simulating_anything.simulation.rosenzweig_macarthur",
+        "cls": "RosenzweigMacArthur",
+        "domain": Domain.ROSENZWEIG_MACARTHUR,
+        "params": {
+            "r": 1.0, "K": 10.0, "a": 0.5, "h": 0.5,
+            "e": 0.5, "d": 0.1, "x_0": 1.0, "y_0": 1.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Nonlinear ODE",
+    },
+    "toda_lattice": {
+        "module": "simulating_anything.simulation.toda_lattice",
+        "cls": "TodaLattice",
+        "domain": Domain.TODA_LATTICE,
+        "params": {
+            "N": 8.0, "a": 1.0, "mode": 1.0, "amplitude": 0.1,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Integrable Chain",
+    },
+    "chua": {
+        "module": "simulating_anything.simulation.chua",
+        "cls": "ChuaCircuit",
+        "domain": Domain.CHUA,
+        "params": {
+            "alpha": 15.6, "beta": 28.0,
+            "m0": -1.143, "m1": -0.714,
+            "x_0": 0.1, "y_0": 0.0, "z_0": 0.0,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "shallow_water": {
+        "module": "simulating_anything.simulation.shallow_water",
+        "cls": "ShallowWater",
+        "domain": Domain.SHALLOW_WATER,
+        "params": {
+            "g": 9.81, "h0": 1.0, "N": 128.0, "L": 10.0,
+            "perturbation_amplitude": 0.1,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Hyperbolic PDE",
+    },
 }
 
 
