@@ -1133,6 +1133,74 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="lorenz_84",
+            math_type="chaotic",  # Low-dimensional atmospheric chaos
+            state_dim=3,  # [x, y, z] -- westerly wind + eddy phases
+            n_parameters=4,  # a, b, F, G
+            conserved_quantities=[],
+            symmetries=["(y,z)->(-y,-z) when G=0"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = -y^2-z^2-a*x+a*F",
+                "dy/dt = x*y-b*x*z-y+G",
+                "dz/dt = b*x*y+x*z-z",
+                "Hadley fixed point x*=F",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="rabinovich_fabrikant",
+            math_type="chaotic",  # Plasma physics chaos
+            state_dim=3,  # [x, y, z]
+            n_parameters=2,  # alpha, gamma
+            conserved_quantities=[],
+            symmetries=["(x,y)->(-x,-y)"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/alpha",
+            discovered_equations=[
+                "dx/dt = y(z-1+x^2)+gamma*x",
+                "dy/dt = x(3z+1-x^2)+gamma*y",
+                "dz/dt = -2z(alpha+xy)",
+                "Multiscroll strange attractor",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sprott",
+            math_type="chaotic",  # Minimal chaotic flow
+            state_dim=3,  # [x, y, z]
+            n_parameters=1,  # system letter (effectively parameterless)
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1.0",
+            discovered_equations=[
+                "dx/dt = yz (Sprott-B)",
+                "dy/dt = x-y",
+                "dz/dt = 1-xy",
+                "Minimal dissipative chaos",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="gray_scott_1d",
+            math_type="pde",  # 1D reaction-diffusion
+            state_dim=512,  # 2*N for u,v fields
+            n_parameters=4,  # D_u, D_v, f, k
+            conserved_quantities=[],
+            symmetries=["translational"],
+            phase_portrait_type="traveling_wave",
+            characteristic_timescale="1/f",
+            discovered_equations=[
+                "du/dt = D_u*d2u/dx2 - u*v^2 + f*(1-u)",
+                "dv/dt = D_v*d2v/dx2 + u*v^2 - (f+k)*v",
+                "Self-replicating pulses",
+                "Pulse splitting bifurcation",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -2719,6 +2787,91 @@ def detect_structural_analogies(
         },
     ))
 
+    # Lorenz-84 <-> Lorenz (3D atmospheric chaos with similar quadratic structure)
+    analogies.append(Analogy(
+        domain_a="lorenz_84",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are 3D chaotic atmospheric models with quadratic nonlinearities. "
+            "Lorenz (1963) has x*z and x*y coupling; Lorenz-84 has y^2+z^2 and xy, xz."
+        ),
+        strength=0.85,
+        mapping={
+            "x (westerly wind)": "x (convective intensity)",
+            "y,z (eddy modes)": "y,z (temperature gradients)",
+            "quadratic coupling": "quadratic coupling",
+        },
+    ))
+
+    # Rabinovich-Fabrikant <-> Lorenz (3D chaotic with quadratic nonlinearity)
+    analogies.append(Analogy(
+        domain_a="rabinovich_fabrikant",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are 3D autonomous chaotic ODEs with quadratic nonlinear coupling "
+            "terms. RF has x*y and x*z coupling similar to Lorenz x*z and x*y."
+        ),
+        strength=0.8,
+        mapping={
+            "y(z-1+x^2)": "sigma*(y-x)",
+            "-2z(alpha+xy)": "-beta*z+x*y",
+            "strange attractor": "strange attractor",
+        },
+    ))
+
+    # Sprott <-> Lorenz (minimal 3D chaotic flow)
+    analogies.append(Analogy(
+        domain_a="sprott",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are 3D autonomous dissipative chaotic flows with strange attractors. "
+            "Sprott-B achieves chaos with minimal nonlinearity (yz, xy terms only)."
+        ),
+        strength=0.75,
+        mapping={
+            "yz coupling": "xz coupling",
+            "1-xy (forcing)": "rho*x (forcing)",
+            "chaos with minimal terms": "chaos with 7 terms",
+        },
+    ))
+
+    # Gray-Scott 1D <-> Gray-Scott 2D (same chemistry, different dimensionality)
+    analogies.append(Analogy(
+        domain_a="gray_scott_1d",
+        domain_b="gray_scott",
+        analogy_type="structural",
+        description=(
+            "Identical reaction kinetics (u*v^2 autocatalysis) in 1D vs 2D. "
+            "1D shows pulse dynamics; 2D shows spot/stripe patterns."
+        ),
+        strength=1.0,
+        mapping={
+            "u*v^2 (1D)": "u*v^2 (2D)",
+            "pulses": "spots/stripes",
+            "pulse splitting": "spot replication",
+        },
+    ))
+
+    # Gray-Scott 1D <-> Schnakenberg (1D RD pulse dynamics)
+    analogies.append(Analogy(
+        domain_a="gray_scott_1d",
+        domain_b="schnakenberg",
+        analogy_type="structural",
+        description=(
+            "Both are activator-inhibitor reaction-diffusion systems with "
+            "autocatalytic u*v^2 or u^2*v terms producing Turing-type patterns."
+        ),
+        strength=0.85,
+        mapping={
+            "u*v^2": "u^2*v",
+            "f*(1-u)": "a-u",
+            "pulse formation": "Turing patterns",
+        },
+    ))
+
     return analogies
 
 
@@ -3277,6 +3430,54 @@ def detect_dimensional_analogies(
         mapping={
             "1/delta [recovery time]": "1/eps [recovery time]",
             "1/mu [burst modulation]": "N/A (no bursting in FHN)",
+        },
+    ))
+
+    # Dimensional: Lorenz-84 <-> Lorenz (atmospheric timescale 1/a vs 1/sigma)
+    analogies.append(Analogy(
+        domain_a="lorenz_84",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both atmospheric models with damping timescale: 1/a in L84, 1/sigma in L63. "
+            "Forcing parameter F in L84 maps to rho in L63 for chaos onset."
+        ),
+        strength=0.8,
+        mapping={
+            "1/a [damping time]": "1/sigma [damping time]",
+            "F [forcing]": "rho [Rayleigh number]",
+        },
+    ))
+
+    # Dimensional: Gray-Scott 1D <-> Gray-Scott 2D (same scaling, different dimension)
+    analogies.append(Analogy(
+        domain_a="gray_scott_1d",
+        domain_b="gray_scott",
+        analogy_type="dimensional",
+        description=(
+            "Identical dimensional scaling: pattern wavelength ~ sqrt(D_v/k), "
+            "timescale ~ 1/f. Same diffusion coefficients in 1D and 2D."
+        ),
+        strength=1.0,
+        mapping={
+            "sqrt(D_v/k) [1D pulse width]": "sqrt(D_v/k) [2D pattern wavelength]",
+            "1/f [feed timescale]": "1/f [feed timescale]",
+        },
+    ))
+
+    # Dimensional: Rabinovich-Fabrikant <-> Rossler (dissipation timescale)
+    analogies.append(Analogy(
+        domain_a="rabinovich_fabrikant",
+        domain_b="rossler",
+        analogy_type="dimensional",
+        description=(
+            "Both 3D chaotic systems with dissipation rate controlling chaos onset. "
+            "RF: 1/alpha damping; Rossler: 1/c dissipation timescale."
+        ),
+        strength=0.7,
+        mapping={
+            "1/alpha [z damping]": "1/c [z damping]",
+            "gamma [linear growth]": "a [spiral rate]",
         },
     ))
 
@@ -4408,6 +4609,75 @@ def detect_topological_analogies(
             "fast spike manifold": "fast spike manifold",
             "slow y drift": "slow z drift",
             "burst/quiescent transition": "burst/quiescent transition",
+        },
+    ))
+
+    # Topological: Lorenz-84 <-> Double Pendulum (chaotic with quasi-periodic routes)
+    analogies.append(Analogy(
+        domain_a="lorenz_84",
+        domain_b="double_pendulum",
+        analogy_type="topological",
+        description=(
+            "Both exhibit quasi-periodic routes to chaos with strange attractors. "
+            "L84 transitions through Hopf then torus-doubling; double pendulum "
+            "through energy-dependent KAM tori breakdown."
+        ),
+        strength=0.7,
+        mapping={
+            "F (forcing bifurcation)": "E (energy bifurcation)",
+            "quasi-periodic torus": "KAM tori",
+            "strange attractor": "chaotic sea",
+        },
+    ))
+
+    # Topological: Rabinovich-Fabrikant <-> Rossler (scroll attractor topology)
+    analogies.append(Analogy(
+        domain_a="rabinovich_fabrikant",
+        domain_b="rossler",
+        analogy_type="topological",
+        description=(
+            "Both exhibit multiscroll/spiral strange attractors with fold-and-stretch "
+            "dynamics. RF has more complex scroll structure from plasma instability."
+        ),
+        strength=0.75,
+        mapping={
+            "multiscroll attractor": "single-scroll attractor",
+            "gamma->chaos transition": "c->chaos transition",
+            "positive Lyapunov": "positive Lyapunov",
+        },
+    ))
+
+    # Topological: Sprott <-> Thomas (minimal chaos, similar simplicity)
+    analogies.append(Analogy(
+        domain_a="sprott",
+        domain_b="thomas",
+        analogy_type="topological",
+        description=(
+            "Both are minimal chaotic systems: Sprott-B with just 5 terms, "
+            "Thomas with cyclic symmetry. Both achieve chaos with minimal nonlinearity."
+        ),
+        strength=0.7,
+        mapping={
+            "Sprott minimal flow": "Thomas cyclic flow",
+            "yz, xy nonlinearity": "sin(y), sin(z), sin(x) nonlinearity",
+            "strange attractor": "labyrinth attractor",
+        },
+    ))
+
+    # Topological: Gray-Scott 1D <-> Brusselator-diffusion (1D RD patterns)
+    analogies.append(Analogy(
+        domain_a="gray_scott_1d",
+        domain_b="brusselator_diffusion",
+        analogy_type="topological",
+        description=(
+            "Both 1D reaction-diffusion systems exhibiting localized structures. "
+            "GS-1D shows self-replicating pulses; Brusselator-diff shows Turing spots."
+        ),
+        strength=0.8,
+        mapping={
+            "pulse solutions": "Turing patterns",
+            "pulse splitting": "pattern formation",
+            "D_u/D_v ratio": "D_u/D_v ratio",
         },
     ))
 

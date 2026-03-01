@@ -80,6 +80,10 @@ class Domain(str, Enum):
     COUPLED_MAP_LATTICE = "coupled_map_lattice"
     SCHNAKENBERG = "schnakenberg"
     KAPITZA_PENDULUM = "kapitza_pendulum"
+    LORENZ_84 = "lorenz_84"
+    GRAY_SCOTT_1D = "gray_scott_1d"
+    RABINOVICH_FABRIKANT = "rabinovich_fabrikant"
+    SPROTT = "sprott"
 
 
 class SimulationBackend(str, Enum):
