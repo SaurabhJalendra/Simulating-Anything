@@ -462,6 +462,18 @@ src/simulating_anything/
     bouncing_ball.py       # Bouncing ball impact map (period-doubling)
     wilson_cowan.py        # Wilson-Cowan E-I neural populations
     cable_equation.py      # Cable equation (passive neurite PDE)
+    sine_gordon.py         # Sine-Gordon topological solitons (kink/antikink)
+    thomas.py              # Thomas cyclically symmetric chaos (labyrinth attractor)
+    ikeda_map.py           # Ikeda discrete chaos (nonlinear optics)
+    may_leonard.py         # May-Leonard cyclic competition (heteroclinic cycles)
+    cahn_hilliard.py       # Cahn-Hilliard phase field PDE (spinodal decomposition)
+    delayed_predator_prey.py # Delay differential predator-prey (Hopf at tau_c)
+    duffing_van_der_pol.py # Hybrid Duffing-VdP chaotic oscillator
+    network_sis.py         # Network SIS epidemic (spectral threshold)
+    coupled_map_lattice.py # Coupled map lattice (spatiotemporal chaos)
+    schnakenberg.py        # Schnakenberg reaction-diffusion (Turing patterns)
+    kapitza_pendulum.py    # Kapitza inverted pendulum (parametric stabilization)
+    fitzhugh_rinzel.py     # FitzHugh-Rinzel 3-timescale bursting neuron
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -476,7 +488,7 @@ src/simulating_anything/
     ablation.py            # Single-factor ablation studies
     pipeline_ablation.py   # Pipeline component ablation (sampling, method, data)
     sensitivity.py         # Noise/data/range sensitivity analysis
-    cross_domain.py        # Cross-domain analogy engine (141 isomorphisms)
+    cross_domain.py        # Cross-domain analogy engine (175 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
     domain_statistics.py   # Runtime benchmarks for all domains
     error_analysis.py      # Bootstrap R², coefficient uncertainty
@@ -542,7 +554,19 @@ src/simulating_anything/
     bouncing_ball.py       # Impact map, Feigenbaum cascade
     wilson_cowan.py        # E-I Hopf bifurcation, nullclines
     cable_equation.py      # Space constant lambda, tau_m decay
-    runner.py              # Unified runner for all 59 domains
+    sine_gordon.py         # Kink soliton, topological charge
+    thomas.py              # Labyrinth attractor, b_c transition
+    ikeda_map.py           # Spiral attractor, det(J)=u^2
+    may_leonard.py         # Heteroclinic cycles, biodiversity
+    cahn_hilliard.py       # Coarsening L(t)~t^(1/3), phase separation
+    delayed_predator_prey.py # Delay-induced Hopf, critical tau
+    duffing_van_der_pol.py # VdP+Duffing hybrid chaos
+    network_sis.py         # Spectral threshold, endemic equilibrium
+    coupled_map_lattice.py # Kaneko CML, spatiotemporal patterns
+    schnakenberg.py        # Turing patterns, activator-inhibitor
+    kapitza_pendulum.py    # Parametric stabilization, inverted equilibrium
+    fitzhugh_rinzel.py     # 3-timescale bursting, burst dynamics
+    runner.py              # Unified runner for all 71 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -564,7 +588,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 1521 tests across 62+ files
+tests/unit/                # 1985 tests across 75+ files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -633,6 +657,18 @@ tests/unit/                # 1521 tests across 62+ files
   test_bouncing_ball.py    # 20 tests — Impact map chaos
   test_wilson_cowan.py     # 25 tests — E-I neural oscillation
   test_cable_equation.py   # 18 tests — Passive neurite PDE
+  test_sine_gordon.py      # 24 tests — Topological solitons
+  test_thomas.py           # 23 tests — Thomas labyrinth chaos
+  test_ikeda_map.py        # 22 tests — Ikeda discrete chaos
+  test_may_leonard.py      # 33 tests — Cyclic competition
+  test_cahn_hilliard.py    # 23 tests — Phase field PDE
+  test_delayed_predator_prey.py # 24 tests — DDE Hopf bifurcation
+  test_duffing_van_der_pol.py # 27 tests — Hybrid oscillator
+  test_network_sis.py      # 22 tests — Network epidemic
+  test_coupled_map_lattice.py # 23 tests — CML spatiotemporal chaos
+  test_schnakenberg.py     # 20 tests — Turing patterns RD
+  test_kapitza_pendulum.py # 24 tests — Parametric stabilization
+  test_fitzhugh_rinzel.py  # 24 tests — 3-timescale bursting
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
