@@ -372,6 +372,7 @@ World models learn to predict future states of an environment given actions, ena
 **Key architectures:**
 
 - **DreamerV3** (Hafner et al., 2023). RSSM combining deterministic and stochastic latent states. A single set of hyperparameters works across 150+ tasks. Imagination horizon limited to approximately 15 steps; discrete latent categories may underrepresent continuous physical quantities.
+- **DreamerV4** (Hafner et al., 2025). Next-generation world model with improved long-horizon dreaming, better uncertainty calibration, and more expressive latent representations. A natural upgrade path for our RSSM -- the modular architecture means only `world_model/rssm.py` and `trainer.py` need updating. Key advantages for scientific discovery: longer imagination horizons enable better parameter space exploration, and improved uncertainty estimates drive more efficient exploration.
 - **IRIS** (Micheli et al., 2023). VQ-VAE discrete autoencoder with autoregressive Transformer dynamics. Highly sample-efficient on Atari 100K. Quadratic attention cost limits rollout horizon; codebook collapse reduces representational capacity over time.
 - **DIAMOND** (Alonso et al., 2024). Conditional diffusion model generating future frames via iterative denoising. State-of-the-art on Atari 100K with visually sharp generation. Slow inference due to multi-step denoising; temporal consistency not inherently enforced.
 - **Genie 1/2** (Bruce et al., 2024; DeepMind, 2024). Learns interactive environments from unlabeled video with latent action discovery. No action labels needed during training. Low frame rate (~1 FPS in Genie 1); no guarantee of physical consistency.
@@ -384,6 +385,7 @@ World models learn to predict future states of an environment given actions, ena
 | Model | Architecture Type | Action Space | Resolution | Horizon | Inference Speed |
 |-------|------------------|--------------|------------|---------|-----------------|
 | DreamerV3 | RSSM (recurrent) | Continuous/discrete | 64x64 | ~15 steps | Real-time |
+| DreamerV4 | RSSM (improved) | Continuous/discrete | 64x64+ | ~50+ steps | Real-time |
 | IRIS | Transformer + VQ-VAE | Discrete | 64x64 | ~50 tokens | Near real-time |
 | DIAMOND | Diffusion (U-Net) | Discrete | 64x64 | ~100 steps | Slow (multi-step) |
 | Genie 1 | Transformer + VQ-VAE | Latent (discovered) | 256x256 | Seconds | ~1 FPS |
