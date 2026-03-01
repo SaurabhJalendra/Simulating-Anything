@@ -249,6 +249,44 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.001, "n_steps": 500, "math_class": "Nonlinear ODE",
     },
+    "elastic_pendulum": {
+        "module": "simulating_anything.simulation.elastic_pendulum",
+        "cls": "ElasticPendulum",
+        "domain": Domain.ELASTIC_PENDULUM,
+        "params": {
+            "k": 10.0, "m": 1.0, "L0": 1.0, "g": 9.81,
+            "r_0": 1.981, "r_dot_0": 0.0,
+            "theta_0": 0.1, "theta_dot_0": 0.0,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Nonlinear ODE",
+    },
+    "rossler": {
+        "module": "simulating_anything.simulation.rossler",
+        "cls": "RosslerSimulation",
+        "domain": Domain.ROSSLER,
+        "params": {
+            "a": 0.2, "b": 0.2, "c": 5.7,
+            "x_0": 1.0, "y_0": 1.0, "z_0": 0.0,
+        },
+        "dt": 0.005, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "henon_map": {
+        "module": "simulating_anything.simulation.henon_map",
+        "cls": "HenonMapSimulation",
+        "domain": Domain.HENON_MAP,
+        "params": {"a": 1.4, "b": 0.3, "x_0": 0.0, "y_0": 0.0},
+        "dt": 1.0, "n_steps": 500, "math_class": "Discrete Chaos",
+    },
+    "brusselator_diffusion": {
+        "module": "simulating_anything.simulation.brusselator_diffusion",
+        "cls": "BrusselatorDiffusion",
+        "domain": Domain.BRUSSELATOR_DIFFUSION,
+        "params": {
+            "a": 1.0, "b": 3.0, "D_u": 0.01, "D_v": 0.1,
+            "N_grid": 64.0, "L_domain": 20.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Reaction-Diffusion PDE",
+    },
 }
 
 

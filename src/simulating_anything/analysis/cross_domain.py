@@ -425,6 +425,70 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="elastic_pendulum",
+            math_type="ode_nonlinear",
+            state_dim=4,  # [r, r_dot, theta, theta_dot]
+            n_parameters=4,  # k, m, L0, g
+            conserved_quantities=["energy"],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",  # Coupled oscillation modes
+            characteristic_timescale="sqrt(m/k)",
+            discovered_equations=[
+                "omega_r = sqrt(k/m)",
+                "omega_theta = sqrt(g/L0)",
+                "E = 0.5*m*(r_dot^2 + r^2*theta_dot^2) + 0.5*k*(r-L0)^2 - m*g*r*cos(theta)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="rossler",
+            math_type="chaotic",
+            state_dim=3,  # [x, y, z]
+            n_parameters=3,  # a, b, c
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = -y - z",
+                "dy/dt = x + a*y",
+                "dz/dt = b + z*(x - c)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="brusselator_diffusion",
+            math_type="pde",
+            state_dim=2,  # 2*N spatial grid (u and v fields)
+            n_parameters=5,  # a, b, D_u, D_v, L
+            conserved_quantities=[],
+            symmetries=["translation", "reflection"],
+            phase_portrait_type="fixed_point",  # Turing patterns from uniform state
+            characteristic_timescale="L^2/D_u",
+            discovered_equations=[
+                "du/dt = D_u*u_xx + a - (b+1)*u + u^2*v",
+                "dv/dt = D_v*v_xx + b*u - u^2*v",
+                "Turing threshold: b > 1+a^2 with D_v/D_u >> 1",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="henon_map",
+            math_type="chaotic",  # Discrete chaos
+            state_dim=2,  # [x, y]
+            n_parameters=2,  # a, b
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1",  # Discrete map
+            discovered_equations=[
+                "x_{n+1} = 1 - a*x_n^2 + y_n",
+                "y_{n+1} = b*x_n",
+                "Lyapunov ~ 0.42 (a=1.4, b=0.3)",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -971,6 +1035,124 @@ def detect_structural_analogies(
         },
     ))
 
+    # Analogy: Elastic pendulum <-> Cart-pole (Lagrangian coupled 2DOF systems)
+    analogies.append(Analogy(
+        domain_a="elastic_pendulum",
+        domain_b="cart_pole",
+        analogy_type="structural",
+        description=(
+            "Both are Lagrangian systems with 2 coupled degrees of freedom. "
+            "Elastic pendulum: radial (spring) + angular (pendulum). "
+            "Cart-pole: translational (cart) + rotational (pendulum). "
+            "Both have a mass matrix and coupled nonlinear equations of motion."
+        ),
+        strength=0.8,
+        mapping={
+            "r (radial)": "x (cart position)",
+            "theta (angular)": "theta (pendulum angle)",
+            "k/m (spring restoring)": "g*(M+m)/(M*L) (gravity restoring)",
+            "1:2 resonance": "small-angle oscillation",
+        },
+    ))
+
+    # Analogy: Elastic pendulum <-> Harmonic oscillator (radial mode)
+    analogies.append(Analogy(
+        domain_a="elastic_pendulum",
+        domain_b="harmonic_oscillator",
+        analogy_type="structural",
+        description=(
+            "The radial mode of the elastic pendulum is a simple harmonic oscillator. "
+            "For small theta, r'' = -(k/m)*(r-L0) + g is exactly the spring equation. "
+            "omega_r = sqrt(k/m) matches the harmonic oscillator omega_0 = sqrt(k/m)."
+        ),
+        strength=0.9,
+        mapping={
+            "r - L0 (radial displacement)": "x (displacement)",
+            "k/m (spring ratio)": "k/m (spring ratio)",
+            "omega_r = sqrt(k/m)": "omega_0 = sqrt(k/m)",
+        },
+    ))
+
+    # Analogy: Rossler <-> Lorenz (3D chaotic ODE systems)
+    analogies.append(Analogy(
+        domain_a="rossler",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are 3D autonomous ODE systems with chaotic attractors. "
+            "Rossler: simpler single-lobe spiral attractor. "
+            "Lorenz: two-lobe butterfly attractor. "
+            "Both have quadratic nonlinearity (x*z in Lorenz, x*z in Rossler)."
+        ),
+        strength=0.85,
+        mapping={
+            "a [spiral rate]": "sigma [coupling]",
+            "c [reinjection]": "rho [Rayleigh number]",
+            "z*(x-c) [nonlinear]": "x*z, x*y [nonlinear]",
+            "single-lobe attractor": "two-lobe butterfly",
+        },
+    ))
+
+    # Analogy: Brusselator-diffusion <-> Gray-Scott (reaction-diffusion PDEs)
+    analogies.append(Analogy(
+        domain_a="brusselator_diffusion",
+        domain_b="gray_scott",
+        analogy_type="structural",
+        description=(
+            "Both are 2-component reaction-diffusion PDEs with Turing instability. "
+            "Brusselator: u_t = D_u*u_xx + a - (b+1)*u + u^2*v. "
+            "Gray-Scott: u_t = D_u*Lap(u) - u*v^2 + f*(1-u). "
+            "Both produce spatial patterns from homogeneous initial conditions "
+            "when the diffusion ratio D_v/D_u is sufficiently large."
+        ),
+        strength=0.9,
+        mapping={
+            "u^2*v [autocatalytic]": "u*v^2 [autocatalytic]",
+            "b [bifurcation parameter]": "k [kill rate]",
+            "Turing threshold b>1+a^2": "Turing boundary in (f,k) space",
+            "D_v/D_u >> 1": "D_u/D_v >> 1 (different convention)",
+        },
+    ))
+
+    # Analogy: Brusselator-diffusion <-> Brusselator (spatial extension)
+    analogies.append(Analogy(
+        domain_a="brusselator_diffusion",
+        domain_b="brusselator",
+        analogy_type="structural",
+        description=(
+            "Brusselator-diffusion is the spatial extension of the Brusselator. "
+            "Brusselator: du/dt = a - (b+1)*u + u^2*v (well-mixed). "
+            "Brusselator-diffusion: adds D_u*u_xx and D_v*v_xx (spatial). "
+            "Setting D_u = D_v = 0 recovers the original ODE exactly."
+        ),
+        strength=0.95,
+        mapping={
+            "a, b [reaction params]": "a, b [same params]",
+            "D_u*u_xx [diffusion]": "0 [well-mixed]",
+            "Turing patterns": "Hopf oscillations",
+        },
+    ))
+
+    # Analogy: Henon map <-> Logistic map (discrete chaos)
+    analogies.append(Analogy(
+        domain_a="henon_map",
+        domain_b="logistic_map",
+        analogy_type="structural",
+        description=(
+            "Both are discrete chaotic maps with period-doubling route to chaos. "
+            "Henon: 2D map, x_{n+1} = 1 - a*x^2 + y, y_{n+1} = b*x. "
+            "Logistic: 1D map, x_{n+1} = r*x*(1-x). "
+            "For b=0, the Henon map reduces to a 1D quadratic map like logistic."
+        ),
+        strength=0.9,
+        mapping={
+            "a [nonlinearity]": "r [growth rate]",
+            "b=0 [1D limit]": "logistic map",
+            "Henon attractor (fractal D~1.26)": "chaotic bands",
+            "Feigenbaum universality": "Feigenbaum universality",
+        },
+    ))
+
     return analogies
 
 
@@ -1165,6 +1347,42 @@ def detect_dimensional_analogies(
             "g*(M+m)/L [effective restoring]": "k [spring constant]",
             "M [effective inertia]": "m [mass]",
             "omega = sqrt(g*(M+m)/(M*L))": "omega_0 = sqrt(k/m)",
+        },
+    ))
+
+    # Elastic pendulum <-> Harmonic oscillator (omega_r = sqrt(k/m))
+    analogies.append(Analogy(
+        domain_a="elastic_pendulum",
+        domain_b="harmonic_oscillator",
+        analogy_type="dimensional",
+        description=(
+            "Both have omega = sqrt(k/m). Elastic pendulum radial mode: "
+            "omega_r = sqrt(k/m). Harmonic oscillator: omega_0 = sqrt(k/m). "
+            "Angular mode gives omega_theta = sqrt(g/L0) ~ pendulum."
+        ),
+        strength=0.95,
+        mapping={
+            "k [spring constant]": "k [spring constant]",
+            "m [mass]": "m [mass]",
+            "omega_r = sqrt(k/m)": "omega_0 = sqrt(k/m)",
+        },
+    ))
+
+    # Brusselator-diffusion <-> Heat equation (diffusion timescale)
+    analogies.append(Analogy(
+        domain_a="brusselator_diffusion",
+        domain_b="heat_equation",
+        analogy_type="dimensional",
+        description=(
+            "Both have diffusive transport with timescale ~ L^2/D. "
+            "Heat: pure diffusion u_t = D*u_xx. "
+            "Brusselator-diffusion: diffusion + reaction. "
+            "The diffusion operator is identical in both systems."
+        ),
+        strength=0.75,
+        mapping={
+            "D_u [chemical diffusion]": "D [thermal diffusion]",
+            "L^2/D_u [timescale]": "L^2/D [timescale]",
         },
     ))
 
@@ -1486,6 +1704,102 @@ def detect_topological_analogies(
             "particle velocities": "temperature field u(x)",
             "collision dynamics": "diffusion operator D*u_xx",
             "Maxwell-Boltzmann equilibrium": "uniform steady state",
+        },
+    ))
+
+    # Rossler <-> Lorenz (chaotic 3D ODE strange attractors)
+    analogies.append(Analogy(
+        domain_a="rossler",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both have strange attractors in 3D phase space with positive "
+            "Lyapunov exponents. Rossler: single-lobe spiral, Lyapunov ~0.07. "
+            "Lorenz: two-lobe butterfly, Lyapunov ~0.9. "
+            "Both show sensitive dependence on initial conditions."
+        ),
+        strength=0.85,
+        mapping={
+            "single-lobe spiral": "two-lobe butterfly",
+            "c [reinjection parameter]": "rho [Rayleigh number]",
+            "period-doubling to chaos": "intermittency to chaos",
+        },
+    ))
+
+    # Rossler <-> Duffing (period-doubling route to chaos)
+    analogies.append(Analogy(
+        domain_a="rossler",
+        domain_b="duffing",
+        analogy_type="topological",
+        description=(
+            "Both exhibit period-doubling route to chaos as a control parameter "
+            "increases. Rossler: c increasing causes period 1->2->4->chaos. "
+            "Duffing: driving amplitude gamma increasing causes similar cascade. "
+            "Both share Feigenbaum universal scaling."
+        ),
+        strength=0.75,
+        mapping={
+            "c [control parameter]": "gamma [driving amplitude]",
+            "period-doubling cascade": "period-doubling cascade",
+            "chaotic attractor": "chaotic attractor",
+        },
+    ))
+
+    # Henon map <-> Logistic map (discrete chaotic dynamics)
+    analogies.append(Analogy(
+        domain_a="henon_map",
+        domain_b="logistic_map",
+        analogy_type="topological",
+        description=(
+            "Both are discrete chaotic maps with Feigenbaum universality. "
+            "Henon: 2D strange attractor with fractal dimension ~1.26. "
+            "Logistic: 1D chaotic intervals with fractal spectrum. "
+            "Both exhibit period-doubling cascades and positive Lyapunov exponents."
+        ),
+        strength=0.85,
+        mapping={
+            "a [Henon parameter]": "r [logistic parameter]",
+            "Lyapunov ~0.42": "Lyapunov ln(2) at r=4",
+            "strange attractor (D~1.26)": "chaotic intervals",
+        },
+    ))
+
+    # Elastic pendulum <-> Double pendulum (coupled nonlinear pendula)
+    analogies.append(Analogy(
+        domain_a="elastic_pendulum",
+        domain_b="double_pendulum",
+        analogy_type="topological",
+        description=(
+            "Both are 2-DOF nonlinear pendulum systems that can exhibit chaos "
+            "at high energies. Elastic pendulum: radial-angular energy exchange "
+            "(1:2 autoparametric resonance). Double pendulum: angle-angle "
+            "energy exchange. Both have integrable (small angle) and chaotic regimes."
+        ),
+        strength=0.7,
+        mapping={
+            "r-theta coupling": "theta1-theta2 coupling",
+            "1:2 resonance": "chaotic onset at high E",
+            "energy conservation": "energy conservation",
+        },
+    ))
+
+    # Brusselator-diffusion <-> Diffusive LV (reaction-diffusion patterns)
+    analogies.append(Analogy(
+        domain_a="brusselator_diffusion",
+        domain_b="diffusive_lv",
+        analogy_type="topological",
+        description=(
+            "Both are 2-component reaction-diffusion PDEs that produce "
+            "spatial patterns from uniform initial conditions. "
+            "Brusselator-diff: Turing patterns (spots, stripes). "
+            "Diffusive LV: traveling waves and spatial segregation. "
+            "Both require differential diffusion (D_v != D_u)."
+        ),
+        strength=0.7,
+        mapping={
+            "Turing patterns": "traveling waves",
+            "D_v/D_u ratio": "D_pred/D_prey ratio",
+            "u, v [chemical concentrations]": "prey, predator [populations]",
         },
     ))
 
