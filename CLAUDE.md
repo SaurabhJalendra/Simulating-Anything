@@ -144,7 +144,7 @@ Only the `SimulationEnvironment` subclass is domain-specific. Everything
 else -- problem parsing, world model, exploration, analysis, reporting --
 operates on generic tensors. Adding a domain = one new class (~50-200 lines).
 
-**Cross-domain analogy engine** detects 26 mathematical isomorphisms across 14 domains:
+**Cross-domain analogy engine** detects 39 mathematical isomorphisms across 23 domains:
 - LV ↔ SIR (bilinear interaction terms)
 - Pendulum ↔ Oscillator (harmonic restoring force, T ~ √(inertia/force))
 - Projectile ↔ Oscillator (energy conservation)
@@ -416,6 +416,8 @@ src/simulating_anything/
     spring_mass_chain.py   # 1D coupled springs (phonon dispersion)
     kepler.py              # Kepler two-body orbits (celestial mechanics)
     driven_pendulum.py     # Damped driven pendulum (period-doubling chaos)
+    coupled_oscillators.py # Two coupled harmonic oscillators (beats)
+    diffusive_lv.py        # Spatial predator-prey PDE (FFT Laplacian)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -430,7 +432,7 @@ src/simulating_anything/
     ablation.py            # Single-factor ablation studies
     pipeline_ablation.py   # Pipeline component ablation (sampling, method, data)
     sensitivity.py         # Noise/data/range sensitivity analysis
-    cross_domain.py        # Cross-domain analogy engine (26 isomorphisms)
+    cross_domain.py        # Cross-domain analogy engine (39 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
     domain_statistics.py   # Runtime benchmarks for all domains
     error_analysis.py      # Bootstrap R², coefficient uncertainty
@@ -480,7 +482,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 629 tests across 36 files
+tests/unit/                # 666 tests across 38 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines

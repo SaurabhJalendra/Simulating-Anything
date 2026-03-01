@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-629%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-666%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-21-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-23-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **21 domains** spanning **14 mathematical classes**.
+simulation data across **23 domains** spanning **16 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 31 mathematical isomorphisms detected across 19 domains
+**Cross-domain analysis:** 39 mathematical isomorphisms detected across 23 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -51,6 +51,8 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #19: Spring-mass chain** -- phonon dispersion omega(k), speed of sound c=a*sqrt(K/m).
 **Domain #20: Kepler orbit** -- celestial mechanics, T^2 proportional to a^3, energy/L conservation.
 **Domain #21: Driven pendulum** -- period-doubling chaos, resonance curves, Poincare sections.
+**Domain #22: Coupled oscillators** -- normal mode splitting, beat frequency, energy transfer.
+**Domain #23: Diffusive Lotka-Volterra** -- spatial predator-prey PDE, traveling waves, Fisher-KPP scaling.
 
 ---
 
@@ -142,7 +144,7 @@ python scripts/demo_pipeline.py
 ### Run Tests
 
 ```bash
-# Full suite (629 tests):
+# Full suite (666 tests):
 python -m pytest tests/unit/ -v
 
 # Quick smoke test:
@@ -234,16 +236,18 @@ src/simulating_anything/
     spring_mass_chain.py   # 1D coupled springs (phonon physics)
     kepler.py              # Kepler two-body orbits
     driven_pendulum.py     # Damped driven pendulum (chaos)
+    coupled_oscillators.py # Two coupled harmonic oscillators
+    diffusive_lv.py        # Spatial predator-prey PDE
   world_model/             # RSSM (Equinox), 1536 latent dims
   analysis/
     symbolic_regression.py # PySR wrapper
     equation_discovery.py  # SINDy wrapper
-    cross_domain.py        # Analogy engine (17 isomorphisms)
+    cross_domain.py        # Analogy engine (39 isomorphisms)
     sensitivity.py         # Noise/data sensitivity
     pipeline_ablation.py   # Component ablation study
     error_analysis.py      # Bootstrap confidence intervals
     domain_statistics.py   # Runtime benchmarks
-  rediscovery/             # Per-domain PySR/SINDy runners (21 domains)
+  rediscovery/             # Per-domain PySR/SINDy runners (23 domains)
   agents/                  # LLM agents (Claude Code CLI)
   types/                   # Pydantic v2 data models
 
@@ -263,7 +267,7 @@ scripts/
   aggregate_all_results.py            # Unified JSON + LaTeX table
   train_world_models_14domain.py      # RSSM training (14 domains)
 
-tests/unit/                # 629 tests, 36 files
+tests/unit/                # 666 tests, 38 files
 notebooks/                 # Interactive demos
 docs/                      # Research and design documentation
 ```
@@ -274,12 +278,12 @@ docs/                      # Research and design documentation
 
 | Metric | Value |
 |--------|-------|
-| Simulation domains | 21 (14 core + 7 extended) |
-| Mathematical classes | 14 |
-| Tests | 629 passing, 29 skipped |
+| Simulation domains | 23 (14 core + 9 extended) |
+| Mathematical classes | 16 |
+| Tests | 666 passing, 33 skipped |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
-| Cross-domain analogies | 31 |
+| Cross-domain analogies | 39 |
 | Publication figures | 24 |
 | World models trained | 14/14 |
 | Lines per new domain | ~50-200 |
