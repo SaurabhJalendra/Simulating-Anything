@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-1433%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-1521%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-55-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-59-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **55 domains** spanning **39 mathematical classes**.
+simulation data across **59 domains** spanning **43 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 129 mathematical isomorphisms detected across 55 domains
+**Cross-domain analysis:** 141 mathematical isomorphisms detected across 59 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -85,6 +85,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #53: BZ Spiral** -- 2D Oregonator PDE, spiral wave formation, excitable medium, tip tracking.
 **Domain #54: Swinging Atwood** -- Lagrangian chaotic mechanics, mass ratio mu=M/m, energy conservation.
 **Domain #55: Allee Predator-Prey** -- strong Allee effect, bistability, predator-induced extinction.
+**Domain #56: Mackey-Glass DDE** -- delay differential equation, period-doubling chaos, ring buffer history.
+**Domain #57: Bouncing Ball** -- impact map, period-doubling route to chaos, Feigenbaum universality.
+**Domain #58: Wilson-Cowan** -- E-I neural population oscillator, sigmoid activation, Hopf bifurcation.
+**Domain #59: Cable Equation** -- passive neurite signal propagation, Crank-Nicolson solver, space constant lambda.
 
 ---
 
