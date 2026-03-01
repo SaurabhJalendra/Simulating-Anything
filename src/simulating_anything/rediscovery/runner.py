@@ -39,8 +39,10 @@ def run_all_rediscoveries(
     Returns:
         Combined results dict with all discoveries.
     """
+    from simulating_anything.rediscovery.cart_pole import run_cart_pole_rediscovery
     from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
     from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
+    from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
     from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
     from simulating_anything.rediscovery.diffusive_lv import run_diffusive_lv_rediscovery
@@ -207,6 +209,16 @@ def run_all_rediscoveries(
         "ising_model": {
             "label": "2D Ising Model Phase Transition",
             "fn": run_ising_model_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "three_species": {
+            "label": "Three-Species Food Chain ODE",
+            "fn": run_three_species_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "cart_pole": {
+            "label": "Cart-Pole Linearized Frequency",
+            "fn": run_cart_pole_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
