@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-548%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-588%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-17-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-19-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **17 domains** spanning **10 mathematical classes**.
+simulation data across **19 domains** spanning **12 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -47,6 +47,8 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
 **Domain #16: Schwarzschild geodesic** -- general relativity, ISCO = 6M, energy conservation.
 **Domain #17: Quantum harmonic oscillator** -- split-operator FFT, E_n = (n+1/2)hbar*omega.
+**Domain #18: Boltzmann gas** -- 2D ideal gas, hard-sphere collisions, PV=NkT.
+**Domain #19: Spring-mass chain** -- phonon dispersion omega(k), speed of sound c=a*sqrt(K/m).
 
 ---
 
@@ -138,7 +140,7 @@ python scripts/demo_pipeline.py
 ### Run Tests
 
 ```bash
-# Full suite (548 tests):
+# Full suite (588 tests):
 python -m pytest tests/unit/ -v
 
 # Quick smoke test:
@@ -226,6 +228,8 @@ src/simulating_anything/
     duffing.py             # Duffing oscillator (chaos)
     schwarzschild.py       # Schwarzschild geodesics (GR)
     quantum_oscillator.py  # Quantum harmonic oscillator (FFT)
+    boltzmann_gas.py       # 2D ideal gas (statistical mechanics)
+    spring_mass_chain.py   # 1D coupled springs (phonon physics)
   world_model/             # RSSM (Equinox), 1536 latent dims
   analysis/
     symbolic_regression.py # PySR wrapper
@@ -235,7 +239,7 @@ src/simulating_anything/
     pipeline_ablation.py   # Component ablation study
     error_analysis.py      # Bootstrap confidence intervals
     domain_statistics.py   # Runtime benchmarks
-  rediscovery/             # Per-domain PySR/SINDy runners (17 domains)
+  rediscovery/             # Per-domain PySR/SINDy runners (19 domains)
   agents/                  # LLM agents (Claude Code CLI)
   types/                   # Pydantic v2 data models
 
@@ -255,7 +259,7 @@ scripts/
   aggregate_all_results.py            # Unified JSON + LaTeX table
   train_world_models_14domain.py      # RSSM training (14 domains)
 
-tests/unit/                # 548 tests, 32 files
+tests/unit/                # 588 tests, 34 files
 notebooks/                 # Interactive demos
 docs/                      # Research and design documentation
 ```
@@ -266,9 +270,9 @@ docs/                      # Research and design documentation
 
 | Metric | Value |
 |--------|-------|
-| Simulation domains | 17 (14 core + Duffing + Schwarzschild + Quantum) |
-| Mathematical classes | 10 |
-| Tests | 548 passing, 21 skipped |
+| Simulation domains | 19 (14 core + 5 extended) |
+| Mathematical classes | 12 |
+| Tests | 588 passing, 25 skipped |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
 | Cross-domain analogies | 17 |

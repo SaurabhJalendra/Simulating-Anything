@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
 from simulating_anything.rediscovery.double_pendulum import run_double_pendulum_rediscovery
 from simulating_anything.rediscovery.duffing import run_duffing_rediscovery
 from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
 from simulating_anything.rediscovery.quantum_oscillator import run_quantum_oscillator_rediscovery
 from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
+from simulating_anything.rediscovery.spring_mass_chain import run_spring_mass_chain_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
 from simulating_anything.rediscovery.harmonic_oscillator import run_harmonic_oscillator_rediscovery
 from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
@@ -21,6 +23,7 @@ from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
 
 __all__ = [
+    "run_boltzmann_gas_rediscovery",
     "run_projectile_rediscovery",
     "run_lotka_volterra_rediscovery",
     "run_gray_scott_analysis",
@@ -38,4 +41,5 @@ __all__ = [
     "run_duffing_rediscovery",
     "run_schwarzschild_rediscovery",
     "run_quantum_oscillator_rediscovery",
+    "run_spring_mass_chain_rediscovery",
 ]

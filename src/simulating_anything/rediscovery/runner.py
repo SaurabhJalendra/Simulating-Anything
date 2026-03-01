@@ -39,7 +39,11 @@ def run_all_rediscoveries(
     Returns:
         Combined results dict with all discoveries.
     """
+    from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+    from simulating_anything.rediscovery.spring_mass_chain import (
+        run_spring_mass_chain_rediscovery,
+    )
     from simulating_anything.rediscovery.double_pendulum import (
         run_double_pendulum_rediscovery,
     )
@@ -140,6 +144,11 @@ def run_all_rediscoveries(
             "fn": run_logistic_map_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
+        "boltzmann_gas": {
+            "label": "Boltzmann Gas 2D Ideal Gas Law",
+            "fn": run_boltzmann_gas_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
         "duffing": {
             "label": "Duffing Oscillator Chaos & ODE",
             "fn": run_duffing_rediscovery,
@@ -153,6 +162,11 @@ def run_all_rediscoveries(
         "schwarzschild": {
             "label": "Schwarzschild Geodesic ISCO & Precession",
             "fn": run_schwarzschild_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "spring_mass_chain": {
+            "label": "Spring-Mass Chain Dispersion & Phonons",
+            "fn": run_spring_mass_chain_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

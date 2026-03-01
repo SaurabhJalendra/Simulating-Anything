@@ -123,6 +123,16 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"r": 3.9, "x_0": 0.5},
         "dt": 1.0, "n_steps": 500, "math_class": "Discrete Chaos",
     },
+    "boltzmann_gas": {
+        "module": "simulating_anything.simulation.boltzmann_gas",
+        "cls": "BoltzmannGas2D",
+        "domain": Domain.BOLTZMANN_GAS,
+        "params": {
+            "N": 50.0, "L": 10.0, "T": 1.0,
+            "particle_radius": 0.05, "m": 1.0,
+        },
+        "dt": 0.005, "n_steps": 500, "math_class": "Statistical Mechanics",
+    },
     "duffing": {
         "module": "simulating_anything.simulation.duffing",
         "cls": "DuffingOscillator",
@@ -149,6 +159,16 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "domain": Domain.SCHWARZSCHILD,
         "params": {"M": 1.0, "L": 4.0, "r_0": 10.0, "pr_0": 0.0},
         "dt": 0.01, "n_steps": 500, "math_class": "GR Geodesic",
+    },
+    "spring_mass_chain": {
+        "module": "simulating_anything.simulation.spring_mass_chain",
+        "cls": "SpringMassChain",
+        "domain": Domain.SPRING_MASS_CHAIN,
+        "params": {
+            "N": 20.0, "K": 4.0, "m": 1.0, "a": 1.0,
+            "mode": 1.0, "amplitude": 0.1,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Coupled ODE",
     },
 }
 
