@@ -55,8 +55,8 @@ extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations in all 14 domains, achieving $R^2 \geq 0.999$ in 11 of
 14 cases, with a mean $R^2$ of 0.970. Our cross-domain analogy engine
-detects 66 structural, dimensional, and topological isomorphisms across
-31 domains. The key architectural insight is that only the simulation layer is
+detects 77 structural, dimensional, and topological isomorphisms across
+35 domains. The key architectural insight is that only the simulation layer is
 domain-specific ($\sim$50--200 lines per domain); everything else---world
 model, exploration, analysis, and reporting---operates on generic tensors,
 enabling universal scientific discovery.
@@ -296,8 +296,8 @@ Lyapunov exponent $\lambda(r{=}4) = \ln 4 = 1.386$ (exact).
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.8\linewidth]{figures/cross_domain_matrix_14domain.pdf}
-\caption{Cross-domain analogy strength matrix. 66 isomorphisms detected
-across 31 domains. Brighter cells indicate stronger mathematical analogies.}
+\caption{Cross-domain analogy strength matrix. 77 isomorphisms detected
+across 35 domains. Brighter cells indicate stronger mathematical analogies.}
 \label{fig:cross_domain}
 \end{figure}
 
@@ -544,16 +544,16 @@ would enable general-relativistic discoveries with no pipeline changes.
 \paragraph{Scaling and extensibility.}
 Adding a new domain requires only implementing a \texttt{SimulationEnvironment}
 subclass ($\sim$50--200 lines). All other pipeline stages operate unchanged.
-We have verified this with 31 domains across 21 mathematical classes.
+We have verified this with 35 domains across 23 mathematical classes.
 To concretely demonstrate extensibility, we implemented a Duffing
 oscillator ($x'' + \delta x' + \alpha x + \beta x^3 = \gamma\cos\omega t$)
 in 54 lines of Python, including RK4 integration, energy computation, and
 trajectory collection. All pipeline stages (world model, exploration,
 analysis) work immediately on this new domain with zero additional code.
-The total simulation code across all 31 domains is $\sim$4,500 lines,
+The total simulation code across all 35 domains is $\sim$5,200 lines,
 while the domain-agnostic infrastructure (world model, exploration,
-analysis, agents) spans $\sim$5,000 lines---a 1.25:1 ratio still favoring
-reuse, even as the number of domains has grown to 31.
+analysis, agents) spans $\sim$5,000 lines---a ratio still near 1:1,
+even as the number of domains has grown to 35.
 
 \paragraph{Statistical rigor.}
 We compute bootstrap confidence intervals ($n = 1000$ resamples) on
@@ -622,7 +622,7 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 rediscover known physical laws across 14 fundamentally different domains.
 The system achieves $R^2 \geq 0.999$ in 11 of 14 domains, with a mean
 $R^2$ of 0.970 across all domains. Cross-domain analogy detection reveals
-66 mathematical isomorphisms across 31 domains, suggesting that scientific
+77 mathematical isomorphisms across 35 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer
 validation framework---conservation checks, dimensional analysis,
 reproducibility tests, theory comparison, adversarial dream debate, and
@@ -630,12 +630,13 @@ cross-domain consistency---ensures simulation correctness and result
 reliability. Our architecture's key contribution is the separation of
 domain-specific simulation from domain-agnostic discovery, enabling
 universal scientific inference with minimal per-domain effort. The pipeline
-has been extended to 31 domains spanning 21 mathematical classes---including
+has been extended to 35 domains spanning 23 mathematical classes---including
 general relativity (Schwarzschild geodesics), quantum mechanics (harmonic
 oscillator), statistical mechanics (Boltzmann gas, Ising model), wave
-physics (damped wave, spring-mass chain), celestial mechanics (Kepler
-orbits), control theory (cart-pole), ecology (three-species food chain),
-coupled nonlinear mechanics (elastic pendulum), and discrete chaos
+physics (damped wave, spring-mass chain, shallow water), celestial mechanics (Kepler
+orbits), control theory (cart-pole), ecology (three-species food chain,
+Rosenzweig-MacArthur), electronic chaos (Chua's circuit), integrable lattices
+(Toda), coupled nonlinear mechanics (elastic pendulum), and discrete chaos
 (H\'enon map)---with zero changes to the discovery infrastructure.
 
 % ============================================================================
@@ -830,7 +831,7 @@ Python 3.12) and GPU (RTX 5090 via WSL2 Ubuntu 24.04, JAX 0.4.x).
 stochastic due to its evolutionary search; we report results from the
 best-of-3 runs where the correct functional form was recovered in all
 3 trials for 13 of 14 domains (all except the logistic map Lyapunov fit).
-The full codebase, including 857 unit tests covering all 31 simulation
+The full codebase, including 953 unit tests covering all 35 simulation
 domains and analysis methods, is available at
 \url{https://github.com/SaurabhJalendra/Simulating-Anything}.
 
