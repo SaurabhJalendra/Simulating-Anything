@@ -9,6 +9,7 @@ from simulating_anything.rediscovery.bak_sneppen import run_bak_sneppen_rediscov
 from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
 from simulating_anything.rediscovery.bouncing_ball import run_bouncing_ball_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+from simulating_anything.rediscovery.brusselator_2d import run_brusselator_2d_rediscovery
 from simulating_anything.rediscovery.brusselator_diffusion import (
     run_brusselator_diffusion_rediscovery,
 )
@@ -40,6 +41,7 @@ from simulating_anything.rediscovery.elastic_pendulum import run_elastic_pendulu
 from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscovery
 from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
 from simulating_anything.rediscovery.fitzhugh_rinzel import run_fitzhugh_rinzel_rediscovery
+from simulating_anything.rediscovery.fput import run_fput_rediscovery
 from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
 from simulating_anything.rediscovery.gray_scott_1d import run_gray_scott_1d_rediscovery
@@ -92,6 +94,10 @@ from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_redisc
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
 from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
 from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
+from simulating_anything.rediscovery.predator_prey_mutualist import (
+    run_predator_prey_mutualist_rediscovery,
+)
+from simulating_anything.rediscovery.selkov import run_selkov_rediscovery
 from simulating_anything.rediscovery.wilson_cowan import run_wilson_cowan_rediscovery
 
 __all__ = [
@@ -170,4 +176,8 @@ __all__ = [
     "run_gray_scott_1d_rediscovery",
     "run_rabinovich_fabrikant_rediscovery",
     "run_sprott_rediscovery",
+    "run_brusselator_2d_rediscovery",
+    "run_predator_prey_mutualist_rediscovery",
+    "run_selkov_rediscovery",
+    "run_fput_rediscovery",
 ]

@@ -84,6 +84,10 @@ class Domain(str, Enum):
     GRAY_SCOTT_1D = "gray_scott_1d"
     RABINOVICH_FABRIKANT = "rabinovich_fabrikant"
     SPROTT = "sprott"
+    BRUSSELATOR_2D = "brusselator_2d"
+    SELKOV = "selkov"
+    PREDATOR_PREY_MUTUALIST = "predator_prey_mutualist"
+    FPUT = "fput"
 
 
 class SimulationBackend(str, Enum):

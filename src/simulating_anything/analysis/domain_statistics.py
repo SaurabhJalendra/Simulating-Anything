@@ -287,6 +287,16 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.01, "n_steps": 500, "math_class": "Reaction-Diffusion PDE",
     },
+    "brusselator_2d": {
+        "module": "simulating_anything.simulation.brusselator_2d",
+        "cls": "Brusselator2DSimulation",
+        "domain": Domain.BRUSSELATOR_2D,
+        "params": {
+            "a": 4.5, "b": 7.0, "D_u": 1.0, "D_v": 8.0,
+            "N_grid": 64.0, "L_domain": 64.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "2D RD-PDE",
+    },
     "rosenzweig_macarthur": {
         "module": "simulating_anything.simulation.rosenzweig_macarthur",
         "cls": "RosenzweigMacArthur",
@@ -708,6 +718,35 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
             "x_0": 0.1, "y_0": 0.1, "z_0": 0.1,
         },
         "dt": 0.05, "n_steps": 500, "math_class": "Minimal Chaos",
+    },
+    "predator_prey_mutualist": {
+        "module": "simulating_anything.simulation.predator_prey_mutualist",
+        "cls": "PredatorPreyMutualistSimulation",
+        "domain": Domain.PREDATOR_PREY_MUTUALIST,
+        "params": {
+            "r": 1.0, "K": 10.0, "a": 1.0, "b": 0.1,
+            "m": 0.5, "n": 0.2, "d": 0.4, "e": 0.6,
+            "s": 0.8, "C": 8.0, "p": 0.3,
+            "x_0": 5.0, "y_0": 2.0, "z_0": 3.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Mutualistic ODE",
+    },
+    "fput": {
+        "module": "simulating_anything.simulation.fput",
+        "cls": "FPUTSimulation",
+        "domain": Domain.FPUT,
+        "params": {
+            "N": 32.0, "k": 1.0, "alpha": 0.25, "beta": 0.0,
+            "mode": 1.0, "amplitude": 1.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Integrable Lattice",
+    },
+    "selkov": {
+        "module": "simulating_anything.simulation.selkov",
+        "cls": "SelkovSimulation",
+        "domain": Domain.SELKOV,
+        "params": {"a": 0.08, "b": 0.6, "x_0": 0.5, "y_0": 0.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Biochemical ODE",
     },
 }
 
