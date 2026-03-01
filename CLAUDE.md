@@ -414,6 +414,8 @@ src/simulating_anything/
     quantum_oscillator.py  # Quantum harmonic oscillator (split-operator FFT)
     boltzmann_gas.py       # 2D ideal gas (hard-sphere collisions, PV=NkT)
     spring_mass_chain.py   # 1D coupled springs (phonon dispersion)
+    kepler.py              # Kepler two-body orbits (celestial mechanics)
+    driven_pendulum.py     # Damped driven pendulum (period-doubling chaos)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -454,7 +456,9 @@ src/simulating_anything/
     quantum_oscillator.py  # Energy spectrum E_n = (n+0.5)*hbar*omega
     boltzmann_gas.py       # PV=NkT ideal gas law recovery
     spring_mass_chain.py   # Phonon dispersion omega(k) recovery
-    runner.py              # Unified runner for all 19 domains
+    kepler.py              # Kepler T^2 ~ a^3, energy/L conservation
+    driven_pendulum.py     # Period-doubling, resonance, Lyapunov
+    runner.py              # Unified runner for all 21 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -476,7 +480,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 588 tests across 34 files
+tests/unit/                # 629 tests across 36 files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -505,6 +509,8 @@ tests/unit/                # 588 tests across 34 files
   test_boltzmann_gas.py    # 16 tests — 2D ideal gas, collisions
   test_spring_mass_chain.py # 20 tests — Phonon dispersion, energy
   test_error_analysis.py   # 18 tests — Bootstrap R², coefficients
+  test_kepler.py           # 19 tests — Kepler orbits, T^2~a^3
+  test_driven_pendulum.py  # 18 tests — Chaos, resonance, Poincare
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
