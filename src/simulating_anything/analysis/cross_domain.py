@@ -489,6 +489,71 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="rosenzweig_macarthur",
+            math_type="ode_nonlinear",
+            state_dim=2,  # [prey, predator]
+            n_parameters=6,  # r, K, a, h, e, d
+            conserved_quantities=[],
+            symmetries=["positivity"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dx/dt = r*x*(1-x/K) - a*x*y/(1+a*h*x)",
+                "dy/dt = e*a*x*y/(1+a*h*x) - d*y",
+                "Holling Type II functional response",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="chua",
+            math_type="chaotic",
+            state_dim=3,  # [x, y, z]
+            n_parameters=4,  # alpha, beta, m0, m1
+            conserved_quantities=[],
+            symmetries=["odd_symmetry"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/alpha",
+            discovered_equations=[
+                "dx/dt = alpha*(y - x - f(x))",
+                "dy/dt = x - y + z",
+                "dz/dt = -beta*y",
+                "Double-scroll strange attractor",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="shallow_water",
+            math_type="pde",
+            state_dim=256,  # 2*N spatial (default N=128)
+            n_parameters=3,  # g, L, h0
+            conserved_quantities=["mass", "energy"],
+            symmetries=["translational"],
+            phase_portrait_type="none",
+            characteristic_timescale="L/sqrt(g*h0)",
+            discovered_equations=[
+                "dh/dt + d(h*u)/dx = 0",
+                "d(hu)/dt + d(h*u^2 + 0.5*g*h^2)/dx = 0",
+                "c = sqrt(g*h)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="toda_lattice",
+            math_type="ode_nonlinear",
+            state_dim=16,  # 2*N particles (default N=8)
+            n_parameters=2,  # N, a
+            conserved_quantities=["energy", "momentum"],
+            symmetries=["translational"],
+            phase_portrait_type="none",  # Integrable, quasi-periodic
+            characteristic_timescale="1/sqrt(a)",
+            discovered_equations=[
+                "dp_i/dt = a*(exp(-(x_i-x_{i-1})) - exp(-(x_{i+1}-x_i)))",
+                "Soliton solutions",
+                "omega_n = 2*sqrt(a)*|sin(pi*n/N)|",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -1153,6 +1218,103 @@ def detect_structural_analogies(
         },
     ))
 
+    # Analogy: Rosenzweig-MacArthur <-> Lotka-Volterra (predator-prey with functional response)
+    analogies.append(Analogy(
+        domain_a="rosenzweig_macarthur",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "Both are 2D predator-prey ODEs. RM extends LV with logistic prey "
+            "growth and Holling Type II saturating functional response. In the "
+            "limit K->inf and h->0, RM reduces to classic LV."
+        ),
+        strength=0.95,
+        mapping={
+            "prey x": "prey N1",
+            "predator y": "predator N2",
+            "growth rate r": "birth rate alpha",
+            "Holling Type II a*x/(1+ahx)": "mass action beta*x*y",
+        },
+    ))
+
+    # Analogy: Chua <-> Lorenz (3D chaotic strange attractor)
+    analogies.append(Analogy(
+        domain_a="chua",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are 3-variable autonomous ODEs exhibiting chaotic strange "
+            "attractors via period-doubling cascade. Chua has piecewise-linear "
+            "nonlinearity while Lorenz has quadratic (xz, xy) terms. Both have "
+            "positive Lyapunov exponents and similar bifurcation structure."
+        ),
+        strength=0.85,
+        mapping={
+            "alpha [capacitor ratio]": "sigma [Prandtl]",
+            "beta [inductance]": "rho [Rayleigh]",
+            "double-scroll attractor": "butterfly attractor",
+            "piecewise-linear f(x)": "quadratic xz, xy",
+        },
+    ))
+
+    # Analogy: Shallow Water <-> Navier-Stokes (fluid conservation laws)
+    analogies.append(Analogy(
+        domain_a="shallow_water",
+        domain_b="navier_stokes",
+        analogy_type="structural",
+        description=(
+            "Both are fluid dynamics PDEs derived from conservation laws. "
+            "Shallow water is depth-averaged NS with hydrostatic pressure. "
+            "Both conserve mass and momentum, with nonlinear advection terms."
+        ),
+        strength=0.9,
+        mapping={
+            "height h": "velocity field u",
+            "flux h*u": "momentum rho*u",
+            "wave speed sqrt(gh)": "sound speed",
+            "mass conservation": "incompressibility",
+        },
+    ))
+
+    # Analogy: Toda Lattice <-> Spring-Mass Chain (lattice dynamics)
+    analogies.append(Analogy(
+        domain_a="toda_lattice",
+        domain_b="spring_mass_chain",
+        analogy_type="structural",
+        description=(
+            "Both are 1D lattice dynamics with nearest-neighbor interactions. "
+            "Spring-mass uses linear Hooke's law F=-Kx; Toda uses exponential "
+            "V(r)=exp(-r). In small-amplitude limit, Toda reduces to the "
+            "harmonic spring-mass chain with identical dispersion relation."
+        ),
+        strength=0.9,
+        mapping={
+            "exp(-r) potential": "linear spring K*x",
+            "coupling a": "spring constant K",
+            "omega = 2*sqrt(a)*|sin(pi*n/N)|": "omega = 2*sqrt(K/m)*|sin(pi*n/N)|",
+            "soliton solutions": "phonon modes",
+        },
+    ))
+
+    # Analogy: Rosenzweig-MacArthur <-> Brusselator (Hopf bifurcation, limit cycles)
+    analogies.append(Analogy(
+        domain_a="rosenzweig_macarthur",
+        domain_b="brusselator",
+        analogy_type="structural",
+        description=(
+            "Both exhibit Hopf bifurcation from stable equilibrium to limit "
+            "cycle oscillations as a control parameter increases. In RM, "
+            "increasing K destabilizes the coexistence equilibrium. In "
+            "Brusselator, increasing b past 1+a^2 triggers oscillation."
+        ),
+        strength=0.8,
+        mapping={
+            "carrying capacity K": "parameter b",
+            "Hopf bifurcation at K_c": "Hopf at b_c=1+a^2",
+            "prey-predator cycle": "u-v chemical oscillation",
+        },
+    ))
+
     return analogies
 
 
@@ -1383,6 +1545,40 @@ def detect_dimensional_analogies(
         mapping={
             "D_u [chemical diffusion]": "D [thermal diffusion]",
             "L^2/D_u [timescale]": "L^2/D [timescale]",
+        },
+    ))
+
+    # Dimensional: Shallow Water <-> Damped Wave (wave propagation speed)
+    analogies.append(Analogy(
+        domain_a="shallow_water",
+        domain_b="damped_wave",
+        analogy_type="dimensional",
+        description=(
+            "Both support wave propagation with characteristic speed. "
+            "Shallow water: c = sqrt(g*h). Damped wave: c (string tension/density). "
+            "The dispersion relation has the same dimensional structure."
+        ),
+        strength=0.8,
+        mapping={
+            "sqrt(g*h) [wave speed]": "c [wave speed]",
+            "L/c [transit time]": "L/c [transit time]",
+        },
+    ))
+
+    # Dimensional: Toda Lattice <-> Spring-Mass Chain (dispersion relation)
+    analogies.append(Analogy(
+        domain_a="toda_lattice",
+        domain_b="spring_mass_chain",
+        analogy_type="dimensional",
+        description=(
+            "Both have identical dispersion relation in the harmonic limit: "
+            "omega_n = 2*sqrt(K)*|sin(pi*n/N)|. Toda coupling a maps to "
+            "spring constant K with the same frequency scaling."
+        ),
+        strength=0.95,
+        mapping={
+            "sqrt(a) [frequency scale]": "sqrt(K/m) [frequency scale]",
+            "a [lattice spacing]": "a [lattice spacing]",
         },
     ))
 
@@ -1800,6 +1996,78 @@ def detect_topological_analogies(
             "Turing patterns": "traveling waves",
             "D_v/D_u ratio": "D_pred/D_prey ratio",
             "u, v [chemical concentrations]": "prey, predator [populations]",
+        },
+    ))
+
+    # Topological: Chua <-> Rossler (3D chaotic attractors with period-doubling)
+    analogies.append(Analogy(
+        domain_a="chua",
+        domain_b="rossler",
+        analogy_type="topological",
+        description=(
+            "Both are 3D autonomous ODE systems that exhibit chaos via "
+            "period-doubling cascades. Chua has a double-scroll attractor "
+            "while Rossler has a single folded-band attractor. Both show "
+            "positive Lyapunov exponents and similar bifurcation diagrams."
+        ),
+        strength=0.85,
+        mapping={
+            "double-scroll": "folded-band",
+            "alpha [bifurcation param]": "c [bifurcation param]",
+            "period-doubling": "period-doubling",
+        },
+    ))
+
+    # Topological: Rosenzweig-MacArthur <-> Lotka-Volterra (predator-prey cycles)
+    analogies.append(Analogy(
+        domain_a="rosenzweig_macarthur",
+        domain_b="lotka_volterra",
+        analogy_type="topological",
+        description=(
+            "Both exhibit oscillatory predator-prey dynamics in phase space. "
+            "LV has neutrally stable center orbits (conservative). RM has "
+            "true limit cycles (dissipative). The paradox of enrichment "
+            "in RM creates destabilizing oscillations as K increases."
+        ),
+        strength=0.85,
+        mapping={
+            "limit cycle": "center orbits",
+            "phase plane (x,y)": "phase plane (N1,N2)",
+        },
+    ))
+
+    # Topological: Shallow Water <-> Navier-Stokes (nonlinear wave propagation)
+    analogies.append(Analogy(
+        domain_a="shallow_water",
+        domain_b="navier_stokes",
+        analogy_type="topological",
+        description=(
+            "Both exhibit nonlinear wave dynamics in fluid media. "
+            "Shallow water develops shock waves and bores; NS develops "
+            "turbulent cascades. Both conserve energy in the inviscid limit."
+        ),
+        strength=0.7,
+        mapping={
+            "shock formation": "turbulent cascade",
+            "wave breaking": "vortex stretching",
+        },
+    ))
+
+    # Topological: Toda Lattice <-> Kepler (integrable Hamiltonian systems)
+    analogies.append(Analogy(
+        domain_a="toda_lattice",
+        domain_b="kepler",
+        analogy_type="topological",
+        description=(
+            "Both are completely integrable Hamiltonian systems with as many "
+            "conserved quantities as degrees of freedom. Toda supports solitons; "
+            "Kepler has closed elliptical orbits. Both have quasi-periodic "
+            "phase space trajectories on invariant tori."
+        ),
+        strength=0.7,
+        mapping={
+            "soliton [N conserved quantities]": "closed orbit [E, L conserved]",
+            "quasi-periodic tori": "elliptical orbits",
         },
     ))
 

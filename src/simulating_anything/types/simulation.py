@@ -41,6 +41,10 @@ class Domain(str, Enum):
     ROSSLER = "rossler"
     HENON_MAP = "henon_map"
     BRUSSELATOR_DIFFUSION = "brusselator_diffusion"
+    ROSENZWEIG_MACARTHUR = "rosenzweig_macarthur"
+    SHALLOW_WATER = "shallow_water"
+    CHUA = "chua"
+    TODA_LATTICE = "toda_lattice"
 
 
 class SimulationBackend(str, Enum):
