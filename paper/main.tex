@@ -56,7 +56,7 @@ extracts human-interpretable equations using \pysr{} symbolic regression and
 governing equations in all 14 domains, achieving $R^2 \geq 0.999$ in 11 of
 14 cases, with a mean $R^2$ of 0.970. Our cross-domain analogy engine
 detects 77 structural, dimensional, and topological isomorphisms across
-47 domains. The key architectural insight is that only the simulation layer is
+51 domains. The key architectural insight is that only the simulation layer is
 domain-specific ($\sim$50--200 lines per domain); everything else---world
 model, exploration, analysis, and reporting---operates on generic tensors,
 enabling universal scientific discovery.
@@ -296,8 +296,8 @@ Lyapunov exponent $\lambda(r{=}4) = \ln 4 = 1.386$ (exact).
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.8\linewidth]{figures/cross_domain_matrix_14domain.pdf}
-\caption{Cross-domain analogy strength matrix. 111 isomorphisms detected
-across 47 domains. Brighter cells indicate stronger mathematical analogies.}
+\caption{Cross-domain analogy strength matrix. 119 isomorphisms detected
+across 51 domains. Brighter cells indicate stronger mathematical analogies.}
 \label{fig:cross_domain}
 \end{figure}
 
@@ -544,13 +544,13 @@ would enable general-relativistic discoveries with no pipeline changes.
 \paragraph{Scaling and extensibility.}
 Adding a new domain requires only implementing a \texttt{SimulationEnvironment}
 subclass ($\sim$50--200 lines). All other pipeline stages operate unchanged.
-We have verified this with 47 domains across 31 mathematical classes.
+We have verified this with 51 domains across 35 mathematical classes.
 To concretely demonstrate extensibility, we implemented a Duffing
 oscillator ($x'' + \delta x' + \alpha x + \beta x^3 = \gamma\cos\omega t$)
 in 54 lines of Python, including RK4 integration, energy computation, and
 trajectory collection. All pipeline stages (world model, exploration,
 analysis) work immediately on this new domain with zero additional code.
-The total simulation code across all 47 domains is $\sim$6,000 lines,
+The total simulation code across all 51 domains is $\sim$6,000 lines,
 while the domain-agnostic infrastructure (world model, exploration,
 analysis, agents) spans $\sim$5,000 lines---a ratio still near 1:1,
 even as the number of domains has grown to 35.
@@ -622,7 +622,7 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 rediscover known physical laws across 14 fundamentally different domains.
 The system achieves $R^2 \geq 0.999$ in 11 of 14 domains, with a mean
 $R^2$ of 0.970 across all domains. Cross-domain analogy detection reveals
-111 mathematical isomorphisms across 47 domains, suggesting that scientific
+119 mathematical isomorphisms across 51 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer
 validation framework---conservation checks, dimensional analysis,
 reproducibility tests, theory comparison, adversarial dream debate, and
@@ -630,7 +630,7 @@ cross-domain consistency---ensures simulation correctness and result
 reliability. Our architecture's key contribution is the separation of
 domain-specific simulation from domain-agnostic discovery, enabling
 universal scientific inference with minimal per-domain effort. The pipeline
-has been extended to 47 domains spanning 31 mathematical classes---including
+has been extended to 51 domains spanning 35 mathematical classes---including
 general relativity (Schwarzschild geodesics), quantum mechanics (harmonic
 oscillator), statistical mechanics (Boltzmann gas, Ising model), wave
 physics (damped wave, spring-mass chain, shallow water), celestial mechanics (Kepler
@@ -644,7 +644,9 @@ microbial ecology (chemostat), spatial neuroscience (FHN reaction-diffusion),
 coupled mechanical oscillators (Wilberforce pendulum), Hamiltonian chaos
 (Chirikov standard map), biophysical neuroscience (Hodgkin-Huxley),
 thermal convection (Rayleigh-B\'enard), and eco-epidemiology
-(predator-prey-disease)---with zero changes to the discovery infrastructure.
+(predator-prey-disease), bursting neurons (Hindmarsh-Rose), fractal basins
+(magnetic pendulum), competitive ecology (4-species LV), and active matter
+flocking (Vicsek model)---with zero changes to the discovery infrastructure.
 
 % ============================================================================
 % REFERENCES
