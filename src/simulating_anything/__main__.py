@@ -1,11 +1,14 @@
 """CLI entry point for simulating-anything.
 
 Usage:
-    simulating-anything demo       Run 3-domain pipeline demo (no GPU needed)
-    simulating-anything dashboard  Generate interactive HTML dashboard
-    simulating-anything figures    Generate publication-quality figures
-    simulating-anything cross      Run cross-domain analogy analysis
-    simulating-anything version    Show version
+    simulating-anything demo         Run 3-domain pipeline demo (no GPU needed)
+    simulating-anything dashboard    Generate interactive HTML dashboard
+    simulating-anything figures      Generate publication-quality figures
+    simulating-anything cross        Run cross-domain analogy analysis
+    simulating-anything sensitivity  Run sensitivity analysis
+    simulating-anything ablation     Run pipeline ablation study
+    simulating-anything aggregate    Aggregate all results into unified summary
+    simulating-anything version      Show version
 """
 from __future__ import annotations
 
@@ -28,6 +31,12 @@ def main() -> None:
         _run_figures()
     elif command == "cross":
         _run_cross_domain()
+    elif command == "sensitivity":
+        _run_sensitivity()
+    elif command == "ablation":
+        _run_ablation()
+    elif command == "aggregate":
+        _run_aggregate()
     elif command in ("version", "--version", "-v"):
         from simulating_anything import __version__
         print(f"simulating-anything {__version__}")
@@ -108,6 +117,49 @@ def _run_cross_domain() -> None:
     for a in sorted_analogies[:5]:
         print(f"  {a['domains'][0]} <-> {a['domains'][1]} "
               f"({a['type']}, strength={a['strength']:.2f})")
+
+
+def _run_sensitivity() -> None:
+    """Run sensitivity analysis."""
+    import logging
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+    from simulating_anything.analysis.sensitivity import run_sensitivity_analysis
+    results = run_sensitivity_analysis()
+    print(f"\nSensitivity analysis complete: {len(results)} experiments")
+    for name, data in results.items():
+        r2 = data["r_squared"]
+        print(f"  {name}: R² range [{min(r2):.4f}, {max(r2):.4f}]")
+
+
+def _run_ablation() -> None:
+    """Run pipeline ablation study."""
+    import logging
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+    from simulating_anything.analysis.pipeline_ablation import run_pipeline_ablation
+    results = run_pipeline_ablation()
+    print(f"\nAblation study complete: {len(results)} components ablated")
+    for component, experiments in results.items():
+        print(f"\n  {component}:")
+        for exp in experiments:
+            form = "correct" if exp["correct_form"] else "wrong"
+            print(f"    {exp['variant']}: R²={exp['r_squared']:.6f} ({form})")
+
+
+def _run_aggregate() -> None:
+    """Aggregate all results."""
+    import importlib
+    import os
+    script = os.path.join(
+        os.path.dirname(__file__), "..", "..", "scripts", "aggregate_all_results.py"
+    )
+    if os.path.exists(script):
+        spec = importlib.util.spec_from_file_location("aggregate_all", script)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        mod.main()
+    else:
+        print("Aggregate script not found.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
