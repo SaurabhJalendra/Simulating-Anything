@@ -46,6 +46,7 @@ def run_all_rediscoveries(
         run_brusselator_diffusion_rediscovery,
     )
     from simulating_anything.rediscovery.cart_pole import run_cart_pole_rediscovery
+    from simulating_anything.rediscovery.chemostat import run_chemostat_rediscovery
     from simulating_anything.rediscovery.chua import run_chua_rediscovery
     from simulating_anything.rediscovery.coupled_oscillators import (
         run_coupled_oscillators_rediscovery,
@@ -62,6 +63,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.elastic_pendulum import (
         run_elastic_pendulum_rediscovery,
     )
+    from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscovery
     from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
     from simulating_anything.rediscovery.ginzburg_landau import (
         run_ginzburg_landau_rediscovery,
@@ -80,6 +82,7 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
     from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
+    from simulating_anything.rediscovery.lorenz96 import run_lorenz96_rediscovery
     from simulating_anything.rediscovery.lotka_volterra import (
         run_lotka_volterra_rediscovery,
     )
@@ -103,6 +106,7 @@ def run_all_rediscoveries(
         run_shallow_water_rediscovery,
     )
     from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
+    from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -297,6 +301,26 @@ def run_all_rediscoveries(
         "ginzburg_landau": {
             "label": "Complex Ginzburg-Landau Benjamin-Feir Instability",
             "fn": run_ginzburg_landau_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "lorenz96": {
+            "label": "Lorenz-96 Atmospheric Chaos",
+            "fn": run_lorenz96_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "chemostat": {
+            "label": "Chemostat Washout Bifurcation & Monod Kinetics",
+            "fn": run_chemostat_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "fhn_spatial": {
+            "label": "FHN Spatial PDE Excitable Medium Waves",
+            "fn": run_fhn_spatial_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "wilberforce": {
+            "label": "Wilberforce Pendulum Coupled Spring-Torsion",
+            "fn": run_wilberforce_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
