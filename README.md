@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-1623%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-1766%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-63-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-67-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **63 domains** spanning **47 mathematical classes**.
+simulation data across **67 domains** spanning **51 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 152 mathematical isomorphisms detected across 63 domains
+**Cross-domain analysis:** 163 mathematical isomorphisms detected across 67 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -93,6 +93,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #61: Thomas** -- cyclically symmetric chaotic ODE, labyrinth attractor, b_c ~ 0.208 transition.
 **Domain #62: Ikeda Map** -- discrete chaos from nonlinear optics, spiral strange attractor, det(J) = u^2.
 **Domain #63: May-Leonard** -- N-species cyclic competition, heteroclinic cycles, biodiversity index.
+**Domain #64: Cahn-Hilliard** -- 4th-order phase field PDE, spinodal decomposition, L(t)~t^(1/3) coarsening.
+**Domain #65: Delayed Predator-Prey** -- DDE with maturation delay, Hopf bifurcation at critical tau.
+**Domain #66: Duffing-Van der Pol** -- hybrid chaotic oscillator, VdP self-excitation + Duffing cubic.
+**Domain #67: Network SIS** -- mean-field epidemic on random graphs, threshold beta_c = gamma/lambda_max.
 
 ---
 
