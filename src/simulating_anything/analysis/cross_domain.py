@@ -1267,6 +1267,71 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="rikitake",
+            math_type="chaotic",  # Geophysical dynamo
+            state_dim=3,  # [x, y, z]
+            n_parameters=2,  # mu, a
+            conserved_quantities=[],
+            symmetries=["(x,y)->(-x,-y)"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/mu",
+            discovered_equations=[
+                "dx/dt = -mu*x + z*y",
+                "dy/dt = -mu*y + (z-a)*x",
+                "dz/dt = 1 - x*y",
+                "Polarity reversals in geomagnetic field",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="oregonator_1d",
+            math_type="pde",  # 1D excitable RD
+            state_dim=400,  # 2*N
+            n_parameters=5,  # eps, f, q, D_u, D_v
+            conserved_quantities=[],
+            symmetries=["translational"],
+            phase_portrait_type="traveling_wave",
+            characteristic_timescale="eps",
+            discovered_equations=[
+                "du/dt = D_u*d2u/dx2 + (1/eps)*(u-u^2-f*v*(u-q)/(u+q))",
+                "dv/dt = D_v*d2v/dx2 + u-v",
+                "Traveling pulse speed ~ sqrt(D_u/eps)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="ricker_map",
+            math_type="discrete",  # Discrete population map
+            state_dim=1,  # scalar x
+            n_parameters=2,  # r, K
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1 (discrete)",
+            discovered_equations=[
+                "x_{n+1} = x_n * exp(r*(1-x_n/K))",
+                "Period-doubling at r~2",
+                "Lyapunov = ln|1-r| at fixed point",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="morris_lecar",
+            math_type="ode_nonlinear",  # Conductance neuron
+            state_dim=2,  # [V, w]
+            n_parameters=13,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="C/g_L",
+            discovered_equations=[
+                "C*dV/dt = I-g_L*(V-V_L)-g_Ca*m_ss(V)*(V-V_Ca)-g_K*w*(V-V_K)",
+                "dw/dt = phi*(w_ss(V)-w)/tau_w(V)",
+                "Type I/II excitability classification",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -3023,6 +3088,91 @@ def detect_structural_analogies(
         },
     ))
 
+    # Rikitake <-> Lorenz (3D chaotic with quadratic coupling)
+    analogies.append(Analogy(
+        domain_a="rikitake",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both 3D chaotic systems with quadratic cross-coupling: Rikitake z*y, x*y "
+            "mirrors Lorenz x*z, x*y. Both model real geophysical phenomena."
+        ),
+        strength=0.8,
+        mapping={
+            "-mu*x+z*y": "sigma*(y-x)",
+            "1-x*y": "-beta*z+x*y",
+            "polarity reversals": "convective chaos",
+        },
+    ))
+
+    # Oregonator 1D <-> Gray-Scott 1D (1D excitable/pattern-forming RD)
+    analogies.append(Analogy(
+        domain_a="oregonator_1d",
+        domain_b="gray_scott_1d",
+        analogy_type="structural",
+        description=(
+            "Both 1D reaction-diffusion systems with traveling localized structures. "
+            "Oregonator: excitable pulses; Gray-Scott: self-replicating pulses."
+        ),
+        strength=0.85,
+        mapping={
+            "excitable pulse": "self-replicating pulse",
+            "u(u-q)/(u+q)": "u*v^2",
+            "traveling wave": "traveling wave",
+        },
+    ))
+
+    # Ricker <-> Logistic map (discrete population chaos)
+    analogies.append(Analogy(
+        domain_a="ricker_map",
+        domain_b="logistic_map",
+        analogy_type="structural",
+        description=(
+            "Both discrete 1D maps with period-doubling route to chaos. "
+            "Ricker: x*exp(r(1-x/K)); Logistic: r*x*(1-x). Same universality class."
+        ),
+        strength=0.95,
+        mapping={
+            "x*exp(r(1-x/K))": "r*x*(1-x)",
+            "overcompensation": "logistic saturation",
+            "Feigenbaum universality": "Feigenbaum universality",
+        },
+    ))
+
+    # Morris-Lecar <-> FitzHugh-Nagumo (2D neuron models)
+    analogies.append(Analogy(
+        domain_a="morris_lecar",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="structural",
+        description=(
+            "Both are 2D fast-slow neuron models with voltage (V) and recovery (w). "
+            "ML uses conductance-based ionic currents; FHN uses polynomial approximation."
+        ),
+        strength=0.9,
+        mapping={
+            "g_Ca*m_ss(V)*(V-V_Ca)": "v^3/3 (cubic nullcline)",
+            "w_ss(V)": "v+a-b*w",
+            "Type I/II excitability": "Type II excitability",
+        },
+    ))
+
+    # Morris-Lecar <-> Hodgkin-Huxley (conductance-based neurons)
+    analogies.append(Analogy(
+        domain_a="morris_lecar",
+        domain_b="hodgkin_huxley",
+        analogy_type="structural",
+        description=(
+            "Both conductance-based neuron models with ionic current g*(V-V_rev) terms. "
+            "ML is a 2D reduction of HH; HH has 4 gating variables, ML has 1+instant."
+        ),
+        strength=0.9,
+        mapping={
+            "g_Ca*m_ss(V)": "g_Na*m^3*h (Na+ current)",
+            "g_K*w": "g_K*n^4 (K+ current)",
+            "2D phase plane": "4D state space",
+        },
+    ))
+
     return analogies
 
 
@@ -3677,6 +3827,38 @@ def detect_dimensional_analogies(
         mapping={
             "1/a [glycolysis rate]": "1/epsilon [BZ rate]",
             "x^2y autocatalysis": "xy autocatalysis",
+        },
+    ))
+
+    # Dimensional: Morris-Lecar <-> Hodgkin-Huxley (membrane timescale C/g)
+    analogies.append(Analogy(
+        domain_a="morris_lecar",
+        domain_b="hodgkin_huxley",
+        analogy_type="dimensional",
+        description=(
+            "Both conductance neurons with membrane timescale tau_m = C/g_L. "
+            "Same dimensional structure for ionic currents: g*(V-V_rev)."
+        ),
+        strength=0.9,
+        mapping={
+            "C/g_L [membrane time constant]": "C_m/g_L [membrane time constant]",
+            "g_Ca, g_K [conductances]": "g_Na, g_K [conductances]",
+        },
+    ))
+
+    # Dimensional: Ricker <-> Logistic (same universality class, same delta)
+    analogies.append(Analogy(
+        domain_a="ricker_map",
+        domain_b="logistic_map",
+        analogy_type="dimensional",
+        description=(
+            "Both discrete maps share Feigenbaum universality constant delta=4.669. "
+            "Chaos onset: Ricker at r~2, Logistic at r~3.57."
+        ),
+        strength=0.9,
+        mapping={
+            "r [growth rate] ~ 2": "r [growth rate] ~ 3.57",
+            "Feigenbaum delta": "Feigenbaum delta",
         },
     ))
 
@@ -4945,6 +5127,74 @@ def detect_topological_analogies(
             "Hopf at b_c(a)": "Hopf at mu=0",
             "limit cycle": "limit cycle",
             "metabolic oscillation": "electrical oscillation",
+        },
+    ))
+
+    # Topological: Rikitake <-> Lorenz-84 (geophysical chaotic oscillators)
+    analogies.append(Analogy(
+        domain_a="rikitake",
+        domain_b="lorenz_84",
+        analogy_type="topological",
+        description=(
+            "Both geophysical chaotic systems: Rikitake (geomagnetic reversals) "
+            "and Lorenz-84 (atmospheric circulation). Both show intermittent chaos."
+        ),
+        strength=0.75,
+        mapping={
+            "polarity reversals": "regime transitions",
+            "disc dynamo": "atmospheric circulation",
+            "strange attractor": "strange attractor",
+        },
+    ))
+
+    # Topological: Oregonator 1D <-> FHN spatial (excitable RD PDE)
+    analogies.append(Analogy(
+        domain_a="oregonator_1d",
+        domain_b="fhn_spatial",
+        analogy_type="topological",
+        description=(
+            "Both excitable reaction-diffusion systems showing propagating pulses. "
+            "Oregonator: chemical traveling waves; FHN: neural excitation waves."
+        ),
+        strength=0.85,
+        mapping={
+            "BZ traveling pulse": "neural excitation wave",
+            "excitable rest state": "excitable rest state",
+            "pulse annihilation": "wave collision",
+        },
+    ))
+
+    # Topological: Ricker <-> Henon map (discrete chaos, strange attractors)
+    analogies.append(Analogy(
+        domain_a="ricker_map",
+        domain_b="henon_map",
+        analogy_type="topological",
+        description=(
+            "Both discrete maps with period-doubling cascades to chaos. "
+            "Ricker is 1D with Feigenbaum universality; Henon is 2D with fractal attractor."
+        ),
+        strength=0.7,
+        mapping={
+            "1D period-doubling": "2D period-doubling",
+            "chaotic band": "strange attractor",
+            "Feigenbaum delta": "Feigenbaum delta",
+        },
+    ))
+
+    # Topological: Morris-Lecar <-> Wilson-Cowan (neural oscillators)
+    analogies.append(Analogy(
+        domain_a="morris_lecar",
+        domain_b="wilson_cowan",
+        analogy_type="topological",
+        description=(
+            "Both 2D neural models with excitatory-inhibitory dynamics and Hopf "
+            "bifurcation to oscillation. ML: single neuron; WC: neural population."
+        ),
+        strength=0.75,
+        mapping={
+            "V (voltage)": "E (excitatory)",
+            "w (recovery)": "I (inhibitory)",
+            "f-I curve": "E-I oscillation",
         },
     ))
 

@@ -142,6 +142,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
     from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
     from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
+    from simulating_anything.rediscovery.oregonator_1d import (
+        run_oregonator_1d_rediscovery,
+    )
     from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
     from simulating_anything.rediscovery.quantum_oscillator import (
         run_quantum_oscillator_rediscovery,
@@ -183,6 +186,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.predator_prey_mutualist import (
         run_predator_prey_mutualist_rediscovery,
     )
+    from simulating_anything.rediscovery.morris_lecar import run_morris_lecar_rediscovery
+    from simulating_anything.rediscovery.ricker_map import run_ricker_map_rediscovery
+    from simulating_anything.rediscovery.rikitake import run_rikitake_rediscovery
     from simulating_anything.rediscovery.selkov import run_selkov_rediscovery
     from simulating_anything.rediscovery.wilson_cowan import (
         run_wilson_cowan_rediscovery,
@@ -383,6 +389,11 @@ def run_all_rediscoveries(
             "fn": run_oregonator_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
+        "oregonator_1d": {
+            "label": "Oregonator 1D Traveling Pulse Waves",
+            "fn": run_oregonator_1d_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
         "ginzburg_landau": {
             "label": "Complex Ginzburg-Landau Benjamin-Feir Instability",
             "fn": run_ginzburg_landau_rediscovery,
@@ -581,6 +592,21 @@ def run_all_rediscoveries(
         "fput": {
             "label": "FPUT Lattice Recurrence & Energy Conservation",
             "fn": run_fput_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "rikitake": {
+            "label": "Rikitake Dynamo Geomagnetic Reversals",
+            "fn": run_rikitake_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "ricker_map": {
+            "label": "Ricker Map Population Dynamics & Chaos",
+            "fn": run_ricker_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "morris_lecar": {
+            "label": "Morris-Lecar Conductance Neuron Excitability",
+            "fn": run_morris_lecar_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
