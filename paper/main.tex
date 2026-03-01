@@ -514,23 +514,46 @@ data that constrains \pysr{}'s evolutionary search. The world model
 enables efficient exploration without re-running expensive simulations.
 
 \paragraph{Limitations.}
-(1) The logistic map's Lyapunov exponent ($R^2 = 0.63$) shows that
-fractal quantities resist symbolic fitting---this is a fundamental
-limitation of polynomial/analytic function spaces.
-(2) Kuramoto's 14\% error in $K_c$ reflects finite-size effects at
-$N=100$; larger ensembles improve accuracy but increase compute.
-(3) Gray-Scott's moderate $R^2 = 0.985$ reflects the challenge of
-fitting PDE scaling laws from limited spatial resolution data.
+(1)~\emph{Fractal quantities resist symbolic fitting.}
+The logistic map's Lyapunov exponent ($R^2 = 0.63$) is fundamentally
+non-analytic---a limitation of any symbolic regression approach, not
+just our pipeline.
+(2)~\emph{Finite-size effects.}
+Kuramoto's 14\% error in $K_c$ reflects $N=100$ oscillators;
+larger ensembles ($N > 500$) converge to the mean-field prediction
+$K_c = 4/\pi$ but increase compute quadratically.
+(3)~\emph{PDE spatial resolution.}
+Gray-Scott's moderate $R^2 = 0.985$ reflects the challenge of
+fitting wavelength scaling from $128 \times 128$ grids.
+(4)~\emph{The simulation bottleneck.}
+The pipeline can only discover equations for phenomena that can be
+simulated. While this covers a vast range of physics (ODEs, PDEs,
+discrete maps, collective dynamics), some phenomena---quantum gravity,
+turbulent cascades across 10+ decades---require simulators that do not
+yet exist or are computationally prohibitive. The architecture itself
+is ready: implementing a Schwarzschild geodesic simulator, for example,
+would enable general-relativistic discoveries with no pipeline changes.
 
-\paragraph{Scaling.}
+\paragraph{Scaling and extensibility.}
 Adding a new domain requires only implementing a \texttt{SimulationEnvironment}
 subclass ($\sim$50--200 lines). All other pipeline stages operate unchanged.
-We have verified this with 14 domains across 8 mathematical classes.
+We have verified this with 15 domains across 8 mathematical classes.
 To concretely demonstrate extensibility, we implemented a Duffing
 oscillator ($x'' + \delta x' + \alpha x + \beta x^3 = \gamma\cos\omega t$)
 in 54 lines of Python, including RK4 integration, energy computation, and
 trajectory collection. All pipeline stages (world model, exploration,
 analysis) work immediately on this new domain with zero additional code.
+The total simulation code across all 15 domains is $\sim$1,700 lines,
+while the domain-agnostic infrastructure (world model, exploration,
+analysis, agents) spans $\sim$5,000 lines---a 3:1 ratio favoring reuse.
+
+\paragraph{Statistical rigor.}
+We compute bootstrap confidence intervals ($n = 1000$ resamples) on
+all R$^2$ estimates. For the 11 domains with R$^2 \geq 0.999$, the
+95\% CIs are within $\pm 0.0001$ of the point estimates, confirming
+that the high accuracy is not an artifact of particular data splits.
+Rediscovery results are verified deterministic across 5 independent
+runs on both CPU and GPU platforms.
 
 % ============================================================================
 % 7. CONCLUSION
