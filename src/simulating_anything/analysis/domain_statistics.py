@@ -362,6 +362,33 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.001, "n_steps": 500, "math_class": "Nonlinear ODE",
     },
+    "lorenz96": {
+        "module": "simulating_anything.simulation.lorenz96",
+        "cls": "Lorenz96",
+        "domain": Domain.LORENZ96,
+        "params": {"N": 36.0, "F": 8.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "chemostat": {
+        "module": "simulating_anything.simulation.chemostat",
+        "cls": "Chemostat",
+        "domain": Domain.CHEMOSTAT,
+        "params": {
+            "D": 0.1, "S_in": 10.0, "mu_max": 0.5,
+            "K_s": 2.0, "Y_xs": 0.5, "S_0": 5.0, "X_0": 1.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Nonlinear ODE",
+    },
+    "wilberforce": {
+        "module": "simulating_anything.simulation.wilberforce",
+        "cls": "Wilberforce",
+        "domain": Domain.WILBERFORCE,
+        "params": {
+            "m": 0.5, "k": 5.0, "I": 1e-4, "kappa": 1e-3, "eps": 1e-3,
+            "z_0": 0.1, "z_dot_0": 0.0, "theta_0": 0.0, "theta_dot_0": 0.0,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Coupled ODE",
+    },
 }
 
 

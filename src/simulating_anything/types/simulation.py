@@ -49,6 +49,10 @@ class Domain(str, Enum):
     OREGONATOR = "oregonator"
     BAK_SNEPPEN = "bak_sneppen"
     GINZBURG_LANDAU = "ginzburg_landau"
+    LORENZ96 = "lorenz96"
+    FHN_SPATIAL = "fhn_spatial"
+    CHEMOSTAT = "chemostat"
+    WILBERFORCE = "wilberforce"
 
 
 class SimulationBackend(str, Enum):

@@ -618,6 +618,70 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="lorenz96",
+            math_type="chaotic",
+            state_dim=36,  # N sites
+            n_parameters=2,  # N, F
+            conserved_quantities=[],
+            symmetries=["translational", "cyclic"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1",
+            discovered_equations=[
+                "dx_i/dt = (x_{i+1}-x_{i-2})*x_{i-1} - x_i + F",
+                "Chaos for F >= 8",
+                "Extensive chaos: Lyapunov dim ~ N",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="chemostat",
+            math_type="ode_nonlinear",
+            state_dim=2,  # [S, X]
+            n_parameters=5,  # D, S_in, mu_max, K_s, Y_xs
+            conserved_quantities=[],
+            symmetries=["positivity"],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/D",
+            discovered_equations=[
+                "dS/dt = D*(S_in-S) - mu_max*S*X/(Y_xs*(K_s+S))",
+                "dX/dt = (mu_max*S/(K_s+S)-D)*X",
+                "Washout bifurcation at D_c = mu_max*S_in/(K_s+S_in)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="fhn_spatial",
+            math_type="pde",
+            state_dim=256,  # 2*N
+            n_parameters=5,  # a, b, eps, D_v, L
+            conserved_quantities=[],
+            symmetries=["translational"],
+            phase_portrait_type="none",  # Traveling pulses
+            characteristic_timescale="1/eps",
+            discovered_equations=[
+                "dv/dt = v-v^3/3-w + D_v*d^2v/dx^2",
+                "dw/dt = eps*(v+a-b*w)",
+                "Traveling pulse c ~ sqrt(D_v)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="wilberforce",
+            math_type="ode_linear",  # Linear coupled oscillators
+            state_dim=4,  # [z, z_dot, theta, theta_dot]
+            n_parameters=5,  # m, k, I, kappa, eps
+            conserved_quantities=["energy"],
+            symmetries=["time_reversal"],
+            phase_portrait_type="none",  # Quasi-periodic
+            characteristic_timescale="sqrt(m/k)",
+            discovered_equations=[
+                "m*z'' = -k*z - eps/2*theta",
+                "I*theta'' = -kappa*theta - eps/2*z",
+                "Beat frequency = |omega_z - omega_theta|",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -1474,6 +1538,83 @@ def detect_structural_analogies(
         },
     ))
 
+    # Analogy: Lorenz-96 <-> Lorenz (chaotic atmospheric models)
+    analogies.append(Analogy(
+        domain_a="lorenz96",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are Lorenz-family models for atmospheric dynamics. "
+            "Lorenz (1963) has 3 variables with quadratic nonlinearity. "
+            "Lorenz-96 has N variables with quadratic advection-like terms. "
+            "Both exhibit chaos above a critical forcing parameter."
+        ),
+        strength=0.85,
+        mapping={
+            "F [forcing]": "rho [Rayleigh number]",
+            "(x_{i+1}-x_{i-2})*x_{i-1}": "xy, xz quadratic terms",
+            "N-dimensional chaos": "3D strange attractor",
+        },
+    ))
+
+    # Analogy: Chemostat <-> Lotka-Volterra (population dynamics with resource)
+    analogies.append(Analogy(
+        domain_a="chemostat",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "Both model consumer-resource interactions. LV has bilinear "
+            "predation beta*x*y. Chemostat has Monod kinetics mu*S/(K+S)*X. "
+            "Both have bifurcation between coexistence and extinction."
+        ),
+        strength=0.8,
+        mapping={
+            "substrate S": "prey x",
+            "biomass X": "predator y",
+            "Monod mu*S/(K+S)": "mass action beta*x",
+            "washout D_c": "extinction threshold",
+        },
+    ))
+
+    # Analogy: FHN Spatial <-> Diffusive LV (reaction-diffusion PDEs)
+    analogies.append(Analogy(
+        domain_a="fhn_spatial",
+        domain_b="diffusive_lv",
+        analogy_type="structural",
+        description=(
+            "Both are 2-component reaction-diffusion PDEs with traveling "
+            "wave solutions. FHN spatial has excitable pulse waves. "
+            "Diffusive LV has prey-predator invasion fronts. Both exhibit "
+            "wavefront propagation with speed ~ sqrt(D)."
+        ),
+        strength=0.8,
+        mapping={
+            "v [activator]": "prey",
+            "w [inhibitor]": "predator",
+            "excitable pulse": "invasion front",
+        },
+    ))
+
+    # Analogy: Wilberforce <-> Coupled Oscillators (energy transfer)
+    analogies.append(Analogy(
+        domain_a="wilberforce",
+        domain_b="coupled_oscillators",
+        analogy_type="structural",
+        description=(
+            "Both are coupled linear oscillator systems exhibiting beat "
+            "phenomena and energy transfer between modes. Wilberforce "
+            "couples translational and rotational modes; coupled oscillators "
+            "couple two translational modes."
+        ),
+        strength=0.9,
+        mapping={
+            "z (translational)": "x1 (oscillator 1)",
+            "theta (rotational)": "x2 (oscillator 2)",
+            "coupling eps": "spring coupling K",
+            "beat frequency": "beat frequency",
+        },
+    ))
+
     return analogies
 
 
@@ -1773,6 +1914,42 @@ def detect_dimensional_analogies(
         mapping={
             "1/eps [fast timescale]": "mu [relaxation param]",
             "period ~ O(1/eps)": "period ~ O(mu)",
+        },
+    ))
+
+    # Dimensional: Wilberforce <-> Harmonic Oscillator (frequency scaling)
+    analogies.append(Analogy(
+        domain_a="wilberforce",
+        domain_b="harmonic_oscillator",
+        analogy_type="dimensional",
+        description=(
+            "Both have omega = sqrt(stiffness/inertia) frequency scaling. "
+            "Wilberforce: omega_z = sqrt(k/m), omega_theta = sqrt(kappa/I). "
+            "Harmonic oscillator: omega_0 = sqrt(k/m). "
+            "Same dimensional analysis applies."
+        ),
+        strength=0.9,
+        mapping={
+            "sqrt(k/m) [translational]": "sqrt(k/m) [natural freq]",
+            "sqrt(kappa/I) [torsional]": "same dimensional structure",
+        },
+    ))
+
+    # Dimensional: Chemostat <-> SIR (threshold dynamics)
+    analogies.append(Analogy(
+        domain_a="chemostat",
+        domain_b="sir_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Both have critical threshold bifurcations with similar structure. "
+            "Chemostat: D_c = mu_max*S_in/(K_s+S_in). "
+            "SIR: R_0 = beta/gamma. "
+            "Both determine whether population persists or dies out."
+        ),
+        strength=0.75,
+        mapping={
+            "D_c [washout]": "1/R_0 [epidemic threshold]",
+            "mu_max [max growth]": "beta [infection rate]",
         },
     ))
 
@@ -2333,6 +2510,75 @@ def detect_topological_analogies(
         mapping={
             "SOC threshold f_c": "chaos onset r_c",
             "power-law avalanches": "Feigenbaum scaling",
+        },
+    ))
+
+    # Topological: Lorenz-96 <-> KS (extensive chaos)
+    analogies.append(Analogy(
+        domain_a="lorenz96",
+        domain_b="kuramoto_sivashinsky",
+        analogy_type="topological",
+        description=(
+            "Both exhibit extensive chaos: Lyapunov dimension grows linearly "
+            "with system size (N for L96, L for KS). Both are canonical models "
+            "of high-dimensional chaos in spatially extended systems."
+        ),
+        strength=0.8,
+        mapping={
+            "N sites": "L domain length",
+            "dim ~ O(N)": "dim ~ O(L)",
+        },
+    ))
+
+    # Topological: FHN Spatial <-> FitzHugh-Nagumo (local to global)
+    analogies.append(Analogy(
+        domain_a="fhn_spatial",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="topological",
+        description=(
+            "Same reaction kinetics (v-v^3/3-w excitability), but FHN spatial "
+            "adds diffusion creating traveling pulse solutions. The local "
+            "nullcline structure is identical; spatial coupling enables waves."
+        ),
+        strength=0.95,
+        mapping={
+            "traveling pulse": "limit cycle / excitable spike",
+            "wave speed c": "spike frequency",
+        },
+    ))
+
+    # Topological: Wilberforce <-> Elastic Pendulum (coupled-mode energy transfer)
+    analogies.append(Analogy(
+        domain_a="wilberforce",
+        domain_b="elastic_pendulum",
+        analogy_type="topological",
+        description=(
+            "Both exhibit energy transfer between two coupled degrees of "
+            "freedom. Wilberforce: translation-rotation. Elastic pendulum: "
+            "radial-angular. Both show beat patterns and autoparametric resonance."
+        ),
+        strength=0.85,
+        mapping={
+            "z-theta coupling": "r-theta coupling",
+            "beat frequency": "energy exchange period",
+        },
+    ))
+
+    # Topological: Chemostat <-> Rosenzweig-MacArthur (consumer-resource stability)
+    analogies.append(Analogy(
+        domain_a="chemostat",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="topological",
+        description=(
+            "Both model consumer-resource interactions with bifurcation. "
+            "Chemostat has washout bifurcation (stable -> extinction). "
+            "RM has Hopf bifurcation (stable -> oscillation). Both have "
+            "stable coexistence equilibria that can lose stability."
+        ),
+        strength=0.75,
+        mapping={
+            "washout (D_c)": "Hopf (K_c)",
+            "stable node -> extinction": "stable node -> limit cycle",
         },
     ))
 
