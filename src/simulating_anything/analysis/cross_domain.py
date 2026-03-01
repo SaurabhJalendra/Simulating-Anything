@@ -554,6 +554,70 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="kuramoto_sivashinsky",
+            math_type="pde",  # Chaotic PDE
+            state_dim=128,  # N grid points
+            n_parameters=3,  # L, N, viscosity
+            conserved_quantities=["spatial_mean"],
+            symmetries=["translational", "Galilean"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="L^2",
+            discovered_equations=[
+                "u_t + u*u_x + u_xx + u_xxxx = 0",
+                "Spatiotemporal chaos for L > 2*pi*sqrt(2)",
+                "Positive Lyapunov exponent",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="ginzburg_landau",
+            math_type="pde",  # Complex PDE
+            state_dim=256,  # 2*N (Re + Im)
+            n_parameters=4,  # c1, c2, L, N
+            conserved_quantities=[],
+            symmetries=["translational", "phase_rotation"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1",
+            discovered_equations=[
+                "dA/dt = A + (1+ic1)*d^2A/dx^2 - (1+ic2)*|A|^2*A",
+                "Benjamin-Feir: unstable when 1+c1*c2 < 0",
+                "Phase turbulence regime",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="oregonator",
+            math_type="ode_nonlinear",
+            state_dim=3,  # [u, v, w]
+            n_parameters=4,  # eps, f, q, kw
+            conserved_quantities=[],
+            symmetries=["positivity"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/eps",
+            discovered_equations=[
+                "du/dt = (u*(1-u) - f*v*(u-q)/(u+q)) / eps",
+                "dv/dt = u - v",
+                "Relaxation oscillations (BZ reaction)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="bak_sneppen",
+            math_type="discrete",  # Stochastic extremal dynamics
+            state_dim=50,  # N species
+            n_parameters=1,  # N
+            conserved_quantities=[],
+            symmetries=["translational"],
+            phase_portrait_type="none",  # SOC, no attractor
+            characteristic_timescale="N",
+            discovered_equations=[
+                "SOC threshold f_c ~ 2/3",
+                "Power-law avalanche distribution P(s) ~ s^{-tau}",
+                "Self-organized criticality",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -1315,6 +1379,101 @@ def detect_structural_analogies(
         },
     ))
 
+    # Analogy: Kuramoto-Sivashinsky <-> Navier-Stokes (turbulent PDE)
+    analogies.append(Analogy(
+        domain_a="kuramoto_sivashinsky",
+        domain_b="navier_stokes",
+        analogy_type="structural",
+        description=(
+            "Both are nonlinear PDEs exhibiting spatiotemporal chaos/turbulence. "
+            "KS has u*u_x advection like NS. Both have destabilizing and "
+            "stabilizing terms competing at different scales. KS is a 1D "
+            "model of flame front instability related to NS-derived equations."
+        ),
+        strength=0.8,
+        mapping={
+            "u*u_x [advection]": "u*grad(u) [advection]",
+            "u_xx [anti-diffusion]": "Rayleigh instability",
+            "u_xxxx [hyper-diffusion]": "nu*Laplacian [viscous]",
+        },
+    ))
+
+    # Analogy: Ginzburg-Landau <-> Brusselator (pattern-forming instabilities)
+    analogies.append(Analogy(
+        domain_a="ginzburg_landau",
+        domain_b="brusselator",
+        analogy_type="structural",
+        description=(
+            "Both exhibit Hopf/Turing bifurcations and pattern formation. "
+            "CGLE is the universal amplitude equation near any Hopf bifurcation, "
+            "including the Brusselator's. The |A|^2*A nonlinearity in CGLE "
+            "corresponds to the cubic u^2*v term in the Brusselator."
+        ),
+        strength=0.85,
+        mapping={
+            "|A|^2*A [cubic saturation]": "u^2*v [cubic kinetics]",
+            "Benjamin-Feir instability": "Turing instability",
+            "phase turbulence": "chemical patterns",
+        },
+    ))
+
+    # Analogy: Oregonator <-> Brusselator (chemical oscillators)
+    analogies.append(Analogy(
+        domain_a="oregonator",
+        domain_b="brusselator",
+        analogy_type="structural",
+        description=(
+            "Both are chemical reaction oscillators with Hopf bifurcations. "
+            "Brusselator has autocatalytic u^2*v kinetics. Oregonator has "
+            "rational kinetics u(u-q)/(u+q). Both produce limit cycle "
+            "oscillations above a critical parameter threshold."
+        ),
+        strength=0.9,
+        mapping={
+            "u*(u-q)/(u+q) [rational kinetics]": "u^2*v [cubic kinetics]",
+            "f [stoichiometric]": "b [bifurcation param]",
+            "BZ reaction": "generic chemical oscillator",
+        },
+    ))
+
+    # Analogy: Bak-Sneppen <-> Ising (phase transitions / criticality)
+    analogies.append(Analogy(
+        domain_a="bak_sneppen",
+        domain_b="ising_model",
+        analogy_type="structural",
+        description=(
+            "Both exhibit critical phenomena with universal scaling behavior. "
+            "Ising has a thermal phase transition at T_c; Bak-Sneppen "
+            "self-organizes to criticality at f_c ~ 2/3. Both show "
+            "power-law correlations at the critical point."
+        ),
+        strength=0.7,
+        mapping={
+            "fitness threshold f_c": "critical temperature T_c",
+            "avalanche size distribution": "cluster size distribution",
+            "self-organized criticality": "thermal phase transition",
+        },
+    ))
+
+    # Analogy: Oregonator <-> FitzHugh-Nagumo (excitable systems)
+    analogies.append(Analogy(
+        domain_a="oregonator",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="structural",
+        description=(
+            "Both are excitable systems with fast-slow dynamics. "
+            "FHN models neural excitability (v fast, w slow). "
+            "Oregonator models chemical excitability (u fast, v slow). "
+            "Both have relaxation oscillations with similar phase portraits."
+        ),
+        strength=0.85,
+        mapping={
+            "u [fast activator]": "v [fast voltage]",
+            "v [slow inhibitor]": "w [slow recovery]",
+            "eps [timescale ratio]": "epsilon [timescale ratio]",
+        },
+    ))
+
     return analogies
 
 
@@ -1579,6 +1738,41 @@ def detect_dimensional_analogies(
         mapping={
             "sqrt(a) [frequency scale]": "sqrt(K/m) [frequency scale]",
             "a [lattice spacing]": "a [lattice spacing]",
+        },
+    ))
+
+    # Dimensional: KS <-> Gray-Scott (pattern wavelength scaling)
+    analogies.append(Analogy(
+        domain_a="kuramoto_sivashinsky",
+        domain_b="gray_scott",
+        analogy_type="dimensional",
+        description=(
+            "Both exhibit characteristic spatial wavelengths determined by "
+            "competition between destabilizing and stabilizing scales. "
+            "KS: lambda ~ 2*pi*sqrt(2). Gray-Scott: lambda ~ sqrt(D_v/k). "
+            "Both are set by ratio of diffusion coefficients."
+        ),
+        strength=0.75,
+        mapping={
+            "L_c = 2*pi*sqrt(2) [critical length]": "lambda ~ sqrt(D/k)",
+            "viscosity [stabilizing]": "D_v [diffusion]",
+        },
+    ))
+
+    # Dimensional: Oregonator <-> Van der Pol (relaxation timescale)
+    analogies.append(Analogy(
+        domain_a="oregonator",
+        domain_b="van_der_pol",
+        analogy_type="dimensional",
+        description=(
+            "Both exhibit relaxation oscillations with period scaling. "
+            "Oregonator: T ~ 1/eps for small eps. VdP: T ~ mu for large mu. "
+            "Both have fast-slow timescale separation."
+        ),
+        strength=0.8,
+        mapping={
+            "1/eps [fast timescale]": "mu [relaxation param]",
+            "period ~ O(1/eps)": "period ~ O(mu)",
         },
     ))
 
@@ -2068,6 +2262,77 @@ def detect_topological_analogies(
         mapping={
             "soliton [N conserved quantities]": "closed orbit [E, L conserved]",
             "quasi-periodic tori": "elliptical orbits",
+        },
+    ))
+
+    # Topological: KS <-> Lorenz (spatiotemporal vs temporal chaos)
+    analogies.append(Analogy(
+        domain_a="kuramoto_sivashinsky",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both exhibit chaotic dynamics with positive Lyapunov exponents. "
+            "Lorenz has low-dimensional temporal chaos (3D attractor). "
+            "KS has high-dimensional spatiotemporal chaos (extensive, "
+            "Lyapunov dimension ~ L). Both show sensitive dependence."
+        ),
+        strength=0.7,
+        mapping={
+            "spatiotemporal chaos": "temporal chaos",
+            "positive Lyapunov spectrum": "positive max Lyapunov",
+        },
+    ))
+
+    # Topological: Ginzburg-Landau <-> Brusselator-Diffusion (pattern-forming PDEs)
+    analogies.append(Analogy(
+        domain_a="ginzburg_landau",
+        domain_b="brusselator_diffusion",
+        analogy_type="topological",
+        description=(
+            "Both are reaction-diffusion PDEs exhibiting pattern formation "
+            "from uniform states. CGLE shows phase turbulence, spiral waves, "
+            "and defect chaos. Brusselator-diff shows Turing stripes and spots. "
+            "Both transition from uniform to patterned via instability."
+        ),
+        strength=0.75,
+        mapping={
+            "Benjamin-Feir instability": "Turing instability",
+            "phase defects": "Turing patterns",
+        },
+    ))
+
+    # Topological: Oregonator <-> Brusselator (chemical limit cycles)
+    analogies.append(Analogy(
+        domain_a="oregonator",
+        domain_b="brusselator",
+        analogy_type="topological",
+        description=(
+            "Both chemical oscillators have stable limit cycles in phase space "
+            "born from Hopf bifurcations. The phase portraits show similar "
+            "relaxation oscillation topology with fast jumps and slow arcs."
+        ),
+        strength=0.9,
+        mapping={
+            "BZ limit cycle": "Brusselator limit cycle",
+            "Hopf bifurcation": "Hopf bifurcation",
+        },
+    ))
+
+    # Topological: Bak-Sneppen <-> Logistic Map (critical transitions)
+    analogies.append(Analogy(
+        domain_a="bak_sneppen",
+        domain_b="logistic_map",
+        analogy_type="topological",
+        description=(
+            "Both exhibit critical transitions and power-law scaling. "
+            "Logistic map has period-doubling cascade to chaos at r_c. "
+            "Bak-Sneppen self-organizes to critical threshold f_c. "
+            "Both show universal scaling exponents near criticality."
+        ),
+        strength=0.65,
+        mapping={
+            "SOC threshold f_c": "chaos onset r_c",
+            "power-law avalanches": "Feigenbaum scaling",
         },
     ))
 

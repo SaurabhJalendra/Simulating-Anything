@@ -327,6 +327,41 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.001, "n_steps": 500, "math_class": "Hyperbolic PDE",
     },
+    "ginzburg_landau": {
+        "module": "simulating_anything.simulation.ginzburg_landau",
+        "cls": "GinzburgLandau",
+        "domain": Domain.GINZBURG_LANDAU,
+        "params": {
+            "c1": 1.0, "c2": -1.2, "L": 50.0, "N": 128.0,
+        },
+        "dt": 0.05, "n_steps": 500, "math_class": "Complex PDE",
+    },
+    "bak_sneppen": {
+        "module": "simulating_anything.simulation.bak_sneppen",
+        "cls": "BakSneppen",
+        "domain": Domain.BAK_SNEPPEN,
+        "params": {"N": 50.0},
+        "dt": 1.0, "n_steps": 500, "math_class": "SOC / Extremal",
+    },
+    "kuramoto_sivashinsky": {
+        "module": "simulating_anything.simulation.kuramoto_sivashinsky",
+        "cls": "KuramotoSivashinsky",
+        "domain": Domain.KURAMOTO_SIVASHINSKY,
+        "params": {
+            "L": 100.53096491487338, "N": 128.0, "viscosity": 1.0,
+        },
+        "dt": 0.05, "n_steps": 500, "math_class": "Chaotic PDE",
+    },
+    "oregonator": {
+        "module": "simulating_anything.simulation.oregonator",
+        "cls": "Oregonator",
+        "domain": Domain.OREGONATOR,
+        "params": {
+            "eps": 0.04, "f": 1.0, "q": 0.002, "kw": 0.5,
+            "u_0": 0.5, "v_0": 0.5, "w_0": 0.5,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Nonlinear ODE",
+    },
 }
 
 

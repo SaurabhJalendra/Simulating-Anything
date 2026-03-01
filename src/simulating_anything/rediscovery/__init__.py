@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from simulating_anything.rediscovery.bak_sneppen import run_bak_sneppen_rediscovery
 from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
 from simulating_anything.rediscovery.brusselator_diffusion import (
@@ -17,6 +18,7 @@ from simulating_anything.rediscovery.driven_pendulum import run_driven_pendulum_
 from simulating_anything.rediscovery.duffing import run_duffing_rediscovery
 from simulating_anything.rediscovery.elastic_pendulum import run_elastic_pendulum_rediscovery
 from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
+from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
 from simulating_anything.rediscovery.harmonic_oscillator import run_harmonic_oscillator_rediscovery
 from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
@@ -24,10 +26,14 @@ from simulating_anything.rediscovery.henon_map import run_henon_map_rediscovery
 from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
 from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
 from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
+from simulating_anything.rediscovery.kuramoto_sivashinsky import (
+    run_kuramoto_sivashinsky_rediscovery,
+)
 from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
 from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
 from simulating_anything.rediscovery.lotka_volterra import run_lotka_volterra_rediscovery
 from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
+from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
 from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
 from simulating_anything.rediscovery.quantum_oscillator import run_quantum_oscillator_rediscovery
 from simulating_anything.rediscovery.rosenzweig_macarthur import (
@@ -78,4 +84,8 @@ __all__ = [
     "run_shallow_water_rediscovery",
     "run_chua_rediscovery",
     "run_toda_lattice_rediscovery",
+    "run_bak_sneppen_rediscovery",
+    "run_kuramoto_sivashinsky_rediscovery",
+    "run_oregonator_rediscovery",
+    "run_ginzburg_landau_rediscovery",
 ]
