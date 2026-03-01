@@ -635,6 +635,44 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.01, "n_steps": 500, "math_class": "Nonlinear ODE",
     },
+    "schnakenberg": {
+        "module": "simulating_anything.simulation.schnakenberg",
+        "cls": "SchnakenbergSimulation",
+        "domain": Domain.SCHNAKENBERG,
+        "params": {
+            "a": 0.1, "b": 0.9, "D_u": 1.0, "D_v": 40.0,
+            "N": 32.0, "L": 50.0,
+        },
+        "dt": 0.01, "n_steps": 200, "math_class": "Reaction-Diffusion PDE",
+    },
+    "kapitza_pendulum": {
+        "module": "simulating_anything.simulation.kapitza_pendulum",
+        "cls": "KapitzaPendulumSimulation",
+        "domain": Domain.KAPITZA_PENDULUM,
+        "params": {
+            "L": 1.0, "g": 9.81, "a": 0.1, "omega": 50.0,
+            "gamma": 0.1, "theta_0": 0.1, "theta_dot_0": 0.0,
+        },
+        "dt": 0.0001, "n_steps": 500, "math_class": "Parametric ODE",
+    },
+    "fitzhugh_rinzel": {
+        "module": "simulating_anything.simulation.fitzhugh_rinzel",
+        "cls": "FitzHughRinzelSimulation",
+        "domain": Domain.FITZHUGH_RINZEL,
+        "params": {
+            "a": 0.7, "b": 0.8, "c": -0.775, "d": 1.0,
+            "delta": 0.08, "mu": 0.0001, "I_ext": 0.3,
+            "v_0": -1.0, "w_0": -0.5, "y_0": 0.0,
+        },
+        "dt": 0.1, "n_steps": 500, "math_class": "Bursting ODE",
+    },
+    "coupled_map_lattice": {
+        "module": "simulating_anything.simulation.coupled_map_lattice",
+        "cls": "CoupledMapLatticeSimulation",
+        "domain": Domain.COUPLED_MAP_LATTICE,
+        "params": {"N": 100.0, "r": 3.9, "eps": 0.3},
+        "dt": 1.0, "n_steps": 500, "math_class": "Spatiotemporal Chaos",
+    },
 }
 
 

@@ -1068,6 +1068,71 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="coupled_map_lattice",
+            math_type="discrete",  # Spatiotemporal chaos
+            state_dim=100,  # [x_1, ..., x_N] lattice
+            n_parameters=3,  # N, r, eps
+            conserved_quantities=[],
+            symmetries=["translation", "reflection"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1 (iteration)",
+            discovered_equations=[
+                "x_i' = (1-eps)*f(x_i) + eps/2*(f(x_{i-1})+f(x_{i+1}))",
+                "f(x) = r*x*(1-x)",
+                "sync threshold eps_c ~ 0.5",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="schnakenberg",
+            math_type="pde",  # Reaction-diffusion Turing
+            state_dim=2,  # [u, v] on 2D grid
+            n_parameters=6,  # D_u, D_v, a, b, N, L
+            conserved_quantities=[],
+            symmetries=["rotation", "translation", "reflection"],
+            phase_portrait_type="fixed_point",  # Turing patterns
+            characteristic_timescale="L^2/D_u",
+            discovered_equations=[
+                "du/dt = D_u*nabla^2 u + a - u + u^2*v",
+                "dv/dt = D_v*nabla^2 v + b - u^2*v",
+                "u* = a+b, v* = b/(a+b)^2",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="kapitza_pendulum",
+            math_type="chaotic",  # Parametrically driven ODE
+            state_dim=3,  # [theta, theta_dot, t]
+            n_parameters=5,  # L, g, a, omega, gamma
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="fixed_point",  # Inverted stability
+            characteristic_timescale="sqrt(L/g)",
+            discovered_equations=[
+                "theta'' + gamma*theta' + (g/L)*sin(theta) = (a*omega^2/L)*cos(omega*t)*sin(theta)",
+                "Stability criterion: a^2*omega^2 > 2*g*L",
+                "V_eff = -gL*cos(theta) + (a*omega)^2/(4L)*sin^2(theta)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="fitzhugh_rinzel",
+            math_type="ode_nonlinear",  # Bursting neuron
+            state_dim=3,  # [v, w, y]
+            n_parameters=7,  # I_ext, a, b, c, d, delta, mu
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",  # Bursting oscillation
+            characteristic_timescale="1/delta, 1/mu",
+            discovered_equations=[
+                "dv/dt = v-v^3/3-w+y+I",
+                "dw/dt = delta*(a+v-b*w)",
+                "dy/dt = mu*(c-v-d*y)",
+                "3 timescales: fast spikes, recovery, slow modulation",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -2563,6 +2628,97 @@ def detect_structural_analogies(
         },
     ))
 
+    # CML <-> Logistic Map (coupled vs single logistic)
+    analogies.append(Analogy(
+        domain_a="coupled_map_lattice",
+        domain_b="logistic_map",
+        analogy_type="structural",
+        description=(
+            "CML is a spatial lattice of coupled logistic maps. Each site "
+            "evolves via f(x)=r*x*(1-x) with diffusive coupling eps. "
+            "eps=0 recovers independent logistic maps."
+        ),
+        strength=0.95,
+        mapping={
+            "(1-eps)*f(x_i)+eps/2*(f(x_{i-1})+f(x_{i+1}))": "f(x)=r*x*(1-x)",
+            "eps (coupling)": "no coupling",
+            "spatiotemporal chaos": "temporal chaos",
+        },
+    ))
+
+    # Schnakenberg <-> Gray-Scott (reaction-diffusion Turing systems)
+    analogies.append(Analogy(
+        domain_a="schnakenberg",
+        domain_b="gray_scott",
+        analogy_type="structural",
+        description=(
+            "Both are 2-component reaction-diffusion systems producing "
+            "Turing patterns. Schnakenberg uses a-u+u^2*v kinetics; "
+            "Gray-Scott uses -u*v^2+f*(1-u). Same qualitative behavior."
+        ),
+        strength=0.85,
+        mapping={
+            "a-u+u^2*v": "-u*v^2+f*(1-u)",
+            "b-u^2*v": "u*v^2-(f+k)*v",
+            "D_v/D_u ratio": "D_v/D_u ratio",
+        },
+    ))
+
+    # Kapitza <-> Double Pendulum (pendulum physics)
+    analogies.append(Analogy(
+        domain_a="kapitza_pendulum",
+        domain_b="double_pendulum",
+        analogy_type="structural",
+        description=(
+            "Both are pendulum systems with gravitational restoring force "
+            "g/L*sin(theta). Kapitza adds parametric excitation; double "
+            "pendulum adds a second link. Both show rich dynamics."
+        ),
+        strength=0.75,
+        mapping={
+            "g/L*sin(theta)": "g/L*sin(theta)",
+            "a*omega^2*cos(omega*t)": "second pendulum coupling",
+            "inverted stability": "chaotic motion",
+        },
+    ))
+
+    # FitzHugh-Rinzel <-> Hindmarsh-Rose (bursting neuron models)
+    analogies.append(Analogy(
+        domain_a="fitzhugh_rinzel",
+        domain_b="hindmarsh_rose",
+        analogy_type="structural",
+        description=(
+            "Both are 3-variable bursting neuron models with fast-slow "
+            "decomposition. FHR uses v-v^3/3 nullcline; HR uses x-x^3. "
+            "Both produce clusters of spikes modulated by slow variable."
+        ),
+        strength=0.9,
+        mapping={
+            "v-v^3/3": "x-x^3",
+            "y (slow)": "z (slow)",
+            "mu (ultraslow)": "r (slow timescale)",
+            "bursting spikes": "bursting spikes",
+        },
+    ))
+
+    # FitzHugh-Rinzel <-> FitzHugh-Nagumo (2D limit)
+    analogies.append(Analogy(
+        domain_a="fitzhugh_rinzel",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="structural",
+        description=(
+            "FHR extends FHN by adding slow variable y for bursting. "
+            "Setting mu=0 reduces FHR to standard FHN. Same fast-slow "
+            "structure with cubic nullcline."
+        ),
+        strength=0.9,
+        mapping={
+            "v-v^3/3-w+y+I": "v-v^3/3-w+I",
+            "dy/dt=mu*(c-v-dy)": "0 (no slow variable)",
+            "bursting": "tonic spiking",
+        },
+    ))
+
     return analogies
 
 
@@ -3070,6 +3226,57 @@ def detect_dimensional_analogies(
         mapping={
             "1/gamma [recovery]": "1/gamma [recovery]",
             "1/lambda_max [network threshold]": "gamma/beta [R0 threshold]",
+        },
+    ))
+
+    # Dimensional: Schnakenberg <-> Gray-Scott (RD pattern scale)
+    analogies.append(Analogy(
+        domain_a="schnakenberg",
+        domain_b="gray_scott",
+        analogy_type="dimensional",
+        description=(
+            "Both have pattern wavelength scaling with sqrt(D) where D is "
+            "the larger diffusivity. Schnakenberg: lambda ~ sqrt(D_v); "
+            "Gray-Scott: lambda ~ sqrt(D_v). Same RD scaling."
+        ),
+        strength=0.85,
+        mapping={
+            "sqrt(D_v) [pattern scale]": "sqrt(D_v) [pattern scale]",
+            "L^2/D_u [diffusion time]": "L^2/D_u [diffusion time]",
+        },
+    ))
+
+    # Dimensional: Kapitza <-> Harmonic Oscillator (pendulum timescale)
+    analogies.append(Analogy(
+        domain_a="kapitza_pendulum",
+        domain_b="harmonic_oscillator",
+        analogy_type="dimensional",
+        description=(
+            "Both have natural frequency sqrt(g/L) or sqrt(k/m). "
+            "Kapitza requires omega >> sqrt(g/L) for inverted stability. "
+            "Same dimensional scaling T ~ sqrt(inertia/force)."
+        ),
+        strength=0.8,
+        mapping={
+            "sqrt(g/L) [natural frequency]": "sqrt(k/m) [natural frequency]",
+            "a*omega [parametric drive]": "F [external force]",
+        },
+    ))
+
+    # Dimensional: FitzHugh-Rinzel <-> FitzHugh-Nagumo (neural timescale)
+    analogies.append(Analogy(
+        domain_a="fitzhugh_rinzel",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="dimensional",
+        description=(
+            "Both have fast timescale ~1 for spikes and slow timescale "
+            "1/delta for recovery. FHR adds ultraslow 1/mu for burst "
+            "modulation. Same fast-slow separation."
+        ),
+        strength=0.9,
+        mapping={
+            "1/delta [recovery time]": "1/eps [recovery time]",
+            "1/mu [burst modulation]": "N/A (no bursting in FHN)",
         },
     ))
 
@@ -4129,6 +4336,78 @@ def detect_topological_analogies(
             "prevalence (fraction infected)": "order parameter r",
             "beta_c/gamma": "K_c",
             "endemic state": "synchronized state",
+        },
+    ))
+
+    # CML <-> KS (spatiotemporal chaos)
+    analogies.append(Analogy(
+        domain_a="coupled_map_lattice",
+        domain_b="kuramoto_sivashinsky",
+        analogy_type="topological",
+        description=(
+            "Both produce spatiotemporal chaos in 1D. CML uses discrete "
+            "map dynamics; KS uses continuous PDE. Both have positive "
+            "Lyapunov exponents and space-time pattern complexity."
+        ),
+        strength=0.75,
+        mapping={
+            "lattice chaos": "PDE turbulence",
+            "eps (coupling)": "L (domain size)",
+            "Lyapunov spectrum": "Lyapunov spectrum",
+        },
+    ))
+
+    # Schnakenberg <-> Brusselator-Diffusion (Turing pattern topology)
+    analogies.append(Analogy(
+        domain_a="schnakenberg",
+        domain_b="brusselator_diffusion",
+        analogy_type="topological",
+        description=(
+            "Both produce Turing patterns (spots, stripes) via diffusion-driven "
+            "instability. Same qualitative phase space: uniform -> patterned "
+            "transition as D_v/D_u increases beyond threshold."
+        ),
+        strength=0.85,
+        mapping={
+            "Turing bifurcation": "Turing bifurcation",
+            "spots/stripes": "spots/stripes",
+            "u^2*v autocatalysis": "u^2*v autocatalysis",
+        },
+    ))
+
+    # Kapitza <-> Driven Pendulum (parametric vs direct forcing)
+    analogies.append(Analogy(
+        domain_a="kapitza_pendulum",
+        domain_b="driven_pendulum",
+        analogy_type="topological",
+        description=(
+            "Both are forced pendulum systems. Kapitza has parametric forcing "
+            "(pivot oscillation); driven pendulum has direct torque forcing. "
+            "Both can show stabilization, resonance, and chaos."
+        ),
+        strength=0.8,
+        mapping={
+            "parametric excitation": "direct forcing",
+            "inverted stability": "resonance tongues",
+            "a*omega (drive strength)": "F_d (forcing amplitude)",
+        },
+    ))
+
+    # FitzHugh-Rinzel <-> Hindmarsh-Rose (bursting topology)
+    analogies.append(Analogy(
+        domain_a="fitzhugh_rinzel",
+        domain_b="hindmarsh_rose",
+        analogy_type="topological",
+        description=(
+            "Both have identical phase space topology: slow variable y/z "
+            "modulates fast 2D dynamics between quiescent and spiking. "
+            "Both show square-wave bursting with same bifurcation structure."
+        ),
+        strength=0.9,
+        mapping={
+            "fast spike manifold": "fast spike manifold",
+            "slow y drift": "slow z drift",
+            "burst/quiescent transition": "burst/quiescent transition",
         },
     ))
 
