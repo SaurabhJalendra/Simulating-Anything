@@ -227,6 +227,28 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 1.0, "n_steps": 100, "math_class": "Statistical Mechanics",
     },
+    "three_species": {
+        "module": "simulating_anything.simulation.three_species",
+        "cls": "ThreeSpecies",
+        "domain": Domain.THREE_SPECIES,
+        "params": {
+            "a1": 1.0, "b1": 0.5, "a2": 0.5, "b2": 0.2, "a3": 0.3,
+            "x0": 1.0, "y0": 0.5, "z0": 0.5,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Nonlinear ODE",
+    },
+    "cart_pole": {
+        "module": "simulating_anything.simulation.cart_pole",
+        "cls": "CartPole",
+        "domain": Domain.CART_POLE,
+        "params": {
+            "M": 1.0, "m": 0.1, "L": 0.5, "g": 9.81,
+            "mu_c": 0.0, "mu_p": 0.0, "F": 0.0,
+            "x_0": 0.0, "x_dot_0": 0.0,
+            "theta_0": 0.1, "theta_dot_0": 0.0,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Nonlinear ODE",
+    },
 }
 
 

@@ -35,6 +35,8 @@ class Domain(str, Enum):
     DIFFUSIVE_LV = "diffusive_lv"
     DAMPED_WAVE = "damped_wave"
     ISING_MODEL = "ising_model"
+    THREE_SPECIES = "three_species"
+    CART_POLE = "cart_pole"
 
 
 class SimulationBackend(str, Enum):

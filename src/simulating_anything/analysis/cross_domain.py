@@ -394,6 +394,37 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="cart_pole",
+            math_type="ode_nonlinear",
+            state_dim=4,  # [x, x_dot, theta, theta_dot]
+            n_parameters=7,  # M, m, L, g, mu_c, mu_p, F
+            conserved_quantities=["energy (when mu_c=mu_p=0, F=0)"],
+            symmetries=["translation_x"],
+            phase_portrait_type="limit_cycle",  # Oscillation near hanging eq.
+            characteristic_timescale="sqrt(M*L / (g*(M+m)))",
+            discovered_equations=[
+                "omega = sqrt(g*(M+m) / (M*L))",
+                "E = T + V = const (frictionless)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="three_species",
+            math_type="ode_nonlinear",
+            state_dim=3,  # [x, y, z] = grass, herbivore, predator
+            n_parameters=5,  # a1, b1, a2, b2, a3
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",  # Can exhibit oscillatory coexistence
+            characteristic_timescale="1/a1",
+            discovered_equations=[
+                "dx/dt = a1*x - b1*x*y",
+                "dy/dt = -a2*y + b1*x*y - b2*y*z",
+                "dz/dt = -a3*z + b2*y*z",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -860,6 +891,86 @@ def detect_structural_analogies(
         },
     ))
 
+    # Analogy: Cart-pole <-> Double pendulum (pendulum systems with coupled DOFs)
+    analogies.append(Analogy(
+        domain_a="cart_pole",
+        domain_b="double_pendulum",
+        analogy_type="structural",
+        description=(
+            "Both are coupled pendulum systems with Lagrangian mechanics. "
+            "Cart-pole: pendulum on a sliding cart (1 translational + 1 rotational DOF). "
+            "Double pendulum: two linked pendula (2 rotational DOF). "
+            "Both use mass matrix inversion to solve coupled equations of motion."
+        ),
+        strength=0.85,
+        mapping={
+            "x (cart position)": "theta1 (upper pendulum angle)",
+            "theta (pendulum angle)": "theta2 (lower pendulum angle)",
+            "M (cart mass)": "m1 (upper mass)",
+            "m (bob mass)": "m2 (lower mass)",
+            "mass matrix inversion": "mass matrix inversion",
+        },
+    ))
+
+    # Analogy: Cart-pole <-> Harmonic oscillator (linearized oscillation)
+    analogies.append(Analogy(
+        domain_a="cart_pole",
+        domain_b="harmonic_oscillator",
+        analogy_type="structural",
+        description=(
+            "Linearized cart-pole near the hanging equilibrium (theta=pi) "
+            "reduces to a harmonic oscillator: phi'' = -(g*(M+m)/(M*L))*phi. "
+            "This is identical to x'' = -(k/m)*x with k/m -> g*(M+m)/(M*L). "
+            "Small-angle frequency omega = sqrt(g*(M+m)/(M*L))."
+        ),
+        strength=0.9,
+        mapping={
+            "phi (deviation from pi)": "x (displacement)",
+            "g*(M+m)/(M*L) [effective stiffness]": "k/m [spring ratio]",
+            "omega = sqrt(g*(M+m)/(M*L))": "omega = sqrt(k/m)",
+        },
+    ))
+
+    # Analogy: Three-species <-> Lotka-Volterra (food chain extension)
+    analogies.append(Analogy(
+        domain_a="three_species",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "Three-species food chain is a direct extension of Lotka-Volterra. "
+            "LV: dx/dt = a*x - b*x*y (2 species, 1 trophic level). "
+            "3-species: adds dz/dt = -a3*z + b2*y*z (3 species, 2 trophic levels). "
+            "Setting z=0 recovers the original LV system exactly."
+        ),
+        strength=0.95,
+        mapping={
+            "x (grass)": "prey",
+            "y (herbivore)": "predator",
+            "z (predator)": "(no analogue in 2-species)",
+            "a1*x - b1*x*y": "alpha*prey - beta*prey*pred",
+            "-a2*y + b1*x*y": "-gamma*pred + delta*prey*pred",
+        },
+    ))
+
+    # Analogy: Three-species <-> SIR (3-compartment coupled nonlinear ODEs)
+    analogies.append(Analogy(
+        domain_a="three_species",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both are 3-variable coupled nonlinear ODE systems with bilinear "
+            "interaction terms. 3-species: x*y and y*z drive population transfer. "
+            "SIR: S*I drives transfer between compartments. "
+            "Both have cascade dynamics where one variable feeds the next."
+        ),
+        strength=0.75,
+        mapping={
+            "x -> y transfer (b1*x*y)": "S -> I transfer (beta*S*I)",
+            "y -> z transfer (b2*y*z)": "I -> R transfer (gamma*I)",
+            "grass -> herbivore -> predator": "S -> I -> R",
+        },
+    ))
+
     return analogies
 
 
@@ -1016,6 +1127,44 @@ def detect_dimensional_analogies(
             "D_u [prey diffusion]": "D [thermal diffusion]",
             "L^2/D_u [diffusive timescale]": "L^2/D [diffusive timescale]",
             "u(x) [prey density]": "u(x) [temperature]",
+        },
+    ))
+
+    # Cart-pole <-> Double pendulum (same sqrt(L/g) dimensional structure)
+    analogies.append(Analogy(
+        domain_a="cart_pole",
+        domain_b="double_pendulum",
+        analogy_type="dimensional",
+        description=(
+            "Both have period scaling as sqrt(length/gravity). "
+            "Cart-pole: T = 2*pi/sqrt(g*(M+m)/(M*L)) ~ sqrt(L/g). "
+            "Double pendulum: T = 2*pi*sqrt(L/g) for small angles. "
+            "The cart-pole has an additional mass ratio correction M/(M+m)."
+        ),
+        strength=0.85,
+        mapping={
+            "L [pendulum length]": "L [pendulum length]",
+            "g [gravity]": "g [gravity]",
+            "sqrt(M*L/(g*(M+m)))": "sqrt(L/g)",
+        },
+    ))
+
+    # Cart-pole <-> Harmonic oscillator (omega ~ sqrt(stiffness/inertia))
+    analogies.append(Analogy(
+        domain_a="cart_pole",
+        domain_b="harmonic_oscillator",
+        analogy_type="dimensional",
+        description=(
+            "Both have omega = sqrt(restoring_force/inertia). "
+            "Cart-pole: omega = sqrt(g*(M+m)/(M*L)). "
+            "Oscillator: omega = sqrt(k/m). "
+            "Same dimensional structure with different physical parameters."
+        ),
+        strength=0.9,
+        mapping={
+            "g*(M+m)/L [effective restoring]": "k [spring constant]",
+            "M [effective inertia]": "m [mass]",
+            "omega = sqrt(g*(M+m)/(M*L))": "omega_0 = sqrt(k/m)",
         },
     ))
 
@@ -1278,6 +1427,46 @@ def detect_topological_analogies(
             "T < T_c [ordered]": "R0 > 1 [epidemic]",
             "magnetization jump": "infected peak",
             "spin clusters": "infection clusters",
+        },
+    ))
+
+    # Cart-pole <-> Van der Pol (oscillatory nonlinear systems)
+    analogies.append(Analogy(
+        domain_a="cart_pole",
+        domain_b="van_der_pol",
+        analogy_type="topological",
+        description=(
+            "Both are nonlinear oscillators in a 2D effective phase space. "
+            "Cart-pole near hanging equilibrium: stable oscillation with "
+            "friction-dependent amplitude decay. Van der Pol: limit cycle "
+            "with amplitude self-regulation. Both exhibit energy-dependent "
+            "orbit topology in the theta-omega or x-v plane."
+        ),
+        strength=0.6,
+        mapping={
+            "theta-omega phase plane": "x-v phase plane",
+            "friction damping": "nonlinear damping mu*(1-x^2)",
+            "gravity restoring force": "linear restoring force",
+        },
+    ))
+
+    # Three-species <-> Lorenz (3D chaotic/complex ODEs)
+    analogies.append(Analogy(
+        domain_a="three_species",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both are 3D nonlinear ODE systems that can exhibit complex dynamics. "
+            "Three-species: 3-variable food chain with possible limit cycles "
+            "and chaotic behavior for certain parameter regimes. "
+            "Lorenz: 3-variable system with strange attractor and chaos. "
+            "Both require 3 dimensions for their dynamical complexity."
+        ),
+        strength=0.6,
+        mapping={
+            "x, y, z [populations]": "x, y, z [convection variables]",
+            "food chain interactions": "thermal convection coupling",
+            "population oscillations": "lobe switching",
         },
     ))
 
