@@ -5,6 +5,7 @@ from __future__ import annotations
 from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
 from simulating_anything.rediscovery.coupled_oscillators import run_coupled_oscillators_rediscovery
+from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
 from simulating_anything.rediscovery.diffusive_lv import run_diffusive_lv_rediscovery
 from simulating_anything.rediscovery.double_pendulum import run_double_pendulum_rediscovery
 from simulating_anything.rediscovery.driven_pendulum import run_driven_pendulum_rediscovery
@@ -14,6 +15,7 @@ from simulating_anything.rediscovery.quantum_oscillator import run_quantum_oscil
 from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
 from simulating_anything.rediscovery.spring_mass_chain import run_spring_mass_chain_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
+from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
 from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
 from simulating_anything.rediscovery.harmonic_oscillator import run_harmonic_oscillator_rediscovery
 from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
@@ -49,5 +51,7 @@ __all__ = [
     "run_spring_mass_chain_rediscovery",
     "run_driven_pendulum_rediscovery",
     "run_coupled_oscillators_rediscovery",
+    "run_damped_wave_rediscovery",
     "run_diffusive_lv_rediscovery",
+    "run_ising_model_rediscovery",
 ]
