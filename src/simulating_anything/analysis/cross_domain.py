@@ -252,6 +252,66 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[0.6287],
         ),
+        DomainSignature(
+            name="duffing",
+            math_type="chaotic",
+            state_dim=2,  # x, v
+            n_parameters=5,  # alpha, beta, delta, gamma, omega
+            conserved_quantities=[],
+            symmetries=["time_translation"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="2*pi/omega",
+            discovered_equations=["x'' + delta*x' + alpha*x + beta*x^3 = gamma*cos(omega*t)"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="schwarzschild",
+            math_type="ode_nonlinear",
+            state_dim=4,  # r, phi, p_r, L/r
+            n_parameters=2,  # M, L
+            conserved_quantities=["energy", "angular_momentum"],
+            symmetries=["time_translation", "azimuthal"],
+            phase_portrait_type="fixed_point",  # Circular orbits
+            characteristic_timescale="M (gravitational radius)",
+            discovered_equations=["ISCO = 6*M", "V_eff(r) = -M/r + L^2/(2r^2) - ML^2/r^3"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="quantum_oscillator",
+            math_type="pde",  # Schrodinger equation
+            state_dim=1,  # |psi|^2 on grid
+            n_parameters=2,  # omega, hbar
+            conserved_quantities=["norm", "energy (time-independent)"],
+            symmetries=["time_translation", "parity"],
+            phase_portrait_type="none",  # Unitary evolution
+            characteristic_timescale="2*pi/omega",
+            discovered_equations=["E_n = (n + 0.5) * hbar * omega"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="boltzmann_gas",
+            math_type="ode_nonlinear",  # N-body Newtonian
+            state_dim=4,  # Per-particle: x, y, vx, vy (N particles)
+            n_parameters=3,  # N, T, L
+            conserved_quantities=["total_energy (elastic)", "total_momentum"],
+            symmetries=["translation", "rotation", "time_reversal"],
+            phase_portrait_type="none",  # Ergodic
+            characteristic_timescale="L/v_thermal",
+            discovered_equations=["PV = NkT"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="spring_mass_chain",
+            math_type="ode_linear",
+            state_dim=2,  # Per-mass: u, v (N masses)
+            n_parameters=3,  # K, m, a
+            conserved_quantities=["total_energy"],
+            symmetries=["time_translation", "discrete_translation"],
+            phase_portrait_type="limit_cycle",  # Normal modes
+            characteristic_timescale="sqrt(m/K)",
+            discovered_equations=["omega(k) = 2*sqrt(K/m)*sin(k*a/2)", "c = a*sqrt(K/m)"],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -441,6 +501,84 @@ def detect_structural_analogies(
         },
     ))
 
+    # Analogy 10: Duffing <-> Van der Pol (forced nonlinear oscillators)
+    analogies.append(Analogy(
+        domain_a="duffing",
+        domain_b="van_der_pol",
+        analogy_type="structural",
+        description=(
+            "Both are forced nonlinear second-order oscillators. "
+            "Duffing: x'' + delta*x' + alpha*x + beta*x^3 = gamma*cos(omega*t). "
+            "Van der Pol: x'' - mu*(1-x^2)*x' + x = 0. "
+            "Both exhibit bifurcation routes to chaos and limit cycles."
+        ),
+        strength=0.8,
+        mapping={
+            "beta*x^3 [cubic stiffness]": "mu*(1-x^2)*x' [nonlinear damping]",
+            "gamma*cos(omega*t) [external forcing]": "self-excited oscillation",
+            "delta [damping]": "-mu*(1-x^2) [negative damping]",
+        },
+    ))
+
+    # Analogy 11: Schwarzschild <-> Kepler (central force orbits)
+    analogies.append(Analogy(
+        domain_a="schwarzschild",
+        domain_b="projectile",
+        analogy_type="structural",
+        description=(
+            "Both involve motion under a central force with conserved energy "
+            "and angular momentum. Schwarzschild adds a GR correction term "
+            "-ML^2/r^3 to the Newtonian effective potential. In the weak-field "
+            "limit (r >> M), Schwarzschild reduces to Keplerian orbits."
+        ),
+        strength=0.7,
+        mapping={
+            "-M/r [Newtonian gravity]": "-g*y [gravity]",
+            "L^2/(2r^2) [centrifugal]": "KE_horizontal",
+            "-ML^2/r^3 [GR correction]": "(no analogue in Newtonian)",
+        },
+    ))
+
+    # Analogy 12: Spring-mass chain <-> Heat equation (discrete vs continuous)
+    analogies.append(Analogy(
+        domain_a="spring_mass_chain",
+        domain_b="heat_equation",
+        analogy_type="structural",
+        description=(
+            "Spring-mass chain is the discrete analogue of the 1D wave/heat equation. "
+            "Chain: m*x_i'' = K*(x_{i+1} - 2*x_i + x_{i-1}) -- discrete Laplacian. "
+            "Heat: u_t = D*u_xx -- continuous Laplacian. "
+            "In the continuum limit (a->0, N->inf), the chain becomes the wave equation."
+        ),
+        strength=0.85,
+        mapping={
+            "K/m [spring/mass ratio]": "D [diffusion coefficient]",
+            "x_{i+1}-2x_i+x_{i-1} [discrete Laplacian]": "u_xx [continuous Laplacian]",
+            "a [lattice spacing]": "dx [grid spacing]",
+        },
+    ))
+
+    # Analogy 13: Boltzmann gas <-> Kuramoto (collective N-body dynamics)
+    analogies.append(Analogy(
+        domain_a="boltzmann_gas",
+        domain_b="kuramoto",
+        analogy_type="structural",
+        description=(
+            "Both are N-body systems where macroscopic behavior emerges from "
+            "microscopic interactions. Gas: N particles collide, producing "
+            "Maxwell-Boltzmann distribution and PV=NkT. Kuramoto: N oscillators "
+            "couple, producing synchronization transition. Both exhibit "
+            "mean-field behavior in the N->infinity limit."
+        ),
+        strength=0.65,
+        mapping={
+            "v_i [particle velocity]": "theta_i [oscillator phase]",
+            "collisions [pairwise]": "sin coupling [pairwise]",
+            "temperature T": "order parameter r",
+            "PV=NkT [equation of state]": "r(K) [sync curve]",
+        },
+    ))
+
     return analogies
 
 
@@ -484,6 +622,44 @@ def detect_dimensional_analogies(
             "D (diffusion)": "m (mass) [spreading/inertia]",
             "k_rate (reaction)": "k (spring) [localization/restoring]",
             "lambda ~ sqrt(D/k)": "T ~ sqrt(m/k)",
+        },
+    ))
+
+    # Spring-mass chain <-> Harmonic oscillator (same omega ~ sqrt(K/m))
+    analogies.append(Analogy(
+        domain_a="spring_mass_chain",
+        domain_b="harmonic_oscillator",
+        analogy_type="dimensional",
+        description=(
+            "Both have characteristic frequency omega ~ sqrt(K/m). "
+            "Spring-mass chain: omega_max = 2*sqrt(K/m). "
+            "Harmonic oscillator: omega_0 = sqrt(k/m). "
+            "The chain is a discrete generalization of the single oscillator."
+        ),
+        strength=0.95,
+        mapping={
+            "K [spring constant]": "k [spring constant]",
+            "m [mass per site]": "m [mass]",
+            "omega_max = 2*sqrt(K/m)": "omega_0 = sqrt(k/m)",
+        },
+    ))
+
+    # Quantum oscillator <-> Harmonic oscillator (classical/quantum correspondence)
+    analogies.append(Analogy(
+        domain_a="quantum_oscillator",
+        domain_b="harmonic_oscillator",
+        analogy_type="dimensional",
+        description=(
+            "Classical and quantum harmonic oscillators share omega = sqrt(k/m). "
+            "Classical: continuous energy, E = 0.5*k*A^2. "
+            "Quantum: quantized E_n = (n+0.5)*hbar*omega. "
+            "In the correspondence limit (n >> 1), quantum -> classical."
+        ),
+        strength=0.95,
+        mapping={
+            "hbar*omega [energy quantum]": "E = 0.5*k*A^2 [classical energy]",
+            "|psi|^2 [probability density]": "delta(x - A*cos(omega*t)) [trajectory]",
+            "omega = sqrt(k/m)": "omega_0 = sqrt(k/m)",
         },
     ))
 
@@ -611,6 +787,63 @@ def detect_topological_analogies(
             "K (coupling)": "R0 = beta/gamma",
             "K_c (critical coupling)": "R0 = 1 (epidemic threshold)",
             "r (order parameter)": "I_peak (infected peak)",
+        },
+    ))
+
+    # Duffing <-> Lorenz (both chaotic with strange attractors)
+    analogies.append(Analogy(
+        domain_a="duffing",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both exhibit chaotic dynamics with strange attractors. "
+            "Duffing: period-doubling route to chaos as driving amplitude increases. "
+            "Lorenz: homoclinic bifurcation as Rayleigh number increases. "
+            "Both have positive largest Lyapunov exponent in chaotic regime."
+        ),
+        strength=0.75,
+        mapping={
+            "gamma [driving amplitude]": "rho [Rayleigh number]",
+            "period-doubling cascade": "bifurcation cascade",
+            "chaotic attractor (2D Poincare)": "butterfly attractor (3D)",
+        },
+    ))
+
+    # Logistic map <-> Duffing (period-doubling route to chaos)
+    analogies.append(Analogy(
+        domain_a="logistic_map",
+        domain_b="duffing",
+        analogy_type="topological",
+        description=(
+            "Both exhibit the period-doubling route to chaos with Feigenbaum "
+            "universality. Logistic map: x_{n+1} = r*x_n*(1-x_n), "
+            "period-doubling at r values converging with ratio delta=4.669. "
+            "Duffing: period-doubling as gamma increases. Same universal scaling."
+        ),
+        strength=0.8,
+        mapping={
+            "r [growth rate]": "gamma [driving amplitude]",
+            "period-doubling cascade": "period-doubling cascade",
+            "Feigenbaum delta": "Feigenbaum delta (same universal constant)",
+        },
+    ))
+
+    # Boltzmann gas <-> Heat equation (microscopic vs macroscopic diffusion)
+    analogies.append(Analogy(
+        domain_a="boltzmann_gas",
+        domain_b="heat_equation",
+        analogy_type="topological",
+        description=(
+            "Boltzmann gas is the microscopic origin of the heat equation. "
+            "Random particle collisions produce diffusive transport at the "
+            "macroscopic level. The diffusion coefficient D relates to "
+            "mean free path and thermal velocity: D ~ lambda*v_thermal."
+        ),
+        strength=0.7,
+        mapping={
+            "particle velocities": "temperature field u(x)",
+            "collision dynamics": "diffusion operator D*u_xx",
+            "Maxwell-Boltzmann equilibrium": "uniform steady state",
         },
     ))
 
