@@ -45,6 +45,10 @@ class Domain(str, Enum):
     SHALLOW_WATER = "shallow_water"
     CHUA = "chua"
     TODA_LATTICE = "toda_lattice"
+    KURAMOTO_SIVASHINSKY = "kuramoto_sivashinsky"
+    OREGONATOR = "oregonator"
+    BAK_SNEPPEN = "bak_sneppen"
+    GINZBURG_LANDAU = "ginzburg_landau"
 
 
 class SimulationBackend(str, Enum):

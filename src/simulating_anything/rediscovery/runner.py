@@ -39,6 +39,7 @@ def run_all_rediscoveries(
     Returns:
         Combined results dict with all discoveries.
     """
+    from simulating_anything.rediscovery.bak_sneppen import run_bak_sneppen_rediscovery
     from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
     from simulating_anything.rediscovery.brusselator_diffusion import (
@@ -62,6 +63,9 @@ def run_all_rediscoveries(
         run_elastic_pendulum_rediscovery,
     )
     from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
+    from simulating_anything.rediscovery.ginzburg_landau import (
+        run_ginzburg_landau_rediscovery,
+    )
     from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
     from simulating_anything.rediscovery.harmonic_oscillator import (
         run_harmonic_oscillator_rediscovery,
@@ -71,12 +75,16 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
     from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
     from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
+    from simulating_anything.rediscovery.kuramoto_sivashinsky import (
+        run_kuramoto_sivashinsky_rediscovery,
+    )
     from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
     from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
     from simulating_anything.rediscovery.lotka_volterra import (
         run_lotka_volterra_rediscovery,
     )
     from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
+    from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
     from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
     from simulating_anything.rediscovery.quantum_oscillator import (
         run_quantum_oscillator_rediscovery,
@@ -269,6 +277,26 @@ def run_all_rediscoveries(
         "shallow_water": {
             "label": "Shallow Water Equations Wave Speed",
             "fn": run_shallow_water_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "bak_sneppen": {
+            "label": "Bak-Sneppen Self-Organized Criticality",
+            "fn": run_bak_sneppen_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "kuramoto_sivashinsky": {
+            "label": "Kuramoto-Sivashinsky Spatiotemporal Chaos",
+            "fn": run_kuramoto_sivashinsky_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "oregonator": {
+            "label": "Oregonator BZ Reaction Oscillations",
+            "fn": run_oregonator_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "ginzburg_landau": {
+            "label": "Complex Ginzburg-Landau Benjamin-Feir Instability",
+            "fn": run_ginzburg_landau_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
