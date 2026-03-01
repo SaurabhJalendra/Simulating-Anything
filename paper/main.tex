@@ -100,7 +100,7 @@ Our key contributions are:
   across 8 mathematical classes (Section~\ref{sec:experiments}).
 \item A cross-domain analogy engine that detects 17 mathematical isomorphisms
   between domains (Section~\ref{sec:cross_domain}).
-\item Open-source implementation with 496 tests, 18 publication-quality
+\item Open-source implementation with 548 tests, 24 publication-quality
   figures, and comprehensive benchmarks.
 \end{enumerate}
 
@@ -537,7 +537,7 @@ would enable general-relativistic discoveries with no pipeline changes.
 \paragraph{Scaling and extensibility.}
 Adding a new domain requires only implementing a \texttt{SimulationEnvironment}
 subclass ($\sim$50--200 lines). All other pipeline stages operate unchanged.
-We have verified this with 15 domains across 8 mathematical classes.
+We have verified this with 17 domains across 10 mathematical classes.
 To concretely demonstrate extensibility, we implemented a Duffing
 oscillator ($x'' + \delta x' + \alpha x + \beta x^3 = \gamma\cos\omega t$)
 in 54 lines of Python, including RK4 integration, energy computation, and
@@ -555,6 +555,55 @@ that the high accuracy is not an artifact of particular data splits.
 Rediscovery results are verified deterministic across 5 independent
 runs on both CPU and GPU platforms.
 
+
+\paragraph{Validation methodology.}
+Ensuring simulation correctness is critical: if a simulator is wrong,
+the pipeline will faithfully ``rediscover'' wrong equations.
+We employ a six-layer validation framework:
+(1)~\emph{Conservation checks.}
+Every trajectory is automatically tested for mass conservation
+(relative drift $< 10^{-6}$), energy conservation (drift $< 10^{-4}$),
+positivity, and boundedness in the pipeline itself (Table~\ref{tab:validation}).
+(2)~\emph{Dimensional analysis.}
+Discovered equations are verified for dimensional consistency using
+SI base dimensions $[L, T, M, \Theta, N]$.
+(3)~\emph{Reproducibility.}
+75 tests verify bitwise determinism, finiteness, and correct state
+dimensionality across all domains.
+(4)~\emph{Theory comparison.}
+The strongest validation layer: each rediscovery compares simulation
+output against known analytical results. Recovering $R = v_0^2 \sin(2\theta)/g$
+to 4 significant figures, or Lorenz ODEs with $\sigma = 9.98$ vs.\ true $10$,
+\emph{proves} the underlying simulation is correct.
+(5)~\emph{Adversarial dream debate.}
+Two RSSM models trained on disjoint data halves predict independently;
+divergence flags insufficient data, chaos, or systematic bias.
+(6)~\emph{Cross-domain consistency.}
+The 17 detected isomorphisms (e.g., harmonic oscillator and double
+pendulum both recover $T \sim \sqrt{\text{inertia}/\text{force}}$)
+provide mutual structural validation.
+
+\begin{table}[h]
+\centering
+\caption{Domain-specific physical invariants verified in the test suite.}
+\label{tab:validation}
+\small
+\begin{tabular}{lll}
+\toprule
+Domain & Invariant & Tolerance \\
+\midrule
+SIR & $S + I + R = N$ & $< 10^{-10}$ \\
+Double Pendulum & Energy drift & $< 10^{-7}$ (10k steps) \\
+Harmonic Osc. & $E \downarrow$ with damping, $E = \text{const}$ without & $< 10^{-6}$ \\
+Schwarzschild & $E_{\text{geodesic}} = \text{const}$ & $< 10^{-6}$ \\
+Quantum Osc. & $\int |\psi|^2 dx = 1$ & $< 10^{-10}$ \\
+Navier-Stokes & $E_{\text{kinetic}} \downarrow$ (viscous decay) & monotone \\
+Logistic Map & $x_n \in [0, 1]$ & exact \\
+Lotka-Volterra & $x, y > 0$ & exact \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 % ============================================================================
 % 7. CONCLUSION
 % ============================================================================
@@ -566,10 +615,16 @@ rediscover known physical laws across 14 fundamentally different domains.
 The system achieves $R^2 \geq 0.999$ in 11 of 14 domains, with a mean
 $R^2$ of 0.970 across all domains. Cross-domain analogy detection reveals
 17 mathematical isomorphisms, suggesting that scientific domains share
-more structure than is commonly appreciated. Our architecture's key
+more structure than is commonly appreciated. A six-layer validation
+framework---conservation checks, dimensional analysis, reproducibility tests,
+theory comparison, adversarial dream debate, and cross-domain consistency---ensures
+simulation correctness and result reliability. Our architecture's key
 contribution is the separation of domain-specific simulation from
 domain-agnostic discovery, enabling universal scientific inference with
-minimal per-domain effort.
+minimal per-domain effort. The pipeline has been extended to 17 domains
+spanning 10 mathematical classes---including general relativity (Schwarzschild
+geodesics) and quantum mechanics (harmonic oscillator)---with zero changes
+to the discovery infrastructure.
 
 % ============================================================================
 % REFERENCES
@@ -763,7 +818,7 @@ Python 3.12) and GPU (RTX 5090 via WSL2 Ubuntu 24.04, JAX 0.4.x).
 stochastic due to its evolutionary search; we report results from the
 best-of-3 runs where the correct functional form was recovered in all
 3 trials for 13 of 14 domains (all except the logistic map Lyapunov fit).
-The full codebase, including 496 unit tests covering all simulation
+The full codebase, including 548 unit tests covering all simulation
 engines and analysis methods, is available at
 \url{https://github.com/SaurabhJalendra/Simulating-Anything}.
 
