@@ -189,6 +189,26 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.005, "n_steps": 500, "math_class": "Chaotic ODE",
     },
+    "coupled_oscillators": {
+        "module": "simulating_anything.simulation.coupled_oscillators",
+        "cls": "CoupledOscillators",
+        "domain": Domain.COUPLED_OSCILLATORS,
+        "params": {
+            "k": 4.0, "m": 1.0, "kc": 0.5,
+            "x1_0": 1.0, "v1_0": 0.0, "x2_0": 0.0, "v2_0": 0.0,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Coupled ODE",
+    },
+    "diffusive_lv": {
+        "module": "simulating_anything.simulation.diffusive_lv",
+        "cls": "DiffusiveLotkaVolterra",
+        "domain": Domain.DIFFUSIVE_LV,
+        "params": {
+            "alpha": 1.0, "beta": 0.5, "gamma": 0.5, "delta": 0.2,
+            "D_u": 0.1, "D_v": 0.05, "N_grid": 64.0, "L_domain": 20.0,
+        },
+        "dt": 0.005, "n_steps": 500, "math_class": "Reaction-Diffusion PDE",
+    },
 }
 
 

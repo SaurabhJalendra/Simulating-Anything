@@ -336,6 +336,34 @@ def build_domain_signatures() -> list[DomainSignature]:
             discovered_equations=["period-doubling route to chaos, A_c detection"],
             r_squared=[],
         ),
+        DomainSignature(
+            name="coupled_oscillators",
+            math_type="ode_linear",
+            state_dim=4,  # x1, v1, x2, v2
+            n_parameters=3,  # k, m, kc
+            conserved_quantities=["total_energy"],
+            symmetries=["time_translation", "permutation (identical masses)"],
+            phase_portrait_type="limit_cycle",  # Quasi-periodic (two frequencies)
+            characteristic_timescale="sqrt(m/k)",
+            discovered_equations=[
+                "omega_s = sqrt(k/m)",
+                "omega_a = sqrt((k+2*kc)/m)",
+                "omega_beat = omega_a - omega_s",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="diffusive_lv",
+            math_type="pde",
+            state_dim=2,  # u(x), v(x) on 1D grid
+            n_parameters=6,  # alpha, beta, gamma, delta, D_u, D_v
+            conserved_quantities=[],
+            symmetries=["translation", "periodic_boundary"],
+            phase_portrait_type="limit_cycle",  # Traveling waves
+            characteristic_timescale="L^2/D_u",
+            discovered_equations=["c_wave ~ 2*sqrt(alpha*D_u) (Fisher-KPP)"],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -620,7 +648,87 @@ def detect_structural_analogies(
         },
     ))
 
-    # Analogy 13: Boltzmann gas <-> Kuramoto (collective N-body dynamics)
+    # Analogy 13: Coupled oscillators <-> Spring-mass chain (coupled linear systems)
+    analogies.append(Analogy(
+        domain_a="coupled_oscillators",
+        domain_b="spring_mass_chain",
+        analogy_type="structural",
+        description=(
+            "Both are systems of linearly coupled harmonic oscillators. "
+            "Coupled oscillators: 2 masses with coupling spring kc. "
+            "Spring-mass chain: N masses with identical coupling springs K. "
+            "Both have normal modes; chain generalizes the 2-body case to N-body."
+        ),
+        strength=0.9,
+        mapping={
+            "kc [coupling spring]": "K [inter-mass spring]",
+            "2 normal modes": "N normal modes",
+            "omega_s, omega_a": "omega_n = 2*sqrt(K/m)*sin(n*pi/(2*(N+1)))",
+            "beat frequency": "wave dispersion",
+        },
+    ))
+
+    # Analogy 14: Diffusive LV <-> Gray-Scott (reaction-diffusion PDEs)
+    analogies.append(Analogy(
+        domain_a="diffusive_lv",
+        domain_b="gray_scott",
+        analogy_type="structural",
+        description=(
+            "Both are reaction-diffusion PDEs with two coupled species. "
+            "Diffusive LV: u_t = D_u*u_xx + alpha*u - beta*u*v. "
+            "Gray-Scott: u_t = D_u*Lap(u) - u*v^2 + f*(1-u). "
+            "Both feature diffusion + nonlinear interaction terms "
+            "and can produce spatial patterns from homogeneous initial conditions."
+        ),
+        strength=0.85,
+        mapping={
+            "alpha*u - beta*u*v [LV reaction]": "-u*v^2 + f*(1-u) [GS reaction]",
+            "D_u [prey diffusion]": "D_u [activator diffusion]",
+            "prey/predator": "activator/inhibitor",
+            "traveling waves": "Turing patterns",
+        },
+    ))
+
+    # Analogy 15: Coupled oscillators <-> Harmonic oscillator (limiting case)
+    analogies.append(Analogy(
+        domain_a="coupled_oscillators",
+        domain_b="harmonic_oscillator",
+        analogy_type="structural",
+        description=(
+            "Coupled oscillators reduce to independent harmonic oscillators "
+            "when coupling kc=0. Each mass obeys x'' = -(k/m)*x exactly. "
+            "The coupled system extends the single-oscillator physics with "
+            "mode splitting and energy transfer via the coupling spring."
+        ),
+        strength=0.9,
+        mapping={
+            "k [individual spring]": "k [spring constant]",
+            "m [mass]": "m [mass]",
+            "kc=0 limit": "single oscillator",
+            "omega_s = sqrt(k/m)": "omega_0 = sqrt(k/m)",
+        },
+    ))
+
+    # Analogy 16: Diffusive LV <-> Lotka-Volterra (spatial extension)
+    analogies.append(Analogy(
+        domain_a="diffusive_lv",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "Diffusive LV is the spatial extension of the original LV system. "
+            "LV: du/dt = alpha*u - beta*u*v (well-mixed). "
+            "Diffusive LV: du/dt = D*u_xx + alpha*u - beta*u*v (spatially extended). "
+            "Setting D_u = D_v = 0 recovers the original ODE system exactly."
+        ),
+        strength=0.95,
+        mapping={
+            "alpha, beta [reaction rates]": "alpha, beta [same rates]",
+            "D_u*u_xx [diffusion]": "0 [well-mixed assumption]",
+            "spatial patterns": "temporal oscillations",
+        },
+    ))
+
+    # Analogy 17: Boltzmann gas <-> Kuramoto (collective N-body dynamics)
     analogies.append(Analogy(
         domain_a="boltzmann_gas",
         domain_b="kuramoto",
@@ -741,6 +849,43 @@ def detect_dimensional_analogies(
             "hbar*omega [energy quantum]": "E = 0.5*k*A^2 [classical energy]",
             "|psi|^2 [probability density]": "delta(x - A*cos(omega*t)) [trajectory]",
             "omega = sqrt(k/m)": "omega_0 = sqrt(k/m)",
+        },
+    ))
+
+    # Coupled oscillators <-> Harmonic oscillator (same omega ~ sqrt(k/m))
+    analogies.append(Analogy(
+        domain_a="coupled_oscillators",
+        domain_b="harmonic_oscillator",
+        analogy_type="dimensional",
+        description=(
+            "Symmetric mode of coupled oscillators has omega_s = sqrt(k/m), "
+            "identical to the single harmonic oscillator. The coupling kc "
+            "only affects the antisymmetric mode: omega_a = sqrt((k+2*kc)/m)."
+        ),
+        strength=0.95,
+        mapping={
+            "k [spring constant]": "k [spring constant]",
+            "m [mass]": "m [mass]",
+            "omega_s = sqrt(k/m)": "omega_0 = sqrt(k/m)",
+        },
+    ))
+
+    # Diffusive LV <-> Heat equation (diffusion timescale)
+    analogies.append(Analogy(
+        domain_a="diffusive_lv",
+        domain_b="heat_equation",
+        analogy_type="dimensional",
+        description=(
+            "Both have diffusive transport with timescale ~ L^2/D. "
+            "Heat equation: pure diffusion u_t = D*u_xx. "
+            "Diffusive LV: diffusion + reaction u_t = D_u*u_xx + f(u,v). "
+            "The diffusion operator is identical in both systems."
+        ),
+        strength=0.8,
+        mapping={
+            "D_u [prey diffusion]": "D [thermal diffusion]",
+            "L^2/D_u [diffusive timescale]": "L^2/D [diffusive timescale]",
+            "u(x) [prey density]": "u(x) [temperature]",
         },
     ))
 
@@ -945,6 +1090,45 @@ def detect_topological_analogies(
             "energy [conserved]": "LV Hamiltonian [conserved]",
             "r-v_r phase plane": "prey-predator phase plane",
             "perihelion/aphelion": "population extrema",
+        },
+    ))
+
+    # Coupled oscillators <-> Kepler (quasi-periodic closed orbits)
+    analogies.append(Analogy(
+        domain_a="coupled_oscillators",
+        domain_b="kepler",
+        analogy_type="topological",
+        description=(
+            "Both are integrable systems with quasi-periodic trajectories. "
+            "Coupled oscillators: two incommensurate normal mode frequencies "
+            "create Lissajous figures in configuration space. "
+            "Kepler: closed elliptical orbits with precession for perturbations. "
+            "Both fill tori in phase space."
+        ),
+        strength=0.6,
+        mapping={
+            "omega_s, omega_a [two frequencies]": "orbital freq, apsidal freq",
+            "Lissajous figures": "elliptical orbits",
+            "energy surface (torus)": "energy surface (torus)",
+        },
+    ))
+
+    # Diffusive LV <-> Navier-Stokes (nonlinear PDEs with spatial structure)
+    analogies.append(Analogy(
+        domain_a="diffusive_lv",
+        domain_b="navier_stokes",
+        analogy_type="topological",
+        description=(
+            "Both are nonlinear PDEs that produce emergent spatial structure "
+            "from simple initial conditions. Diffusive LV: traveling waves and "
+            "spatial patterns from uniform + perturbation. NS: vortex formation "
+            "and turbulent cascades from smooth initial flow."
+        ),
+        strength=0.6,
+        mapping={
+            "traveling waves": "vortex structures",
+            "reaction-diffusion patterns": "turbulent eddies",
+            "D_u, D_v [diffusion]": "nu [viscosity]",
         },
     ))
 
