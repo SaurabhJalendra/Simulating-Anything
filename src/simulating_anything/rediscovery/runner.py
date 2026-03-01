@@ -45,6 +45,10 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.duffing import run_duffing_rediscovery
     from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
+    from simulating_anything.rediscovery.quantum_oscillator import (
+        run_quantum_oscillator_rediscovery,
+    )
+    from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
     from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
     from simulating_anything.rediscovery.harmonic_oscillator import (
         run_harmonic_oscillator_rediscovery,
@@ -139,6 +143,16 @@ def run_all_rediscoveries(
         "duffing": {
             "label": "Duffing Oscillator Chaos & ODE",
             "fn": run_duffing_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "quantum_oscillator": {
+            "label": "Quantum Harmonic Oscillator Energy Spectrum",
+            "fn": run_quantum_oscillator_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "schwarzschild": {
+            "label": "Schwarzschild Geodesic ISCO & Precession",
+            "fn": run_schwarzschild_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

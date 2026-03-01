@@ -25,6 +25,8 @@ class Domain(str, Enum):
     HEAT_EQUATION_1D = "heat_equation_1d"
     LOGISTIC_MAP = "logistic_map"
     DUFFING = "duffing"
+    SCHWARZSCHILD = "schwarzschild"
+    QUANTUM_OSCILLATOR = "quantum_oscillator"
 
 
 class SimulationBackend(str, Enum):

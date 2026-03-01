@@ -133,6 +133,23 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.005, "n_steps": 500, "math_class": "Nonlinear ODE",
     },
+    "quantum_oscillator": {
+        "module": "simulating_anything.simulation.quantum_oscillator",
+        "cls": "QuantumHarmonicOscillator",
+        "domain": Domain.QUANTUM_OSCILLATOR,
+        "params": {
+            "m": 1.0, "omega": 1.0, "hbar": 1.0,
+            "N": 128.0, "x_max": 10.0, "x_0": 2.0, "p_0": 0.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Quantum PDE",
+    },
+    "schwarzschild": {
+        "module": "simulating_anything.simulation.schwarzschild",
+        "cls": "SchwarzschildGeodesic",
+        "domain": Domain.SCHWARZSCHILD,
+        "params": {"M": 1.0, "L": 4.0, "r_0": 10.0, "pr_0": 0.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "GR Geodesic",
+    },
 }
 
 
