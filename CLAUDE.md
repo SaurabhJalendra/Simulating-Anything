@@ -446,6 +446,22 @@ src/simulating_anything/
     chemostat.py           # Chemostat microbial growth (Monod kinetics)
     fhn_spatial.py         # FHN reaction-diffusion PDE (spiral waves)
     wilberforce.py         # Wilberforce pendulum (coupled beats)
+    standard_map.py        # Standard (Chirikov) map (KAM theory)
+    hodgkin_huxley.py      # Hodgkin-Huxley neuron (biophysical ion channels)
+    rayleigh_benard.py     # Rayleigh-Benard convection (rolls, Ra_c)
+    eco_epidemic.py        # Eco-epidemic predator-prey-disease
+    hindmarsh_rose.py      # Hindmarsh-Rose bursting neuron
+    magnetic_pendulum.py   # Magnetic pendulum (fractal basins)
+    competitive_lv.py      # Competitive exclusion (N-species LV)
+    vicsek.py              # Vicsek flocking model (active matter)
+    coupled_lorenz.py      # Coupled Lorenz synchronization
+    bz_spiral.py           # BZ 2D spiral waves (Oregonator PDE)
+    swinging_atwood.py     # Swinging Atwood machine (Lagrangian chaos)
+    allee_predator_prey.py # Allee effect predator-prey (bistable)
+    mackey_glass.py        # Mackey-Glass DDE (delay chaos)
+    bouncing_ball.py       # Bouncing ball impact map (period-doubling)
+    wilson_cowan.py        # Wilson-Cowan E-I neural populations
+    cable_equation.py      # Cable equation (passive neurite PDE)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -460,7 +476,7 @@ src/simulating_anything/
     ablation.py            # Single-factor ablation studies
     pipeline_ablation.py   # Pipeline component ablation (sampling, method, data)
     sensitivity.py         # Noise/data/range sensitivity analysis
-    cross_domain.py        # Cross-domain analogy engine (98 isomorphisms)
+    cross_domain.py        # Cross-domain analogy engine (141 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
     domain_statistics.py   # Runtime benchmarks for all domains
     error_analysis.py      # Bootstrap R², coefficient uncertainty
@@ -510,7 +526,23 @@ src/simulating_anything/
     chemostat.py           # Washout bifurcation, Monod kinetics
     fhn_spatial.py         # Spiral waves, pattern formation
     wilberforce.py         # Beat phenomena, energy exchange
-    runner.py              # Unified runner for all 43 domains
+    standard_map.py        # Chirikov map chaos, KAM threshold
+    hodgkin_huxley.py      # Ion channel dynamics, f-I curve
+    rayleigh_benard.py     # Convection rolls, Ra_c threshold
+    eco_epidemic.py        # Disease in predator-prey system
+    hindmarsh_rose.py      # Burst dynamics, spike analysis
+    magnetic_pendulum.py   # Fractal basin boundaries
+    competitive_lv.py      # Competitive exclusion principle
+    vicsek.py              # Flocking order parameter transition
+    coupled_lorenz.py      # Sync threshold, conditional Lyapunov
+    bz_spiral.py           # Spiral wave tip tracking
+    swinging_atwood.py     # Lagrangian energy conservation
+    allee_predator_prey.py # Bistability, extinction threshold
+    mackey_glass.py        # DDE period-doubling, delay chaos
+    bouncing_ball.py       # Impact map, Feigenbaum cascade
+    wilson_cowan.py        # E-I Hopf bifurcation, nullclines
+    cable_equation.py      # Space constant lambda, tau_m decay
+    runner.py              # Unified runner for all 59 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -532,7 +564,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 1142 tests across 58 files
+tests/unit/                # 1521 tests across 62+ files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -585,6 +617,22 @@ tests/unit/                # 1142 tests across 58 files
   test_chemostat.py        # 24 tests — Monod kinetics, washout
   test_fhn_spatial.py      # 21 tests — FHN reaction-diffusion
   test_wilberforce.py      # 19 tests — Coupled torsional-translational
+  test_standard_map.py     # 26 tests — KAM theory, chaos transition
+  test_hodgkin_huxley.py   # 22 tests — Ion channels, action potential
+  test_rayleigh_benard.py  # 20 tests — Convection, Ra_c threshold
+  test_eco_epidemic.py     # 24 tests — Eco-epidemic dynamics
+  test_hindmarsh_rose.py   # 24 tests — Bursting neuron model
+  test_magnetic_pendulum.py # 18 tests — Fractal basin boundaries
+  test_competitive_lv.py   # 28 tests — Competitive exclusion
+  test_vicsek.py           # 26 tests — Flocking, order parameter
+  test_coupled_lorenz.py   # 25 tests — Chaos synchronization
+  test_bz_spiral.py        # 18 tests — BZ spiral waves
+  test_swinging_atwood.py  # 27 tests — Lagrangian chaos
+  test_allee_predator_prey.py # 25 tests — Allee bistability
+  test_mackey_glass.py     # 25 tests — DDE chaos
+  test_bouncing_ball.py    # 20 tests — Impact map chaos
+  test_wilson_cowan.py     # 25 tests — E-I neural oscillation
+  test_cable_equation.py   # 18 tests — Passive neurite PDE
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
