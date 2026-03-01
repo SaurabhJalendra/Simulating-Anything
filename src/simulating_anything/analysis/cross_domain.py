@@ -1004,6 +1004,70 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="cahn_hilliard",
+            math_type="pde",  # 4th-order phase field PDE
+            state_dim=1,  # u(x,y) concentration field
+            n_parameters=3,  # M, epsilon, N
+            conserved_quantities=["total_mass"],
+            symmetries=["translation", "rotation", "u_symmetry"],
+            phase_portrait_type="fixed_point",  # Phase separation to +-1
+            characteristic_timescale="L^4/(M*epsilon^2)",
+            discovered_equations=[
+                "du/dt = M*nabla^2(u^3-u-eps^2*nabla^2 u)",
+                "L(t) ~ t^(1/3) coarsening law",
+                "E = integral(f(u)+eps^2/2*|grad u|^2) decreases",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="delayed_predator_prey",
+            math_type="ode_nonlinear",  # DDE predator-prey
+            state_dim=2,  # [N, P] with delay buffer
+            n_parameters=7,  # r, K, a, h, e, m, tau
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",  # Delay-induced oscillation
+            characteristic_timescale="1/r, tau",
+            discovered_equations=[
+                "dN/dt = r*N*(1-N/K) - a*N*P/(1+h*a*N)",
+                "dP/dt = e*a*N(t-tau)*P/(1+h*a*N(t-tau)) - m*P",
+                "Hopf bifurcation at critical tau_c",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="duffing_van_der_pol",
+            math_type="chaotic",  # Hybrid nonlinear oscillator
+            state_dim=3,  # [x, y, t]
+            n_parameters=5,  # mu, alpha, beta, F, omega
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",  # Can be limit cycle or chaotic
+            characteristic_timescale="2*pi/omega",
+            discovered_equations=[
+                "x'' + mu*(x^2-1)*x' + alpha*x + beta*x^3 = F*cos(omega*t)",
+                "VdP limit: beta=0 gives limit cycle A~2",
+                "Duffing limit: mu=0 gives forced oscillator",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="network_sis",
+            math_type="ode_nonlinear",  # Mean-field network epidemic
+            state_dim=50,  # [p_1, ..., p_N] infection probabilities
+            n_parameters=4,  # beta, gamma, N, mean_degree
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="fixed_point",  # Endemic or disease-free
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dp_i/dt = -gamma*p_i + beta*(1-p_i)*sum(A_ij*p_j)",
+                "threshold: beta_c/gamma = 1/lambda_max(A)",
+                "ER: beta_c ~ gamma/<k>",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -2408,6 +2472,97 @@ def detect_structural_analogies(
         },
     ))
 
+    # Cahn-Hilliard <-> Brusselator-Diffusion (pattern formation PDEs)
+    analogies.append(Analogy(
+        domain_a="cahn_hilliard",
+        domain_b="brusselator_diffusion",
+        analogy_type="structural",
+        description=(
+            "Both are reaction-diffusion PDEs producing spatial patterns. "
+            "CH uses double-well potential for spinodal decomposition; "
+            "Brusselator-diffusion uses Turing instability. Both produce "
+            "characteristic spatial wavelengths."
+        ),
+        strength=0.75,
+        mapping={
+            "spinodal decomposition": "Turing instability",
+            "u^3-u nonlinearity": "autocatalytic nonlinearity",
+            "epsilon (interface width)": "sqrt(D) (pattern scale)",
+        },
+    ))
+
+    # Delayed Pred-Prey <-> Rosenzweig-MacArthur (functional response)
+    analogies.append(Analogy(
+        domain_a="delayed_predator_prey",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Both use Holling Type II functional response a*N/(1+h*a*N) "
+            "for predation. Delayed version adds maturation delay tau; "
+            "RM is the tau=0 limit. Same equilibrium structure."
+        ),
+        strength=0.9,
+        mapping={
+            "a*N(t-tau)/(1+h*a*N(t-tau))": "a*N/(1+h*a*N)",
+            "delay tau": "no delay",
+            "Hopf at tau_c": "Hopf at K_c (paradox of enrichment)",
+        },
+    ))
+
+    # Duffing-VdP <-> Van der Pol (self-excitation)
+    analogies.append(Analogy(
+        domain_a="duffing_van_der_pol",
+        domain_b="van_der_pol",
+        analogy_type="structural",
+        description=(
+            "Both have mu*(x^2-1)*x' self-excitation term. DVdP adds "
+            "Duffing cubic restoring force beta*x^3 and external forcing "
+            "F*cos(omega*t). beta=0, F=0 recovers pure VdP."
+        ),
+        strength=0.9,
+        mapping={
+            "mu*(x^2-1)*x'": "mu*(x^2-1)*x'",
+            "alpha*x+beta*x^3": "x",
+            "F*cos(omega*t)": "0",
+        },
+    ))
+
+    # Duffing-VdP <-> Duffing (nonlinear restoring force)
+    analogies.append(Analogy(
+        domain_a="duffing_van_der_pol",
+        domain_b="duffing",
+        analogy_type="structural",
+        description=(
+            "Both have Duffing cubic restoring force alpha*x+beta*x^3. "
+            "DVdP adds VdP self-excitation; Duffing has linear damping. "
+            "mu=0 in DVdP recovers forced Duffing."
+        ),
+        strength=0.85,
+        mapping={
+            "mu*(x^2-1)*x'": "delta*x'",
+            "alpha*x+beta*x^3": "alpha*x+beta*x^3",
+            "VdP+Duffing hybrid": "pure Duffing",
+        },
+    ))
+
+    # Network SIS <-> SIR (epidemic models)
+    analogies.append(Analogy(
+        domain_a="network_sis",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both are compartmental epidemic models with infection rate "
+            "beta and recovery rate gamma. SIS allows reinfection (no R); "
+            "SIR has permanent immunity. Both have epidemic threshold R0."
+        ),
+        strength=0.85,
+        mapping={
+            "beta*(1-p_i)*sum(A_ij*p_j)": "beta*S*I",
+            "1/lambda_max(A)": "gamma/beta",
+            "endemic equilibrium": "final size R_inf",
+        },
+    ))
+
     return analogies
 
 
@@ -2880,6 +3035,41 @@ def detect_dimensional_analogies(
         mapping={
             "1/b [dissipation time]": "1/sigma [damping time]",
             "b_c ~ 0.208": "rho_c ~ 24.74",
+        },
+    ))
+
+    # Dimensional: Delayed Pred-Prey <-> Mackey-Glass (delay timescale)
+    analogies.append(Analogy(
+        domain_a="delayed_predator_prey",
+        domain_b="mackey_glass",
+        analogy_type="dimensional",
+        description=(
+            "Both are DDEs where the delay tau is the key bifurcation parameter. "
+            "Increasing tau destabilizes equilibrium in both, causing oscillation "
+            "and eventually chaos. Period scales with tau."
+        ),
+        strength=0.85,
+        mapping={
+            "tau [maturation delay]": "tau [feedback delay]",
+            "tau_c [Hopf threshold]": "tau_c [Hopf threshold]",
+            "1/r [growth time]": "1/gamma [decay time]",
+        },
+    ))
+
+    # Dimensional: Network SIS <-> SIR (epidemic timescale)
+    analogies.append(Analogy(
+        domain_a="network_sis",
+        domain_b="sir_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Both have characteristic timescale 1/gamma (recovery time) "
+            "and epidemic threshold R0 = beta/gamma. Network SIS adds "
+            "graph spectral structure: threshold ~ 1/lambda_max."
+        ),
+        strength=0.85,
+        mapping={
+            "1/gamma [recovery]": "1/gamma [recovery]",
+            "1/lambda_max [network threshold]": "gamma/beta [R0 threshold]",
         },
     ))
 
@@ -3867,6 +4057,78 @@ def detect_topological_analogies(
             "heteroclinic cycle": "food chain oscillation",
             "cyclic dominance": "trophic cascade",
             "biodiversity index H": "population stability",
+        },
+    ))
+
+    # Cahn-Hilliard <-> Gray-Scott (pattern formation)
+    analogies.append(Analogy(
+        domain_a="cahn_hilliard",
+        domain_b="gray_scott",
+        analogy_type="topological",
+        description=(
+            "Both produce spatial patterns from initially uniform states. "
+            "CH has spinodal decomposition (coarsening); GS has Turing "
+            "patterns (spots, stripes). Both have characteristic wavelengths."
+        ),
+        strength=0.7,
+        mapping={
+            "spinodal instability": "Turing instability",
+            "L(t)~t^(1/3) coarsening": "wavelength ~ sqrt(D/k)",
+            "phase-separated domains": "spots/stripes",
+        },
+    ))
+
+    # Duffing-VdP <-> Driven Pendulum (forced chaotic oscillators)
+    analogies.append(Analogy(
+        domain_a="duffing_van_der_pol",
+        domain_b="driven_pendulum",
+        analogy_type="topological",
+        description=(
+            "Both are periodically forced nonlinear oscillators showing "
+            "period-doubling cascade to chaos. DVdP has cubic + VdP "
+            "nonlinearity; driven pendulum has sinusoidal restoring force."
+        ),
+        strength=0.8,
+        mapping={
+            "Poincare section": "Poincare section",
+            "F*cos(omega*t)": "F_d*cos(omega_d*t)",
+            "period-doubling": "period-doubling",
+        },
+    ))
+
+    # Delayed Pred-Prey <-> Lotka-Volterra (predator-prey oscillation)
+    analogies.append(Analogy(
+        domain_a="delayed_predator_prey",
+        domain_b="lotka_volterra",
+        analogy_type="topological",
+        description=(
+            "Both are predator-prey systems with oscillatory dynamics. "
+            "Standard LV has neutral orbits; delayed version has "
+            "delay-induced limit cycles from Hopf bifurcation."
+        ),
+        strength=0.8,
+        mapping={
+            "delay-induced limit cycle": "neutral center orbits",
+            "Hopf bifurcation at tau_c": "center manifold",
+            "N*,P* equilibrium": "gamma/delta, alpha/beta",
+        },
+    ))
+
+    # Network SIS <-> Kuramoto (threshold/phase transition on network)
+    analogies.append(Analogy(
+        domain_a="network_sis",
+        domain_b="kuramoto",
+        analogy_type="topological",
+        description=(
+            "Both exhibit phase transitions on networks. SIS has epidemic "
+            "threshold beta_c; Kuramoto has synchronization threshold K_c. "
+            "Both have order parameter (prevalence/r) that jumps at threshold."
+        ),
+        strength=0.75,
+        mapping={
+            "prevalence (fraction infected)": "order parameter r",
+            "beta_c/gamma": "K_c",
+            "endemic state": "synchronized state",
         },
     ))
 

@@ -72,6 +72,10 @@ class Domain(str, Enum):
     SINE_GORDON = "sine_gordon"
     IKEDA_MAP = "ikeda_map"
     THOMAS = "thomas"
+    CAHN_HILLIARD = "cahn_hilliard"
+    DELAYED_PREDATOR_PREY = "delayed_predator_prey"
+    NETWORK_SIS = "network_sis"
+    DUFFING_VAN_DER_POL = "duffing_van_der_pol"
 
 
 class SimulationBackend(str, Enum):
