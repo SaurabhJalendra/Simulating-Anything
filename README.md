@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-1142%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-1242%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-43-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-47-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **43 domains** spanning **29 mathematical classes**.
+simulation data across **47 domains** spanning **31 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 98 mathematical isomorphisms detected across 43 domains
+**Cross-domain analysis:** 111 mathematical isomorphisms detected across 47 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -73,6 +73,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #41: Chemostat** -- microbial growth with Monod kinetics, washout bifurcation D_c, dilution sweeps.
 **Domain #42: FHN Spatial** -- FitzHugh-Nagumo reaction-diffusion PDE, spiral waves, spectral FFT solver.
 **Domain #43: Wilberforce pendulum** -- coupled translational-torsional oscillator, beat phenomena, energy exchange.
+**Domain #44: Standard Map** -- Chirikov area-preserving map, KAM tori breakup, K_c~0.9716, Lyapunov exponent.
+**Domain #45: Hodgkin-Huxley** -- full 4-variable neuron model, ion channels, f-I curve, action potentials.
+**Domain #46: Rayleigh-Benard** -- Boussinesq convection PDE, Ra_c~657.5, Nusselt number, convection rolls.
+**Domain #47: Eco-Epidemic** -- predator-prey with disease, Holling Type II, biological control, R0 threshold.
 
 ---
 
