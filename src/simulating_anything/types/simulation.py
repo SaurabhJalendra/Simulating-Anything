@@ -176,6 +176,10 @@ class Domain(str, Enum):
     IVLEV_PREDATOR_PREY = "ivlev_predator_prey"
     DIFFUSION_2D = "diffusion_2d"
     SIRS = "sirs"
+    FHN_PULSE = "fhn_pulse"
+    SEIRS = "seirs"
+    RATIO_DEPENDENT = "ratio_dependent"
+    ADVECTION_1D = "advection_1d"
 
 
 class SimulationBackend(str, Enum):

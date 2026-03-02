@@ -199,6 +199,10 @@ from simulating_anything.rediscovery.theta_neuron import run_theta_neuron_redisc
 from simulating_anything.rediscovery.ivlev_predator_prey import run_ivlev_predator_prey_rediscovery
 from simulating_anything.rediscovery.diffusion_2d import run_diffusion_2d_rediscovery
 from simulating_anything.rediscovery.sirs import run_sirs_rediscovery
+from simulating_anything.rediscovery.fhn_pulse import run_fhn_pulse_rediscovery
+from simulating_anything.rediscovery.seirs import run_seirs_rediscovery
+from simulating_anything.rediscovery.ratio_dependent import run_ratio_dependent_rediscovery
+from simulating_anything.rediscovery.advection_1d import run_advection_1d_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -368,4 +372,8 @@ __all__ = [
     "run_ivlev_predator_prey_rediscovery",
     "run_diffusion_2d_rediscovery",
     "run_sirs_rediscovery",
+    "run_fhn_pulse_rediscovery",
+    "run_seirs_rediscovery",
+    "run_ratio_dependent_rediscovery",
+    "run_advection_1d_rediscovery",
 ]

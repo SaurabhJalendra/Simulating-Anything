@@ -1407,6 +1407,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"beta": 0.5, "gamma": 0.15, "xi": 0.05, "N0": 1000.0},
         "dt": 0.1, "n_steps": 500, "math_class": "Epidemiological ODE",
     },
+    "fhn_pulse": {
+        "module": "simulating_anything.simulation.fhn_pulse",
+        "cls": "FHNPulseSimulation",
+        "domain": Domain.FHN_PULSE,
+        "params": {"D_v": 1.0, "D_w": 0.0, "a": 0.7, "b": 0.8, "eps": 0.08},
+        "dt": 0.05, "n_steps": 500, "math_class": "Reaction-Diffusion PDE",
+    },
+    "seirs": {
+        "module": "simulating_anything.simulation.seirs",
+        "cls": "SEIRSSimulation",
+        "domain": Domain.SEIRS,
+        "params": {"beta": 0.5, "sigma": 0.2, "gamma": 0.1, "xi": 0.05, "N0": 1000.0},
+        "dt": 0.1, "n_steps": 500, "math_class": "Epidemiological ODE",
+    },
+    "ratio_dependent": {
+        "module": "simulating_anything.simulation.ratio_dependent",
+        "cls": "RatioDependentSimulation",
+        "domain": Domain.RATIO_DEPENDENT,
+        "params": {"r": 1.0, "K": 100.0, "a": 0.5, "b": 1.0, "e": 0.5, "d": 0.2},
+        "dt": 0.01, "n_steps": 500, "math_class": "Predator-Prey ODE",
+    },
+    "advection_1d": {
+        "module": "simulating_anything.simulation.advection_1d",
+        "cls": "Advection1DSimulation",
+        "domain": Domain.ADVECTION_1D,
+        "params": {"c": 1.0, "L": 10.0, "N": 256},
+        "dt": 0.02, "n_steps": 500, "math_class": "Hyperbolic PDE",
+    },
 }
 
 

@@ -2646,6 +2646,67 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="fhn_pulse",
+            math_type="reaction_diffusion_pde",
+            state_dim=512,
+            n_parameters=6,
+            conserved_quantities=[],
+            symmetries=["translational"],
+            phase_portrait_type="traveling_pulse",
+            characteristic_timescale="L/c_pulse",
+            discovered_equations=[
+                "dv/dt = D_v*v_xx + v - v^3/3 - w + I",
+                "dw/dt = D_w*w_xx + eps*(v + a - b*w)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="seirs",
+            math_type="epidemiological_ode",
+            state_dim=4,
+            n_parameters=4,
+            conserved_quantities=["S+E+I+R=N"],
+            symmetries=[],
+            phase_portrait_type="damped_oscillation",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dS/dt = -beta*S*I/N + xi*R",
+                "dE/dt = beta*S*I/N - sigma*E",
+                "dI/dt = sigma*E - gamma*I",
+                "dR/dt = gamma*I - xi*R",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="ratio_dependent",
+            math_type="predator_prey_ode",
+            state_dim=2,
+            n_parameters=6,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="stable_node",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN/dt = r*N*(1-N/K) - a*N*P/(N+b*P)",
+                "dP/dt = e*a*N*P/(N+b*P) - d*P",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="advection_1d",
+            math_type="hyperbolic_pde",
+            state_dim=256,
+            n_parameters=2,
+            conserved_quantities=["total_mass"],
+            symmetries=["translational"],
+            phase_portrait_type="traveling_wave",
+            characteristic_timescale="L/c",
+            discovered_equations=[
+                "du/dt + c*du/dx = 0",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -6687,6 +6748,98 @@ def detect_structural_analogies(
         },
     ))
 
+    # --- Batch #168-171 structural analogies ---
+    analogies.append(Analogy(
+        domain_a="fhn_pulse",
+        domain_b="fhn_spatial",
+        analogy_type="structural",
+        description=(
+            "Both are FHN reaction-diffusion PDEs producing spatiotemporal"
+            " patterns -- pulses vs spiral waves in different dimensionality."
+        ),
+        strength=0.94,
+        mapping={
+            "cubic nullcline": "cubic nullcline",
+            "diffusive coupling": "diffusive coupling",
+            "excitable medium": "excitable medium",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="fhn_pulse",
+        domain_b="oregonator_1d",
+        analogy_type="structural",
+        description=(
+            "Both model 1D traveling pulse/wave propagation in excitable"
+            " media -- FHN neural vs BZ chemical pulses."
+        ),
+        strength=0.88,
+        mapping={
+            "excitable pulse": "excitable pulse",
+            "diffusion-driven": "diffusion-driven",
+            "pulse speed": "pulse speed",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="seirs",
+        domain_b="sirs",
+        analogy_type="structural",
+        description=(
+            "SEIRS extends SIRS with an exposed (latent) class -- both have"
+            " waning immunity and endemic oscillations."
+        ),
+        strength=0.95,
+        mapping={
+            "waning immunity xi": "waning immunity xi",
+            "bilinear incidence": "bilinear incidence",
+            "endemic equilibrium": "endemic equilibrium",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="seirs",
+        domain_b="seir",
+        analogy_type="structural",
+        description=(
+            "SEIRS extends SEIR with waning immunity -- both have exposed"
+            " class and latent period dynamics."
+        ),
+        strength=0.93,
+        mapping={
+            "exposed class": "exposed class",
+            "latent period": "latent period",
+            "bilinear incidence": "bilinear incidence",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="ratio_dependent",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Both are predator-prey with saturating response -- ratio-dependent"
+            " (Arditi-Ginzburg) vs prey-dependent (Holling II)."
+        ),
+        strength=0.87,
+        mapping={
+            "saturating response": "saturating response",
+            "logistic prey": "logistic prey",
+            "no paradox": "paradox of enrichment",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="advection_1d",
+        domain_b="shallow_water",
+        analogy_type="structural",
+        description=(
+            "Both are hyperbolic PDEs with wave propagation -- linear advection"
+            " is the simplest case of the shallow water characteristic structure."
+        ),
+        strength=0.82,
+        mapping={
+            "wave speed": "wave speed",
+            "CFL condition": "CFL condition",
+            "upwind scheme": "Riemann solver",
+        },
+    ))
+
     return analogies
 
 
@@ -8532,6 +8685,67 @@ def detect_dimensional_analogies(
             "a [max predation]": "a [attack rate]",
             "b [capture efficiency]": "b [handling time]",
             "d [mortality]": "d [mortality]",
+        },
+    ))
+
+    # --- Batch #168-171 dimensional analogies ---
+    analogies.append(Analogy(
+        domain_a="fhn_pulse",
+        domain_b="cable_equation",
+        analogy_type="dimensional",
+        description=(
+            "Both have diffusion-driven spatial dynamics with characteristic"
+            " length scales -- pulse width vs space constant lambda."
+        ),
+        strength=0.80,
+        mapping={
+            "D_v [diffusion]": "D [diffusion]",
+            "eps [timescale ratio]": "tau_m [membrane time]",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="seirs",
+        domain_b="sird",
+        analogy_type="dimensional",
+        description=(
+            "Both extend basic SIR with additional compartments -- SEIRS adds"
+            " exposed+waning, SIRD adds death. Same R0 = beta/gamma scaling."
+        ),
+        strength=0.85,
+        mapping={
+            "beta [transmission]": "beta [transmission]",
+            "gamma [recovery]": "gamma [recovery]",
+            "R0 = beta/gamma": "R0 = beta/(gamma+mu)",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="ratio_dependent",
+        domain_b="beddington_deangelis",
+        analogy_type="dimensional",
+        description=(
+            "Both modify the classical Lotka-Volterra functional response --"
+            " ratio-dependent uses N/(N+bP), BD uses N/(1+aN+bP)."
+        ),
+        strength=0.86,
+        mapping={
+            "a [max predation]": "a [search rate]",
+            "b [ratio param]": "b [mutual interference]",
+            "e [conversion]": "e [conversion]",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="advection_1d",
+        domain_b="heat_equation_1d",
+        analogy_type="dimensional",
+        description=(
+            "Both are fundamental 1D linear PDEs -- advection (hyperbolic,"
+            " wave propagation) vs diffusion (parabolic, smoothing)."
+        ),
+        strength=0.78,
+        mapping={
+            "c [wave speed]": "D [diffusion]",
+            "L [domain]": "L [domain]",
+            "N [grid points]": "N [grid points]",
         },
     ))
 
@@ -11467,6 +11681,83 @@ def detect_topological_analogies(
             "coexistence spiral": "coexistence spiral",
             "Hopf bifurcation": "Hopf bifurcation",
             "paradox of enrichment": "paradox of enrichment",
+        },
+    ))
+
+    # --- Batch #168-171 topological analogies ---
+    analogies.append(Analogy(
+        domain_a="fhn_pulse",
+        domain_b="sine_gordon",
+        analogy_type="topological",
+        description=(
+            "Both support localized traveling solutions in 1D -- FHN pulses"
+            " (excitable) vs sine-Gordon kinks (topological solitons)."
+        ),
+        strength=0.79,
+        mapping={
+            "traveling pulse": "traveling kink",
+            "pulse speed c": "kink velocity",
+            "excitable medium": "topological field",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="fhn_pulse",
+        domain_b="gray_scott_1d",
+        analogy_type="topological",
+        description=(
+            "Both exhibit 1D pulse dynamics in reaction-diffusion systems --"
+            " FHN pulses vs Gray-Scott self-replicating pulses."
+        ),
+        strength=0.83,
+        mapping={
+            "traveling pulse": "self-replicating pulse",
+            "diffusion-driven": "diffusion-driven",
+            "excitability threshold": "feed/kill threshold",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="seirs",
+        domain_b="sir_vaccination",
+        analogy_type="topological",
+        description=(
+            "Both extend SIR with mechanisms that modulate herd immunity --"
+            " SEIRS via waning, vaccination via prophylaxis."
+        ),
+        strength=0.84,
+        mapping={
+            "endemic oscillation": "endemic equilibrium",
+            "waning immunity": "vaccination rate",
+            "R0 threshold": "herd immunity threshold",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="ratio_dependent",
+        domain_b="group_defense",
+        analogy_type="topological",
+        description=(
+            "Both modify the functional response to prevent paradox of"
+            " enrichment -- ratio-dependence vs group defense (Andrews)."
+        ),
+        strength=0.81,
+        mapping={
+            "stable coexistence": "stable coexistence",
+            "no paradox": "inhibitory defense",
+            "saturating response": "humped response",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="advection_1d",
+        domain_b="damped_wave",
+        analogy_type="topological",
+        description=(
+            "Both involve wave-like 1D dynamics -- pure translation (advection)"
+            " vs damped oscillatory propagation (wave equation)."
+        ),
+        strength=0.77,
+        mapping={
+            "traveling wave": "propagating mode",
+            "wave speed c": "wave speed c",
+            "no dispersion": "dispersive decay",
         },
     ))
 

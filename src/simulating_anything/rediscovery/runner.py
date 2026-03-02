@@ -299,6 +299,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.ivlev_predator_prey import run_ivlev_predator_prey_rediscovery
     from simulating_anything.rediscovery.diffusion_2d import run_diffusion_2d_rediscovery
     from simulating_anything.rediscovery.sirs import run_sirs_rediscovery
+    from simulating_anything.rediscovery.fhn_pulse import run_fhn_pulse_rediscovery
+    from simulating_anything.rediscovery.seirs import run_seirs_rediscovery
+    from simulating_anything.rediscovery.ratio_dependent import run_ratio_dependent_rediscovery
+    from simulating_anything.rediscovery.advection_1d import run_advection_1d_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1133,6 +1137,26 @@ def run_all_rediscoveries(
         "sirs": {
             "label": "SIRS Epidemic",
             "fn": run_sirs_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "fhn_pulse": {
+            "label": "FHN Pulse",
+            "fn": run_fhn_pulse_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "seirs": {
+            "label": "SEIRS Epidemic",
+            "fn": run_seirs_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "ratio_dependent": {
+            "label": "Ratio-Dependent Pred-Prey",
+            "fn": run_ratio_dependent_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "advection_1d": {
+            "label": "Advection 1D",
+            "fn": run_advection_1d_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
