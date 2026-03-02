@@ -104,6 +104,10 @@ class Domain(str, Enum):
     FHN_LATTICE = "fhn_lattice"
     FOUR_SPECIES_LV = "four_species_lv"
     CHEN = "chen"
+    AIZAWA = "aizawa"
+    HALVORSEN = "halvorsen"
+    BURKE_SHAW = "burke_shaw"
+    NOSE_HOOVER = "nose_hoover"
 
 
 class SimulationBackend(str, Enum):
