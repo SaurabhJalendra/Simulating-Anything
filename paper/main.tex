@@ -55,8 +55,8 @@ extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations in all 14 domains, achieving $R^2 \geq 0.999$ in 11 of
 14 cases, with a mean $R^2$ of 0.970. Our cross-domain analogy engine
-detects 325 structural, dimensional, and topological isomorphisms across
-119 domains. The key architectural insight is that only the simulation layer is
+detects 339 structural, dimensional, and topological isomorphisms across
+123 domains. The key architectural insight is that only the simulation layer is
 domain-specific ($\sim$50--200 lines per domain); everything else---world
 model, exploration, analysis, and reporting---operates on generic tensors,
 enabling universal scientific discovery.
@@ -544,13 +544,13 @@ would enable general-relativistic discoveries with no pipeline changes.
 \paragraph{Scaling and extensibility.}
 Adding a new domain requires only implementing a \texttt{SimulationEnvironment}
 subclass ($\sim$50--200 lines). All other pipeline stages operate unchanged.
-We have verified this with 119 domains across 73 mathematical classes.
+We have verified this with 123 domains across 76 mathematical classes.
 To concretely demonstrate extensibility, we implemented a Duffing
 oscillator ($x'' + \delta x' + \alpha x + \beta x^3 = \gamma\cos\omega t$)
 in 54 lines of Python, including RK4 integration, energy computation, and
 trajectory collection. All pipeline stages (world model, exploration,
 analysis) work immediately on this new domain with zero additional code.
-The total simulation code across all 119 domains is $\sim$7,000 lines,
+The total simulation code across all 123 domains is $\sim$7,000 lines,
 while the domain-agnostic infrastructure (world model, exploration,
 analysis, agents) spans $\sim$5,000 lines---a ratio still near 1:1,
 even as the number of domains has grown to 35.
@@ -684,7 +684,10 @@ solar wind-magnetosphere dynamics (WINDMI), and chaotic financial systems
 atmospheric Hadley circulation (Hadley), and ENSO climate dynamics
 (Vallis), generalized Lorenz T-system (Tigan), multi-prey ecology
 (predator-two-prey), autocatalytic chemistry (autocatalator), and latent-period
-epidemiology (SEIR)---with zero changes to the discovery infrastructure.
+epidemiology (SEIR), forced cubic chaos (Ueda), discrete cubic maps
+(cubic map), zombie outbreak epidemiology (zombie-SIR), and classical
+particle mechanics (elastic collision chain)---with zero changes to the
+discovery infrastructure.
 
 % ============================================================================
 % REFERENCES
