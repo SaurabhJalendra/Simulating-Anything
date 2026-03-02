@@ -490,6 +490,50 @@ src/simulating_anything/
     rossler_hyperchaos.py  # 4D Rossler hyperchaos (two positive LE)
     harvested_population.py # Logistic + harvesting (MSY saddle-node)
     fhn_ring.py            # FHN ring network (traveling neural waves)
+    langford.py            # Langford Hopf-Hopf bifurcation
+    laser_rate.py          # Laser rate equations (relaxation oscillation)
+    bazykin.py             # Bazykin predator-prey (enrichment paradox)
+    sir_vaccination.py     # SIR + vaccination (herd immunity threshold)
+    lorenz_stenflo.py      # Lorenz-Stenflo 4D acoustic gravity chaos
+    fhn_lattice.py         # FHN 2D lattice (spiral breakup)
+    four_species_lv.py     # 4-species Lotka-Volterra (competitive exclusion)
+    chen.py                # Chen attractor (dual Lorenz)
+    aizawa.py              # Aizawa torus-to-chaos attractor
+    halvorsen.py           # Halvorsen cyclically symmetric chaos
+    burke_shaw.py          # Burke-Shaw Lorenz variant
+    nose_hoover.py         # Nose-Hoover thermostat dynamics
+    lorenz_haken.py        # Lorenz-Haken laser-matter chaos
+    sakarya.py             # Sakarya hyperjerk attractor
+    dadras.py              # Dadras-Momeni 3D chaos
+    genesio_tesi.py        # Genesio-Tesi jerk circuit
+    lu_chen.py             # Lu-Chen unified chaotic system
+    qi.py                  # Qi 4D hyperchaos
+    windmi.py              # WINDMI magnetosphere chaos
+    finance.py             # Financial chaotic attractor
+    shimizu_morioka.py     # Shimizu-Morioka Lorenz-like
+    newton_leipnik.py      # Newton-Leipnik multistable chaos
+    wang.py                # Wang 3-scroll attractor
+    arneodo.py             # Arneodo spiral chaos
+    rucklidge.py           # Rucklidge double convection
+    liu.py                 # Liu 4D hyperchaos
+    hadley.py              # Hadley atmospheric circulation
+    vallis.py              # Vallis ENSO oscillator
+    tigan.py               # Tigan T-system generalized Lorenz
+    predator_two_prey.py   # 1 predator + 2 prey competition
+    autocatalator.py       # Chemical autocatalytic oscillator
+    seir.py                # SEIR epidemic with exposed class
+    ueda.py                # Ueda forced cubic oscillator
+    cubic_map.py           # 1D cubic map x_{n+1}=rx-x^3
+    zombie_sir.py          # Zombie outbreak SIR epidemic
+    elastic_collision.py   # 1D elastic collision chain
+    tent_map.py            # Piecewise linear chaos, lambda=ln(r)
+    lozi_map.py            # 2D piecewise-linear attractor
+    izhikevich.py          # Efficient spiking neuron (7 patterns)
+    double_well.py         # Bistable potential V=x^4/4-x^2/2
+    tinkerbell_map.py      # 2D complex quadratic map
+    rulkov_map.py          # Discrete spiking neuron (fast-slow)
+    coupled_vdp.py         # Two coupled VdP oscillators (sync)
+    stuart_landau.py       # Hopf normal form (r=sqrt(mu))
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -504,7 +548,7 @@ src/simulating_anything/
     ablation.py            # Single-factor ablation studies
     pipeline_ablation.py   # Pipeline component ablation (sampling, method, data)
     sensitivity.py         # Noise/data/range sensitivity analysis
-    cross_domain.py        # Cross-domain analogy engine (221 isomorphisms)
+    cross_domain.py        # Cross-domain analogy engine (365 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
     domain_statistics.py   # Runtime benchmarks for all domains
     error_analysis.py      # Bootstrap R², coefficient uncertainty
@@ -598,7 +642,51 @@ src/simulating_anything/
     rossler_hyperchaos.py  # Lyapunov spectrum, Kaplan-Yorke dim
     harvested_population.py # MSY verification, bifurcation
     fhn_ring.py            # Sync transition, wave speed
-    runner.py              # Unified runner for all 87 domains
+    langford.py            # Hopf-Hopf bifurcation analysis
+    laser_rate.py          # Relaxation oscillation, Q-switch
+    bazykin.py             # Enrichment paradox, bistability
+    sir_vaccination.py     # Herd immunity threshold
+    lorenz_stenflo.py      # 4D acoustic chaos, Lyapunov
+    fhn_lattice.py         # Spiral breakup, 2D waves
+    four_species_lv.py     # 4-species competitive exclusion
+    chen.py                # Dual Lorenz, SINDy ODE
+    aizawa.py              # Torus-to-chaos transition
+    halvorsen.py           # Cyclic symmetry, Lyapunov
+    burke_shaw.py          # Period-doubling, SINDy
+    nose_hoover.py         # Thermostat energy, Lyapunov
+    lorenz_haken.py        # Laser-matter chaos analysis
+    sakarya.py             # Hyperjerk attractor
+    dadras.py              # 3D chaos Lyapunov spectrum
+    genesio_tesi.py        # Jerk circuit analysis
+    lu_chen.py             # Unified system, parameter sweep
+    qi.py                  # 4D hyperchaos, Lyapunov
+    windmi.py              # Magnetosphere, Lyapunov
+    finance.py             # Financial chaos analysis
+    shimizu_morioka.py     # Lorenz-like, period-doubling
+    newton_leipnik.py      # Multistable chaos
+    wang.py                # 3-scroll attractor
+    arneodo.py             # Spiral chaos, Lyapunov
+    rucklidge.py           # Double convection
+    liu.py                 # 4D hyperchaos
+    hadley.py              # Atmospheric circulation
+    vallis.py              # ENSO oscillation
+    tigan.py               # T-system chaos, Lyapunov
+    predator_two_prey.py   # 1P+2prey dynamics
+    autocatalator.py       # Chemical oscillation
+    seir.py                # SEIR epidemic dynamics
+    ueda.py                # Forced cubic oscillator
+    cubic_map.py           # 1D cubic chaos, bifurcation
+    zombie_sir.py          # Zombie outbreak analysis
+    elastic_collision.py   # Newton's cradle verification
+    tent_map.py            # Piecewise chaos, lambda=ln(r)
+    lozi_map.py            # 2D piecewise attractor
+    izhikevich.py          # 7 firing patterns analysis
+    double_well.py         # Kramers escape, bistability
+    tinkerbell_map.py      # Strange attractor, Lyapunov
+    rulkov_map.py          # Discrete spiking analysis
+    coupled_vdp.py         # Synchronization transition
+    stuart_landau.py       # Hopf normal form verification
+    runner.py              # Unified runner for all 131 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -620,7 +708,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 2525 tests across 91+ files
+tests/unit/                # 4208 tests across 131+ files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -717,6 +805,11 @@ tests/unit/                # 2525 tests across 91+ files
   test_rossler_hyperchaos.py # 30 tests — 4D hyperchaos
   test_harvested_population.py # 28 tests — Resource ODE
   test_fhn_ring.py         # 23 tests — Neural ring network
+  # ... plus 60+ more test files for domains #97-131
+  test_tinkerbell_map.py   # 37 tests — 2D complex quadratic map
+  test_rulkov_map.py       # 32 tests — Discrete spiking neuron
+  test_coupled_vdp.py      # 40 tests — Coupled VdP synchronization
+  test_stuart_landau.py    # 37 tests — Hopf normal form
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered

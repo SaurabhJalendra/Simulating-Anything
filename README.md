@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-4046%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-4208%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-127-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-131-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **127 domains** spanning **77 mathematical classes**.
+simulation data across **131 domains** spanning **79 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 352 mathematical isomorphisms detected across 127 domains
+**Cross-domain analysis:** 365 mathematical isomorphisms detected across 131 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -157,6 +157,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #125: Lozi Map** -- 2D piecewise-linear strange attractor, det(J) = -b.
 **Domain #126: Izhikevich** -- Efficient spiking neuron, 7 firing patterns.
 **Domain #127: Double Well** -- Bistable potential V = x^4/4 - x^2/2, Kramers escape.
+**Domain #128: Tinkerbell Map** -- 2D complex quadratic map, strange attractor.
+**Domain #129: Rulkov Map** -- Discrete spiking neuron, fast-slow dynamics.
+**Domain #130: Coupled VdP** -- Two coupled Van der Pol oscillators, synchronization.
+**Domain #131: Stuart-Landau** -- Hopf normal form, r = sqrt(mu) amplitude scaling.
 
 ---
 
