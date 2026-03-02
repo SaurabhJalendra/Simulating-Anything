@@ -2533,6 +2533,64 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="sei",
+            math_type="epidemiological_ode",
+            state_dim=3,
+            n_parameters=3,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/sigma",
+            discovered_equations=[
+                "dS/dt = -beta*S*I/N",
+                "dE/dt = beta*S*I/N - sigma*E",
+                "dI/dt = sigma*E - mu*I",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="gierer_meinhardt",
+            math_type="reaction_diffusion_pde",
+            state_dim=256,
+            n_parameters=7,
+            conserved_quantities=[],
+            symmetries=["translation"],
+            phase_portrait_type="turing_pattern",
+            characteristic_timescale="1/mu_a",
+            discovered_equations=[
+                "da/dt = rho_a*a^2/h - mu_a*a + D_a*d2a/dx2 + rho_0",
+                "dh/dt = rho_h*a^2 - mu_h*h + D_h*d2h/dx2",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="group_defense",
+            math_type="predator_prey_ode",
+            state_dim=2,
+            n_parameters=7,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="stable_spiral",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN/dt = r*N*(1-N/K) - a*N*P/(1+b*N+c*N^2)",
+                "dP/dt = e*a*N*P/(1+b*N+c*N^2) - d*P",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="logistic_ode",
+            math_type="growth_ode",
+            state_dim=1,
+            n_parameters=3,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/r",
+            discovered_equations=["dN/dt = r*N*(1-N/K)"],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -6357,6 +6415,117 @@ def detect_structural_analogies(
         },
     ))
 
+    # -- Batch #160-163: SEI, Gierer-Meinhardt, Group Defense, Logistic ODE --
+
+    analogies.append(Analogy(
+        domain_a="sei",
+        domain_b="seir",
+        analogy_type="structural",
+        description=(
+            "Both are 3+ compartment epidemic models with exposed class. "
+            "SEI: no recovery (S->E->I terminal). SEIR: recovery (S->E->I->R). "
+            "SEI models chronic infections, SEIR models acute."
+        ),
+        strength=0.88,
+        mapping={
+            "S->E->I flow": "S->E->I->R flow",
+            "no recovery": "recovery to R",
+            "latent period 1/sigma": "latent period 1/sigma",
+            "R0 = beta/mu": "R0 expression",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sei",
+        domain_b="sird",
+        analogy_type="structural",
+        description=(
+            "Both are epidemic models with disease-induced mortality. "
+            "SEI: mortality rate mu removes infected. SIRD: mortality mu "
+            "creates deceased compartment. Both have non-conserved living pop."
+        ),
+        strength=0.78,
+        mapping={
+            "disease mortality mu": "disease mortality mu",
+            "no recovery": "recovery + death",
+            "bilinear incidence": "bilinear incidence",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="gierer_meinhardt",
+        domain_b="schnakenberg",
+        analogy_type="structural",
+        description=(
+            "Both are activator-inhibitor reaction-diffusion systems producing "
+            "Turing patterns. GM: a^2/h nonlinearity with basal production. "
+            "Schnakenberg: a - u + u^2*v. Both need D_h >> D_a for instability."
+        ),
+        strength=0.88,
+        mapping={
+            "activator-inhibitor": "activator-inhibitor",
+            "a^2/h coupling": "u^2*v coupling",
+            "D_h >> D_a": "D_v >> D_u",
+            "Turing instability": "Turing instability",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="group_defense",
+        domain_b="beddington_deangelis",
+        analogy_type="structural",
+        description=(
+            "Both are predator-prey with non-standard functional responses. "
+            "Group defense: f(N) = aN/(1+bN+cN^2) is non-monotone (Andrews). "
+            "BD: f(N,P) = aN/(1+bN+cP) has predator interference. "
+            "Both stabilize compared to Holling II."
+        ),
+        strength=0.78,
+        mapping={
+            "non-monotone response": "interference response",
+            "group defense cN^2": "interference cP",
+            "logistic prey": "logistic prey",
+            "prey peak": "predator saturation",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="logistic_ode",
+        domain_b="gompertz",
+        analogy_type="structural",
+        description=(
+            "Both are 1D saturating growth ODEs with carrying capacity K. "
+            "Logistic: dN/dt = rN(1-N/K), inflection at K/2 (symmetric). "
+            "Gompertz: dN/dt = rN*ln(K/N), inflection at K/e (asymmetric). "
+            "Both have exact analytical solutions."
+        ),
+        strength=0.90,
+        mapping={
+            "carrying capacity K": "carrying capacity K",
+            "inflection K/2": "inflection K/e",
+            "max rate rK/4": "max rate rK/e",
+            "exact solution": "exact solution",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="gierer_meinhardt",
+        domain_b="brusselator_diffusion",
+        analogy_type="structural",
+        description=(
+            "Both are reaction-diffusion systems exhibiting Turing instability. "
+            "GM: a^2/h activator-inhibitor kinetics. Brusselator-diffusion: "
+            "chemical kinetics A->X, 2X+Y->3X. Both form spots/stripes."
+        ),
+        strength=0.82,
+        mapping={
+            "activator a": "activator X",
+            "inhibitor h": "substrate Y",
+            "Turing patterns": "Turing patterns",
+            "D_h >> D_a": "D_Y >> D_X",
+        },
+    ))
+
     return analogies
 
 
@@ -8065,6 +8234,75 @@ def detect_dimensional_analogies(
             "a [attack rate]": "a [attack rate]",
             "b [handling time]": "b [handling time]",
             "c [interference]": "(no analog)",
+        },
+    ))
+
+    # -- Batch #160-163 dimensional analogies --
+
+    analogies.append(Analogy(
+        domain_a="sei",
+        domain_b="seir",
+        analogy_type="dimensional",
+        description=(
+            "Both share beta [1/(pop*time)], sigma [1/time] progression rate. "
+            "SEI: mu [1/time] mortality. SEIR: gamma [1/time] recovery. "
+            "Both have dimensionless R0."
+        ),
+        strength=0.90,
+        mapping={
+            "beta [transmission]": "beta [transmission]",
+            "sigma [progression]": "sigma [progression]",
+            "mu [mortality]": "gamma [recovery]",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="gierer_meinhardt",
+        domain_b="schnakenberg",
+        analogy_type="dimensional",
+        description=(
+            "Both have diffusion coefficients [length^2/time], decay rates "
+            "[1/time], and production rates [conc/time]. GM: rho_a, mu_a, D_a. "
+            "Schnakenberg: a, b (production), D_u, D_v."
+        ),
+        strength=0.85,
+        mapping={
+            "D_a [activator diffusion]": "D_u [activator diffusion]",
+            "D_h [inhibitor diffusion]": "D_v [inhibitor diffusion]",
+            "mu_a [activator decay]": "decay rate",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="logistic_ode",
+        domain_b="gompertz",
+        analogy_type="dimensional",
+        description=(
+            "Identical dimensions: r [1/time] growth rate, K [pop] capacity, "
+            "N [pop] state. Both ODEs have dimension [pop/time]."
+        ),
+        strength=0.95,
+        mapping={
+            "r [growth rate]": "r [growth rate]",
+            "K [carrying capacity]": "K [carrying capacity]",
+            "N [population]": "N [population]",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="group_defense",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="dimensional",
+        description=(
+            "Both share r [1/time], K [prey], a [1/(pred*time)], b [1/prey], "
+            "d [1/time]. Group defense adds c [1/prey^2] for defense term."
+        ),
+        strength=0.88,
+        mapping={
+            "a [attack rate]": "a [attack rate]",
+            "b [handling time]": "b [handling time]",
+            "c [group defense]": "(no analog)",
+            "d [mortality]": "d [mortality]",
         },
     ))
 
@@ -10828,6 +11066,91 @@ def detect_topological_analogies(
         mapping={
             "two fixed points": "three fixed points",
             "stability exchange": "pitchfork bifurcation",
+        },
+    ))
+
+    # -- Batch #160-163 topological analogies --
+
+    analogies.append(Analogy(
+        domain_a="sei",
+        domain_b="seir",
+        analogy_type="topological",
+        description=(
+            "Both have 3+ dimensional phase space with DFE that loses "
+            "stability via transcritical bifurcation at R0=1. "
+            "SEI: I grows monotonically (no recovery). SEIR: epidemic peak then decay."
+        ),
+        strength=0.80,
+        mapping={
+            "DFE transcritical": "DFE transcritical",
+            "monotone I growth": "epidemic peak trajectory",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="gierer_meinhardt",
+        domain_b="schnakenberg",
+        analogy_type="topological",
+        description=(
+            "Both exhibit Turing bifurcation from uniform steady state to "
+            "spatially patterned state. Same mechanism: diffusion-driven "
+            "instability of a stable uniform equilibrium."
+        ),
+        strength=0.88,
+        mapping={
+            "uniform steady state": "uniform steady state",
+            "Turing bifurcation": "Turing bifurcation",
+            "spatial pattern": "spatial pattern",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="group_defense",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="topological",
+        description=(
+            "Both have coexistence equilibrium that can be stable or unstable. "
+            "RM: single equilibrium, Hopf as K grows. Group defense: can have "
+            "multiple equilibria (bistability) due to non-monotone response."
+        ),
+        strength=0.75,
+        mapping={
+            "coexistence equilibrium": "coexistence equilibrium",
+            "possible bistability": "Hopf bifurcation",
+            "non-monotone response": "monotone response",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="logistic_ode",
+        domain_b="gompertz",
+        analogy_type="topological",
+        description=(
+            "Both are 1D flows with identical topology: unstable fixed point "
+            "at N=0, globally stable attractor at N=K. Monotone sigmoid "
+            "approach to K from any positive initial condition."
+        ),
+        strength=0.92,
+        mapping={
+            "N=0 unstable": "N=0 unstable",
+            "N=K stable": "N=K stable",
+            "monotone sigmoid": "monotone sigmoid (asymmetric)",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="logistic_ode",
+        domain_b="harvested_population",
+        analogy_type="topological",
+        description=(
+            "Both are 1D population flows. Logistic: single stable K. "
+            "Harvested: saddle-node at MSY creates/destroys fixed points. "
+            "Harvesting adds bifurcation not present in pure logistic."
+        ),
+        strength=0.70,
+        mapping={
+            "single stable K": "two equilibria (below MSY)",
+            "monotone": "saddle-node bifurcation",
         },
     ))
 

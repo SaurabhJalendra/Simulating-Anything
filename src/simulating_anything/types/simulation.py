@@ -168,6 +168,10 @@ class Domain(str, Enum):
     SIS_ENDEMIC = "sis_endemic"
     BERNOULLI_ODE = "bernoulli_ode"
     BEDDINGTON_DEANGELIS = "beddington_deangelis"
+    SEI = "sei"
+    GIERER_MEINHARDT = "gierer_meinhardt"
+    GROUP_DEFENSE = "group_defense"
+    LOGISTIC_ODE = "logistic_ode"
 
 
 class SimulationBackend(str, Enum):

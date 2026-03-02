@@ -1351,6 +1351,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"r": 1.0, "K": 10.0, "a": 1.0, "b": 0.5, "c": 0.5, "e": 0.5, "d": 0.3},
         "dt": 0.01, "n_steps": 500, "math_class": "Predator-Prey ODE",
     },
+    "sei": {
+        "module": "simulating_anything.simulation.sei",
+        "cls": "SEISimulation",
+        "domain": Domain.SEI,
+        "params": {"beta": 0.5, "sigma": 0.2, "mu": 0.05, "N0": 1000.0},
+        "dt": 0.1, "n_steps": 500, "math_class": "Epidemiological ODE",
+    },
+    "gierer_meinhardt": {
+        "module": "simulating_anything.simulation.gierer_meinhardt",
+        "cls": "GiererMeinhardtSimulation",
+        "domain": Domain.GIERER_MEINHARDT,
+        "params": {"rho_a": 0.1, "rho_h": 0.1, "mu_a": 0.02, "mu_h": 0.03, "D_a": 0.005, "D_h": 0.2},
+        "dt": 0.1, "n_steps": 500, "math_class": "Reaction-Diffusion PDE",
+    },
+    "group_defense": {
+        "module": "simulating_anything.simulation.group_defense",
+        "cls": "GroupDefenseSimulation",
+        "domain": Domain.GROUP_DEFENSE,
+        "params": {"r": 1.0, "K": 15.0, "a": 1.5, "b": 0.1, "c": 0.05, "e": 0.5, "d": 0.3},
+        "dt": 0.01, "n_steps": 500, "math_class": "Predator-Prey ODE",
+    },
+    "logistic_ode": {
+        "module": "simulating_anything.simulation.logistic_ode",
+        "cls": "LogisticODESimulation",
+        "domain": Domain.LOGISTIC_ODE,
+        "params": {"r": 1.0, "K": 100.0, "N_0": 1.0},
+        "dt": 0.1, "n_steps": 500, "math_class": "Growth ODE",
+    },
 }
 
 

@@ -291,6 +291,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.sis_endemic import run_sis_endemic_rediscovery
     from simulating_anything.rediscovery.bernoulli_ode import run_bernoulli_ode_rediscovery
     from simulating_anything.rediscovery.beddington_deangelis import run_beddington_deangelis_rediscovery
+    from simulating_anything.rediscovery.sei import run_sei_rediscovery
+    from simulating_anything.rediscovery.gierer_meinhardt import run_gierer_meinhardt_rediscovery
+    from simulating_anything.rediscovery.group_defense import run_group_defense_rediscovery
+    from simulating_anything.rediscovery.logistic_ode import run_logistic_ode_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1085,6 +1089,26 @@ def run_all_rediscoveries(
         "beddington_deangelis": {
             "label": "Beddington-DeAngelis",
             "fn": run_beddington_deangelis_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sei": {
+            "label": "SEI Epidemic",
+            "fn": run_sei_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "gierer_meinhardt": {
+            "label": "Gierer-Meinhardt",
+            "fn": run_gierer_meinhardt_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "group_defense": {
+            "label": "Predator-Prey Group Defense",
+            "fn": run_group_defense_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "logistic_ode": {
+            "label": "Logistic ODE",
+            "fn": run_logistic_ode_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

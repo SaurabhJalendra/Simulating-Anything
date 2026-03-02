@@ -191,6 +191,10 @@ from simulating_anything.rediscovery.gompertz import run_gompertz_rediscovery
 from simulating_anything.rediscovery.sis_endemic import run_sis_endemic_rediscovery
 from simulating_anything.rediscovery.bernoulli_ode import run_bernoulli_ode_rediscovery
 from simulating_anything.rediscovery.beddington_deangelis import run_beddington_deangelis_rediscovery
+from simulating_anything.rediscovery.sei import run_sei_rediscovery
+from simulating_anything.rediscovery.gierer_meinhardt import run_gierer_meinhardt_rediscovery
+from simulating_anything.rediscovery.group_defense import run_group_defense_rediscovery
+from simulating_anything.rediscovery.logistic_ode import run_logistic_ode_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -352,4 +356,8 @@ __all__ = [
     "run_sis_endemic_rediscovery",
     "run_bernoulli_ode_rediscovery",
     "run_beddington_deangelis_rediscovery",
+    "run_sei_rediscovery",
+    "run_gierer_meinhardt_rediscovery",
+    "run_group_defense_rediscovery",
+    "run_logistic_ode_rediscovery",
 ]
