@@ -787,6 +787,43 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.1, "n_steps": 500, "math_class": "Conductance Neuron",
     },
+    "colpitts": {
+        "module": "simulating_anything.simulation.colpitts",
+        "cls": "ColpittsSimulation",
+        "domain": Domain.COLPITTS,
+        "params": {
+            "k": 0.5, "g_d": 0.05,
+            "x_0": 0.1, "y_0": 0.0, "z_0": 0.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Electronic Chaos",
+    },
+    "rossler_hyperchaos": {
+        "module": "simulating_anything.simulation.rossler_hyperchaos",
+        "cls": "RosslerHyperchaosSimulation",
+        "domain": Domain.ROSSLER_HYPERCHAOS,
+        "params": {
+            "a": 0.25, "b": 3.0, "c": 0.5, "d": 0.05,
+            "x_0": -10.0, "y_0": -6.0, "z_0": 0.0, "w_0": 10.0,
+        },
+        "dt": 0.005, "n_steps": 500, "math_class": "Hyperchaotic ODE",
+    },
+    "fhn_ring": {
+        "module": "simulating_anything.simulation.fhn_ring",
+        "cls": "FHNRingSimulation",
+        "domain": Domain.FHN_RING,
+        "params": {
+            "a": 0.7, "b": 0.8, "eps": 0.08,
+            "I": 0.5, "D": 0.5, "N": 20.0,
+        },
+        "dt": 0.05, "n_steps": 500, "math_class": "Neural Network",
+    },
+    "harvested_population": {
+        "module": "simulating_anything.simulation.harvested_population",
+        "cls": "HarvestedPopulationSimulation",
+        "domain": Domain.HARVESTED_POPULATION,
+        "params": {"r": 1.0, "K": 1.0, "H": 0.0, "x_0": 0.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Resource ODE",
+    },
 }
 
 

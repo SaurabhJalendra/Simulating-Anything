@@ -92,6 +92,10 @@ class Domain(str, Enum):
     MORRIS_LECAR = "morris_lecar"
     RIKITAKE = "rikitake"
     RICKER_MAP = "ricker_map"
+    HARVESTED_POPULATION = "harvested_population"
+    COLPITTS = "colpitts"
+    ROSSLER_HYPERCHAOS = "rossler_hyperchaos"
+    FHN_RING = "fhn_ring"
 
 
 class SimulationBackend(str, Enum):
