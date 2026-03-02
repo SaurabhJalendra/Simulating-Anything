@@ -116,6 +116,10 @@ class Domain(str, Enum):
     QI = "qi"
     WINDMI = "windmi"
     FINANCE = "finance"
+    SHIMIZU_MORIOKA = "shimizu_morioka"
+    NEWTON_LEIPNIK = "newton_leipnik"
+    WANG = "wang"
+    ARNEODO = "arneodo"
 
 
 class SimulationBackend(str, Enum):

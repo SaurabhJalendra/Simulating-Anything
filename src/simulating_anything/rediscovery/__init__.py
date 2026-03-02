@@ -133,6 +133,10 @@ from simulating_anything.rediscovery.wilson_cowan import run_wilson_cowan_redisc
 from simulating_anything.rediscovery.finance import run_finance_rediscovery
 from simulating_anything.rediscovery.lu_chen import run_lu_chen_rediscovery
 from simulating_anything.rediscovery.qi import run_qi_rediscovery
+from simulating_anything.rediscovery.shimizu_morioka import run_shimizu_morioka_rediscovery
+from simulating_anything.rediscovery.newton_leipnik import run_newton_leipnik_rediscovery
+from simulating_anything.rediscovery.wang import run_wang_rediscovery
+from simulating_anything.rediscovery.arneodo import run_arneodo_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -242,4 +246,8 @@ __all__ = [
     "run_qi_rediscovery",
     "run_windmi_rediscovery",
     "run_finance_rediscovery",
+    "run_shimizu_morioka_rediscovery",
+    "run_newton_leipnik_rediscovery",
+    "run_wang_rediscovery",
+    "run_arneodo_rediscovery",
 ]

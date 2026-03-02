@@ -987,6 +987,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"a": 1.0, "b": 0.1, "c": 1.0},
         "dt": 0.005, "n_steps": 500, "math_class": "Economics ODE",
     },
+    "shimizu_morioka": {
+        "module": "simulating_anything.simulation.shimizu_morioka",
+        "cls": "ShimizuMoriokaSimulation",
+        "domain": Domain.SHIMIZU_MORIOKA,
+        "params": {"a": 0.75, "b": 0.45},
+        "dt": 0.01, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "newton_leipnik": {
+        "module": "simulating_anything.simulation.newton_leipnik",
+        "cls": "NewtonLeipnikSimulation",
+        "domain": Domain.NEWTON_LEIPNIK,
+        "params": {"a": 0.4, "b": 0.175},
+        "dt": 0.005, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "wang": {
+        "module": "simulating_anything.simulation.wang",
+        "cls": "WangSimulation",
+        "domain": Domain.WANG,
+        "params": {"a": 1.0, "b": 1.0, "c": 0.7, "d": 0.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "arneodo": {
+        "module": "simulating_anything.simulation.arneodo",
+        "cls": "ArneodoSimulation",
+        "domain": Domain.ARNEODO,
+        "params": {"a": 5.5, "b": 3.5, "d": 1.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Jerk ODE",
+    },
 }
 
 
