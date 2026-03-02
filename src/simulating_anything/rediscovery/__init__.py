@@ -13,6 +13,7 @@ from simulating_anything.rediscovery.burke_shaw import run_burke_shaw_rediscover
 from simulating_anything.rediscovery.bouncing_ball import run_bouncing_ball_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
 from simulating_anything.rediscovery.chen import run_chen_rediscovery
+from simulating_anything.rediscovery.dadras import run_dadras_rediscovery
 from simulating_anything.rediscovery.brusselator_2d import run_brusselator_2d_rediscovery
 from simulating_anything.rediscovery.brusselator_diffusion import (
     run_brusselator_diffusion_rediscovery,
@@ -49,6 +50,7 @@ from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscov
 from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
 from simulating_anything.rediscovery.fitzhugh_rinzel import run_fitzhugh_rinzel_rediscovery
 from simulating_anything.rediscovery.four_species_lv import run_four_species_lv_rediscovery
+from simulating_anything.rediscovery.genesio_tesi import run_genesio_tesi_rediscovery
 from simulating_anything.rediscovery.fput import run_fput_rediscovery
 from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
@@ -74,6 +76,7 @@ from simulating_anything.rediscovery.kuramoto_sivashinsky import (
 )
 from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
 from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
+from simulating_anything.rediscovery.lorenz_haken import run_lorenz_haken_rediscovery
 from simulating_anything.rediscovery.lorenz84 import run_lorenz84_rediscovery
 from simulating_anything.rediscovery.lorenz96 import run_lorenz96_rediscovery
 from simulating_anything.rediscovery.lorenz_stenflo import run_lorenz_stenflo_rediscovery
@@ -102,6 +105,7 @@ from simulating_anything.rediscovery.rosenzweig_macarthur import (
     run_rosenzweig_macarthur_rediscovery,
 )
 from simulating_anything.rediscovery.rossler import run_rossler_rediscovery
+from simulating_anything.rediscovery.sakarya import run_sakarya_rediscovery
 from simulating_anything.rediscovery.rossler_hyperchaos import (
     run_rossler_hyperchaos_rediscovery,
 )
@@ -226,4 +230,8 @@ __all__ = [
     "run_halvorsen_rediscovery",
     "run_burke_shaw_rediscovery",
     "run_nose_hoover_rediscovery",
+    "run_lorenz_haken_rediscovery",
+    "run_sakarya_rediscovery",
+    "run_dadras_rediscovery",
+    "run_genesio_tesi_rediscovery",
 ]

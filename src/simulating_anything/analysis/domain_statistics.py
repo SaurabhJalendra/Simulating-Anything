@@ -931,6 +931,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"a": 1.0},
         "dt": 0.01, "n_steps": 500, "math_class": "Thermostat ODE",
     },
+    "lorenz_haken": {
+        "module": "simulating_anything.simulation.lorenz_haken",
+        "cls": "LorenzHakenSimulation",
+        "domain": Domain.LORENZ_HAKEN,
+        "params": {"sigma": 3.0, "r": 25.0, "b": 1.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Laser ODE",
+    },
+    "sakarya": {
+        "module": "simulating_anything.simulation.sakarya",
+        "cls": "SakaryaSimulation",
+        "domain": Domain.SAKARYA,
+        "params": {"a": 0.4, "b": 0.3},
+        "dt": 0.01, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "dadras": {
+        "module": "simulating_anything.simulation.dadras",
+        "cls": "DadrasSimulation",
+        "domain": Domain.DADRAS,
+        "params": {"a": 3.0, "b": 2.7, "c": 1.7, "d": 2.0, "e": 9.0},
+        "dt": 0.005, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "genesio_tesi": {
+        "module": "simulating_anything.simulation.genesio_tesi",
+        "cls": "GenesioTesiSimulation",
+        "domain": Domain.GENESIO_TESI,
+        "params": {"a": 0.44, "b": 1.1, "c": 1.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Jerk ODE",
+    },
 }
 
 
