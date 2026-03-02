@@ -229,6 +229,14 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.finance import run_finance_rediscovery
     from simulating_anything.rediscovery.lu_chen import run_lu_chen_rediscovery
     from simulating_anything.rediscovery.qi import run_qi_rediscovery
+    from simulating_anything.rediscovery.shimizu_morioka import (
+        run_shimizu_morioka_rediscovery,
+    )
+    from simulating_anything.rediscovery.newton_leipnik import (
+        run_newton_leipnik_rediscovery,
+    )
+    from simulating_anything.rediscovery.wang import run_wang_rediscovery
+    from simulating_anything.rediscovery.arneodo import run_arneodo_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -763,6 +771,26 @@ def run_all_rediscoveries(
         "finance": {
             "label": "Chaotic Finance System ODE",
             "fn": run_finance_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "shimizu_morioka": {
+            "label": "Shimizu-Morioka Lorenz-Like Chaos",
+            "fn": run_shimizu_morioka_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "newton_leipnik": {
+            "label": "Newton-Leipnik Multistable Chaos",
+            "fn": run_newton_leipnik_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "wang": {
+            "label": "Wang Single-Wing Chaotic Attractor",
+            "fn": run_wang_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "arneodo": {
+            "label": "Arneodo Cubic Jerk Chaos",
+            "fn": run_arneodo_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

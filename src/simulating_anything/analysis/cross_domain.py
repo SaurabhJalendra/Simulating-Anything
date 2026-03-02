@@ -1727,6 +1727,74 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        # --- Domain #108: Shimizu-Morioka ---
+        DomainSignature(
+            name="shimizu_morioka",
+            math_type="chaotic",  # Lorenz-like simplified model
+            state_dim=3,
+            n_parameters=2,  # a, b
+            conserved_quantities=[],
+            symmetries=["z-axis_rotation"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = y",
+                "dy/dt = (1-z)*x - a*y",
+                "dz/dt = -b*z + x^2",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #109: Newton-Leipnik ---
+        DomainSignature(
+            name="newton_leipnik",
+            math_type="chaotic",  # Multistable 3D chaos
+            state_dim=3,
+            n_parameters=2,  # a, b
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = -a*x + y + 10*y*z",
+                "dy/dt = -x - 0.4*y + 5*x*z",
+                "dz/dt = b*z - 5*x*y",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #110: Wang ---
+        DomainSignature(
+            name="wang",
+            math_type="chaotic",  # Single-wing attractor
+            state_dim=3,
+            n_parameters=4,  # a, b, c, d
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/b",
+            discovered_equations=[
+                "dx/dt = x - a*y",
+                "dy/dt = -b*y + x*z",
+                "dz/dt = -c*z + d*x*y",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #111: Arneodo ---
+        DomainSignature(
+            name="arneodo",
+            math_type="chaotic",  # Cubic jerk system
+            state_dim=3,
+            n_parameters=3,  # a, b, d
+            conserved_quantities=[],
+            symmetries=["inversion"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/sqrt(a)",
+            discovered_equations=[
+                "dx/dt = y",
+                "dy/dt = z",
+                "dz/dt = -a*x - b*y - z + d*x^3",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -4184,6 +4252,109 @@ def detect_structural_analogies(
         },
     ))
 
+    # Shimizu-Morioka <-> Lorenz (simplified Lorenz-like)
+    analogies.append(Analogy(
+        domain_a="shimizu_morioka",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Shimizu-Morioka is a simplified model related to Lorenz convection. "
+            "Both have quadratic nonlinearities (x^2 vs xy/xz) and exhibit "
+            "butterfly-like strange attractors. SM trades bilinear for pure x^2."
+        ),
+        strength=0.82,
+        mapping={
+            "(1-z)*x": "rho*x - x*z",
+            "x^2 in z'": "x*y in z'",
+            "-a*y damping": "-sigma*x + sigma*y",
+        },
+    ))
+
+    # Shimizu-Morioka <-> Lu-Chen (Lorenz family members)
+    analogies.append(Analogy(
+        domain_a="shimizu_morioka",
+        domain_b="lu_chen",
+        analogy_type="structural",
+        description=(
+            "Both belong to the Lorenz attractor family. Shimizu-Morioka has "
+            "x^2 in z-equation; Lu-Chen has xy. Both produce butterfly attractors."
+        ),
+        strength=0.75,
+        mapping={
+            "x^2 [quadratic]": "x*y [bilinear]",
+            "2 parameters": "3 parameters",
+        },
+    ))
+
+    # Newton-Leipnik <-> Qi (multistable/high-coupling chaos)
+    analogies.append(Analogy(
+        domain_a="newton_leipnik",
+        domain_b="qi",
+        analogy_type="structural",
+        description=(
+            "Both have multiple bilinear coupling terms (yz, xz, xy). "
+            "Newton-Leipnik: 10yz, 5xz, 5xy. Qi: yz, xz, xy, xz. "
+            "Both exhibit rich multistable dynamics."
+        ),
+        strength=0.70,
+        mapping={
+            "10*y*z + 5*x*z": "y*z + x*z",
+            "5*x*y": "x*y + x*z",
+        },
+    ))
+
+    # Wang <-> Lorenz (quadratic 3D ODE)
+    analogies.append(Analogy(
+        domain_a="wang",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are 3D quadratic chaotic ODEs with xz and xy coupling terms. "
+            "Wang: xz in y', xy in z'. Lorenz: xz in y', xy in z'. Same "
+            "nonlinear structure, different linear terms."
+        ),
+        strength=0.72,
+        mapping={
+            "x*z in dy/dt": "x*z in dy/dt",
+            "x*y in dz/dt": "x*y in dz/dt",
+        },
+    ))
+
+    # Arneodo <-> Genesio-Tesi (jerk systems with different nonlinearity)
+    analogies.append(Analogy(
+        domain_a="arneodo",
+        domain_b="genesio_tesi",
+        analogy_type="structural",
+        description=(
+            "Both are jerk systems (x'=y, y'=z, z'=f). Arneodo uses cubic "
+            "nonlinearity (x^3), Genesio-Tesi uses quadratic (x^2). Both "
+            "exhibit period-doubling cascades to chaos."
+        ),
+        strength=0.85,
+        mapping={
+            "x^3 [cubic]": "x^2 [quadratic]",
+            "jerk form": "jerk form",
+            "period-doubling": "period-doubling",
+        },
+    ))
+
+    # Arneodo <-> WINDMI (jerk systems)
+    analogies.append(Analogy(
+        domain_a="arneodo",
+        domain_b="windmi",
+        analogy_type="structural",
+        description=(
+            "Both are jerk systems with x'=y, y'=z structure. Arneodo: x^3 "
+            "nonlinearity. WINDMI: exp(x) nonlinearity. Both have constant "
+            "divergence (Arneodo: -1, WINDMI: -a)."
+        ),
+        strength=0.73,
+        mapping={
+            "x^3 nonlinearity": "exp(x) nonlinearity",
+            "constant divergence": "constant divergence",
+        },
+    ))
+
     return analogies
 
 
@@ -5143,6 +5314,55 @@ def detect_dimensional_analogies(
         mapping={
             "1/a [damping]": "1/alpha [damping]",
             "exp(x) response": "exp(x) response",
+        },
+    ))
+
+    # Dimensional: Shimizu-Morioka <-> Lorenz (convection timescale)
+    analogies.append(Analogy(
+        domain_a="shimizu_morioka",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both have primary timescale 1/a (SM) or 1/sigma (Lorenz) for "
+            "x-y mixing, and 1/b or 1/beta for z-decay."
+        ),
+        strength=0.85,
+        mapping={
+            "1/a [damping]": "1/sigma [mixing]",
+            "1/b [z-decay]": "1/beta [z-decay]",
+        },
+    ))
+
+    # Dimensional: Arneodo <-> Genesio-Tesi (jerk timescale)
+    analogies.append(Analogy(
+        domain_a="arneodo",
+        domain_b="genesio_tesi",
+        analogy_type="dimensional",
+        description=(
+            "Both jerk systems share timescale structure: 1/sqrt(a) for "
+            "oscillation and constant dissipation rate. Arneodo: div=-1. "
+            "Genesio-Tesi: div=-a."
+        ),
+        strength=0.78,
+        mapping={
+            "1/sqrt(a) [oscillation]": "1/sqrt(c) [oscillation]",
+            "-1 [dissipation]": "-a [dissipation]",
+        },
+    ))
+
+    # Dimensional: Newton-Leipnik <-> Chen (dissipation timescale)
+    analogies.append(Analogy(
+        domain_a="newton_leipnik",
+        domain_b="chen",
+        analogy_type="dimensional",
+        description=(
+            "Both have dissipation set by sum of linear coefficients. "
+            "Newton-Leipnik: -(a+0.4-b). Chen: -(2a+b)/3."
+        ),
+        strength=0.60,
+        mapping={
+            "1/a [x-decay]": "1/a [mixing]",
+            "-(a+0.4-b) [div]": "-(2a+b)/3 [div]",
         },
     ))
 
@@ -6876,6 +7096,73 @@ def detect_topological_analogies(
         mapping={
             "strange attractor": "strange attractor",
             "period-doubling": "period-doubling",
+        },
+    ))
+
+    # Topological: Shimizu-Morioka <-> Lorenz (butterfly attractor)
+    analogies.append(Analogy(
+        domain_a="shimizu_morioka",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both produce butterfly-shaped strange attractors with two "
+            "symmetric lobes. Both have period-doubling routes to chaos "
+            "and symmetric fixed points."
+        ),
+        strength=0.88,
+        mapping={
+            "butterfly attractor": "butterfly attractor",
+            "symmetric fixed points": "symmetric fixed points",
+        },
+    ))
+
+    # Topological: Newton-Leipnik <-> Magnetic Pendulum (multistable basins)
+    analogies.append(Analogy(
+        domain_a="newton_leipnik",
+        domain_b="magnetic_pendulum",
+        analogy_type="topological",
+        description=(
+            "Both exhibit multistability with coexisting attractors. "
+            "Newton-Leipnik: two strange attractors. Magnetic pendulum: "
+            "fractal basin boundaries between fixed-point attractors."
+        ),
+        strength=0.65,
+        mapping={
+            "coexisting attractors": "multiple basins",
+            "IC-dependent fate": "IC-dependent fate",
+        },
+    ))
+
+    # Topological: Wang <-> Rossler (single-scroll strange attractors)
+    analogies.append(Analogy(
+        domain_a="wang",
+        domain_b="rossler",
+        analogy_type="topological",
+        description=(
+            "Both produce single-scroll strange attractors (in contrast to "
+            "Lorenz's double-scroll). Both exhibit period-doubling cascades."
+        ),
+        strength=0.72,
+        mapping={
+            "single-scroll": "single-scroll",
+            "period-doubling": "period-doubling",
+        },
+    ))
+
+    # Topological: Arneodo <-> Sprott (minimal chaotic jerk attractors)
+    analogies.append(Analogy(
+        domain_a="arneodo",
+        domain_b="sprott",
+        analogy_type="topological",
+        description=(
+            "Both are minimal jerk-type chaotic systems. Arneodo: cubic x^3. "
+            "Sprott: various minimal nonlinearities. Both produce double-scroll "
+            "or single-scroll attractors depending on parameters."
+        ),
+        strength=0.70,
+        mapping={
+            "jerk chaos": "jerk chaos",
+            "minimal parameters": "minimal parameters",
         },
     ))
 
