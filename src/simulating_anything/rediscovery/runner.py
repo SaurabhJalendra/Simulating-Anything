@@ -275,6 +275,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.toggle_switch import run_toggle_switch_rediscovery
     from simulating_anything.rediscovery.stommel import run_stommel_rediscovery
     from simulating_anything.rediscovery.predator_prey_parasite import run_predator_prey_parasite_rediscovery
+    from simulating_anything.rediscovery.michaelis_menten import run_michaelis_menten_rediscovery
+    from simulating_anything.rediscovery.winfree import run_winfree_rediscovery
+    from simulating_anything.rediscovery.fhn_coupled_pair import run_fhn_coupled_pair_rediscovery
+    from simulating_anything.rediscovery.prey_refuge import run_prey_refuge_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -989,6 +993,26 @@ def run_all_rediscoveries(
         "predator_prey_parasite": {
             "label": "Predator-Prey-Parasite Eco-Epidemiology",
             "fn": run_predator_prey_parasite_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "michaelis_menten": {
+            "label": "Michaelis-Menten Enzyme Kinetics",
+            "fn": run_michaelis_menten_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "winfree": {
+            "label": "Winfree Pulse-Coupled Oscillators",
+            "fn": run_winfree_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "fhn_coupled_pair": {
+            "label": "FHN Coupled Pair Neural Sync",
+            "fn": run_fhn_coupled_pair_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "prey_refuge": {
+            "label": "Predator-Prey with Refuge",
+            "fn": run_prey_refuge_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

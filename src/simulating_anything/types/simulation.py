@@ -152,6 +152,10 @@ class Domain(str, Enum):
     TOGGLE_SWITCH = "toggle_switch"
     STOMMEL = "stommel"
     PREDATOR_PREY_PARASITE = "predator_prey_parasite"
+    MICHAELIS_MENTEN = "michaelis_menten"
+    WINFREE = "winfree"
+    FHN_COUPLED_PAIR = "fhn_coupled_pair"
+    PREY_REFUGE = "prey_refuge"
 
 
 class SimulationBackend(str, Enum):

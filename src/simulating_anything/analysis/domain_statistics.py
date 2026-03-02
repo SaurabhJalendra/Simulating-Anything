@@ -1239,6 +1239,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"r": 1.0, "K": 10.0, "a": 0.1, "e": 0.5},
         "dt": 0.01, "n_steps": 500, "math_class": "Eco-Epidemiological ODE",
     },
+    "michaelis_menten": {
+        "module": "simulating_anything.simulation.michaelis_menten",
+        "cls": "MichaelisMentenSimulation",
+        "domain": Domain.MICHAELIS_MENTEN,
+        "params": {"k1": 1.0, "k_1": 0.1, "k2": 0.5, "E_total": 1.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Enzyme Kinetics",
+    },
+    "winfree": {
+        "module": "simulating_anything.simulation.winfree",
+        "cls": "WinfreeSimulation",
+        "domain": Domain.WINFREE,
+        "params": {"N": 50, "kappa": 1.0, "omega0": 1.0, "delta": 0.1},
+        "dt": 0.01, "n_steps": 500, "math_class": "Pulse-Coupled Oscillators",
+    },
+    "fhn_coupled_pair": {
+        "module": "simulating_anything.simulation.fhn_coupled_pair",
+        "cls": "FHNCoupledPairSimulation",
+        "domain": Domain.FHN_COUPLED_PAIR,
+        "params": {"a": 0.7, "b": 0.8, "eps": 0.08, "g": 0.1},
+        "dt": 0.05, "n_steps": 500, "math_class": "Coupled Neural Oscillator",
+    },
+    "prey_refuge": {
+        "module": "simulating_anything.simulation.prey_refuge",
+        "cls": "PreyRefugeSimulation",
+        "domain": Domain.PREY_REFUGE,
+        "params": {"r": 1.0, "K": 10.0, "alpha": 0.5, "m": 0.3},
+        "dt": 0.01, "n_steps": 500, "math_class": "Predator-Prey with Refuge",
+    },
 }
 
 

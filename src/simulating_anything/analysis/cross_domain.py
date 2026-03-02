@@ -2290,6 +2290,68 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="michaelis_menten",
+            math_type="enzyme_kinetics",  # E+S <-> ES -> E+P
+            state_dim=3,
+            n_parameters=4,  # k1, k_1, k2, E_total
+            conserved_quantities=["E+C=E_total", "S+C+P=S0"],
+            symmetries=[],
+            phase_portrait_type="monotone_convergence",
+            characteristic_timescale="1/k2",
+            discovered_equations=[
+                "dS/dt = -k1*(E_total-C)*S + k_1*C",
+                "dC/dt = k1*(E_total-C)*S - (k_1+k2)*C",
+                "dP/dt = k2*C",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="winfree",
+            math_type="pulse_coupled_oscillators",  # Predecessor to Kuramoto
+            state_dim=50,
+            n_parameters=4,  # N, kappa, omega0, delta
+            conserved_quantities=[],
+            symmetries=["SO2_phase_rotation"],
+            phase_portrait_type="sync_transition",
+            characteristic_timescale="2*pi/omega0",
+            discovered_equations=[
+                "d(theta_i)/dt = omega_i + (kappa/N)*P(theta_i)*sum_j R(theta_j)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="fhn_coupled_pair",
+            math_type="ode_coupled_neurons",  # Two coupled FHN
+            state_dim=4,
+            n_parameters=6,  # a, b, eps, I1, I2, g
+            conserved_quantities=[],
+            symmetries=["Z2_exchange_symmetry"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/eps",
+            discovered_equations=[
+                "dv1/dt = v1 - v1^3/3 - w1 + I1 + g*(v2-v1)",
+                "dw1/dt = eps*(v1 + a - b*w1)",
+                "dv2/dt = v2 - v2^3/3 - w2 + I2 + g*(v1-v2)",
+                "dw2/dt = eps*(v2 + a - b*w2)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="prey_refuge",
+            math_type="ode_predator_prey_refuge",  # LV with refuge fraction
+            state_dim=2,
+            n_parameters=6,  # r, K, alpha, m, beta, delta
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="stable_spiral",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN/dt = r*N*(1-N/K) - alpha*(1-m)*N*P",
+                "dP/dt = beta*alpha*(1-m)*N*P - delta*P",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -5674,6 +5736,118 @@ def detect_structural_analogies(
         },
     ))
 
+    # Structural: Michaelis-Menten <-> Selkov (enzyme-substrate kinetics)
+    analogies.append(Analogy(
+        domain_a="michaelis_menten",
+        domain_b="selkov",
+        analogy_type="structural",
+        description=(
+            "Both model enzyme-substrate interactions. MM: explicit E+S<->ES->E+P. "
+            "Selkov: simplified allosteric PFK activation. Both have saturating "
+            "rate laws (Michaelis-Menten vs Hill function)."
+        ),
+        strength=0.72,
+        mapping={
+            "enzyme-substrate binding": "PFK activation",
+            "V_max*S/(K_m+S)": "allosteric rate function",
+            "product formation": "ATP production",
+        },
+    ))
+
+    # Structural: Winfree <-> Kuramoto (coupled oscillator models)
+    analogies.append(Analogy(
+        domain_a="winfree",
+        domain_b="kuramoto",
+        analogy_type="structural",
+        description=(
+            "Winfree is the direct predecessor to Kuramoto. Both model "
+            "synchronization of N oscillators with distributed frequencies. "
+            "Kuramoto uses sinusoidal coupling; Winfree uses pulse-response "
+            "coupling P(theta)*R(theta). Same sync transition structure."
+        ),
+        strength=0.90,
+        mapping={
+            "P(theta_i)*sum R(theta_j)": "sum sin(theta_j-theta_i)",
+            "coupling kappa": "coupling K",
+            "order parameter r": "order parameter r",
+            "sync transition kappa_c": "sync transition K_c",
+        },
+    ))
+
+    # Structural: FHN Coupled Pair <-> Coupled VdP (coupled oscillator sync)
+    analogies.append(Analogy(
+        domain_a="fhn_coupled_pair",
+        domain_b="coupled_vdp",
+        analogy_type="structural",
+        description=(
+            "Both model two diffusively coupled relaxation oscillators. "
+            "FHN pair: g*(v2-v1) coupling. Coupled VdP: mu*(x2-x1) coupling. "
+            "Both show synchronization transition at critical coupling."
+        ),
+        strength=0.85,
+        mapping={
+            "g*(v2-v1) coupling": "mu*(x2-x1) coupling",
+            "FHN cubic nullcline": "VdP cubic nonlinearity",
+            "sync error": "sync error",
+            "critical coupling g_c": "critical coupling mu_c",
+        },
+    ))
+
+    # Structural: FHN Coupled Pair <-> FHN Ring (coupled FHN networks)
+    analogies.append(Analogy(
+        domain_a="fhn_coupled_pair",
+        domain_b="fhn_ring",
+        analogy_type="structural",
+        description=(
+            "Both are networks of FHN neurons with diffusive coupling. "
+            "Coupled pair: N=2 bidirectional. Ring: N neurons in cycle. "
+            "Same single-neuron dynamics, same coupling mechanism."
+        ),
+        strength=0.88,
+        mapping={
+            "2-neuron pair": "N-neuron ring",
+            "bidirectional coupling": "nearest-neighbor coupling",
+            "synchronization": "traveling waves",
+        },
+    ))
+
+    # Structural: Prey Refuge <-> Rosenzweig-MacArthur (predator-prey variants)
+    analogies.append(Analogy(
+        domain_a="prey_refuge",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Both extend logistic predator-prey with saturating effects. "
+            "Prey refuge: fraction m inaccessible to predators. "
+            "R-MA: Holling Type II functional response. Both stabilize dynamics."
+        ),
+        strength=0.78,
+        mapping={
+            "refuge fraction m": "handling time h",
+            "alpha*(1-m)*N*P": "a*N*P/(1+a*h*N)",
+            "stabilization by refuge": "paradox of enrichment",
+        },
+    ))
+
+    # Structural: Michaelis-Menten <-> Chemostat (substrate consumption)
+    analogies.append(Analogy(
+        domain_a="michaelis_menten",
+        domain_b="chemostat",
+        analogy_type="structural",
+        description=(
+            "Both model substrate consumption with saturating kinetics. "
+            "MM: V_max*S/(K_m+S) enzyme rate. Chemostat: mu_max*S/(K_s+S) "
+            "Monod growth. Same mathematical form, different biological context."
+        ),
+        strength=0.82,
+        mapping={
+            "V_max": "mu_max",
+            "K_m": "K_s",
+            "enzyme": "microbial biomass",
+            "substrate depletion": "substrate depletion",
+        },
+    ))
+
     return analogies
 
 
@@ -7101,6 +7275,76 @@ def detect_dimensional_analogies(
             "beta [transmission rate]": "beta [transmission rate]",
             "gamma [recovery rate]": "gamma [recovery rate]",
             "alpha [predation rate]": "alpha [predation rate]",
+        },
+    ))
+
+    # Dimensional: Michaelis-Menten <-> Chemostat (same saturating rate dimensions)
+    analogies.append(Analogy(
+        domain_a="michaelis_menten",
+        domain_b="chemostat",
+        analogy_type="dimensional",
+        description=(
+            "Both have identical dimensional structure: maximum rate V_max or "
+            "mu_max [1/time], half-saturation K_m or K_s [concentration], and "
+            "saturating rate v = V*S/(K+S) [concentration/time]."
+        ),
+        strength=0.88,
+        mapping={
+            "V_max [1/time]": "mu_max [1/time]",
+            "K_m [concentration]": "K_s [concentration]",
+            "k1 [1/(conc*time)]": "mu_max/K_s [1/(conc*time)]",
+        },
+    ))
+
+    # Dimensional: Winfree <-> Kuramoto (oscillator coupling dimensions)
+    analogies.append(Analogy(
+        domain_a="winfree",
+        domain_b="kuramoto",
+        analogy_type="dimensional",
+        description=(
+            "Both have coupling strength [rad/s], natural frequency [rad/s], "
+            "frequency spread [rad/s], and dimensionless order parameter r. "
+            "Critical coupling kappa_c and K_c have same dimensions."
+        ),
+        strength=0.90,
+        mapping={
+            "kappa [rad/s]": "K [rad/s]",
+            "omega0 [rad/s]": "omega0 [rad/s]",
+            "delta [rad/s]": "sigma [rad/s]",
+        },
+    ))
+
+    # Dimensional: FHN Coupled Pair <-> Coupled VdP (relaxation oscillator timescales)
+    analogies.append(Analogy(
+        domain_a="fhn_coupled_pair",
+        domain_b="coupled_vdp",
+        analogy_type="dimensional",
+        description=(
+            "Both have fast variable timescale and slow adaptation. "
+            "FHN: 1/eps separates fast v and slow w. VdP: mu controls "
+            "relaxation ratio. Coupling g and mu have dimension [1/time]."
+        ),
+        strength=0.75,
+        mapping={
+            "1/eps [fast timescale]": "1 [natural period]",
+            "g [coupling strength]": "mu [coupling strength]",
+        },
+    ))
+
+    # Dimensional: Prey Refuge <-> Lotka-Volterra (predation rate scaling)
+    analogies.append(Analogy(
+        domain_a="prey_refuge",
+        domain_b="lotka_volterra",
+        analogy_type="dimensional",
+        description=(
+            "Both have predation rate alpha [1/(prey*time)] and growth rate "
+            "r [1/time]. Prey refuge scales effective predation by (1-m), "
+            "so alpha_eff = alpha*(1-m) has same dimensions as LV predation beta."
+        ),
+        strength=0.80,
+        mapping={
+            "alpha*(1-m) [effective predation]": "beta [predation rate]",
+            "r [growth rate]": "alpha [growth rate]",
         },
     ))
 
@@ -9512,6 +9756,94 @@ def detect_topological_analogies(
             "stable spiral": "stable spiral",
             "supercritical Hopf": "supercritical Hopf",
             "stable limit cycle": "stable limit cycle",
+        },
+    ))
+
+    # Topological: Michaelis-Menten <-> Chemostat (monotone convergence)
+    analogies.append(Analogy(
+        domain_a="michaelis_menten",
+        domain_b="chemostat",
+        analogy_type="topological",
+        description=(
+            "Both have a globally attracting steady state when substrate "
+            "is consumed. MM: S->0, P->S0 monotonically. Chemostat: washout "
+            "or coexistence equilibrium. Same monotone dynamics topology."
+        ),
+        strength=0.70,
+        mapping={
+            "substrate depletion": "washout/coexistence",
+            "monotone convergence": "monotone convergence",
+        },
+    ))
+
+    # Topological: Winfree <-> Kuramoto (same sync transition topology)
+    analogies.append(Analogy(
+        domain_a="winfree",
+        domain_b="kuramoto",
+        analogy_type="topological",
+        description=(
+            "Both have identical macroscopic phase portrait: incoherent state "
+            "loses stability at critical coupling, giving way to partially "
+            "synchronized state. Same pitchfork bifurcation in order parameter."
+        ),
+        strength=0.88,
+        mapping={
+            "incoherent state r~0": "incoherent state r~0",
+            "partial sync r>0": "partial sync r>0",
+            "pitchfork at kappa_c": "pitchfork at K_c",
+        },
+    ))
+
+    # Topological: FHN Coupled Pair <-> Coupled VdP (sync manifold topology)
+    analogies.append(Analogy(
+        domain_a="fhn_coupled_pair",
+        domain_b="coupled_vdp",
+        analogy_type="topological",
+        description=(
+            "Both have 4D phase space with invariant sync manifold (v1=v2, w1=w2). "
+            "At strong coupling the sync manifold attracts; at weak coupling "
+            "anti-phase or quasiperiodic orbits exist. Same symmetry-breaking topology."
+        ),
+        strength=0.82,
+        mapping={
+            "sync manifold": "sync manifold",
+            "in-phase orbit": "in-phase orbit",
+            "anti-phase orbit": "anti-phase orbit",
+        },
+    ))
+
+    # Topological: Prey Refuge <-> Rosenzweig-MacArthur (stabilized spiral)
+    analogies.append(Analogy(
+        domain_a="prey_refuge",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="topological",
+        description=(
+            "Both have coexistence equilibrium that can be stable spiral or "
+            "unstable spiral with limit cycle. Refuge increases stability "
+            "(larger m -> more damping). Same Hopf bifurcation topology."
+        ),
+        strength=0.75,
+        mapping={
+            "stable coexistence": "stable coexistence",
+            "Hopf bifurcation": "paradox of enrichment",
+            "stable limit cycle": "stable limit cycle",
+        },
+    ))
+
+    # Topological: Prey Refuge <-> Allee Predator-Prey (predator-prey variants)
+    analogies.append(Analogy(
+        domain_a="prey_refuge",
+        domain_b="allee_predator_prey",
+        analogy_type="topological",
+        description=(
+            "Both modify standard predator-prey to include stabilizing "
+            "mechanisms. Refuge: protects fraction of prey. Allee: minimum "
+            "viable prey density. Both can create bistability or stabilize."
+        ),
+        strength=0.65,
+        mapping={
+            "refuge stabilization": "Allee threshold",
+            "coexistence equilibrium": "coexistence equilibrium",
         },
     ))
 

@@ -173,6 +173,12 @@ from simulating_anything.rediscovery.autocatalator import run_autocatalator_redi
 from simulating_anything.rediscovery.seir import run_seir_rediscovery
 from simulating_anything.rediscovery.ueda import run_ueda_rediscovery
 from simulating_anything.rediscovery.zombie_sir import run_zombie_sir_rediscovery
+from simulating_anything.rediscovery.michaelis_menten import run_michaelis_menten_rediscovery
+from simulating_anything.rediscovery.winfree import run_winfree_rediscovery
+from simulating_anything.rediscovery.fhn_coupled_pair import (
+    run_fhn_coupled_pair_rediscovery,
+)
+from simulating_anything.rediscovery.prey_refuge import run_prey_refuge_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -318,4 +324,8 @@ __all__ = [
     "run_toggle_switch_rediscovery",
     "run_stommel_rediscovery",
     "run_predator_prey_parasite_rediscovery",
+    "run_michaelis_menten_rediscovery",
+    "run_winfree_rediscovery",
+    "run_fhn_coupled_pair_rediscovery",
+    "run_prey_refuge_rediscovery",
 ]
