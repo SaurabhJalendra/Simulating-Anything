@@ -140,6 +140,10 @@ class Domain(str, Enum):
     RULKOV_MAP = "rulkov_map"
     COUPLED_VDP = "coupled_vdp"
     STUART_LANDAU = "stuart_landau"
+    GAUSS_MAP = "gauss_map"
+    CIRCLE_MAP = "circle_map"
+    COUPLED_ROSSLER = "coupled_rossler"
+    SIR_VITAL = "sir_vital"
 
 
 class SimulationBackend(str, Enum):

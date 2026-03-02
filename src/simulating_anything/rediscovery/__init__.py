@@ -24,6 +24,7 @@ from simulating_anything.rediscovery.cahn_hilliard import run_cahn_hilliard_redi
 from simulating_anything.rediscovery.cart_pole import run_cart_pole_rediscovery
 from simulating_anything.rediscovery.chemostat import run_chemostat_rediscovery
 from simulating_anything.rediscovery.chua import run_chua_rediscovery
+from simulating_anything.rediscovery.circle_map import run_circle_map_rediscovery
 from simulating_anything.rediscovery.colpitts import run_colpitts_rediscovery
 from simulating_anything.rediscovery.competitive_lv import run_competitive_lv_rediscovery
 from simulating_anything.rediscovery.coupled_lorenz import run_coupled_lorenz_rediscovery
@@ -31,6 +32,7 @@ from simulating_anything.rediscovery.coupled_map_lattice import (
     run_coupled_map_lattice_rediscovery,
 )
 from simulating_anything.rediscovery.coupled_oscillators import run_coupled_oscillators_rediscovery
+from simulating_anything.rediscovery.coupled_rossler import run_coupled_rossler_rediscovery
 from simulating_anything.rediscovery.coupled_vdp import run_coupled_vdp_rediscovery
 from simulating_anything.rediscovery.cubic_map import run_cubic_map_rediscovery
 from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
@@ -54,6 +56,7 @@ from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscov
 from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
 from simulating_anything.rediscovery.fitzhugh_rinzel import run_fitzhugh_rinzel_rediscovery
 from simulating_anything.rediscovery.four_species_lv import run_four_species_lv_rediscovery
+from simulating_anything.rediscovery.gauss_map import run_gauss_map_rediscovery
 from simulating_anything.rediscovery.genesio_tesi import run_genesio_tesi_rediscovery
 from simulating_anything.rediscovery.fput import run_fput_rediscovery
 from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
@@ -124,6 +127,7 @@ from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
 from simulating_anything.rediscovery.sir_vaccination import (
     run_sir_vaccination_rediscovery,
 )
+from simulating_anything.rediscovery.sir_vital import run_sir_vital_rediscovery
 from simulating_anything.rediscovery.spring_mass_chain import run_spring_mass_chain_rediscovery
 from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
 from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
@@ -292,4 +296,8 @@ __all__ = [
     "run_rulkov_map_rediscovery",
     "run_coupled_vdp_rediscovery",
     "run_stuart_landau_rediscovery",
+    "run_gauss_map_rediscovery",
+    "run_circle_map_rediscovery",
+    "run_coupled_rossler_rediscovery",
+    "run_sir_vital_rediscovery",
 ]

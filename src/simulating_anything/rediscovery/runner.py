@@ -263,6 +263,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.rulkov_map import run_rulkov_map_rediscovery
     from simulating_anything.rediscovery.coupled_vdp import run_coupled_vdp_rediscovery
     from simulating_anything.rediscovery.stuart_landau import run_stuart_landau_rediscovery
+    from simulating_anything.rediscovery.gauss_map import run_gauss_map_rediscovery
+    from simulating_anything.rediscovery.circle_map import run_circle_map_rediscovery
+    from simulating_anything.rediscovery.coupled_rossler import run_coupled_rossler_rediscovery
+    from simulating_anything.rediscovery.sir_vital import run_sir_vital_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -917,6 +921,26 @@ def run_all_rediscoveries(
         "stuart_landau": {
             "label": "Stuart-Landau Hopf Normal Form",
             "fn": run_stuart_landau_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "gauss_map": {
+            "label": "Gauss Map Chaos",
+            "fn": run_gauss_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "circle_map": {
+            "label": "Circle Map Arnold Tongues",
+            "fn": run_circle_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "coupled_rossler": {
+            "label": "Coupled Rossler Synchronization",
+            "fn": run_coupled_rossler_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sir_vital": {
+            "label": "SIR Vital Dynamics Endemic",
+            "fn": run_sir_vital_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

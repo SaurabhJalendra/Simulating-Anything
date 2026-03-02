@@ -2108,6 +2108,66 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="gauss_map",
+            math_type="map_1d_gaussian",  # 1D Gaussian kernel map
+            state_dim=1,
+            n_parameters=2,  # alpha, beta
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="period_doubling_chaos",
+            characteristic_timescale="1",
+            discovered_equations=[
+                "x_{n+1} = exp(-alpha*x_n^2) + beta",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="circle_map",
+            math_type="map_circle",  # Circle map with Arnold tongues
+            state_dim=1,
+            n_parameters=2,  # Omega, K
+            conserved_quantities=[],
+            symmetries=["translational_mod1"],
+            phase_portrait_type="mode_locking",
+            characteristic_timescale="1",
+            discovered_equations=[
+                "theta_{n+1} = (theta_n + Omega - K/(2pi)*sin(2pi*theta_n)) mod 1",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="coupled_rossler",
+            math_type="ode_coupled_chaos",  # Coupled chaotic oscillators
+            state_dim=6,
+            n_parameters=4,  # a, b, c, epsilon
+            conserved_quantities=[],
+            symmetries=["permutation_symmetry"],
+            phase_portrait_type="synchronized_chaos",
+            characteristic_timescale="T_rossler",
+            discovered_equations=[
+                "dx1/dt = -(y1+z1) + eps*(x2-x1)",
+                "dy1/dt = x1 + a*y1",
+                "dz1/dt = b + z1*(x1-c)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sir_vital",
+            math_type="ode_epidemic_endemic",  # SIR with vital dynamics
+            state_dim=3,
+            n_parameters=3,  # beta, gamma, mu
+            conserved_quantities=["population_sum"],
+            symmetries=[],
+            phase_portrait_type="endemic_equilibrium",
+            characteristic_timescale="1/(gamma+mu)",
+            discovered_equations=[
+                "dS/dt = mu - beta*S*I - mu*S",
+                "dI/dt = beta*S*I - (gamma+mu)*I",
+                "dR/dt = gamma*I - mu*R",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -5178,6 +5238,98 @@ def detect_structural_analogies(
         },
     ))
 
+    # Structural: Gauss Map <-> Logistic Map (1D period-doubling chaos)
+    analogies.append(Analogy(
+        domain_a="gauss_map",
+        domain_b="logistic_map",
+        analogy_type="structural",
+        description=(
+            "Both 1D maps exhibit period-doubling cascades to chaos with "
+            "Feigenbaum universality. Same bifurcation structure despite "
+            "different nonlinearities (Gaussian vs quadratic)."
+        ),
+        strength=0.82,
+        mapping={
+            "period-doubling": "period-doubling",
+            "Feigenbaum delta": "Feigenbaum delta",
+            "Lyapunov exponent": "Lyapunov exponent",
+        },
+    ))
+
+    # Structural: Circle Map <-> Kuramoto (mode-locking/synchronization)
+    analogies.append(Analogy(
+        domain_a="circle_map",
+        domain_b="kuramoto",
+        analogy_type="structural",
+        description=(
+            "Circle map mode-locking and Kuramoto synchronization share the "
+            "same mathematical structure: both involve phase dynamics with "
+            "sinusoidal coupling. Arnold tongues in circle map correspond "
+            "to synchronization regions in Kuramoto."
+        ),
+        strength=0.80,
+        mapping={
+            "K coupling": "K coupling",
+            "winding number": "order parameter",
+            "mode-locking": "synchronization",
+        },
+    ))
+
+    # Structural: Coupled Rossler <-> Coupled Lorenz (coupled chaos sync)
+    analogies.append(Analogy(
+        domain_a="coupled_rossler",
+        domain_b="coupled_lorenz",
+        analogy_type="structural",
+        description=(
+            "Both systems couple two identical chaotic oscillators via "
+            "diffusive x-coupling. Same synchronization transition: "
+            "independent chaos -> phase sync -> complete sync as "
+            "coupling strength increases."
+        ),
+        strength=0.90,
+        mapping={
+            "epsilon coupling": "epsilon coupling",
+            "sync error": "sync error",
+            "conditional Lyapunov": "conditional Lyapunov",
+        },
+    ))
+
+    # Structural: SIR Vital <-> SIR Epidemic (epidemic dynamics)
+    analogies.append(Analogy(
+        domain_a="sir_vital",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both are SIR compartmental models with beta*S*I transmission. "
+            "SIR Vital adds birth/death rate mu, enabling endemic equilibrium "
+            "instead of extinction. Same R0 structure: beta/(gamma+mu) vs beta/gamma."
+        ),
+        strength=0.92,
+        mapping={
+            "beta*S*I transmission": "beta*S*I transmission",
+            "R0 threshold": "R0 threshold",
+            "gamma recovery": "gamma recovery",
+        },
+    ))
+
+    # Structural: SIR Vital <-> SEIR (compartmental epidemic)
+    analogies.append(Analogy(
+        domain_a="sir_vital",
+        domain_b="seir",
+        analogy_type="structural",
+        description=(
+            "Both are compartmental epidemic models with disease persistence. "
+            "SIR Vital has endemic equilibrium from vital dynamics; SEIR adds "
+            "exposed class. Same bifurcation: disease-free to endemic at R0=1."
+        ),
+        strength=0.78,
+        mapping={
+            "R0 threshold": "R0 threshold",
+            "endemic equilibrium": "endemic equilibrium",
+            "S*I transmission": "S*I transmission",
+        },
+    ))
+
     return analogies
 
 
@@ -6431,6 +6583,57 @@ def detect_dimensional_analogies(
         mapping={
             "k [coupling strength]": "K [coupling strength]",
             "1/k [sync time]": "1/K [sync time]",
+        },
+    ))
+
+    # Dimensional: Coupled Rossler <-> Coupled Lorenz (sync coupling scales)
+    analogies.append(Analogy(
+        domain_a="coupled_rossler",
+        domain_b="coupled_lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both coupled chaotic systems have coupling strength epsilon "
+            "as the control parameter with critical epsilon_c determining "
+            "synchronization onset. Same dimensional role."
+        ),
+        strength=0.85,
+        mapping={
+            "epsilon [coupling]": "epsilon [coupling]",
+            "sync_error [distance]": "sync_error [distance]",
+        },
+    ))
+
+    # Dimensional: SIR Vital <-> SIR Epidemic (R0 dimensions)
+    analogies.append(Analogy(
+        domain_a="sir_vital",
+        domain_b="sir_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Both share R0 = beta/gamma as the key dimensionless ratio "
+            "controlling disease spread. SIR Vital: R0=beta/(gamma+mu) "
+            "includes vital rate. Same dimensional scaling."
+        ),
+        strength=0.90,
+        mapping={
+            "beta/gamma [R0]": "beta/gamma [R0]",
+            "1/gamma [recovery time]": "1/gamma [recovery time]",
+        },
+    ))
+
+    # Dimensional: Gauss Map <-> Tent Map (1D map Lyapunov dimensions)
+    analogies.append(Analogy(
+        domain_a="gauss_map",
+        domain_b="tent_map",
+        analogy_type="dimensional",
+        description=(
+            "Both 1D maps have Lyapunov exponent as primary dynamical "
+            "measure with same dimensionless units [nats/iteration]. "
+            "Tent map: lambda=ln(r) exact. Gauss map: lambda varies with beta."
+        ),
+        strength=0.68,
+        mapping={
+            "lambda [nats/iter]": "lambda [nats/iter]",
+            "beta [control]": "r [control]",
         },
     ))
 
@@ -8601,6 +8804,82 @@ def detect_topological_analogies(
             "Hopf normal form": "Hopf bifurcation",
             "amplitude r=sqrt(mu)": "amplitude growth",
             "center manifold": "center manifold",
+        },
+    ))
+
+    # Topological: Gauss Map <-> Logistic Map (unimodal period-doubling)
+    analogies.append(Analogy(
+        domain_a="gauss_map",
+        domain_b="logistic_map",
+        analogy_type="topological",
+        description=(
+            "Both are unimodal 1D maps with a single maximum. The topological "
+            "structure of their bifurcation diagrams is identical: same sequence "
+            "of period-doubling bifurcations, same symbolic dynamics ordering "
+            "(Sharkovsky theorem applies to both)."
+        ),
+        strength=0.85,
+        mapping={
+            "unimodal maximum": "unimodal maximum",
+            "period-doubling cascade": "period-doubling cascade",
+            "symbolic dynamics": "symbolic dynamics",
+        },
+    ))
+
+    # Topological: Circle Map <-> Standard Map (KAM topology)
+    analogies.append(Analogy(
+        domain_a="circle_map",
+        domain_b="standard_map",
+        analogy_type="topological",
+        description=(
+            "Both maps exhibit KAM-type behavior: invariant circles "
+            "(tori in standard map) break down as nonlinearity K increases. "
+            "Arnold tongues in circle map correspond to resonance islands "
+            "in standard map. Same topological transition."
+        ),
+        strength=0.75,
+        mapping={
+            "Arnold tongues": "resonance islands",
+            "K critical": "K critical",
+            "mode-locking": "island chains",
+        },
+    ))
+
+    # Topological: Coupled Rossler <-> Coupled Lorenz (sync manifold)
+    analogies.append(Analogy(
+        domain_a="coupled_rossler",
+        domain_b="coupled_lorenz",
+        analogy_type="topological",
+        description=(
+            "Both have a synchronization manifold (x1=x2, y1=y2, z1=z2) "
+            "whose transverse stability determines sync. Same topological "
+            "transition: chaotic attractor confined to sync manifold above "
+            "critical coupling. Conditional Lyapunov exponent crosses zero."
+        ),
+        strength=0.88,
+        mapping={
+            "sync manifold": "sync manifold",
+            "transverse stability": "transverse stability",
+            "conditional LE zero-crossing": "conditional LE zero-crossing",
+        },
+    ))
+
+    # Topological: SIR Vital <-> Chemostat (transcritical bifurcation)
+    analogies.append(Analogy(
+        domain_a="sir_vital",
+        domain_b="chemostat",
+        analogy_type="topological",
+        description=(
+            "Both undergo transcritical bifurcation: SIR Vital at R0=1 "
+            "(disease-free to endemic), chemostat at washout bifurcation. "
+            "Same exchange of stability between two equilibria as control "
+            "parameter crosses threshold."
+        ),
+        strength=0.72,
+        mapping={
+            "transcritical bifurcation": "washout bifurcation",
+            "R0=1 threshold": "D=D_c threshold",
+            "endemic equilibrium": "coexistence equilibrium",
         },
     ))
 

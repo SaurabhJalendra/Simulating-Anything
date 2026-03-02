@@ -1155,6 +1155,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"mu": 1.0, "omega": 1.0, "beta": 0.0},
         "dt": 0.01, "n_steps": 500, "math_class": "Hopf Normal Form",
     },
+    "gauss_map": {
+        "module": "simulating_anything.simulation.gauss_map",
+        "cls": "GaussMapSimulation",
+        "domain": Domain.GAUSS_MAP,
+        "params": {"alpha": 6.2, "beta": -0.5},
+        "dt": 1.0, "n_steps": 500, "math_class": "Gaussian Map",
+    },
+    "circle_map": {
+        "module": "simulating_anything.simulation.circle_map",
+        "cls": "CircleMapSimulation",
+        "domain": Domain.CIRCLE_MAP,
+        "params": {"omega": 0.5, "K": 1.0},
+        "dt": 1.0, "n_steps": 500, "math_class": "Circle Map",
+    },
+    "coupled_rossler": {
+        "module": "simulating_anything.simulation.coupled_rossler",
+        "cls": "CoupledRosslerSimulation",
+        "domain": Domain.COUPLED_ROSSLER,
+        "params": {"a": 0.2, "b": 0.2, "c": 5.7, "epsilon": 0.05},
+        "dt": 0.01, "n_steps": 500, "math_class": "Coupled Chaotic ODE",
+    },
+    "sir_vital": {
+        "module": "simulating_anything.simulation.sir_vital",
+        "cls": "SIRVitalSimulation",
+        "domain": Domain.SIR_VITAL,
+        "params": {"beta": 0.4, "gamma": 0.1, "mu": 0.01},
+        "dt": 0.1, "n_steps": 500, "math_class": "Epidemic ODE",
+    },
 }
 
 
