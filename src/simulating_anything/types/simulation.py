@@ -136,6 +136,10 @@ class Domain(str, Enum):
     LOZI_MAP = "lozi_map"
     IZHIKEVICH = "izhikevich"
     DOUBLE_WELL = "double_well"
+    TINKERBELL_MAP = "tinkerbell_map"
+    RULKOV_MAP = "rulkov_map"
+    COUPLED_VDP = "coupled_vdp"
+    STUART_LANDAU = "stuart_landau"
 
 
 class SimulationBackend(str, Enum):

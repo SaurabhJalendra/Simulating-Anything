@@ -31,6 +31,7 @@ from simulating_anything.rediscovery.coupled_map_lattice import (
     run_coupled_map_lattice_rediscovery,
 )
 from simulating_anything.rediscovery.coupled_oscillators import run_coupled_oscillators_rediscovery
+from simulating_anything.rediscovery.coupled_vdp import run_coupled_vdp_rediscovery
 from simulating_anything.rediscovery.cubic_map import run_cubic_map_rediscovery
 from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
 from simulating_anything.rediscovery.double_well import run_double_well_rediscovery
@@ -126,10 +127,12 @@ from simulating_anything.rediscovery.sir_vaccination import (
 from simulating_anything.rediscovery.spring_mass_chain import run_spring_mass_chain_rediscovery
 from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
 from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
+from simulating_anything.rediscovery.stuart_landau import run_stuart_landau_rediscovery
 from simulating_anything.rediscovery.swinging_atwood import run_swinging_atwood_rediscovery
 from simulating_anything.rediscovery.thomas import run_thomas_rediscovery
 from simulating_anything.rediscovery.tent_map import run_tent_map_rediscovery
 from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
+from simulating_anything.rediscovery.tinkerbell_map import run_tinkerbell_map_rediscovery
 from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_rediscovery
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
 from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
@@ -144,6 +147,7 @@ from simulating_anything.rediscovery.newton_leipnik import run_newton_leipnik_re
 from simulating_anything.rediscovery.wang import run_wang_rediscovery
 from simulating_anything.rediscovery.arneodo import run_arneodo_rediscovery
 from simulating_anything.rediscovery.rucklidge import run_rucklidge_rediscovery
+from simulating_anything.rediscovery.rulkov_map import run_rulkov_map_rediscovery
 from simulating_anything.rediscovery.liu import run_liu_rediscovery
 from simulating_anything.rediscovery.hadley import run_hadley_rediscovery
 from simulating_anything.rediscovery.vallis import run_vallis_rediscovery
@@ -284,4 +288,8 @@ __all__ = [
     "run_lozi_map_rediscovery",
     "run_izhikevich_rediscovery",
     "run_double_well_rediscovery",
+    "run_tinkerbell_map_rediscovery",
+    "run_rulkov_map_rediscovery",
+    "run_coupled_vdp_rediscovery",
+    "run_stuart_landau_rediscovery",
 ]

@@ -1127,6 +1127,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"gamma": 0.5},
         "dt": 0.01, "n_steps": 500, "math_class": "Bistable ODE",
     },
+    "tinkerbell_map": {
+        "module": "simulating_anything.simulation.tinkerbell_map",
+        "cls": "TinkerbellMapSimulation",
+        "domain": Domain.TINKERBELL_MAP,
+        "params": {"a": 0.9, "b": -0.6013, "c": 2.0, "d": 0.5},
+        "dt": 1.0, "n_steps": 500, "math_class": "Discrete Map",
+    },
+    "rulkov_map": {
+        "module": "simulating_anything.simulation.rulkov_map",
+        "cls": "RulkovMapSimulation",
+        "domain": Domain.RULKOV_MAP,
+        "params": {"alpha": 4.1, "mu": 0.001, "sigma": -1.0},
+        "dt": 1.0, "n_steps": 500, "math_class": "Spiking Map",
+    },
+    "coupled_vdp": {
+        "module": "simulating_anything.simulation.coupled_vdp",
+        "cls": "CoupledVdPSimulation",
+        "domain": Domain.COUPLED_VDP,
+        "params": {"mu": 1.0, "k": 0.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Coupled ODE",
+    },
+    "stuart_landau": {
+        "module": "simulating_anything.simulation.stuart_landau",
+        "cls": "StuartLandauSimulation",
+        "domain": Domain.STUART_LANDAU,
+        "params": {"mu": 1.0, "omega": 1.0, "beta": 0.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Hopf Normal Form",
+    },
 }
 
 

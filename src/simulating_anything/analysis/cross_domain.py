@@ -2048,6 +2048,66 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="tinkerbell_map",
+            math_type="map_2d",  # 2D discrete chaos
+            state_dim=2,
+            n_parameters=4,  # a, b, c, d
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="strange_attractor",
+            characteristic_timescale="1",
+            discovered_equations=[
+                "x_{n+1} = x^2 - y^2 + a*x + b*y",
+                "y_{n+1} = 2*x*y + c*x + d*y",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="rulkov_map",
+            math_type="map_spiking",  # Discrete spiking neuron
+            state_dim=2,
+            n_parameters=3,  # alpha, mu, sigma
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="spiking",
+            characteristic_timescale="1/mu",
+            discovered_equations=[
+                "x_{n+1} = alpha/(1+x_n^2) + y_n",
+                "y_{n+1} = y_n - mu*(x_n - sigma)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="coupled_vdp",
+            math_type="ode_coupled",  # Coupled nonlinear oscillators
+            state_dim=4,
+            n_parameters=2,  # mu, k
+            conserved_quantities=[],
+            symmetries=["permutation_symmetry"],
+            phase_portrait_type="synchronized_limit_cycle",
+            characteristic_timescale="T_vdp",
+            discovered_equations=[
+                "dy1/dt = mu*(1-x1^2)*y1 - x1 + k*(x2-x1)",
+                "dy2/dt = mu*(1-x2^2)*y2 - x2 + k*(x1-x2)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="stuart_landau",
+            math_type="ode_bifurcation",  # Hopf normal form
+            state_dim=2,
+            n_parameters=3,  # mu, omega, beta
+            conserved_quantities=[],
+            symmetries=["rotational_symmetry"],
+            phase_portrait_type="hopf_bifurcation",
+            characteristic_timescale="2*pi/omega",
+            discovered_equations=[
+                "dx/dt = mu*x - omega*y - (x^2+y^2)*(x-beta*y)",
+                "dy/dt = omega*x + mu*y - (x^2+y^2)*(beta*x+y)",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -5029,6 +5089,95 @@ def detect_structural_analogies(
         },
     ))
 
+    # Structural: Tinkerbell <-> Henon (2D polynomial maps)
+    analogies.append(Analogy(
+        domain_a="tinkerbell_map",
+        domain_b="henon_map",
+        analogy_type="structural",
+        description=(
+            "Both are 2D discrete maps with polynomial nonlinearity producing "
+            "strange attractors. Tinkerbell: complex quadratic. Henon: real "
+            "quadratic with linear contraction."
+        ),
+        strength=0.72,
+        mapping={
+            "x^2-y^2 nonlinearity": "x^2 nonlinearity",
+            "2xy coupling": "linear y coupling",
+            "strange attractor": "strange attractor",
+        },
+    ))
+
+    # Structural: Rulkov <-> Izhikevich (spiking neuron models)
+    analogies.append(Analogy(
+        domain_a="rulkov_map",
+        domain_b="izhikevich",
+        analogy_type="structural",
+        description=(
+            "Both are efficient 2D spiking neuron models with fast/slow "
+            "timescale separation. Rulkov: discrete map. Izhikevich: ODE "
+            "with reset. Both show spiking and bursting."
+        ),
+        strength=0.85,
+        mapping={
+            "x fast voltage": "v fast voltage",
+            "y slow recovery": "u slow recovery",
+            "alpha spiking control": "I input current",
+        },
+    ))
+
+    # Structural: Coupled VdP <-> Coupled Lorenz (coupled synchronization)
+    analogies.append(Analogy(
+        domain_a="coupled_vdp",
+        domain_b="coupled_lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are pairs of identical oscillators with diffusive coupling. "
+            "Both exhibit synchronization threshold as coupling increases. "
+            "VdP: limit cycle sync. Lorenz: chaotic sync."
+        ),
+        strength=0.75,
+        mapping={
+            "k*(x2-x1) coupling": "c*(x2-x1) coupling",
+            "synchronization": "synchronization",
+            "in-phase/anti-phase": "complete/lag sync",
+        },
+    ))
+
+    # Structural: Stuart-Landau <-> VdP (Hopf oscillators)
+    analogies.append(Analogy(
+        domain_a="stuart_landau",
+        domain_b="van_der_pol",
+        analogy_type="structural",
+        description=(
+            "Both undergo supercritical Hopf bifurcation. Stuart-Landau is "
+            "the mathematical normal form; VdP is a physical realization. "
+            "Both: stable limit cycle for mu > 0."
+        ),
+        strength=0.88,
+        mapping={
+            "mu bifurcation": "mu nonlinearity",
+            "r=sqrt(mu) amplitude": "A~2 amplitude",
+            "supercritical Hopf": "supercritical Hopf",
+        },
+    ))
+
+    # Structural: Stuart-Landau <-> Brusselator (Hopf bifurcation)
+    analogies.append(Analogy(
+        domain_a="stuart_landau",
+        domain_b="brusselator",
+        analogy_type="structural",
+        description=(
+            "Both undergo Hopf bifurcation: Stuart-Landau is the normal form, "
+            "Brusselator is a chemical realization. Both show transition from "
+            "stable steady state to limit cycle oscillation."
+        ),
+        strength=0.78,
+        mapping={
+            "mu>0 oscillation": "b>1+a^2 oscillation",
+            "amplitude scaling": "amplitude scaling",
+        },
+    ))
+
     return analogies
 
 
@@ -6234,6 +6383,54 @@ def detect_dimensional_analogies(
         mapping={
             "|b| [area contraction]": "|b| [area contraction]",
             "1/a [nonlinearity scale]": "1/a [nonlinearity scale]",
+        },
+    ))
+
+    # Dimensional: Rulkov <-> Izhikevich (neural timescales)
+    analogies.append(Analogy(
+        domain_a="rulkov_map",
+        domain_b="izhikevich",
+        analogy_type="dimensional",
+        description=(
+            "Both have fast/slow timescale separation for spiking dynamics. "
+            "Rulkov: 1/mu slow timescale. Izhikevich: 1/a recovery timescale."
+        ),
+        strength=0.80,
+        mapping={
+            "1/mu [slow timescale]": "1/a [recovery timescale]",
+            "ISI [spike interval]": "ISI [spike interval]",
+        },
+    ))
+
+    # Dimensional: Stuart-Landau <-> VdP (oscillation timescales)
+    analogies.append(Analogy(
+        domain_a="stuart_landau",
+        domain_b="van_der_pol",
+        analogy_type="dimensional",
+        description=(
+            "Both share oscillation period as primary timescale. "
+            "Stuart-Landau: T=2*pi/omega. VdP: T depends on mu."
+        ),
+        strength=0.82,
+        mapping={
+            "2*pi/omega [period]": "T(mu) [period]",
+            "sqrt(mu) [amplitude]": "~2 [amplitude]",
+        },
+    ))
+
+    # Dimensional: Coupled VdP <-> Kuramoto (sync timescales)
+    analogies.append(Analogy(
+        domain_a="coupled_vdp",
+        domain_b="kuramoto",
+        analogy_type="dimensional",
+        description=(
+            "Both exhibit synchronization with coupling-dependent timescale. "
+            "VdP: 1/k sync timescale. Kuramoto: 1/K sync timescale."
+        ),
+        strength=0.72,
+        mapping={
+            "k [coupling strength]": "K [coupling strength]",
+            "1/k [sync time]": "1/K [sync time]",
         },
     ))
 
@@ -8309,6 +8506,101 @@ def detect_topological_analogies(
             "two stable wells": "two stable states",
             "barrier/separatrix": "Allee threshold",
             "bistable phase portrait": "bistable phase portrait",
+        },
+    ))
+
+    # Topological: Tinkerbell Map <-> Lozi Map (piecewise/folded attractors)
+    analogies.append(Analogy(
+        domain_a="tinkerbell_map",
+        domain_b="lozi_map",
+        analogy_type="topological",
+        description=(
+            "Both 2D discrete maps produce strange attractors with fractal "
+            "cross-sections. Tinkerbell has a folded torus-like attractor; "
+            "Lozi has a piecewise-linear attractor. Both exhibit horseshoe-type "
+            "stretching and folding dynamics."
+        ),
+        strength=0.72,
+        mapping={
+            "strange attractor": "strange attractor",
+            "fractal cross-section": "fractal cross-section",
+            "stretching and folding": "stretching and folding",
+        },
+    ))
+
+    # Topological: Rulkov Map <-> Izhikevich (discrete spiking topology)
+    analogies.append(Analogy(
+        domain_a="rulkov_map",
+        domain_b="izhikevich",
+        analogy_type="topological",
+        description=(
+            "Both discrete neuron models share excitable/bursting phase portrait "
+            "topology: fast variable resets after threshold crossing, slow "
+            "variable modulates excitability. Same bifurcation types (saddle-node, "
+            "Andronov-Hopf) produce same spiking patterns."
+        ),
+        strength=0.88,
+        mapping={
+            "fast-slow decomposition": "fast-slow decomposition",
+            "spike reset": "spike reset",
+            "bursting orbit": "bursting orbit",
+        },
+    ))
+
+    # Topological: Coupled VdP <-> Kuramoto (synchronization manifold)
+    analogies.append(Analogy(
+        domain_a="coupled_vdp",
+        domain_b="kuramoto",
+        analogy_type="topological",
+        description=(
+            "Both systems exhibit synchronization transitions where coupling "
+            "strength controls the topology of the phase space: from "
+            "independent tori (desynchronized) to a synchronized manifold. "
+            "Order parameter measures distance from sync manifold."
+        ),
+        strength=0.75,
+        mapping={
+            "sync manifold": "sync manifold",
+            "coupling threshold": "critical coupling K_c",
+            "phase locking": "phase locking",
+        },
+    ))
+
+    # Topological: Stuart-Landau <-> Van der Pol (limit cycle birth)
+    analogies.append(Analogy(
+        domain_a="stuart_landau",
+        domain_b="van_der_pol",
+        analogy_type="topological",
+        description=(
+            "Both systems undergo supercritical Hopf bifurcation creating a "
+            "stable limit cycle from a fixed point. Stuart-Landau is the normal "
+            "form; VdP is a physical realization. Same topological change: "
+            "spiral sink -> limit cycle."
+        ),
+        strength=0.90,
+        mapping={
+            "Hopf bifurcation": "Hopf bifurcation",
+            "limit cycle": "limit cycle",
+            "spiral sink to cycle": "spiral sink to cycle",
+        },
+    ))
+
+    # Topological: Stuart-Landau <-> Brusselator (Hopf normal form)
+    analogies.append(Analogy(
+        domain_a="stuart_landau",
+        domain_b="brusselator",
+        analogy_type="topological",
+        description=(
+            "Stuart-Landau is the normal form for Hopf bifurcation; Brusselator "
+            "undergoes Hopf at b_c=1+a^2. Near the bifurcation point, the "
+            "Brusselator center manifold dynamics reduce to Stuart-Landau form. "
+            "Identical topological transition."
+        ),
+        strength=0.85,
+        mapping={
+            "Hopf normal form": "Hopf bifurcation",
+            "amplitude r=sqrt(mu)": "amplitude growth",
+            "center manifold": "center manifold",
         },
     ))
 

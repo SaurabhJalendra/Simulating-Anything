@@ -259,6 +259,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.lozi_map import run_lozi_map_rediscovery
     from simulating_anything.rediscovery.izhikevich import run_izhikevich_rediscovery
     from simulating_anything.rediscovery.double_well import run_double_well_rediscovery
+    from simulating_anything.rediscovery.tinkerbell_map import run_tinkerbell_map_rediscovery
+    from simulating_anything.rediscovery.rulkov_map import run_rulkov_map_rediscovery
+    from simulating_anything.rediscovery.coupled_vdp import run_coupled_vdp_rediscovery
+    from simulating_anything.rediscovery.stuart_landau import run_stuart_landau_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -893,6 +897,26 @@ def run_all_rediscoveries(
         "double_well": {
             "label": "Double Well Bistable Potential",
             "fn": run_double_well_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "tinkerbell_map": {
+            "label": "Tinkerbell Map 2D Strange Attractor",
+            "fn": run_tinkerbell_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "rulkov_map": {
+            "label": "Rulkov Discrete Spiking Neuron",
+            "fn": run_rulkov_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "coupled_vdp": {
+            "label": "Coupled Van der Pol Synchronization",
+            "fn": run_coupled_vdp_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "stuart_landau": {
+            "label": "Stuart-Landau Hopf Normal Form",
+            "fn": run_stuart_landau_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
