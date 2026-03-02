@@ -183,6 +183,10 @@ from simulating_anything.rediscovery.glucose_insulin import run_glucose_insulin_
 from simulating_anything.rediscovery.two_patch import run_two_patch_rediscovery
 from simulating_anything.rediscovery.mapk_cascade import run_mapk_cascade_rediscovery
 from simulating_anything.rediscovery.circadian_clock import run_circadian_clock_rediscovery
+from simulating_anything.rediscovery.amari_neural_field import run_amari_neural_field_rediscovery
+from simulating_anything.rediscovery.lotka_volterra_delay import run_lotka_volterra_delay_rediscovery
+from simulating_anything.rediscovery.fhn_stochastic import run_fhn_stochastic_rediscovery
+from simulating_anything.rediscovery.sird import run_sird_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -336,4 +340,8 @@ __all__ = [
     "run_two_patch_rediscovery",
     "run_mapk_cascade_rediscovery",
     "run_circadian_clock_rediscovery",
+    "run_amari_neural_field_rediscovery",
+    "run_lotka_volterra_delay_rediscovery",
+    "run_fhn_stochastic_rediscovery",
+    "run_sird_rediscovery",
 ]

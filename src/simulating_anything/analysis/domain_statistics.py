@@ -1295,6 +1295,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"v_s": 1.6, "n": 4, "k1": 0.33, "k2": 0.43},
         "dt": 0.1, "n_steps": 500, "math_class": "Circadian Oscillator",
     },
+    "amari_neural_field": {
+        "module": "simulating_anything.simulation.amari_neural_field",
+        "cls": "AmariNeuralFieldSimulation",
+        "domain": Domain.AMARI_NEURAL_FIELD,
+        "params": {"tau": 1.0, "A": 5.0, "B": 2.0, "sigma_e": 1.0, "sigma_i": 3.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Neural Field PDE",
+    },
+    "lotka_volterra_delay": {
+        "module": "simulating_anything.simulation.lotka_volterra_delay",
+        "cls": "LotkaVolterraDelaySimulation",
+        "domain": Domain.LOTKA_VOLTERRA_DELAY,
+        "params": {"r": 1.0, "K": 4.0, "a": 0.5, "b": 0.2, "d": 0.3, "tau": 1.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Delay Differential Equation",
+    },
+    "fhn_stochastic": {
+        "module": "simulating_anything.simulation.fhn_stochastic",
+        "cls": "FHNStochasticSimulation",
+        "domain": Domain.FHN_STOCHASTIC,
+        "params": {"a": 0.7, "b": 0.8, "eps": 0.08, "I": 0.3, "sigma": 0.3},
+        "dt": 0.01, "n_steps": 500, "math_class": "Stochastic ODE",
+    },
+    "sird": {
+        "module": "simulating_anything.simulation.sird",
+        "cls": "SIRDSimulation",
+        "domain": Domain.SIRD,
+        "params": {"beta": 0.4, "gamma": 0.1, "mu": 0.02, "N0": 1000.0},
+        "dt": 0.1, "n_steps": 500, "math_class": "Epidemiological ODE",
+    },
 }
 
 

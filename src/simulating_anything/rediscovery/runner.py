@@ -283,6 +283,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.two_patch import run_two_patch_rediscovery
     from simulating_anything.rediscovery.mapk_cascade import run_mapk_cascade_rediscovery
     from simulating_anything.rediscovery.circadian_clock import run_circadian_clock_rediscovery
+    from simulating_anything.rediscovery.amari_neural_field import run_amari_neural_field_rediscovery
+    from simulating_anything.rediscovery.lotka_volterra_delay import run_lotka_volterra_delay_rediscovery
+    from simulating_anything.rediscovery.fhn_stochastic import run_fhn_stochastic_rediscovery
+    from simulating_anything.rediscovery.sird import run_sird_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1037,6 +1041,26 @@ def run_all_rediscoveries(
         "circadian_clock": {
             "label": "Circadian Clock Gonze-Goodwin",
             "fn": run_circadian_clock_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "amari_neural_field": {
+            "label": "Amari Neural Field",
+            "fn": run_amari_neural_field_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "lotka_volterra_delay": {
+            "label": "Lotka-Volterra Delay",
+            "fn": run_lotka_volterra_delay_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "fhn_stochastic": {
+            "label": "FHN Stochastic",
+            "fn": run_fhn_stochastic_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sird": {
+            "label": "SIRD Epidemic",
+            "fn": run_sird_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

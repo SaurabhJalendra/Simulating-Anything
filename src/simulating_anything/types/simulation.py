@@ -160,6 +160,10 @@ class Domain(str, Enum):
     TWO_PATCH = "two_patch"
     MAPK_CASCADE = "mapk_cascade"
     CIRCADIAN_CLOCK = "circadian_clock"
+    AMARI_NEURAL_FIELD = "amari_neural_field"
+    LOTKA_VOLTERRA_DELAY = "lotka_volterra_delay"
+    FHN_STOCHASTIC = "fhn_stochastic"
+    SIRD = "sird"
 
 
 class SimulationBackend(str, Enum):

@@ -2417,6 +2417,68 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="amari_neural_field",
+            math_type="neural_field_pde",
+            state_dim=128,
+            n_parameters=8,
+            conserved_quantities=[],
+            symmetries=["translation"],
+            phase_portrait_type="bump_solution",
+            characteristic_timescale="tau",
+            discovered_equations=[
+                "tau*du/dt = -u + integral(w(x-y)*f(u(y)))dy + h",
+                "w(x) = A*exp(-x^2/(2*sigma_e^2)) - B*exp(-x^2/(2*sigma_i^2))",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="lotka_volterra_delay",
+            math_type="delay_differential_equation",
+            state_dim=2,
+            n_parameters=6,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN/dt = r*N*(1-N/K) - a*N*P",
+                "dP/dt = b*N(t-tau)*P - d*P",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="fhn_stochastic",
+            math_type="stochastic_ode",
+            state_dim=2,
+            n_parameters=5,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="excitable_with_noise",
+            characteristic_timescale="1/eps",
+            discovered_equations=[
+                "dv = (v - v^3/3 - w + I)*dt + sigma*dW",
+                "dw = eps*(v + a - b*w)*dt",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sird",
+            math_type="epidemiological_ode",
+            state_dim=4,
+            n_parameters=3,
+            conserved_quantities=["S+I+R+D=N0"],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dS/dt = -beta*S*I/N",
+                "dI/dt = beta*S*I/N - gamma*I - mu*I",
+                "dR/dt = gamma*I",
+                "dD/dt = mu*I",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -6022,6 +6084,117 @@ def detect_structural_analogies(
         },
     ))
 
+    # -- Batch #152-155: Amari, LV Delay, FHN Stochastic, SIRD --
+
+    analogies.append(Analogy(
+        domain_a="amari_neural_field",
+        domain_b="wilson_cowan",
+        analogy_type="structural",
+        description=(
+            "Both model neural population dynamics with sigmoid activation. "
+            "Amari: spatially continuous field with Mexican hat kernel. "
+            "Wilson-Cowan: discrete E-I populations with sigmoidal transfer."
+        ),
+        strength=0.82,
+        mapping={
+            "sigmoid activation f(u)": "sigmoid transfer S(x)",
+            "Mexican hat kernel": "E-I connectivity weights",
+            "bump solution": "activity state",
+            "resting level h": "external input P",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="lotka_volterra_delay",
+        domain_b="delayed_predator_prey",
+        analogy_type="structural",
+        description=(
+            "Both are delay differential predator-prey models where gestation "
+            "delay destabilizes the coexistence equilibrium via Hopf bifurcation. "
+            "LV-Delay: logistic prey + delayed functional response. "
+            "Delayed-PP: Lotka-Volterra with maturation delay."
+        ),
+        strength=0.90,
+        mapping={
+            "gestation delay tau": "maturation delay tau",
+            "logistic prey growth": "prey growth",
+            "delay-induced Hopf": "delay-induced Hopf",
+            "critical tau_c": "critical tau_c",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="fhn_stochastic",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="structural",
+        description=(
+            "FHN-Stochastic extends the deterministic FHN model with additive "
+            "noise, enabling coherence resonance and noise-induced spiking. "
+            "Same cubic nullcline structure with additional Wiener process."
+        ),
+        strength=0.95,
+        mapping={
+            "cubic v-nullcline": "cubic v-nullcline",
+            "linear w-nullcline": "linear w-nullcline",
+            "noise-induced spikes": "current-induced spikes",
+            "coherence resonance": "excitable threshold",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sird",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "SIRD extends SIR by splitting the removed compartment into "
+            "recovered and deceased. Both have bilinear incidence beta*S*I/N "
+            "and threshold R0. SIRD: R0 = beta/(gamma+mu)."
+        ),
+        strength=0.92,
+        mapping={
+            "bilinear incidence": "bilinear incidence",
+            "R0 = beta/(gamma+mu)": "R0 = beta/gamma",
+            "epidemic threshold": "epidemic threshold",
+            "S+I+R+D=N0": "S+I+R=N",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="amari_neural_field",
+        domain_b="fhn_spatial",
+        analogy_type="structural",
+        description=(
+            "Both are spatially extended neural models supporting pattern "
+            "formation. Amari: integral kernel on 1D field for bumps. "
+            "FHN-Spatial: reaction-diffusion PDE for traveling waves/spirals."
+        ),
+        strength=0.72,
+        mapping={
+            "spatial neural field": "spatial reaction-diffusion",
+            "Mexican hat kernel": "diffusion + local kinetics",
+            "bump solutions": "traveling pulses",
+            "sigmoid activation": "cubic nullcline",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sird",
+        domain_b="seir",
+        analogy_type="structural",
+        description=(
+            "Both extend the basic SIR framework with an additional compartment. "
+            "SIRD adds deceased (D). SEIR adds exposed (E). Both have 4 state "
+            "variables and modified R0 expressions."
+        ),
+        strength=0.85,
+        mapping={
+            "4-compartment model": "4-compartment model",
+            "bilinear incidence": "bilinear incidence",
+            "mortality mu": "latency sigma",
+            "R0 = beta/(gamma+mu)": "R0 = beta*sigma/((sigma+mu_E)*(gamma+mu_I))",
+        },
+    ))
+
     return analogies
 
 
@@ -7589,6 +7762,77 @@ def detect_dimensional_analogies(
         mapping={
             "p1 [glucose clearance]": "D [dilution rate]",
             "Gb [basal conc]": "S0 [feed conc]",
+        },
+    ))
+
+    # -- Batch #152-155 dimensional analogies --
+
+    analogies.append(Analogy(
+        domain_a="amari_neural_field",
+        domain_b="wilson_cowan",
+        analogy_type="dimensional",
+        description=(
+            "Both have membrane time constant [time], connection weights "
+            "[1/time], and sigmoid threshold [voltage]. Amari: tau, A/B "
+            "kernel amplitudes. Wilson-Cowan: tau_E/tau_I, w_EE/w_EI."
+        ),
+        strength=0.78,
+        mapping={
+            "tau [membrane time]": "tau_E [excitatory time]",
+            "A [excitatory weight]": "w_EE [E-E weight]",
+            "theta [sigmoid threshold]": "theta_E [E threshold]",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="lotka_volterra_delay",
+        domain_b="delayed_predator_prey",
+        analogy_type="dimensional",
+        description=(
+            "Both share prey growth rate [1/time], predation rate [1/(pop*time)], "
+            "and delay time [time]. LV-Delay: r, a, tau. "
+            "Delayed-PP: alpha, beta, tau."
+        ),
+        strength=0.88,
+        mapping={
+            "r [prey growth rate]": "alpha [prey growth rate]",
+            "a [predation rate]": "beta [predation rate]",
+            "tau [gestation delay]": "tau [maturation delay]",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="fhn_stochastic",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="dimensional",
+        description=(
+            "Identical dimensional structure: v [voltage], w [recovery], "
+            "eps [1/time], I [current/voltage]. Stochastic version adds "
+            "sigma [voltage/sqrt(time)] noise intensity."
+        ),
+        strength=0.95,
+        mapping={
+            "eps [timescale]": "eps [timescale]",
+            "I [current]": "I [current]",
+            "a,b [recovery params]": "a,b [recovery params]",
+            "sigma [noise intensity]": "(no deterministic analog)",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sird",
+        domain_b="sir_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Both share beta [1/(pop*time)] transmission rate and gamma "
+            "[1/time] recovery rate. SIRD adds mu [1/time] mortality rate. "
+            "R0 dimensionless in both."
+        ),
+        strength=0.92,
+        mapping={
+            "beta [transmission rate]": "beta [transmission rate]",
+            "gamma [recovery rate]": "gamma [recovery rate]",
+            "mu [mortality rate]": "(no SIR analog)",
         },
     ))
 
@@ -10176,6 +10420,96 @@ def detect_topological_analogies(
             "stable spiral -> limit cycle": "stable spiral -> limit cycle",
             "supercritical Hopf": "supercritical Hopf",
             "bifurcation parameter n": "bifurcation parameter b",
+        },
+    ))
+
+    # -- Batch #152-155 topological analogies --
+
+    analogies.append(Analogy(
+        domain_a="amari_neural_field",
+        domain_b="cahn_hilliard",
+        analogy_type="topological",
+        description=(
+            "Both support localized solutions in 1D fields. Amari: stable "
+            "bump solutions via Mexican hat kernel. Cahn-Hilliard: phase "
+            "domains via double-well potential. Both have coexistence of "
+            "spatially localized and uniform states."
+        ),
+        strength=0.65,
+        mapping={
+            "bump solution": "phase domain",
+            "Mexican hat kernel": "double-well + gradient",
+            "bistability (bump vs flat)": "bistability (phases)",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="lotka_volterra_delay",
+        domain_b="delayed_predator_prey",
+        analogy_type="topological",
+        description=(
+            "Both exhibit identical bifurcation topology: stable coexistence "
+            "destabilized by Hopf bifurcation as delay tau exceeds critical "
+            "tau_c. Both produce stable limit cycles around the equilibrium."
+        ),
+        strength=0.90,
+        mapping={
+            "stable coexistence": "stable coexistence",
+            "Hopf at tau_c": "Hopf at tau_c",
+            "stable limit cycle": "stable limit cycle",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="fhn_stochastic",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="topological",
+        description=(
+            "Same phase portrait topology: excitable fixed point with "
+            "cubic/linear nullcline intersection. Noise adds stochastic "
+            "escape from excitable basin, creating coherence resonance "
+            "-- optimal noise intensity for most regular spiking."
+        ),
+        strength=0.90,
+        mapping={
+            "excitable fixed point": "excitable fixed point",
+            "nullcline intersection": "nullcline intersection",
+            "noise-induced orbits": "current-induced orbits",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sird",
+        domain_b="sir_epidemic",
+        analogy_type="topological",
+        description=(
+            "Both have disease-free equilibrium (DFE) that is stable when "
+            "R0 < 1 and unstable when R0 > 1 (transcritical bifurcation). "
+            "SIRD: 4D phase space with D as monotonically increasing. "
+            "SIR: 3D with same epidemic trajectory topology."
+        ),
+        strength=0.88,
+        mapping={
+            "DFE stability": "DFE stability",
+            "transcritical at R0=1": "transcritical at R0=1",
+            "epidemic peak": "epidemic peak",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sird",
+        domain_b="seir",
+        analogy_type="topological",
+        description=(
+            "Both are 4D extensions of SIR with similar epidemic trajectory "
+            "topology. SIRD: D accumulates from I (absorbing). SEIR: E is "
+            "transient before I. Both have transcritical bifurcation at R0=1."
+        ),
+        strength=0.80,
+        mapping={
+            "4D epidemic flow": "4D epidemic flow",
+            "DFE transcritical": "DFE transcritical",
+            "I peak trajectory": "I peak trajectory",
         },
     ))
 
