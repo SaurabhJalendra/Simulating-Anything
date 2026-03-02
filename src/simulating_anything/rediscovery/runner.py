@@ -303,6 +303,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.seirs import run_seirs_rediscovery
     from simulating_anything.rediscovery.ratio_dependent import run_ratio_dependent_rediscovery
     from simulating_anything.rediscovery.advection_1d import run_advection_1d_rediscovery
+    from simulating_anything.rediscovery.allee_two import run_allee_two_rediscovery
+    from simulating_anything.rediscovery.brusselator_1d import run_brusselator_1d_rediscovery
+    from simulating_anything.rediscovery.tumor_growth import run_tumor_growth_rediscovery
+    from simulating_anything.rediscovery.sir_stochastic import run_sir_stochastic_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1157,6 +1161,26 @@ def run_all_rediscoveries(
         "advection_1d": {
             "label": "Advection 1D",
             "fn": run_advection_1d_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "allee_two": {
+            "label": "Double Allee Pred-Prey",
+            "fn": run_allee_two_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "brusselator_1d": {
+            "label": "Brusselator 1D",
+            "fn": run_brusselator_1d_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "tumor_growth": {
+            "label": "Tumor-Immune Growth",
+            "fn": run_tumor_growth_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sir_stochastic": {
+            "label": "SIR Stochastic",
+            "fn": run_sir_stochastic_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

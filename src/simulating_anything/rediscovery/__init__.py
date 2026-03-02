@@ -203,6 +203,10 @@ from simulating_anything.rediscovery.fhn_pulse import run_fhn_pulse_rediscovery
 from simulating_anything.rediscovery.seirs import run_seirs_rediscovery
 from simulating_anything.rediscovery.ratio_dependent import run_ratio_dependent_rediscovery
 from simulating_anything.rediscovery.advection_1d import run_advection_1d_rediscovery
+from simulating_anything.rediscovery.allee_two import run_allee_two_rediscovery
+from simulating_anything.rediscovery.brusselator_1d import run_brusselator_1d_rediscovery
+from simulating_anything.rediscovery.tumor_growth import run_tumor_growth_rediscovery
+from simulating_anything.rediscovery.sir_stochastic import run_sir_stochastic_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -376,4 +380,8 @@ __all__ = [
     "run_seirs_rediscovery",
     "run_ratio_dependent_rediscovery",
     "run_advection_1d_rediscovery",
+    "run_allee_two_rediscovery",
+    "run_brusselator_1d_rediscovery",
+    "run_tumor_growth_rediscovery",
+    "run_sir_stochastic_rediscovery",
 ]

@@ -2707,6 +2707,67 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="allee_two",
+            math_type="predator_prey_ode",
+            state_dim=2,
+            n_parameters=8,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="multistable",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN/dt = r*N*(N/A_N-1)*(1-N/K) - a*N*P/(1+h*N)",
+                "dP/dt = e*a*N*P/(1+h*N) - d*P*(1-P/A_P)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="brusselator_1d",
+            math_type="reaction_diffusion_pde",
+            state_dim=512,
+            n_parameters=5,
+            conserved_quantities=[],
+            symmetries=["translational"],
+            phase_portrait_type="turing_pattern",
+            characteristic_timescale="1/(b-1-a^2)",
+            discovered_equations=[
+                "du/dt = D_u*u_xx + a - (b+1)*u + u^2*v",
+                "dv/dt = D_v*v_xx + b*u - u^2*v",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="tumor_growth",
+            math_type="tumor_immune_ode",
+            state_dim=2,
+            n_parameters=7,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="bistable",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dT/dt = r*T*(1-T/K) - a*T*I",
+                "dI/dt = s + p*T*I/(g+T) - d*I - a_I*T*I",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sir_stochastic",
+            math_type="stochastic_ode",
+            state_dim=3,
+            n_parameters=4,
+            conserved_quantities=["S+I+R~N"],
+            symmetries=[],
+            phase_portrait_type="noisy_transient",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dS = -beta*S*I/N*dt + sigma*sqrt(beta*S*I/N)*dW",
+                "dI = (beta*S*I/N-gamma*I)*dt + sigma*sqrt(...)*dW",
+                "dR = gamma*I*dt + sigma*sqrt(gamma*I)*dW",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -6840,6 +6901,98 @@ def detect_structural_analogies(
         },
     ))
 
+    # --- Batch #172-175 structural analogies ---
+    analogies.append(Analogy(
+        domain_a="allee_two",
+        domain_b="allee_predator_prey",
+        analogy_type="structural",
+        description=(
+            "Both feature Allee effects in predator-prey -- double Allee extends"
+            " the single-species Allee to both predator and prey."
+        ),
+        strength=0.93,
+        mapping={
+            "strong Allee effect": "strong Allee effect",
+            "Holling Type II": "Holling Type II",
+            "bistability": "bistability",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="brusselator_1d",
+        domain_b="brusselator_diffusion",
+        analogy_type="structural",
+        description=(
+            "Both are Brusselator reaction-diffusion PDEs -- 1D version produces"
+            " spatial patterns same as 2D but in one dimension."
+        ),
+        strength=0.96,
+        mapping={
+            "Turing instability": "Turing instability",
+            "u^2*v nonlinearity": "u^2*v nonlinearity",
+            "b_c = 1+a^2": "b_c = 1+a^2",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="brusselator_1d",
+        domain_b="schnakenberg",
+        analogy_type="structural",
+        description=(
+            "Both are activator-inhibitor reaction-diffusion systems producing"
+            " Turing patterns with different kinetics."
+        ),
+        strength=0.87,
+        mapping={
+            "activator-inhibitor": "activator-inhibitor",
+            "Turing wavelength": "Turing wavelength",
+            "diffusion ratio": "diffusion ratio",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="tumor_growth",
+        domain_b="harvested_population",
+        analogy_type="structural",
+        description=(
+            "Both model logistic growth with a removal term -- tumor+immune"
+            " killing vs population+harvesting. Both show saddle-node bifurcations."
+        ),
+        strength=0.82,
+        mapping={
+            "logistic growth": "logistic growth",
+            "removal term": "harvesting term",
+            "saddle-node": "saddle-node",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="sir_stochastic",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "SIR Stochastic adds demographic noise to the deterministic SIR --"
+            " same mean-field dynamics, stochastic fluctuations around it."
+        ),
+        strength=0.95,
+        mapping={
+            "bilinear incidence": "bilinear incidence",
+            "R0 = beta/gamma": "R0 = beta/gamma",
+            "S+I+R=N": "S+I+R=N",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="sir_stochastic",
+        domain_b="fhn_stochastic",
+        analogy_type="structural",
+        description=(
+            "Both add demographic stochasticity to deterministic ODEs via"
+            " Euler-Maruyama SDE integration with state-dependent noise."
+        ),
+        strength=0.84,
+        mapping={
+            "Euler-Maruyama": "Euler-Maruyama",
+            "state-dependent noise": "state-dependent noise",
+            "ensemble statistics": "ensemble statistics",
+        },
+    ))
+
     return analogies
 
 
@@ -8746,6 +8899,68 @@ def detect_dimensional_analogies(
             "c [wave speed]": "D [diffusion]",
             "L [domain]": "L [domain]",
             "N [grid points]": "N [grid points]",
+        },
+    ))
+
+    # --- Batch #172-175 dimensional analogies ---
+    analogies.append(Analogy(
+        domain_a="allee_two",
+        domain_b="ratio_dependent",
+        analogy_type="dimensional",
+        description=(
+            "Both have Holling Type II response with predator-dependent terms --"
+            " double Allee adds threshold parameters A_N, A_P."
+        ),
+        strength=0.80,
+        mapping={
+            "a [attack rate]": "a [max predation]",
+            "h [handling time]": "b [ratio param]",
+            "K [carrying capacity]": "K [carrying capacity]",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="brusselator_1d",
+        domain_b="gierer_meinhardt",
+        analogy_type="dimensional",
+        description=(
+            "Both are activator-inhibitor RD systems with diffusion ratio"
+            " controlling Turing wavelength -- D_v/D_u >> 1 required."
+        ),
+        strength=0.84,
+        mapping={
+            "D_u [activator diffusion]": "D_u [activator diffusion]",
+            "D_v [inhibitor diffusion]": "D_v [inhibitor diffusion]",
+            "b [bifurcation param]": "r [production rate]",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="tumor_growth",
+        domain_b="bazykin",
+        analogy_type="dimensional",
+        description=(
+            "Both model predator-prey with nonlinear functional response and"
+            " bistability -- tumor-immune vs ecological enrichment paradox."
+        ),
+        strength=0.78,
+        mapping={
+            "r [tumor growth]": "r [prey growth]",
+            "a [immune killing]": "a [attack rate]",
+            "K [carrying capacity]": "K [carrying capacity]",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="sir_stochastic",
+        domain_b="sird",
+        analogy_type="dimensional",
+        description=(
+            "Both extend basic SIR -- stochastic adds noise scaling with sqrt"
+            " of rates, SIRD adds death compartment. Same R0 = beta/gamma."
+        ),
+        strength=0.83,
+        mapping={
+            "beta [transmission]": "beta [transmission]",
+            "gamma [recovery]": "gamma [recovery]",
+            "N [population]": "N [population]",
         },
     ))
 
@@ -11758,6 +11973,83 @@ def detect_topological_analogies(
             "traveling wave": "propagating mode",
             "wave speed c": "wave speed c",
             "no dispersion": "dispersive decay",
+        },
+    ))
+
+    # --- Batch #172-175 topological analogies ---
+    analogies.append(Analogy(
+        domain_a="allee_two",
+        domain_b="double_well",
+        analogy_type="topological",
+        description=(
+            "Both are bistable systems with separatrix between two stable states"
+            " -- double Allee has extinction vs coexistence basins."
+        ),
+        strength=0.80,
+        mapping={
+            "bistable equilibria": "bistable minima",
+            "separatrix": "separatrix",
+            "basin of attraction": "basin of attraction",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="brusselator_1d",
+        domain_b="gray_scott_1d",
+        analogy_type="topological",
+        description=(
+            "Both are 1D reaction-diffusion systems producing spatial patterns"
+            " -- Brusselator Turing vs Gray-Scott pulse splitting."
+        ),
+        strength=0.85,
+        mapping={
+            "spatial pattern": "spatial pattern",
+            "Turing instability": "feed/kill threshold",
+            "wavelength selection": "pulse spacing",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="tumor_growth",
+        domain_b="eco_epidemic",
+        analogy_type="topological",
+        description=(
+            "Both model antagonistic interactions with Michaelis-Menten"
+            " saturation -- tumor-immune vs predator-prey-disease."
+        ),
+        strength=0.76,
+        mapping={
+            "immune response saturation": "disease saturation",
+            "elimination vs escape": "disease-free vs endemic",
+            "Michaelis-Menten": "nonlinear incidence",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="sir_stochastic",
+        domain_b="network_sis",
+        analogy_type="topological",
+        description=(
+            "Both capture stochastic effects in epidemic dynamics -- SIR via"
+            " SDE noise, network SIS via finite-size graph fluctuations."
+        ),
+        strength=0.79,
+        mapping={
+            "stochastic extinction": "stochastic extinction",
+            "R0 threshold": "spectral threshold",
+            "demographic noise": "finite-size fluctuations",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="tumor_growth",
+        domain_b="allee_two",
+        analogy_type="topological",
+        description=(
+            "Both exhibit bistability with extinction threshold -- tumor dormancy"
+            " vs Allee-driven extinction. Both have saddle-node bifurcations."
+        ),
+        strength=0.81,
+        mapping={
+            "bistable fate": "bistable fate",
+            "threshold effect": "Allee threshold",
+            "saddle-node": "saddle-node",
         },
     ))
 

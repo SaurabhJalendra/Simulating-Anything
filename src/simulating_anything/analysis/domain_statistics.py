@@ -1435,6 +1435,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"c": 1.0, "L": 10.0, "N": 256},
         "dt": 0.02, "n_steps": 500, "math_class": "Hyperbolic PDE",
     },
+    "allee_two": {
+        "module": "simulating_anything.simulation.allee_two",
+        "cls": "AlleeTwoSimulation",
+        "domain": Domain.ALLEE_TWO,
+        "params": {"r_N": 1.0, "K_N": 100.0, "A_N": 5.0, "a": 0.01, "e": 0.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Predator-Prey ODE",
+    },
+    "brusselator_1d": {
+        "module": "simulating_anything.simulation.brusselator_1d",
+        "cls": "Brusselator1DSimulation",
+        "domain": Domain.BRUSSELATOR_1D,
+        "params": {"a": 1.0, "b": 3.0, "D_u": 0.01, "D_v": 0.1, "L": 20.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Reaction-Diffusion PDE",
+    },
+    "tumor_growth": {
+        "module": "simulating_anything.simulation.tumor_growth",
+        "cls": "TumorGrowthSimulation",
+        "domain": Domain.TUMOR_GROWTH,
+        "params": {"r": 0.5, "K": 1e6, "a": 1e-7, "s": 1e4, "d": 0.03},
+        "dt": 0.1, "n_steps": 500, "math_class": "Tumor-Immune ODE",
+    },
+    "sir_stochastic": {
+        "module": "simulating_anything.simulation.sir_stochastic",
+        "cls": "SIRStochasticSimulation",
+        "domain": Domain.SIR_STOCHASTIC,
+        "params": {"beta": 0.5, "gamma": 0.1, "N0": 1000.0, "sigma": 0.1},
+        "dt": 0.1, "n_steps": 500, "math_class": "Stochastic ODE",
+    },
 }
 
 

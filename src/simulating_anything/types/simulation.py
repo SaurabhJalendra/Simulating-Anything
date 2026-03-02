@@ -180,6 +180,10 @@ class Domain(str, Enum):
     SEIRS = "seirs"
     RATIO_DEPENDENT = "ratio_dependent"
     ADVECTION_1D = "advection_1d"
+    ALLEE_TWO = "allee_two"
+    BRUSSELATOR_1D = "brusselator_1d"
+    TUMOR_GROWTH = "tumor_growth"
+    SIR_STOCHASTIC = "sir_stochastic"
 
 
 class SimulationBackend(str, Enum):
