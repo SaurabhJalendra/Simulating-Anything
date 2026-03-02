@@ -1099,6 +1099,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"n_particles": 5, "restitution": 1.0},
         "dt": 0.01, "n_steps": 500, "math_class": "Particle Mechanics",
     },
+    "tent_map": {
+        "module": "simulating_anything.simulation.tent_map",
+        "cls": "TentMapSimulation",
+        "domain": Domain.TENT_MAP,
+        "params": {"r": 2.0},
+        "dt": 1.0, "n_steps": 500, "math_class": "Discrete Map",
+    },
+    "lozi_map": {
+        "module": "simulating_anything.simulation.lozi_map",
+        "cls": "LoziMapSimulation",
+        "domain": Domain.LOZI_MAP,
+        "params": {"a": 1.7, "b": 0.5},
+        "dt": 1.0, "n_steps": 500, "math_class": "Discrete Map",
+    },
+    "izhikevich": {
+        "module": "simulating_anything.simulation.izhikevich",
+        "cls": "IzhikevichSimulation",
+        "domain": Domain.IZHIKEVICH,
+        "params": {"a": 0.02, "b": 0.2, "c": -65.0, "d": 8.0, "I": 10.0},
+        "dt": 0.1, "n_steps": 500, "math_class": "Spiking Neuron",
+    },
+    "double_well": {
+        "module": "simulating_anything.simulation.double_well",
+        "cls": "DoubleWellSimulation",
+        "domain": Domain.DOUBLE_WELL,
+        "params": {"gamma": 0.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Bistable ODE",
+    },
 }
 
 

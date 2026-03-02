@@ -1991,6 +1991,63 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="tent_map",
+            math_type="map_1d",  # Piecewise linear chaos
+            state_dim=1,
+            n_parameters=1,  # r
+            conserved_quantities=[],
+            symmetries=["piecewise_linear"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1",
+            discovered_equations=["x_{n+1} = r*min(x, 1-x)"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="lozi_map",
+            math_type="map_2d",  # Piecewise linear 2D chaos
+            state_dim=2,
+            n_parameters=2,  # a, b
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="strange_attractor",
+            characteristic_timescale="1",
+            discovered_equations=[
+                "x_{n+1} = 1 - a*|x_n| + y_n",
+                "y_{n+1} = b*x_n",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="izhikevich",
+            math_type="ode_spiking",  # Spiking neuron with reset
+            state_dim=2,
+            n_parameters=5,  # a, b, c, d, I
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="ISI",
+            discovered_equations=[
+                "dv/dt = 0.04*v^2 + 5*v + 140 - u + I",
+                "du/dt = a*(b*v - u)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="double_well",
+            math_type="ode_bistable",  # Bistable potential
+            state_dim=2,
+            n_parameters=2,  # gamma, sigma
+            conserved_quantities=["energy"],
+            symmetries=["reflection_x"],
+            phase_portrait_type="bistable",
+            characteristic_timescale="1/sqrt(2)",
+            discovered_equations=[
+                "dx/dt = v",
+                "dv/dt = x - x^3 - gamma*v",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -4865,6 +4922,113 @@ def detect_structural_analogies(
         },
     ))
 
+    # Structural: Tent Map <-> Logistic Map (1D chaos)
+    analogies.append(Analogy(
+        domain_a="tent_map",
+        domain_b="logistic_map",
+        analogy_type="structural",
+        description=(
+            "Both are 1D discrete maps on [0,1] with chaos. "
+            "Tent: piecewise linear. Logistic: smooth quadratic. "
+            "Tent map is topologically conjugate to logistic at r=4."
+        ),
+        strength=0.90,
+        mapping={
+            "r control parameter": "r control parameter",
+            "piecewise linear": "quadratic nonlinearity",
+            "Lyapunov = ln(r)": "Lyapunov = ln(r) at r=4",
+        },
+    ))
+
+    # Structural: Tent Map <-> Cubic Map (1D discrete chaos)
+    analogies.append(Analogy(
+        domain_a="tent_map",
+        domain_b="cubic_map",
+        analogy_type="structural",
+        description=(
+            "Both are 1D discrete maps with single control parameter. "
+            "Tent: piecewise linear, no period-doubling. "
+            "Cubic: smooth, with period-doubling cascade."
+        ),
+        strength=0.70,
+        mapping={
+            "r parameter": "r parameter",
+            "1D orbit": "1D orbit",
+        },
+    ))
+
+    # Structural: Lozi Map <-> Henon Map (2D discrete chaos)
+    analogies.append(Analogy(
+        domain_a="lozi_map",
+        domain_b="henon_map",
+        analogy_type="structural",
+        description=(
+            "Both are 2D discrete maps with quadratic/piecewise nonlinearity "
+            "and constant Jacobian determinant. Lozi: |x| piecewise linear. "
+            "Henon: x^2 smooth quadratic. Both show strange attractors."
+        ),
+        strength=0.92,
+        mapping={
+            "a*|x|": "a*x^2",
+            "det(J) = -b": "det(J) = -b",
+            "strange attractor": "strange attractor",
+        },
+    ))
+
+    # Structural: Izhikevich <-> HH (spiking neurons)
+    analogies.append(Analogy(
+        domain_a="izhikevich",
+        domain_b="hodgkin_huxley",
+        analogy_type="structural",
+        description=(
+            "Both are spiking neuron models with excitable dynamics. "
+            "HH: 4D biophysical (ion channels). "
+            "Izhikevich: 2D phenomenological with reset."
+        ),
+        strength=0.75,
+        mapping={
+            "v membrane": "V membrane",
+            "u recovery": "n,m,h gating",
+            "spike threshold": "spike threshold",
+        },
+    ))
+
+    # Structural: Izhikevich <-> FHN (2D excitable neurons)
+    analogies.append(Analogy(
+        domain_a="izhikevich",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="structural",
+        description=(
+            "Both are 2D excitable neuron models with fast voltage "
+            "and slow recovery variables. FHN: cubic nullcline. "
+            "Izhikevich: quadratic v + reset."
+        ),
+        strength=0.80,
+        mapping={
+            "v fast variable": "v fast variable",
+            "u slow recovery": "w slow recovery",
+            "I input current": "I input current",
+        },
+    ))
+
+    # Structural: Double Well <-> Duffing (quartic potential)
+    analogies.append(Analogy(
+        domain_a="double_well",
+        domain_b="duffing",
+        analogy_type="structural",
+        description=(
+            "Both involve motion in a nonlinear potential with cubic "
+            "restoring force. Double well: V=x^4/4-x^2/2 (bistable). "
+            "Duffing: alpha*x + beta*x^3 (can be bistable with alpha<0)."
+        ),
+        strength=0.88,
+        mapping={
+            "x-x^3 restoring": "alpha*x+beta*x^3 restoring",
+            "gamma damping": "delta damping",
+            "barrier crossing": "potential well escape",
+        },
+    ))
+
     return analogies
 
 
@@ -6020,6 +6184,56 @@ def detect_dimensional_analogies(
         mapping={
             "spacing/v [collision time]": "mean_free_path/v [collision time]",
             "m*v [momentum]": "m*v [momentum]",
+        },
+    ))
+
+    # Dimensional: Izhikevich <-> HH (neural timescales)
+    analogies.append(Analogy(
+        domain_a="izhikevich",
+        domain_b="hodgkin_huxley",
+        analogy_type="dimensional",
+        description=(
+            "Both spiking neurons share ISI (interspike interval) as primary "
+            "timescale. HH: ms-scale ion channel dynamics. "
+            "Izhikevich: abstract ms-scale dynamics."
+        ),
+        strength=0.82,
+        mapping={
+            "ISI [spike interval]": "ISI [spike interval]",
+            "1/a [recovery time]": "tau_n [gating time]",
+        },
+    ))
+
+    # Dimensional: Double Well <-> Duffing (oscillation timescale)
+    analogies.append(Analogy(
+        domain_a="double_well",
+        domain_b="duffing",
+        analogy_type="dimensional",
+        description=(
+            "Both share small-oscillation period near potential minimum "
+            "and damping timescale 1/gamma. "
+            "Double well: omega=sqrt(2). Duffing: omega depends on alpha."
+        ),
+        strength=0.82,
+        mapping={
+            "1/sqrt(2) [well period]": "1/omega_0 [natural period]",
+            "1/gamma [damping]": "1/delta [damping]",
+        },
+    ))
+
+    # Dimensional: Lozi <-> Henon (contraction rate)
+    analogies.append(Analogy(
+        domain_a="lozi_map",
+        domain_b="henon_map",
+        analogy_type="dimensional",
+        description=(
+            "Both 2D maps have constant area contraction factor |b| per "
+            "iteration. Lozi: det(J)=-b. Henon: det(J)=-b."
+        ),
+        strength=0.90,
+        mapping={
+            "|b| [area contraction]": "|b| [area contraction]",
+            "1/a [nonlinearity scale]": "1/a [nonlinearity scale]",
         },
     ))
 
@@ -8023,6 +8237,78 @@ def detect_topological_analogies(
             "ordered 1D chain": "ordered 1D chain",
             "momentum conservation": "momentum conservation",
             "energy transfer": "phonon propagation",
+        },
+    ))
+
+    # Topological: Tent Map <-> Logistic Map (1D map topology)
+    analogies.append(Analogy(
+        domain_a="tent_map",
+        domain_b="logistic_map",
+        analogy_type="topological",
+        description=(
+            "Both are topologically conjugate at maximal parameter values. "
+            "Tent(r=2) is conjugate to Logistic(r=4) via x=sin^2(pi*y/2). "
+            "Same symbolic dynamics."
+        ),
+        strength=0.95,
+        mapping={
+            "topological conjugacy": "topological conjugacy",
+            "uniform density": "arcsine density",
+            "shift map": "shift map",
+        },
+    ))
+
+    # Topological: Lozi Map <-> Henon Map (2D strange attractor)
+    analogies.append(Analogy(
+        domain_a="lozi_map",
+        domain_b="henon_map",
+        analogy_type="topological",
+        description=(
+            "Both 2D maps produce topologically equivalent strange attractors "
+            "with similar folding structure. Both have hyperbolic structure "
+            "with transverse Cantor set cross-section."
+        ),
+        strength=0.88,
+        mapping={
+            "strange attractor": "Henon attractor",
+            "Cantor cross-section": "Cantor cross-section",
+            "horseshoe dynamics": "horseshoe dynamics",
+        },
+    ))
+
+    # Topological: Izhikevich <-> FHN (excitable topology)
+    analogies.append(Analogy(
+        domain_a="izhikevich",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="topological",
+        description=(
+            "Both 2D excitable systems have similar nullcline topology: "
+            "cubic-like v-nullcline intersecting linear w-nullcline. "
+            "Same excitable/oscillatory phase portrait types."
+        ),
+        strength=0.82,
+        mapping={
+            "excitable regime": "excitable regime",
+            "oscillatory regime": "oscillatory regime",
+            "nullcline intersection": "nullcline intersection",
+        },
+    ))
+
+    # Topological: Double Well <-> Allee Predator-Prey (bistability)
+    analogies.append(Analogy(
+        domain_a="double_well",
+        domain_b="allee_predator_prey",
+        analogy_type="topological",
+        description=(
+            "Both systems are bistable with two stable equilibria separated "
+            "by an unstable separatrix. Double well: x=±1 stable, x=0 "
+            "unstable. Allee: coexistence and extinction basins."
+        ),
+        strength=0.70,
+        mapping={
+            "two stable wells": "two stable states",
+            "barrier/separatrix": "Allee threshold",
+            "bistable phase portrait": "bistable phase portrait",
         },
     ))
 

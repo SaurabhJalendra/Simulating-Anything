@@ -33,6 +33,7 @@ from simulating_anything.rediscovery.coupled_map_lattice import (
 from simulating_anything.rediscovery.coupled_oscillators import run_coupled_oscillators_rediscovery
 from simulating_anything.rediscovery.cubic_map import run_cubic_map_rediscovery
 from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
+from simulating_anything.rediscovery.double_well import run_double_well_rediscovery
 from simulating_anything.rediscovery.delayed_predator_prey import (
     run_delayed_predator_prey_rediscovery,
 )
@@ -67,6 +68,7 @@ from simulating_anything.rediscovery.henon_map import run_henon_map_rediscovery
 from simulating_anything.rediscovery.hindmarsh_rose import run_hindmarsh_rose_rediscovery
 from simulating_anything.rediscovery.hodgkin_huxley import run_hodgkin_huxley_rediscovery
 from simulating_anything.rediscovery.ikeda_map import run_ikeda_map_rediscovery
+from simulating_anything.rediscovery.izhikevich import run_izhikevich_rediscovery
 from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
 from simulating_anything.rediscovery.kapitza_pendulum import run_kapitza_pendulum_rediscovery
 from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
@@ -82,6 +84,7 @@ from simulating_anything.rediscovery.lorenz_haken import run_lorenz_haken_redisc
 from simulating_anything.rediscovery.lorenz84 import run_lorenz84_rediscovery
 from simulating_anything.rediscovery.lorenz96 import run_lorenz96_rediscovery
 from simulating_anything.rediscovery.lorenz_stenflo import run_lorenz_stenflo_rediscovery
+from simulating_anything.rediscovery.lozi_map import run_lozi_map_rediscovery
 from simulating_anything.rediscovery.lotka_volterra import run_lotka_volterra_rediscovery
 from simulating_anything.rediscovery.mackey_glass import run_mackey_glass_rediscovery
 from simulating_anything.rediscovery.magnetic_pendulum import run_magnetic_pendulum_rediscovery
@@ -125,6 +128,7 @@ from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
 from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
 from simulating_anything.rediscovery.swinging_atwood import run_swinging_atwood_rediscovery
 from simulating_anything.rediscovery.thomas import run_thomas_rediscovery
+from simulating_anything.rediscovery.tent_map import run_tent_map_rediscovery
 from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
 from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_rediscovery
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
@@ -276,4 +280,8 @@ __all__ = [
     "run_cubic_map_rediscovery",
     "run_zombie_sir_rediscovery",
     "run_elastic_collision_rediscovery",
+    "run_tent_map_rediscovery",
+    "run_lozi_map_rediscovery",
+    "run_izhikevich_rediscovery",
+    "run_double_well_rediscovery",
 ]

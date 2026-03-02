@@ -255,6 +255,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.elastic_collision import (
         run_elastic_collision_rediscovery,
     )
+    from simulating_anything.rediscovery.tent_map import run_tent_map_rediscovery
+    from simulating_anything.rediscovery.lozi_map import run_lozi_map_rediscovery
+    from simulating_anything.rediscovery.izhikevich import run_izhikevich_rediscovery
+    from simulating_anything.rediscovery.double_well import run_double_well_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -869,6 +873,26 @@ def run_all_rediscoveries(
         "elastic_collision": {
             "label": "1D Elastic Collision Chain",
             "fn": run_elastic_collision_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "tent_map": {
+            "label": "Tent Map Piecewise Linear Chaos",
+            "fn": run_tent_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "lozi_map": {
+            "label": "Lozi Map 2D Piecewise Attractor",
+            "fn": run_lozi_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "izhikevich": {
+            "label": "Izhikevich Spiking Neuron",
+            "fn": run_izhikevich_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "double_well": {
+            "label": "Double Well Bistable Potential",
+            "fn": run_double_well_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

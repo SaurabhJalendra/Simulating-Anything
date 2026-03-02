@@ -132,6 +132,10 @@ class Domain(str, Enum):
     CUBIC_MAP = "cubic_map"
     ZOMBIE_SIR = "zombie_sir"
     ELASTIC_COLLISION = "elastic_collision"
+    TENT_MAP = "tent_map"
+    LOZI_MAP = "lozi_map"
+    IZHIKEVICH = "izhikevich"
+    DOUBLE_WELL = "double_well"
 
 
 class SimulationBackend(str, Enum):
