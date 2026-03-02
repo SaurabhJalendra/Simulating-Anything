@@ -120,6 +120,10 @@ class Domain(str, Enum):
     NEWTON_LEIPNIK = "newton_leipnik"
     WANG = "wang"
     ARNEODO = "arneodo"
+    RUCKLIDGE = "rucklidge"
+    LIU = "liu"
+    HADLEY = "hadley"
+    VALLIS = "vallis"
 
 
 class SimulationBackend(str, Enum):

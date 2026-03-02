@@ -237,6 +237,10 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.wang import run_wang_rediscovery
     from simulating_anything.rediscovery.arneodo import run_arneodo_rediscovery
+    from simulating_anything.rediscovery.rucklidge import run_rucklidge_rediscovery
+    from simulating_anything.rediscovery.liu import run_liu_rediscovery
+    from simulating_anything.rediscovery.hadley import run_hadley_rediscovery
+    from simulating_anything.rediscovery.vallis import run_vallis_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -791,6 +795,26 @@ def run_all_rediscoveries(
         "arneodo": {
             "label": "Arneodo Cubic Jerk Chaos",
             "fn": run_arneodo_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "rucklidge": {
+            "label": "Rucklidge Double Convection Chaos",
+            "fn": run_rucklidge_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "liu": {
+            "label": "Liu 6-Parameter Chaotic Attractor",
+            "fn": run_liu_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "hadley": {
+            "label": "Hadley Atmospheric Circulation",
+            "fn": run_hadley_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "vallis": {
+            "label": "Vallis ENSO Climate Oscillation",
+            "fn": run_vallis_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

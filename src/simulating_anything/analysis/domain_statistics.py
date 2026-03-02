@@ -1015,6 +1015,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"a": 5.5, "b": 3.5, "d": 1.0},
         "dt": 0.01, "n_steps": 500, "math_class": "Jerk ODE",
     },
+    "rucklidge": {
+        "module": "simulating_anything.simulation.rucklidge",
+        "cls": "RucklidgeSimulation",
+        "domain": Domain.RUCKLIDGE,
+        "params": {"kappa": 2.0, "lambda_param": 6.7},
+        "dt": 0.01, "n_steps": 500, "math_class": "Convection ODE",
+    },
+    "liu": {
+        "module": "simulating_anything.simulation.liu",
+        "cls": "LiuSimulation",
+        "domain": Domain.LIU,
+        "params": {"a": 1.0, "b": 2.5, "c": 5.0, "e": 1.0, "k": 4.0, "m": 4.0},
+        "dt": 0.005, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "hadley": {
+        "module": "simulating_anything.simulation.hadley",
+        "cls": "HadleySimulation",
+        "domain": Domain.HADLEY,
+        "params": {"a": 0.2, "b": 4.0, "F": 8.0, "G": 1.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Atmospheric ODE",
+    },
+    "vallis": {
+        "module": "simulating_anything.simulation.vallis",
+        "cls": "VallisSimulation",
+        "domain": Domain.VALLIS,
+        "params": {"B": 102.0, "C": 3.0, "p": 0.0},
+        "dt": 0.005, "n_steps": 500, "math_class": "Climate ODE",
+    },
 }
 
 
