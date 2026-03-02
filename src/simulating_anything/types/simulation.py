@@ -96,6 +96,10 @@ class Domain(str, Enum):
     COLPITTS = "colpitts"
     ROSSLER_HYPERCHAOS = "rossler_hyperchaos"
     FHN_RING = "fhn_ring"
+    LANGFORD = "langford"
+    LASER_RATE = "laser_rate"
+    BAZYKIN = "bazykin"
+    SIR_VACCINATION = "sir_vaccination"
 
 
 class SimulationBackend(str, Enum):

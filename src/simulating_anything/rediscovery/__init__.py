@@ -6,6 +6,7 @@ from simulating_anything.rediscovery.allee_predator_prey import (
     run_allee_predator_prey_rediscovery,
 )
 from simulating_anything.rediscovery.bak_sneppen import run_bak_sneppen_rediscovery
+from simulating_anything.rediscovery.bazykin import run_bazykin_rediscovery
 from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
 from simulating_anything.rediscovery.bouncing_ball import run_bouncing_ball_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
@@ -59,6 +60,8 @@ from simulating_anything.rediscovery.ikeda_map import run_ikeda_map_rediscovery
 from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
 from simulating_anything.rediscovery.kapitza_pendulum import run_kapitza_pendulum_rediscovery
 from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
+from simulating_anything.rediscovery.langford import run_langford_rediscovery
+from simulating_anything.rediscovery.laser_rate import run_laser_rate_rediscovery
 from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
 from simulating_anything.rediscovery.kuramoto_sivashinsky import (
     run_kuramoto_sivashinsky_rediscovery,
@@ -100,6 +103,9 @@ from simulating_anything.rediscovery.selkov import run_selkov_rediscovery
 from simulating_anything.rediscovery.shallow_water import run_shallow_water_rediscovery
 from simulating_anything.rediscovery.sine_gordon import run_sine_gordon_rediscovery
 from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
+from simulating_anything.rediscovery.sir_vaccination import (
+    run_sir_vaccination_rediscovery,
+)
 from simulating_anything.rediscovery.spring_mass_chain import run_spring_mass_chain_rediscovery
 from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
 from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
@@ -200,4 +206,8 @@ __all__ = [
     "run_harvested_population_rediscovery",
     "run_rossler_hyperchaos_rediscovery",
     "run_fhn_ring_rediscovery",
+    "run_laser_rate_rediscovery",
+    "run_bazykin_rediscovery",
+    "run_langford_rediscovery",
+    "run_sir_vaccination_rediscovery",
 ]

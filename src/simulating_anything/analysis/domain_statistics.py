@@ -817,12 +817,53 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.05, "n_steps": 500, "math_class": "Neural Network",
     },
+    "sir_vaccination": {
+        "module": "simulating_anything.simulation.sir_vaccination",
+        "cls": "SIRVaccinationSimulation",
+        "domain": Domain.SIR_VACCINATION,
+        "params": {
+            "beta": 0.3, "gamma": 0.1, "mu": 0.01, "nu": 0.0,
+            "N": 1000.0, "S_0": 990.0, "I_0": 10.0, "R_0_init": 0.0,
+        },
+        "dt": 0.1, "n_steps": 500, "math_class": "Epidemic ODE",
+    },
     "harvested_population": {
         "module": "simulating_anything.simulation.harvested_population",
         "cls": "HarvestedPopulationSimulation",
         "domain": Domain.HARVESTED_POPULATION,
         "params": {"r": 1.0, "K": 1.0, "H": 0.0, "x_0": 0.5},
         "dt": 0.01, "n_steps": 500, "math_class": "Resource ODE",
+    },
+    "langford": {
+        "module": "simulating_anything.simulation.langford",
+        "cls": "LangfordSimulation",
+        "domain": Domain.LANGFORD,
+        "params": {
+            "a": 0.95, "b": 0.7, "c": 0.6, "d": 3.5,
+            "e": 0.25, "f": 0.1,
+            "x_0": 0.1, "y_0": 0.0, "z_0": 0.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Torus ODE",
+    },
+    "laser_rate": {
+        "module": "simulating_anything.simulation.laser_rate",
+        "cls": "LaserRateSimulation",
+        "domain": Domain.LASER_RATE,
+        "params": {
+            "P": 15.0, "gamma_N": 1.0, "gamma_n": 10.0,
+            "g": 1.0, "beta": 1e-4, "N_0": 0.5, "n_0": 0.01,
+        },
+        "dt": 0.001, "n_steps": 500, "math_class": "Laser Physics",
+    },
+    "bazykin": {
+        "module": "simulating_anything.simulation.bazykin",
+        "cls": "BazykinSimulation",
+        "domain": Domain.BAZYKIN,
+        "params": {
+            "alpha": 0.1, "gamma": 0.1, "delta": 0.01,
+            "x_0": 0.5, "y_0": 0.5,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Pred-Prey ODE",
     },
 }
 

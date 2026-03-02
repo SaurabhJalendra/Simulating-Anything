@@ -43,6 +43,7 @@ def run_all_rediscoveries(
         run_allee_predator_prey_rediscovery,
     )
     from simulating_anything.rediscovery.bak_sneppen import run_bak_sneppen_rediscovery
+    from simulating_anything.rediscovery.bazykin import run_bazykin_rediscovery
     from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
     from simulating_anything.rediscovery.bouncing_ball import (
         run_bouncing_ball_rediscovery,
@@ -130,6 +131,8 @@ def run_all_rediscoveries(
         run_kapitza_pendulum_rediscovery,
     )
     from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
+    from simulating_anything.rediscovery.langford import run_langford_rediscovery
+    from simulating_anything.rediscovery.laser_rate import run_laser_rate_rediscovery
     from simulating_anything.rediscovery.kuramoto import run_kuramoto_rediscovery
     from simulating_anything.rediscovery.kuramoto_sivashinsky import (
         run_kuramoto_sivashinsky_rediscovery,
@@ -187,6 +190,9 @@ def run_all_rediscoveries(
         run_sine_gordon_rediscovery,
     )
     from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
+    from simulating_anything.rediscovery.sir_vaccination import (
+        run_sir_vaccination_rediscovery,
+    )
     from simulating_anything.rediscovery.spring_mass_chain import (
         run_spring_mass_chain_rediscovery,
     )
@@ -637,6 +643,26 @@ def run_all_rediscoveries(
         "fhn_ring": {
             "label": "FHN Ring Network Synchronization & Traveling Waves",
             "fn": run_fhn_ring_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "laser_rate": {
+            "label": "Laser Rate Equations Threshold & Relaxation",
+            "fn": run_laser_rate_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "langford": {
+            "label": "Langford System Torus Bifurcation & Chaos",
+            "fn": run_langford_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sir_vaccination": {
+            "label": "SIR Vaccination Herd Immunity & R_eff",
+            "fn": run_sir_vaccination_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "bazykin": {
+            "label": "Bazykin Predator-Prey Bifurcation & ODE",
+            "fn": run_bazykin_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

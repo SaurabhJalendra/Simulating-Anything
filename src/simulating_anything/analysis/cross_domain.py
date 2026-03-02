@@ -1399,6 +1399,71 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="bazykin",
+            math_type="ode_nonlinear",  # Pred-prey ODE
+            state_dim=2,
+            n_parameters=3,  # alpha, gamma, delta
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dx/dt = x*(1-x) - x*y/(1+alpha*x)",
+                "dy/dt = -gamma*y + x*y/(1+alpha*x) - delta*y^2",
+                "Holling Type II + quadratic mortality",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sir_vaccination",
+            math_type="ode_nonlinear",  # Epidemic ODE
+            state_dim=3,
+            n_parameters=4,  # beta, gamma, mu, nu
+            conserved_quantities=["total_population"],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dS/dt = mu*N - beta*S*I/N - nu*S - mu*S",
+                "dI/dt = beta*S*I/N - gamma*I - mu*I",
+                "dR/dt = gamma*I + nu*S - mu*R",
+                "R0 = beta/(gamma+mu), nu_c = mu*(R0-1)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="langford",
+            math_type="chaotic",  # Torus ODE
+            state_dim=3,
+            n_parameters=6,  # a, b, c, d, e, f
+            conserved_quantities=[],
+            symmetries=["rotational_xy"],
+            phase_portrait_type="torus",
+            characteristic_timescale="2*pi/d",
+            discovered_equations=[
+                "dx/dt = (z-b)*x - d*y",
+                "dy/dt = d*x + (z-b)*y",
+                "dz/dt = c + a*z - z^3/3 - r^2*(1+e*z) + f*z*x^3",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="laser_rate",
+            math_type="ode_nonlinear",  # Laser physics
+            state_dim=2,
+            n_parameters=7,  # P, gamma_N, gamma_S, g, N_tr, Gamma, beta
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/gamma_S",
+            discovered_equations=[
+                "dN/dt = P - gamma_N*N - g*(N-N_tr)*S",
+                "dS/dt = Gamma*g*(N-N_tr)*S - gamma_S*S + Gamma*beta*gamma_N*N",
+                "P_th = gamma_N*N_tr + gamma_S/(Gamma*g)",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -3325,6 +3390,110 @@ def detect_structural_analogies(
         },
     ))
 
+    # Bazykin <-> Rosenzweig-MacArthur (Holling Type II predator-prey)
+    analogies.append(Analogy(
+        domain_a="bazykin",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Both use Holling Type II functional response x*y/(1+alpha*x) for predation. "
+            "Bazykin adds quadratic mortality delta*y^2 causing richer bifurcation."
+        ),
+        strength=0.90,
+        mapping={
+            "x*y/(1+alpha*x)": "x*y/(1+alpha*x)",
+            "quadratic mortality": "absent in RM",
+            "Hopf bifurcation": "paradox of enrichment",
+        },
+    ))
+
+    # Bazykin <-> Lotka-Volterra (predator-prey ODEs)
+    analogies.append(Analogy(
+        domain_a="bazykin",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "Both are 2D predator-prey systems with growth and predation terms. "
+            "Bazykin adds saturating functional response and intraspecific competition."
+        ),
+        strength=0.82,
+        mapping={
+            "x*(1-x)": "alpha*x (logistic vs exponential)",
+            "x*y/(1+alpha*x)": "beta*x*y (saturating vs mass-action)",
+            "limit cycle": "limit cycle",
+        },
+    ))
+
+    # SIR-Vaccination <-> SIR Epidemic (compartmental models)
+    analogies.append(Analogy(
+        domain_a="sir_vaccination",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "SIR-Vaccination extends classic SIR with vaccination rate nu and "
+            "vital dynamics mu. Same beta*S*I/N transmission term. "
+            "R_eff = R0*mu/(nu+mu) generalizes R0=beta/gamma."
+        ),
+        strength=0.95,
+        mapping={
+            "beta*S*I/N": "beta*S*I",
+            "R0=beta/(gamma+mu)": "R0=beta/gamma",
+            "nu_c=mu*(R0-1)": "no vaccination analog",
+        },
+    ))
+
+    # SIR-Vaccination <-> Network SIS (epidemic threshold models)
+    analogies.append(Analogy(
+        domain_a="sir_vaccination",
+        domain_b="network_sis",
+        analogy_type="structural",
+        description=(
+            "Both have epidemic thresholds controlling disease persistence. "
+            "SIRV: nu_c = mu*(R0-1). Network SIS: beta_c = gamma/lambda_max."
+        ),
+        strength=0.72,
+        mapping={
+            "critical vaccination rate nu_c": "spectral threshold beta_c",
+            "herd immunity": "spectral barrier",
+        },
+    ))
+
+    # Langford <-> Rossler (3D chaotic/quasiperiodic flows)
+    analogies.append(Analogy(
+        domain_a="langford",
+        domain_b="rossler",
+        analogy_type="structural",
+        description=(
+            "Both are 3D autonomous ODE systems with a slow variable (z) "
+            "modulating fast oscillations in (x,y). Langford shows torus "
+            "dynamics while Rossler shows spiral chaos."
+        ),
+        strength=0.73,
+        mapping={
+            "z modulates (x,y)": "z modulates (x,y)",
+            "Hopf-Hopf bifurcation": "period-doubling cascade",
+            "torus": "spiral attractor",
+        },
+    ))
+
+    # Laser Rate <-> Chemostat (threshold-pump/washout dynamics)
+    analogies.append(Analogy(
+        domain_a="laser_rate",
+        domain_b="chemostat",
+        analogy_type="structural",
+        description=(
+            "Both exhibit threshold behavior: laser P_th vs chemostat washout D_c. "
+            "Above threshold: stable operating point. Below: no output/extinction."
+        ),
+        strength=0.70,
+        mapping={
+            "pump P": "dilution rate D",
+            "P_th threshold": "D_c washout",
+            "carrier N": "substrate S",
+            "photon S": "biomass X",
+        },
+    ))
+
     return analogies
 
 
@@ -4043,6 +4212,55 @@ def detect_dimensional_analogies(
         mapping={
             "D [coupling strength]": "eps [coupling strength]",
             "ring topology": "1D lattice",
+        },
+    ))
+
+    # Dimensional: Bazykin <-> Rosenzweig-MacArthur (same timescale 1/gamma)
+    analogies.append(Analogy(
+        domain_a="bazykin",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="dimensional",
+        description=(
+            "Both share timescale 1/gamma for predator dynamics and "
+            "1/alpha for saturation. Same Holling II half-saturation scaling."
+        ),
+        strength=0.88,
+        mapping={
+            "1/gamma [predator decay]": "1/d [predator decay]",
+            "1/alpha [saturation]": "1/alpha [saturation]",
+        },
+    ))
+
+    # Dimensional: SIR-Vaccination <-> SIR (1/gamma recovery time)
+    analogies.append(Analogy(
+        domain_a="sir_vaccination",
+        domain_b="sir_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Same 1/gamma recovery timescale. Vaccination adds 1/nu "
+            "timescale for immunization rate."
+        ),
+        strength=0.90,
+        mapping={
+            "1/gamma [recovery]": "1/gamma [recovery]",
+            "1/nu [vaccination]": "N/A (no vaccination)",
+        },
+    ))
+
+    # Dimensional: Laser Rate <-> Brusselator (relaxation oscillation timescale)
+    analogies.append(Analogy(
+        domain_a="laser_rate",
+        domain_b="brusselator",
+        analogy_type="dimensional",
+        description=(
+            "Both show relaxation oscillations with separated timescales. "
+            "Laser: 1/gamma_S (fast photon) vs 1/gamma_N (slow carrier). "
+            "Brusselator: fast u vs slow v near Hopf."
+        ),
+        strength=0.65,
+        mapping={
+            "1/gamma_S [photon]": "fast u timescale",
+            "1/gamma_N [carrier]": "slow v timescale",
         },
     ))
 
@@ -5447,6 +5665,75 @@ def detect_topological_analogies(
             "traveling wave": "spatiotemporal pattern",
             "sync order parameter": "sync order parameter",
             "D_c transition": "eps_c transition",
+        },
+    ))
+
+    # Topological: Bazykin <-> Lotka-Volterra (limit cycle pred-prey)
+    analogies.append(Analogy(
+        domain_a="bazykin",
+        domain_b="lotka_volterra",
+        analogy_type="topological",
+        description=(
+            "Both exhibit limit cycle oscillations in predator-prey phase space. "
+            "Bazykin: Hopf bifurcation from saturating response. "
+            "LV: structurally neutral cycles."
+        ),
+        strength=0.80,
+        mapping={
+            "limit cycle (Hopf)": "neutral cycle",
+            "stable spiral": "center",
+        },
+    ))
+
+    # Topological: SIR-Vaccination <-> Eco-Epidemic (disease threshold dynamics)
+    analogies.append(Analogy(
+        domain_a="sir_vaccination",
+        domain_b="eco_epidemic",
+        analogy_type="topological",
+        description=(
+            "Both have disease-free equilibria that lose stability at a threshold. "
+            "SIRV: R_eff > 1 causes endemic state. Eco-epidemic: disease invades "
+            "predator-prey system above threshold."
+        ),
+        strength=0.72,
+        mapping={
+            "DFE stability": "disease-free equilibrium",
+            "R_eff threshold": "disease invasion threshold",
+        },
+    ))
+
+    # Topological: Langford <-> Lorenz-84 (3D atmospheric/torus flows)
+    analogies.append(Analogy(
+        domain_a="langford",
+        domain_b="lorenz84",
+        analogy_type="topological",
+        description=(
+            "Both are 3D systems that can exhibit torus dynamics. "
+            "Langford: Hopf-Hopf bifurcation creates quasiperiodic torus. "
+            "Lorenz-84: Shilnikov scenario with interlocked tori."
+        ),
+        strength=0.68,
+        mapping={
+            "torus (quasiperiodic)": "torus (shilnikov)",
+            "Hopf-Hopf bifurcation": "Hadley circulation",
+        },
+    ))
+
+    # Topological: Laser Rate <-> Harvested Population (threshold transcritical)
+    analogies.append(Analogy(
+        domain_a="laser_rate",
+        domain_b="harvested_population",
+        analogy_type="topological",
+        description=(
+            "Both show transcritical-like threshold transitions. "
+            "Laser: P < P_th means no lasing. Harvested: H > MSY means extinction. "
+            "Both have stable and unstable branches meeting at threshold."
+        ),
+        strength=0.65,
+        mapping={
+            "P_th (lasing onset)": "H_MSY (collapse onset)",
+            "below threshold (spontaneous only)": "below MSY (sustainable)",
+            "stable operating point": "stable equilibrium",
         },
     ))
 
