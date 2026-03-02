@@ -1658,6 +1658,75 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        # --- Domain #104: Lu-Chen ---
+        DomainSignature(
+            name="lu_chen",
+            math_type="chaotic",  # Unified Lorenz-Chen-Lu attractor
+            state_dim=3,
+            n_parameters=3,  # a, b, c
+            conserved_quantities=[],
+            symmetries=["z-axis_rotation"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = a*(y-x)",
+                "dy/dt = -x*z + c*y",
+                "dz/dt = x*y - b*z",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #105: Qi ---
+        DomainSignature(
+            name="qi",
+            math_type="chaotic",  # 4D hyperchaotic system
+            state_dim=4,
+            n_parameters=4,  # a, b, c, d
+            conserved_quantities=[],
+            symmetries=["inversion"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = a*(y-x) + y*z",
+                "dy/dt = c*x - y - x*z",
+                "dz/dt = x*y - b*z",
+                "dw/dt = -d*w + x*z",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #106: WINDMI ---
+        DomainSignature(
+            name="windmi",
+            math_type="chaotic",  # Solar wind-magnetosphere jerk
+            state_dim=3,
+            n_parameters=2,  # a, b
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = y",
+                "dy/dt = z",
+                "dz/dt = -a*z - y + b - exp(x)",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #107: Finance ---
+        DomainSignature(
+            name="finance",
+            math_type="chaotic",  # Financial chaotic system
+            state_dim=3,
+            n_parameters=3,  # a, b, c
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = (1/b - a)*x + z + x*y",
+                "dy/dt = -b*y - x^2",
+                "dz/dt = -x - c*z",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -4009,6 +4078,112 @@ def detect_structural_analogies(
         },
     ))
 
+    # Lu-Chen <-> Lorenz (structurally identical ODE form)
+    analogies.append(Analogy(
+        domain_a="lu_chen",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Lu-Chen is the unified Lorenz-Chen family: dx/dt=a(y-x), "
+            "dy/dt=-xz+cy, dz/dt=xy-bz. When c=rho-1 it reduces to Lorenz. "
+            "Same quadratic nonlinearities xz and xy."
+        ),
+        strength=0.95,
+        mapping={
+            "a*(y-x)": "sigma*(y-x)",
+            "-x*z + c*y": "rho*x - y - x*z",
+            "x*y - b*z": "x*y - beta*z",
+        },
+    ))
+
+    # Lu-Chen <-> Chen (same attractor family)
+    analogies.append(Analogy(
+        domain_a="lu_chen",
+        domain_b="chen",
+        analogy_type="structural",
+        description=(
+            "Lu-Chen generalizes the Chen attractor. Both share the same "
+            "ODE structure with quadratic cross-coupling xz and xy terms. "
+            "Chen is a special case in the Lu-Chen family."
+        ),
+        strength=0.93,
+        mapping={
+            "a*(y-x)": "a*(y-x)",
+            "-x*z + c*y": "(c-a)*x - x*z + c*y",
+            "x*y - b*z": "x*y - b*z",
+        },
+    ))
+
+    # Qi <-> Lorenz-Stenflo (4D quadratic chaotic systems)
+    analogies.append(Analogy(
+        domain_a="qi",
+        domain_b="lorenz_stenflo",
+        analogy_type="structural",
+        description=(
+            "Both are 4D extensions of Lorenz-type chaos with quadratic "
+            "cross-coupling terms. Qi: 4D with yz, xz, xy, xz couplings. "
+            "Lorenz-Stenflo: 4D with acoustic gravity wave coupling."
+        ),
+        strength=0.75,
+        mapping={
+            "a*(y-x)+yz": "sigma*(y-x)+r*w",
+            "4D quadratic": "4D quadratic",
+        },
+    ))
+
+    # WINDMI <-> Genesio-Tesi (jerk system structure)
+    analogies.append(Analogy(
+        domain_a="windmi",
+        domain_b="genesio_tesi",
+        analogy_type="structural",
+        description=(
+            "Both are jerk systems (3rd-order ODEs written as x'=y, y'=z, z'=f). "
+            "WINDMI: z' = -az - y + b - exp(x). Genesio-Tesi: z' = -cx - by - az + x^2. "
+            "Both have damping and nonlinear restoring force."
+        ),
+        strength=0.78,
+        mapping={
+            "jerk ODE": "jerk ODE",
+            "exp(x) nonlinearity": "x^2 nonlinearity",
+            "-a*z damping": "-a*z damping",
+        },
+    ))
+
+    # Finance <-> Lorenz (3D quadratic chaos)
+    analogies.append(Analogy(
+        domain_a="finance",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are 3D chaotic systems with quadratic nonlinearities. "
+            "Finance: xy and x^2 couplings. Lorenz: xz and xy couplings. "
+            "Both exhibit sensitive dependence on initial conditions."
+        ),
+        strength=0.70,
+        mapping={
+            "x*y [interest-price]": "x*z [convection]",
+            "-x^2 [investment]": "x*y [rotation]",
+            "3 params": "3 params",
+        },
+    ))
+
+    # Finance <-> Rossler (3D chaos with quadratic term)
+    analogies.append(Analogy(
+        domain_a="finance",
+        domain_b="rossler",
+        analogy_type="structural",
+        description=(
+            "Both are 3D chaotic systems with mixed linear-quadratic terms. "
+            "Finance has x^2 and xy couplings. Rossler has xz coupling. "
+            "Both show period-doubling routes to chaos."
+        ),
+        strength=0.65,
+        mapping={
+            "x*y + x^2 nonlinearity": "x*z nonlinearity",
+            "period-doubling": "period-doubling",
+        },
+    ))
+
     return analogies
 
 
@@ -4920,6 +5095,54 @@ def detect_dimensional_analogies(
         mapping={
             "1/sqrt(c) [oscillation]": "1/omega [natural period]",
             "1/a [damping]": "1/delta [damping]",
+        },
+    ))
+
+    # Dimensional: Lu-Chen <-> Lorenz (timescale from linear coefficient)
+    analogies.append(Analogy(
+        domain_a="lu_chen",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both have primary timescale set by 1/a (Lu-Chen) or 1/sigma (Lorenz). "
+            "The parameter a plays the same role as sigma in setting mixing rate."
+        ),
+        strength=0.88,
+        mapping={
+            "1/a [mixing]": "1/sigma [mixing]",
+            "1/b [z-decay]": "1/beta [z-decay]",
+        },
+    ))
+
+    # Dimensional: Qi <-> Rossler-Hyperchaos (4D timescale)
+    analogies.append(Analogy(
+        domain_a="qi",
+        domain_b="rossler_hyperchaos",
+        analogy_type="dimensional",
+        description=(
+            "Both are 4D systems with primary timescale 1/a. "
+            "Qi: a controls x-y mixing. Rossler 4D: a controls oscillation."
+        ),
+        strength=0.62,
+        mapping={
+            "1/a [mixing rate]": "1/a [oscillation rate]",
+            "4D state space": "4D state space",
+        },
+    ))
+
+    # Dimensional: WINDMI <-> Colpitts (exponential nonlinearity timescale)
+    analogies.append(Analogy(
+        domain_a="windmi",
+        domain_b="colpitts",
+        analogy_type="dimensional",
+        description=(
+            "Both feature exponential nonlinearity with damping timescale 1/a. "
+            "WINDMI: exp(x) in magnetosphere. Colpitts: exp(x) in transistor."
+        ),
+        strength=0.72,
+        mapping={
+            "1/a [damping]": "1/alpha [damping]",
+            "exp(x) response": "exp(x) response",
         },
     ))
 
@@ -6587,6 +6810,72 @@ def detect_topological_analogies(
         mapping={
             "jerk chaos": "thermostat chaos",
             "quadratic nonlinearity": "bilinear nonlinearity",
+        },
+    ))
+
+    # Topological: Lu-Chen <-> Lorenz (strange attractor family)
+    analogies.append(Analogy(
+        domain_a="lu_chen",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both exhibit butterfly-shaped strange attractors with two lobes. "
+            "Lu-Chen continuously deforms between Lorenz and Chen attractors "
+            "as parameter c varies."
+        ),
+        strength=0.92,
+        mapping={
+            "double-scroll": "butterfly wings",
+            "strange attractor": "strange attractor",
+        },
+    ))
+
+    # Topological: Qi <-> Lorenz-Stenflo (4D hyperchaotic attractors)
+    analogies.append(Analogy(
+        domain_a="qi",
+        domain_b="lorenz_stenflo",
+        analogy_type="topological",
+        description=(
+            "Both are 4D systems exhibiting hyperchaotic attractors with "
+            "two positive Lyapunov exponents."
+        ),
+        strength=0.74,
+        mapping={
+            "4D hyperchaos": "4D hyperchaos",
+            "two positive Lyapunov": "two positive Lyapunov",
+        },
+    ))
+
+    # Topological: WINDMI <-> Sprott (minimal chaotic jerk attractors)
+    analogies.append(Analogy(
+        domain_a="windmi",
+        domain_b="sprott",
+        analogy_type="topological",
+        description=(
+            "Both are jerk-type minimal chaotic systems. WINDMI has exp(x) "
+            "nonlinearity; Sprott flows use minimal polynomial terms. "
+            "Both produce single-scroll strange attractors."
+        ),
+        strength=0.67,
+        mapping={
+            "jerk chaos": "jerk chaos",
+            "single-scroll": "single-scroll",
+        },
+    ))
+
+    # Topological: Finance <-> Chen (double-scroll chaotic attractors)
+    analogies.append(Analogy(
+        domain_a="finance",
+        domain_b="chen",
+        analogy_type="topological",
+        description=(
+            "Both produce complex 3D strange attractors with quadratic "
+            "nonlinearities and period-doubling routes to chaos."
+        ),
+        strength=0.68,
+        mapping={
+            "strange attractor": "strange attractor",
+            "period-doubling": "period-doubling",
         },
     ))
 

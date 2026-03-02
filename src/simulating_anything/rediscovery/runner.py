@@ -222,9 +222,13 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
     from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
     from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
+    from simulating_anything.rediscovery.windmi import run_windmi_rediscovery
     from simulating_anything.rediscovery.wilson_cowan import (
         run_wilson_cowan_rediscovery,
     )
+    from simulating_anything.rediscovery.finance import run_finance_rediscovery
+    from simulating_anything.rediscovery.lu_chen import run_lu_chen_rediscovery
+    from simulating_anything.rediscovery.qi import run_qi_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -739,6 +743,26 @@ def run_all_rediscoveries(
         "genesio_tesi": {
             "label": "Genesio-Tesi Jerk Chaos & Bifurcation",
             "fn": run_genesio_tesi_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "lu_chen": {
+            "label": "Lu-Chen Unified Attractor Chaos",
+            "fn": run_lu_chen_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "qi": {
+            "label": "Qi 4D Hyperchaotic System",
+            "fn": run_qi_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "windmi": {
+            "label": "WINDMI Magnetospheric Jerk Chaos",
+            "fn": run_windmi_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "finance": {
+            "label": "Chaotic Finance System ODE",
+            "fn": run_finance_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
