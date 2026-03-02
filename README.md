@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-4566%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-4741%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-139-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-143-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **139 domains** spanning **86 mathematical classes**.
+simulation data across **143 domains** spanning **90 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 389 mathematical isomorphisms detected across 139 domains
+**Cross-domain analysis:** 405 mathematical isomorphisms detected across 143 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -169,6 +169,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #137: Ring Oscillator** -- 3-stage electronic inverter ring, 120-degree phase shifts.
 **Domain #138: Jansen-Rit** -- Cortical column neural mass model, alpha rhythm EEG.
 **Domain #139: Goldbeter Glycolysis** -- Allosteric metabolic oscillator, Hopf bifurcation.
+**Domain #140: Goodwin** -- 3-variable cyclic gene regulatory oscillator, Hill repression.
+**Domain #141: Toggle Switch** -- Bistable genetic toggle with mutual repression, cusp catastrophe.
+**Domain #142: Stommel** -- Thermohaline ocean circulation box model, hysteresis bistability.
+**Domain #143: Predator-Prey-Parasite** -- Eco-epidemiological 3-species model, disease in prey.
 
 ---
 
