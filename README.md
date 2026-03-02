@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-3079%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-3241%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-103-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-107-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **103 domains** spanning **85 mathematical classes**.
+simulation data across **107 domains** spanning **69 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 274 mathematical isomorphisms detected across 103 domains
+**Cross-domain analysis:** 287 mathematical isomorphisms detected across 107 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -133,6 +133,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #101: Sakarya** -- 3D neural-inspired chaotic attractor with bilinear coupling.
 **Domain #102: Dadras** -- 3D chaotic system with 5-parameter quadratic coupling.
 **Domain #103: Genesio-Tesi** -- minimal jerk system chaos (3rd-order polynomial ODE).
+**Domain #104: Lu-Chen** -- unified Lorenz-Chen attractor family (continuously deformable).
+**Domain #105: Qi** -- 4D hyperchaotic system with two positive Lyapunov exponents.
+**Domain #106: WINDMI** -- solar wind-magnetosphere jerk system with exponential nonlinearity.
+**Domain #107: Finance** -- chaotic financial system modeling interest, investment, and price.
 
 ---
 
