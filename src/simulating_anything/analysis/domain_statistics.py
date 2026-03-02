@@ -792,7 +792,7 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "cls": "ColpittsSimulation",
         "domain": Domain.COLPITTS,
         "params": {
-            "k": 0.5, "g_d": 0.05,
+            "Q": 8.0, "g_d": 0.3, "V_cc": 1.0,
             "x_0": 0.1, "y_0": 0.0, "z_0": 0.0,
         },
         "dt": 0.01, "n_steps": 500, "math_class": "Electronic Chaos",
