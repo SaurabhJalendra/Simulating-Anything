@@ -1043,6 +1043,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"B": 102.0, "C": 3.0, "p": 0.0},
         "dt": 0.005, "n_steps": 500, "math_class": "Climate ODE",
     },
+    "tigan": {
+        "module": "simulating_anything.simulation.tigan",
+        "cls": "TiganSimulation",
+        "domain": Domain.TIGAN,
+        "params": {"a": 2.1, "b": 0.6, "c": 30.0},
+        "dt": 0.005, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "predator_two_prey": {
+        "module": "simulating_anything.simulation.predator_two_prey",
+        "cls": "PredatorTwoPreySimulation",
+        "domain": Domain.PREDATOR_TWO_PREY,
+        "params": {"r1": 1.0, "r2": 0.8, "d": 0.6},
+        "dt": 0.01, "n_steps": 500, "math_class": "Pred-Prey ODE",
+    },
+    "autocatalator": {
+        "module": "simulating_anything.simulation.autocatalator",
+        "cls": "AutocatalatorSimulation",
+        "domain": Domain.AUTOCATALATOR,
+        "params": {"mu": 0.002, "kappa": 65.0, "sigma": 0.005, "delta": 0.2},
+        "dt": 0.01, "n_steps": 500, "math_class": "Autocatalytic ODE",
+    },
+    "seir": {
+        "module": "simulating_anything.simulation.seir",
+        "cls": "SEIRSimulation",
+        "domain": Domain.SEIR,
+        "params": {"beta": 0.5, "sigma": 0.2, "gamma": 0.1},
+        "dt": 0.1, "n_steps": 500, "math_class": "Epidemic ODE",
+    },
 }
 
 

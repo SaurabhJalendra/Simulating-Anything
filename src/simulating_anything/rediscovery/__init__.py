@@ -141,6 +141,12 @@ from simulating_anything.rediscovery.rucklidge import run_rucklidge_rediscovery
 from simulating_anything.rediscovery.liu import run_liu_rediscovery
 from simulating_anything.rediscovery.hadley import run_hadley_rediscovery
 from simulating_anything.rediscovery.vallis import run_vallis_rediscovery
+from simulating_anything.rediscovery.tigan import run_tigan_rediscovery
+from simulating_anything.rediscovery.predator_two_prey import (
+    run_predator_two_prey_rediscovery,
+)
+from simulating_anything.rediscovery.autocatalator import run_autocatalator_rediscovery
+from simulating_anything.rediscovery.seir import run_seir_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -258,4 +264,8 @@ __all__ = [
     "run_liu_rediscovery",
     "run_hadley_rediscovery",
     "run_vallis_rediscovery",
+    "run_tigan_rediscovery",
+    "run_predator_two_prey_rediscovery",
+    "run_autocatalator_rediscovery",
+    "run_seir_rediscovery",
 ]

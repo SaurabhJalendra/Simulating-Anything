@@ -124,6 +124,10 @@ class Domain(str, Enum):
     LIU = "liu"
     HADLEY = "hadley"
     VALLIS = "vallis"
+    TIGAN = "tigan"
+    PREDATOR_TWO_PREY = "predator_two_prey"
+    AUTOCATALATOR = "autocatalator"
+    SEIR = "seir"
 
 
 class SimulationBackend(str, Enum):

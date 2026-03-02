@@ -1863,6 +1863,75 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        # --- Domain #116: Tigan ---
+        DomainSignature(
+            name="tigan",
+            math_type="chaotic",  # T-system generalized Lorenz
+            state_dim=3,
+            n_parameters=3,  # a, b, c
+            conserved_quantities=[],
+            symmetries=["z-axis_rotation"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = a*(y-x)",
+                "dy/dt = (c-a)*x - a*x*z",
+                "dz/dt = -b*z + x*y",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #117: Predator-Two-Prey ---
+        DomainSignature(
+            name="predator_two_prey",
+            math_type="ode_nonlinear",  # Apparent competition ecology
+            state_dim=3,
+            n_parameters=9,  # r1, r2, K1, K2, a1, a2, b1, b2, d
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r1",
+            discovered_equations=[
+                "dx1/dt = r1*x1*(1-x1/K1) - a1*x1*y",
+                "dx2/dt = r2*x2*(1-x2/K2) - a2*x2*y",
+                "dy/dt = -d*y + b1*x1*y + b2*x2*y",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #118: Autocatalator ---
+        DomainSignature(
+            name="autocatalator",
+            math_type="ode_nonlinear",  # Chemical oscillator
+            state_dim=3,
+            n_parameters=4,  # mu, kappa, sigma, delta
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="sigma",
+            discovered_equations=[
+                "da/dt = mu*(kappa+c) - a*b^2 - a",
+                "db/dt = (a*b^2 + a - b)/sigma",
+                "dc/dt = (b - c)/delta",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #119: SEIR ---
+        DomainSignature(
+            name="seir",
+            math_type="ode_nonlinear",  # Epidemic with latent period
+            state_dim=4,
+            n_parameters=4,  # beta, sigma, gamma, N
+            conserved_quantities=["total_population"],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dS/dt = -beta*S*I/N",
+                "dE/dt = beta*S*I/N - sigma*E",
+                "dI/dt = sigma*E - gamma*I",
+                "dR/dt = gamma*I",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -4509,6 +4578,110 @@ def detect_structural_analogies(
         },
     ))
 
+    # Tigan <-> Lorenz (generalized Lorenz family)
+    analogies.append(Analogy(
+        domain_a="tigan",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both share a*(y-x) in dx/dt and xy-bz in dz/dt. Tigan modifies "
+            "the y-equation with (c-a)*x - a*x*z vs Lorenz's rho*x - y - xz."
+        ),
+        strength=0.85,
+        mapping={
+            "a*(y-x)": "sigma*(y-x)",
+            "x*y - b*z": "x*y - beta*z",
+            "(c-a)*x - a*x*z": "rho*x - y - x*z",
+        },
+    ))
+
+    # Predator-Two-Prey <-> Lotka-Volterra (predator-prey with product terms)
+    analogies.append(Analogy(
+        domain_a="predator_two_prey",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "Both have bilinear predation terms (prey*predator). PTP extends "
+            "LV to 2 prey species with logistic growth and apparent competition."
+        ),
+        strength=0.88,
+        mapping={
+            "a1*x1*y [predation]": "beta*prey*pred [predation]",
+            "b1*x1*y [conversion]": "delta*prey*pred [conversion]",
+            "logistic prey growth": "exponential prey growth",
+        },
+    ))
+
+    # Predator-Two-Prey <-> Three-Species (3-component ecology)
+    analogies.append(Analogy(
+        domain_a="predator_two_prey",
+        domain_b="three_species",
+        analogy_type="structural",
+        description=(
+            "Both are 3-species ecological models with bilinear interaction. "
+            "PTP: 2 prey + 1 predator. Three-species: 3-level food chain."
+        ),
+        strength=0.75,
+        mapping={
+            "apparent competition": "trophic cascade",
+            "shared predator": "food chain",
+        },
+    ))
+
+    # Autocatalator <-> Brusselator (chemical oscillators)
+    analogies.append(Analogy(
+        domain_a="autocatalator",
+        domain_b="brusselator",
+        analogy_type="structural",
+        description=(
+            "Both are chemical oscillator models with autocatalytic reactions. "
+            "Autocatalator: a*b^2 (A+2B->3B). Brusselator: u^2*v (trimolecular). "
+            "Both exhibit Hopf bifurcations."
+        ),
+        strength=0.82,
+        mapping={
+            "a*b^2 [autocatalysis]": "u^2*v [trimolecular]",
+            "Hopf bifurcation": "Hopf bifurcation",
+            "3 species": "2 species",
+        },
+    ))
+
+    # SEIR <-> SIR (epidemic compartment models)
+    analogies.append(Analogy(
+        domain_a="seir",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "SEIR extends SIR with an exposed compartment. Both have "
+            "beta*S*I/N transmission and gamma*I recovery. SEIR adds "
+            "sigma*E latent-to-infectious transition."
+        ),
+        strength=0.95,
+        mapping={
+            "beta*S*I/N [transmission]": "beta*S*I/N [transmission]",
+            "gamma*I [recovery]": "gamma*I [recovery]",
+            "sigma*E [latent]": "no latent period",
+            "R0 = beta/gamma": "R0 = beta/gamma",
+        },
+    ))
+
+    # SEIR <-> Network-SIS (epidemic models)
+    analogies.append(Analogy(
+        domain_a="seir",
+        domain_b="network_sis",
+        analogy_type="structural",
+        description=(
+            "Both are compartmental epidemic models with threshold behavior. "
+            "SEIR: 4 compartments with latent period. Network-SIS: 2 "
+            "compartments on graph with spectral threshold."
+        ),
+        strength=0.70,
+        mapping={
+            "beta*S*I transmission": "beta*S*I transmission",
+            "R0 threshold": "spectral threshold",
+        },
+    ))
+
     return analogies
 
 
@@ -5565,6 +5738,55 @@ def detect_dimensional_analogies(
         mapping={
             "1/C [x-damping]": "1/sigma [x-mixing]",
             "B [coupling]": "rho [driving]",
+        },
+    ))
+
+    # Dimensional: Tigan <-> Lorenz (same Lorenz-type timescales)
+    analogies.append(Analogy(
+        domain_a="tigan",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both have 1/a mixing timescale and 1/b z-decay timescale."
+        ),
+        strength=0.85,
+        mapping={
+            "1/a [mixing]": "1/sigma [mixing]",
+            "1/b [z-decay]": "1/beta [z-decay]",
+        },
+    ))
+
+    # Dimensional: SEIR <-> SIR (epidemic timescales)
+    analogies.append(Analogy(
+        domain_a="seir",
+        domain_b="sir_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Both share 1/gamma (infectious period) as primary timescale. "
+            "SEIR adds 1/sigma (latent period). Both have R0 = beta/gamma."
+        ),
+        strength=0.92,
+        mapping={
+            "1/gamma [infectious]": "1/gamma [infectious]",
+            "1/sigma [latent]": "no latent period",
+            "R0 = beta/gamma": "R0 = beta/gamma",
+        },
+    ))
+
+    # Dimensional: Autocatalator <-> Brusselator (chemical timescales)
+    analogies.append(Analogy(
+        domain_a="autocatalator",
+        domain_b="brusselator",
+        analogy_type="dimensional",
+        description=(
+            "Both chemical oscillators have fast reaction timescale and "
+            "slow feed timescale. Autocatalator: sigma (fast), mu (slow). "
+            "Brusselator: inherent oscillation period."
+        ),
+        strength=0.70,
+        mapping={
+            "sigma [fast reaction]": "oscillation period",
+            "mu [slow feed]": "a [feed rate]",
         },
     ))
 
@@ -7009,7 +7231,7 @@ def detect_topological_analogies(
     # Topological: Langford <-> Lorenz-84 (3D atmospheric/torus flows)
     analogies.append(Analogy(
         domain_a="langford",
-        domain_b="lorenz84",
+        domain_b="lorenz_84",
         analogy_type="topological",
         description=(
             "Both are 3D systems that can exhibit torus dynamics. "
@@ -7429,6 +7651,73 @@ def detect_topological_analogies(
         mapping={
             "El Nino/La Nina lobes": "convection lobes",
             "strange attractor": "strange attractor",
+        },
+    ))
+
+    # Topological: Tigan <-> Lorenz (butterfly-shaped attractor)
+    analogies.append(Analogy(
+        domain_a="tigan",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both produce butterfly-shaped strange attractors with two "
+            "symmetric lobes from convection-related ODEs."
+        ),
+        strength=0.85,
+        mapping={
+            "double-lobe": "butterfly wings",
+            "symmetric equilibria": "symmetric equilibria",
+        },
+    ))
+
+    # Topological: Predator-Two-Prey <-> Lotka-Volterra (oscillatory ecology)
+    analogies.append(Analogy(
+        domain_a="predator_two_prey",
+        domain_b="lotka_volterra",
+        analogy_type="topological",
+        description=(
+            "Both exhibit oscillatory predator-prey dynamics. PTP oscillations "
+            "are in 3D (limit cycles or complex orbits), while LV has "
+            "2D closed orbits (centers)."
+        ),
+        strength=0.80,
+        mapping={
+            "3D oscillation": "2D closed orbits",
+            "predator-prey cycles": "predator-prey cycles",
+        },
+    ))
+
+    # Topological: Autocatalator <-> Oregonator (chemical limit cycles)
+    analogies.append(Analogy(
+        domain_a="autocatalator",
+        domain_b="oregonator",
+        analogy_type="topological",
+        description=(
+            "Both are chemical oscillators exhibiting relaxation oscillations "
+            "and limit cycles. Both show mixed-mode oscillations for certain "
+            "parameters."
+        ),
+        strength=0.78,
+        mapping={
+            "relaxation oscillation": "relaxation oscillation",
+            "chemical limit cycle": "BZ limit cycle",
+        },
+    ))
+
+    # Topological: SEIR <-> SIR (epidemic phase portraits)
+    analogies.append(Analogy(
+        domain_a="seir",
+        domain_b="sir_epidemic",
+        analogy_type="topological",
+        description=(
+            "Both have disease-free and epidemic trajectories separated "
+            "by the R0=1 threshold. Both converge to disease-free equilibrium."
+        ),
+        strength=0.90,
+        mapping={
+            "epidemic trajectory": "epidemic trajectory",
+            "R0=1 threshold": "R0=1 threshold",
+            "4-compartment flow": "3-compartment flow",
         },
     ))
 
