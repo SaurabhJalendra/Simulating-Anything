@@ -478,6 +478,18 @@ src/simulating_anything/
     rabinovich_fabrikant.py # Rabinovich-Fabrikant plasma chaos
     sprott.py              # Sprott minimal chaotic flows (A-S)
     gray_scott_1d.py       # Gray-Scott 1D pulse dynamics
+    predator_prey_mutualist.py # Predator-prey-mutualist (Holling II + mutualism)
+    brusselator_2d.py      # 2D Brusselator Turing patterns (spots/stripes)
+    fput.py                # FPUT lattice (recurrence paradox, symplectic)
+    selkov.py              # Selkov glycolysis oscillator (Hopf bifurcation)
+    rikitake.py            # Rikitake dynamo (geomagnetic reversals)
+    oregonator_1d.py       # 1D Oregonator traveling chemical pulses
+    ricker_map.py          # Ricker discrete population map (overcompensation)
+    morris_lecar.py        # Morris-Lecar conductance neuron (Type I/II)
+    colpitts.py            # Colpitts electronic jerk-circuit chaos
+    rossler_hyperchaos.py  # 4D Rossler hyperchaos (two positive LE)
+    harvested_population.py # Logistic + harvesting (MSY saddle-node)
+    fhn_ring.py            # FHN ring network (traveling neural waves)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     encoder.py             # CNNEncoder, MLPEncoder
@@ -492,7 +504,7 @@ src/simulating_anything/
     ablation.py            # Single-factor ablation studies
     pipeline_ablation.py   # Pipeline component ablation (sampling, method, data)
     sensitivity.py         # Noise/data/range sensitivity analysis
-    cross_domain.py        # Cross-domain analogy engine (187 isomorphisms)
+    cross_domain.py        # Cross-domain analogy engine (221 isomorphisms)
     dream_debate.py        # Adversarial dream debate (divergence metrics)
     domain_statistics.py   # Runtime benchmarks for all domains
     error_analysis.py      # Bootstrap R², coefficient uncertainty
@@ -574,7 +586,19 @@ src/simulating_anything/
     rabinovich_fabrikant.py # Multiscroll attractor, gamma sweep
     sprott.py              # Minimal chaos, Lyapunov comparison
     gray_scott_1d.py       # Pulse splitting, pulse speed
-    runner.py              # Unified runner for all 75 domains
+    predator_prey_mutualist.py # Mutualism stabilization, Holling II
+    brusselator_2d.py      # 2D Turing patterns, wavelength
+    fput.py                # FPUT recurrence, mode energies
+    selkov.py              # Glycolysis Hopf, metabolic oscillation
+    rikitake.py            # Geomagnetic reversal statistics
+    oregonator_1d.py       # BZ pulse speed, excitable waves
+    ricker_map.py          # Bifurcation, Feigenbaum, Lyapunov
+    morris_lecar.py        # f-I curve, excitability classification
+    colpitts.py            # Electronic chaos, Q-sweep
+    rossler_hyperchaos.py  # Lyapunov spectrum, Kaplan-Yorke dim
+    harvested_population.py # MSY verification, bifurcation
+    fhn_ring.py            # Sync transition, wave speed
+    runner.py              # Unified runner for all 87 domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -596,7 +620,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 2131 tests across 79+ files
+tests/unit/                # 2525 tests across 91+ files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -681,6 +705,18 @@ tests/unit/                # 2131 tests across 79+ files
   test_rabinovich_fabrikant.py # 28 tests — Plasma chaos
   test_sprott.py           # 26 tests — Minimal chaotic flows
   test_gray_scott_1d.py    # 40 tests — 1D RD pulse dynamics
+  test_predator_prey_mutualist.py # 29 tests — Mutualistic ecology
+  test_brusselator_2d.py   # 32 tests — 2D Turing patterns
+  test_fput.py             # 28 tests — FPUT lattice recurrence
+  test_selkov.py           # 24 tests — Glycolysis oscillator
+  test_rikitake.py         # 23 tests — Geomagnetic dynamo
+  test_oregonator_1d.py    # 45 tests — 1D BZ traveling pulses
+  test_ricker_map.py       # 24 tests — Discrete population chaos
+  test_morris_lecar.py     # 34 tests — Conductance neuron
+  test_colpitts.py         # 26 tests — Electronic oscillator chaos
+  test_rossler_hyperchaos.py # 30 tests — 4D hyperchaos
+  test_harvested_population.py # 28 tests — Resource ODE
+  test_fhn_ring.py         # 23 tests — Neural ring network
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
