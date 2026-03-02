@@ -1071,6 +1071,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"beta": 0.5, "sigma": 0.2, "gamma": 0.1},
         "dt": 0.1, "n_steps": 500, "math_class": "Epidemic ODE",
     },
+    "ueda": {
+        "module": "simulating_anything.simulation.ueda",
+        "cls": "UedaSimulation",
+        "domain": Domain.UEDA,
+        "params": {"delta": 0.05, "B": 7.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Forced ODE",
+    },
+    "cubic_map": {
+        "module": "simulating_anything.simulation.cubic_map",
+        "cls": "CubicMapSimulation",
+        "domain": Domain.CUBIC_MAP,
+        "params": {"r": 2.5},
+        "dt": 1.0, "n_steps": 500, "math_class": "Discrete Map",
+    },
+    "zombie_sir": {
+        "module": "simulating_anything.simulation.zombie_sir",
+        "cls": "ZombieSIRSimulation",
+        "domain": Domain.ZOMBIE_SIR,
+        "params": {"beta": 0.0095, "alpha": 0.005, "rho": 0.5},
+        "dt": 0.1, "n_steps": 500, "math_class": "Epidemic ODE",
+    },
+    "elastic_collision": {
+        "module": "simulating_anything.simulation.elastic_collision",
+        "cls": "ElasticCollisionSimulation",
+        "domain": Domain.ELASTIC_COLLISION,
+        "params": {"n_particles": 5, "restitution": 1.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Particle Mechanics",
+    },
 }
 
 

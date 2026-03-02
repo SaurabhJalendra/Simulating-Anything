@@ -128,6 +128,10 @@ class Domain(str, Enum):
     PREDATOR_TWO_PREY = "predator_two_prey"
     AUTOCATALATOR = "autocatalator"
     SEIR = "seir"
+    UEDA = "ueda"
+    CUBIC_MAP = "cubic_map"
+    ZOMBIE_SIR = "zombie_sir"
+    ELASTIC_COLLISION = "elastic_collision"
 
 
 class SimulationBackend(str, Enum):
