@@ -64,6 +64,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.cart_pole import run_cart_pole_rediscovery
     from simulating_anything.rediscovery.chemostat import run_chemostat_rediscovery
     from simulating_anything.rediscovery.chua import run_chua_rediscovery
+    from simulating_anything.rediscovery.colpitts import (
+        run_colpitts_rediscovery,
+    )
     from simulating_anything.rediscovery.competitive_lv import (
         run_competitive_lv_rediscovery,
     )
@@ -95,6 +98,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.elastic_pendulum import (
         run_elastic_pendulum_rediscovery,
     )
+    from simulating_anything.rediscovery.fhn_ring import run_fhn_ring_rediscovery
     from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscovery
     from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
     from simulating_anything.rediscovery.fitzhugh_rinzel import (
@@ -110,6 +114,9 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.harmonic_oscillator import (
         run_harmonic_oscillator_rediscovery,
+    )
+    from simulating_anything.rediscovery.harvested_population import (
+        run_harvested_population_rediscovery,
     )
     from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
     from simulating_anything.rediscovery.henon_map import run_henon_map_rediscovery
@@ -139,11 +146,15 @@ def run_all_rediscoveries(
         run_magnetic_pendulum_rediscovery,
     )
     from simulating_anything.rediscovery.may_leonard import run_may_leonard_rediscovery
+    from simulating_anything.rediscovery.morris_lecar import run_morris_lecar_rediscovery
     from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
     from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
     from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
     from simulating_anything.rediscovery.oregonator_1d import (
         run_oregonator_1d_rediscovery,
+    )
+    from simulating_anything.rediscovery.predator_prey_mutualist import (
+        run_predator_prey_mutualist_rediscovery,
     )
     from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
     from simulating_anything.rediscovery.quantum_oscillator import (
@@ -155,15 +166,20 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.rayleigh_benard import (
         run_rayleigh_benard_rediscovery,
     )
+    from simulating_anything.rediscovery.ricker_map import run_ricker_map_rediscovery
+    from simulating_anything.rediscovery.rikitake import run_rikitake_rediscovery
     from simulating_anything.rediscovery.rosenzweig_macarthur import (
         run_rosenzweig_macarthur_rediscovery,
     )
     from simulating_anything.rediscovery.rossler import run_rossler_rediscovery
+    from simulating_anything.rediscovery.rossler_hyperchaos import (
+        run_rossler_hyperchaos_rediscovery,
+    )
     from simulating_anything.rediscovery.schnakenberg import (
         run_schnakenberg_rediscovery,
     )
-    from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
     from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
+    from simulating_anything.rediscovery.selkov import run_selkov_rediscovery
     from simulating_anything.rediscovery.shallow_water import (
         run_shallow_water_rediscovery,
     )
@@ -174,6 +190,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.spring_mass_chain import (
         run_spring_mass_chain_rediscovery,
     )
+    from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
     from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
     from simulating_anything.rediscovery.swinging_atwood import (
         run_swinging_atwood_rediscovery,
@@ -183,13 +200,6 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
     from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
     from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
-    from simulating_anything.rediscovery.predator_prey_mutualist import (
-        run_predator_prey_mutualist_rediscovery,
-    )
-    from simulating_anything.rediscovery.morris_lecar import run_morris_lecar_rediscovery
-    from simulating_anything.rediscovery.ricker_map import run_ricker_map_rediscovery
-    from simulating_anything.rediscovery.rikitake import run_rikitake_rediscovery
-    from simulating_anything.rediscovery.selkov import run_selkov_rediscovery
     from simulating_anything.rediscovery.wilson_cowan import (
         run_wilson_cowan_rediscovery,
     )
@@ -607,6 +617,26 @@ def run_all_rediscoveries(
         "morris_lecar": {
             "label": "Morris-Lecar Conductance Neuron Excitability",
             "fn": run_morris_lecar_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "colpitts": {
+            "label": "Colpitts Oscillator Electronic Chaos",
+            "fn": run_colpitts_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "harvested_population": {
+            "label": "Harvested Population MSY & Saddle-Node Bifurcation",
+            "fn": run_harvested_population_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "rossler_hyperchaos": {
+            "label": "Rossler Hyperchaotic 4D System & Lyapunov Spectrum",
+            "fn": run_rossler_hyperchaos_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "fhn_ring": {
+            "label": "FHN Ring Network Synchronization & Traveling Waves",
+            "fn": run_fhn_ring_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

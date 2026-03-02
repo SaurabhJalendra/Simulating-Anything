@@ -19,6 +19,7 @@ from simulating_anything.rediscovery.cahn_hilliard import run_cahn_hilliard_redi
 from simulating_anything.rediscovery.cart_pole import run_cart_pole_rediscovery
 from simulating_anything.rediscovery.chemostat import run_chemostat_rediscovery
 from simulating_anything.rediscovery.chua import run_chua_rediscovery
+from simulating_anything.rediscovery.colpitts import run_colpitts_rediscovery
 from simulating_anything.rediscovery.competitive_lv import run_competitive_lv_rediscovery
 from simulating_anything.rediscovery.coupled_lorenz import run_coupled_lorenz_rediscovery
 from simulating_anything.rediscovery.coupled_map_lattice import (
@@ -38,6 +39,7 @@ from simulating_anything.rediscovery.duffing_van_der_pol import (
 )
 from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
 from simulating_anything.rediscovery.elastic_pendulum import run_elastic_pendulum_rediscovery
+from simulating_anything.rediscovery.fhn_ring import run_fhn_ring_rediscovery
 from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscovery
 from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
 from simulating_anything.rediscovery.fitzhugh_rinzel import run_fitzhugh_rinzel_rediscovery
@@ -46,6 +48,9 @@ from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
 from simulating_anything.rediscovery.gray_scott_1d import run_gray_scott_1d_rediscovery
 from simulating_anything.rediscovery.harmonic_oscillator import run_harmonic_oscillator_rediscovery
+from simulating_anything.rediscovery.harvested_population import (
+    run_harvested_population_rediscovery,
+)
 from simulating_anything.rediscovery.heat_equation import run_heat_equation_rediscovery
 from simulating_anything.rediscovery.henon_map import run_henon_map_rediscovery
 from simulating_anything.rediscovery.hindmarsh_rose import run_hindmarsh_rose_rediscovery
@@ -71,23 +76,32 @@ from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_redi
 from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
 from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
 from simulating_anything.rediscovery.oregonator_1d import run_oregonator_1d_rediscovery
+from simulating_anything.rediscovery.predator_prey_mutualist import (
+    run_predator_prey_mutualist_rediscovery,
+)
 from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
 from simulating_anything.rediscovery.quantum_oscillator import run_quantum_oscillator_rediscovery
 from simulating_anything.rediscovery.rabinovich_fabrikant import (
     run_rabinovich_fabrikant_rediscovery,
 )
 from simulating_anything.rediscovery.rayleigh_benard import run_rayleigh_benard_rediscovery
+from simulating_anything.rediscovery.ricker_map import run_ricker_map_rediscovery
+from simulating_anything.rediscovery.rikitake import run_rikitake_rediscovery
 from simulating_anything.rediscovery.rosenzweig_macarthur import (
     run_rosenzweig_macarthur_rediscovery,
 )
 from simulating_anything.rediscovery.rossler import run_rossler_rediscovery
+from simulating_anything.rediscovery.rossler_hyperchaos import (
+    run_rossler_hyperchaos_rediscovery,
+)
 from simulating_anything.rediscovery.schnakenberg import run_schnakenberg_rediscovery
-from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
 from simulating_anything.rediscovery.schwarzschild import run_schwarzschild_rediscovery
+from simulating_anything.rediscovery.selkov import run_selkov_rediscovery
 from simulating_anything.rediscovery.shallow_water import run_shallow_water_rediscovery
 from simulating_anything.rediscovery.sine_gordon import run_sine_gordon_rediscovery
 from simulating_anything.rediscovery.sir_epidemic import run_sir_rediscovery
 from simulating_anything.rediscovery.spring_mass_chain import run_spring_mass_chain_rediscovery
+from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
 from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
 from simulating_anything.rediscovery.swinging_atwood import run_swinging_atwood_rediscovery
 from simulating_anything.rediscovery.thomas import run_thomas_rediscovery
@@ -96,12 +110,6 @@ from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_redisc
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
 from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
 from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
-from simulating_anything.rediscovery.predator_prey_mutualist import (
-    run_predator_prey_mutualist_rediscovery,
-)
-from simulating_anything.rediscovery.ricker_map import run_ricker_map_rediscovery
-from simulating_anything.rediscovery.rikitake import run_rikitake_rediscovery
-from simulating_anything.rediscovery.selkov import run_selkov_rediscovery
 from simulating_anything.rediscovery.wilson_cowan import run_wilson_cowan_rediscovery
 
 __all__ = [
@@ -188,4 +196,8 @@ __all__ = [
     "run_ricker_map_rediscovery",
     "run_rikitake_rediscovery",
     "run_morris_lecar_rediscovery",
+    "run_colpitts_rediscovery",
+    "run_harvested_population_rediscovery",
+    "run_rossler_hyperchaos_rediscovery",
+    "run_fhn_ring_rediscovery",
 ]
