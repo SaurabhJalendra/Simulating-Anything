@@ -1332,6 +1332,73 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="colpitts",
+            math_type="chaotic",  # Electronic chaos
+            state_dim=3,  # [x, y, z]
+            n_parameters=2,  # Q, g_d
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/g_d",
+            discovered_equations=[
+                "dx/dt = y",
+                "dy/dt = z",
+                "dz/dt = -g_d*z - y + V_cc - Q*max(0,x)",
+                "Piecewise-linear electronic chaos",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="rossler_hyperchaos",
+            math_type="chaotic",  # 4D hyperchaos
+            state_dim=4,  # [x, y, z, w]
+            n_parameters=4,  # a, b, c, d
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = -(y+z)",
+                "dy/dt = x+a*y+w",
+                "dz/dt = b+x*z",
+                "dw/dt = -c*z+d*w",
+                "Two positive Lyapunov exponents",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="harvested_population",
+            math_type="ode_nonlinear",  # Resource dynamics
+            state_dim=1,  # scalar x
+            n_parameters=3,  # r, K, H
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dx/dt = r*x*(1-x/K) - H",
+                "MSY = r*K/4 (saddle-node)",
+                "Two equilibria for H < H_MSY",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="fhn_ring",
+            math_type="ode_nonlinear",  # Neural network
+            state_dim=40,  # 2*N
+            n_parameters=6,  # a, b, eps, I, D, N
+            conserved_quantities=[],
+            symmetries=["circular (Z_N)"],
+            phase_portrait_type="traveling_wave",
+            characteristic_timescale="1/eps",
+            discovered_equations=[
+                "dv_i/dt = v_i-v_i^3/3-w_i+I+D*(v_{i-1}-2v_i+v_{i+1})",
+                "dw_i/dt = eps*(v_i+a-b*w_i)",
+                "Traveling excitation waves around ring",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -3173,6 +3240,91 @@ def detect_structural_analogies(
         },
     ))
 
+    # Colpitts <-> Chua (electronic chaotic oscillators)
+    analogies.append(Analogy(
+        domain_a="colpitts",
+        domain_b="chua",
+        analogy_type="structural",
+        description=(
+            "Both electronic chaos circuits with piecewise-linear nonlinearity. "
+            "Colpitts: max(0,x) transistor; Chua: piecewise diode characteristic."
+        ),
+        strength=0.85,
+        mapping={
+            "max(0,x) [BJT]": "f(x) piecewise [Chua diode]",
+            "jerk ODE form": "3D state space",
+            "electronic chaos": "electronic chaos",
+        },
+    ))
+
+    # Rossler Hyperchaos <-> Rossler (3D subset of 4D system)
+    analogies.append(Analogy(
+        domain_a="rossler_hyperchaos",
+        domain_b="rossler",
+        analogy_type="structural",
+        description=(
+            "Rossler hyperchaos is the 4D extension of the 3D Rossler system. "
+            "First 3 equations are identical; w variable adds second positive LE."
+        ),
+        strength=0.95,
+        mapping={
+            "-(y+z)": "-(y+z)",
+            "x+ay+w": "x+ay (no w)",
+            "b+xz": "b+xz",
+        },
+    ))
+
+    # Harvested Population <-> Logistic Map (logistic growth + perturbation)
+    analogies.append(Analogy(
+        domain_a="harvested_population",
+        domain_b="logistic_map",
+        analogy_type="structural",
+        description=(
+            "Both based on logistic growth r*x*(1-x/K). Harvested population adds "
+            "constant removal H; logistic map is the discrete-time version."
+        ),
+        strength=0.7,
+        mapping={
+            "rx(1-x/K)-H": "rx(1-x)",
+            "saddle-node": "period-doubling",
+            "MSY = rK/4": "chaos onset r~3.57",
+        },
+    ))
+
+    # FHN Ring <-> FHN Spatial (coupled FHN, discrete vs continuous)
+    analogies.append(Analogy(
+        domain_a="fhn_ring",
+        domain_b="fhn_spatial",
+        analogy_type="structural",
+        description=(
+            "Both are coupled FitzHugh-Nagumo systems. Ring: discrete ring of N neurons "
+            "with diffusive coupling. Spatial: continuous 2D PDE with Laplacian."
+        ),
+        strength=0.9,
+        mapping={
+            "D*(v_{i-1}-2v_i+v_{i+1})": "D*nabla^2(v)",
+            "ring topology": "2D plane",
+            "traveling wave on ring": "spiral waves",
+        },
+    ))
+
+    # FHN Ring <-> Kuramoto (ring synchronization)
+    analogies.append(Analogy(
+        domain_a="fhn_ring",
+        domain_b="kuramoto",
+        analogy_type="structural",
+        description=(
+            "Both are coupled oscillator networks showing synchronization transitions. "
+            "FHN Ring: nearest-neighbor diffusive coupling. Kuramoto: all-to-all sinusoidal."
+        ),
+        strength=0.75,
+        mapping={
+            "diffusive coupling D": "coupling strength K",
+            "ring order parameter": "Kuramoto order parameter r",
+            "sync transition D_c": "sync transition K_c",
+        },
+    ))
+
     return analogies
 
 
@@ -3859,6 +4011,38 @@ def detect_dimensional_analogies(
         mapping={
             "r [growth rate] ~ 2": "r [growth rate] ~ 3.57",
             "Feigenbaum delta": "Feigenbaum delta",
+        },
+    ))
+
+    # Dimensional: Rossler Hyperchaos <-> Rossler (same timescale, extra dimension)
+    analogies.append(Analogy(
+        domain_a="rossler_hyperchaos",
+        domain_b="rossler",
+        analogy_type="dimensional",
+        description=(
+            "Same characteristic timescale 1/a. The 4D system adds a w dimension "
+            "with timescale 1/d, creating a second unstable direction."
+        ),
+        strength=0.9,
+        mapping={
+            "1/a [spiral rate]": "1/a [spiral rate]",
+            "1/d [hyperchaos time]": "N/A (3D only)",
+        },
+    ))
+
+    # Dimensional: FHN Ring <-> CML (discrete coupling, lattice dynamics)
+    analogies.append(Analogy(
+        domain_a="fhn_ring",
+        domain_b="coupled_map_lattice",
+        analogy_type="dimensional",
+        description=(
+            "Both are lattice systems with discrete coupling. FHN Ring: continuous-time "
+            "ODE on ring; CML: discrete-time maps on lattice. Both show sync transitions."
+        ),
+        strength=0.7,
+        mapping={
+            "D [coupling strength]": "eps [coupling strength]",
+            "ring topology": "1D lattice",
         },
     ))
 
@@ -5195,6 +5379,74 @@ def detect_topological_analogies(
             "V (voltage)": "E (excitatory)",
             "w (recovery)": "I (inhibitory)",
             "f-I curve": "E-I oscillation",
+        },
+    ))
+
+    # Topological: Colpitts <-> Lorenz (3D chaotic with strange attractor)
+    analogies.append(Analogy(
+        domain_a="colpitts",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both 3D chaotic systems with strange attractors and positive Lyapunov. "
+            "Colpitts: electronic jerk circuit; Lorenz: atmospheric convection."
+        ),
+        strength=0.7,
+        mapping={
+            "jerk attractor": "butterfly attractor",
+            "Q bifurcation": "rho bifurcation",
+            "electronic chaos": "fluid chaos",
+        },
+    ))
+
+    # Topological: Rossler Hyperchaos <-> Coupled Lorenz (high-dim chaos)
+    analogies.append(Analogy(
+        domain_a="rossler_hyperchaos",
+        domain_b="coupled_lorenz",
+        analogy_type="topological",
+        description=(
+            "Both are higher-dimensional chaotic systems (4D+). Rossler hyperchaos "
+            "has 2 positive LE; coupled Lorenz can also show hyperchaotic behavior."
+        ),
+        strength=0.7,
+        mapping={
+            "4D hyperchaos": "6D coupled chaos",
+            "2 positive LE": "conditional Lyapunov",
+            "d parameter": "coupling epsilon",
+        },
+    ))
+
+    # Topological: Harvested Population <-> Allee Pred-Prey (saddle-node/bistability)
+    analogies.append(Analogy(
+        domain_a="harvested_population",
+        domain_b="allee_predator_prey",
+        analogy_type="topological",
+        description=(
+            "Both show saddle-node bifurcation leading to extinction. Harvested: "
+            "H>MSY causes collapse. Allee: population below threshold causes collapse."
+        ),
+        strength=0.75,
+        mapping={
+            "saddle-node at MSY": "saddle-node at Allee threshold",
+            "H-driven extinction": "density-dependent extinction",
+            "two stable states": "bistability",
+        },
+    ))
+
+    # Topological: FHN Ring <-> Coupled Map Lattice (ring sync dynamics)
+    analogies.append(Analogy(
+        domain_a="fhn_ring",
+        domain_b="coupled_map_lattice",
+        analogy_type="topological",
+        description=(
+            "Both show synchronization-desynchronization transitions on lattice. "
+            "FHN Ring: continuous-time neural waves; CML: discrete spatiotemporal patterns."
+        ),
+        strength=0.7,
+        mapping={
+            "traveling wave": "spatiotemporal pattern",
+            "sync order parameter": "sync order parameter",
+            "D_c transition": "eps_c transition",
         },
     ))
 
