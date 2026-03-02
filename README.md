@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-2402%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-2525%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-83-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-87-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **83 domains** spanning **67 mathematical classes**.
+simulation data across **87 domains** spanning **71 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 210 mathematical isomorphisms detected across 83 domains
+**Cross-domain analysis:** 221 mathematical isomorphisms detected across 87 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -113,6 +113,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #81: Oregonator 1D** -- 1D BZ traveling chemical pulses, excitable medium, pulse speed scaling.
 **Domain #82: Ricker Map** -- discrete fisheries population, overcompensation, Feigenbaum universality.
 **Domain #83: Morris-Lecar** -- conductance-based 2D neuron, Type I/II excitability, f-I curve.
+**Domain #84: Colpitts Oscillator** -- electronic LC jerk-circuit chaos, piecewise-linear transistor.
+**Domain #85: Rossler Hyperchaos** -- 4D hyperchaotic system, two positive Lyapunov exponents.
+**Domain #86: Harvested Population** -- logistic growth + constant harvesting, MSY saddle-node bifurcation.
+**Domain #87: FHN Ring** -- ring of coupled FitzHugh-Nagumo neurons, traveling waves, sync transition.
 
 ---
 
