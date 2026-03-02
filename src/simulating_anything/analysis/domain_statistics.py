@@ -1491,6 +1491,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"N_nodes": 200.0, "k_avg": 6.0, "beta": 0.1, "gamma": 0.05, "w": 0.3},
         "dt": 1.0, "n_steps": 200, "math_class": "Network Epidemic",
     },
+    "seasonal_predator_prey": {
+        "module": "simulating_anything.simulation.seasonal_predator_prey",
+        "cls": "SeasonalPredatorPreySimulation",
+        "domain": Domain.SEASONAL_PREDATOR_PREY,
+        "params": {"r0": 1.0, "K": 100.0, "a": 0.5, "h": 0.02, "e": 0.4, "d": 0.2, "epsilon": 0.3, "T": 12.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Seasonally Forced ODE",
+    },
+    "kdv": {
+        "module": "simulating_anything.simulation.kdv",
+        "cls": "KdVSimulation",
+        "domain": Domain.KDV,
+        "params": {"c": 2.0, "x0": 10.0, "N": 256.0, "L": 40.0},
+        "dt": 0.001, "n_steps": 500, "math_class": "Integrable PDE",
+    },
+    "sir_metapopulation": {
+        "module": "simulating_anything.simulation.sir_metapopulation",
+        "cls": "SIRMetapopulationSimulation",
+        "domain": Domain.SIR_METAPOPULATION,
+        "params": {"n_patches": 5.0, "beta": 0.5, "gamma": 0.1, "m": 0.01, "N_per_patch": 1000.0},
+        "dt": 0.1, "n_steps": 500, "math_class": "Metapopulation Epidemic",
+    },
+    "toggle_switch_stochastic": {
+        "module": "simulating_anything.simulation.toggle_switch_stochastic",
+        "cls": "ToggleSwitchStochasticSimulation",
+        "domain": Domain.TOGGLE_SWITCH_STOCHASTIC,
+        "params": {"alpha1": 5.0, "alpha2": 5.0, "beta_hill": 2.0, "gamma_hill": 2.0, "sigma": 0.3},
+        "dt": 0.01, "n_steps": 500, "math_class": "Stochastic Gene Network",
+    },
 }
 
 

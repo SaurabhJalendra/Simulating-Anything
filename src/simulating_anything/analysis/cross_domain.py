@@ -2830,6 +2830,67 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="seasonal_predator_prey",
+            math_type="forced_ode",
+            state_dim=2,
+            n_parameters=8,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="T_season",
+            discovered_equations=[
+                "dN/dt = r(t)*N*(1-N/K) - a*N*P/(1+a*h*N)",
+                "dP/dt = e*a*N*P/(1+a*h*N) - d*P",
+                "r(t) = r0*(1 + epsilon*sin(2*pi*t/T))",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="kdv",
+            math_type="integrable_pde",
+            state_dim=256,
+            n_parameters=2,
+            conserved_quantities=["mass", "momentum", "energy"],
+            symmetries=["translational", "Galilean"],
+            phase_portrait_type="soliton",
+            characteristic_timescale="L/c",
+            discovered_equations=[
+                "u_t + 6*u*u_x + u_xxx = 0",
+                "speed = c/2 (soliton amplitude c)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sir_metapopulation",
+            math_type="metapopulation_epidemic",
+            state_dim=15,
+            n_parameters=4,
+            conserved_quantities=["S_i+I_i+R_i=N_i per patch"],
+            symmetries=[],
+            phase_portrait_type="transient_epidemic",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dS_i/dt = -beta*S_i*I_i/N_i + m*sum(S_j - S_i)",
+                "dI_i/dt = beta*S_i*I_i/N_i - gamma*I_i + m*sum(I_j - I_i)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="toggle_switch_stochastic",
+            math_type="stochastic_gene_network",
+            state_dim=2,
+            n_parameters=5,
+            conserved_quantities=[],
+            symmetries=["u_v_exchange_if_alpha1=alpha2"],
+            phase_portrait_type="bistable",
+            characteristic_timescale="1/gamma_hill",
+            discovered_equations=[
+                "du = (alpha1/(1+v^beta) - u)*dt + sigma*dW",
+                "dv = (alpha2/(1+u^gamma) - v)*dt + sigma*dW",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -7147,6 +7208,104 @@ def detect_structural_analogies(
         },
     ))
 
+    # --- Seasonal Predator-Prey analogies ---
+    analogies.append(Analogy(
+        domain_a="seasonal_predator_prey",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        strength=0.88,
+        description=(
+            "Seasonal predator-prey extends Rosenzweig-MacArthur with periodic "
+            "forcing on growth rate; both use Holling Type II functional response."
+        ),
+        mapping={
+            "predator_prey_ODE": "predator_prey_ODE",
+            "Holling Type II": "Holling Type II",
+            "limit_cycle": "limit_cycle",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="seasonal_predator_prey",
+        domain_b="driven_pendulum",
+        analogy_type="structural",
+        strength=0.72,
+        description=(
+            "Both systems are periodically forced nonlinear oscillators; seasonal "
+            "forcing on growth rate parallels external torque forcing."
+        ),
+        mapping={
+            "periodic_forcing": "periodic_forcing",
+            "nonlinear_oscillation": "nonlinear_oscillation",
+            "frequency_locking": "resonance",
+        },
+    ))
+
+    # --- KdV analogies ---
+    analogies.append(Analogy(
+        domain_a="kdv",
+        domain_b="toda_lattice",
+        analogy_type="structural",
+        strength=0.82,
+        description=(
+            "Both are integrable systems with soliton solutions; Toda lattice "
+            "is the discrete analogue of KdV with exact multi-soliton dynamics."
+        ),
+        mapping={
+            "integrability": "integrability",
+            "soliton_solutions": "soliton_solutions",
+            "conservation_laws": "conservation_laws",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="kdv",
+        domain_b="shallow_water",
+        analogy_type="structural",
+        strength=0.78,
+        description=(
+            "KdV equation arises as a long-wavelength approximation of shallow "
+            "water equations; both describe nonlinear wave propagation."
+        ),
+        mapping={
+            "nonlinear_wave_PDE": "nonlinear_wave_PDE",
+            "wave_speed_amplitude": "wave_speed_depth",
+            "conservation_laws": "conservation_laws",
+        },
+    ))
+
+    # --- SIR Metapopulation analogies ---
+    analogies.append(Analogy(
+        domain_a="sir_metapopulation",
+        domain_b="sir_vaccination",
+        analogy_type="structural",
+        strength=0.85,
+        description=(
+            "Both extend SIR with additional mechanisms: metapopulation adds "
+            "spatial migration coupling, vaccination adds immunity inflow."
+        ),
+        mapping={
+            "SIR_compartments": "SIR_compartments",
+            "epidemic_threshold": "herd_immunity_threshold",
+            "bilinear_incidence": "bilinear_incidence",
+        },
+    ))
+
+    # --- Toggle Switch Stochastic analogies ---
+    analogies.append(Analogy(
+        domain_a="toggle_switch_stochastic",
+        domain_b="double_well",
+        analogy_type="structural",
+        strength=0.80,
+        description=(
+            "Toggle switch stochastic dynamics are equivalent to a double-well "
+            "potential system; noise drives transitions between bistable states."
+        ),
+        mapping={
+            "bistability": "bistability",
+            "noise_driven_switching": "Kramers_escape",
+            "two_stable_fixed_points": "two_potential_minima",
+        },
+    ))
+
     return analogies
 
 
@@ -9177,6 +9336,72 @@ def detect_dimensional_analogies(
             "w [rewiring rate]": "v [vaccination rate]",
             "beta [transmission]": "beta [transmission]",
             "gamma [recovery]": "gamma [recovery]",
+        },
+    ))
+
+    # --- Seasonal Predator-Prey dimensional ---
+    analogies.append(Analogy(
+        domain_a="seasonal_predator_prey",
+        domain_b="lotka_volterra",
+        analogy_type="dimensional",
+        strength=0.85,
+        description=(
+            "Both share predator-prey dimensional structure; seasonal forcing "
+            "adds a timescale T that modulates the intrinsic growth rate r."
+        ),
+        mapping={
+            "r [growth rate, 1/time]": "alpha [growth rate, 1/time]",
+            "a [attack rate, 1/(pred*time)]": "beta [predation, 1/(pred*time)]",
+            "d [death rate, 1/time]": "gamma [death rate, 1/time]",
+        },
+    ))
+
+    # --- KdV dimensional ---
+    analogies.append(Analogy(
+        domain_a="kdv",
+        domain_b="sine_gordon",
+        analogy_type="dimensional",
+        strength=0.75,
+        description=(
+            "Both are nonlinear dispersive PDEs with soliton solutions; "
+            "speed scales with amplitude (KdV) or topological charge (SG)."
+        ),
+        mapping={
+            "c [wave speed, length/time]": "c [kink speed, length/time]",
+            "L [domain length]": "L [domain length]",
+        },
+    ))
+
+    # --- SIR Metapopulation dimensional ---
+    analogies.append(Analogy(
+        domain_a="sir_metapopulation",
+        domain_b="network_sis",
+        analogy_type="dimensional",
+        strength=0.82,
+        description=(
+            "Both are multi-node epidemic models; metapopulation uses patch "
+            "migration while network SIS uses adjacency-based transmission."
+        ),
+        mapping={
+            "beta [transmission, 1/time]": "beta [transmission, 1/time]",
+            "gamma [recovery, 1/time]": "gamma [recovery, 1/time]",
+            "m [migration, 1/time]": "lambda_1 [spectral rate, 1/time]",
+        },
+    ))
+
+    # --- Toggle Switch Stochastic dimensional ---
+    analogies.append(Analogy(
+        domain_a="toggle_switch_stochastic",
+        domain_b="sir_stochastic",
+        analogy_type="dimensional",
+        strength=0.70,
+        description=(
+            "Both are stochastic dynamical systems; noise intensity sigma "
+            "drives transitions/fluctuations around deterministic attractors."
+        ),
+        mapping={
+            "sigma [noise intensity]": "sigma [noise intensity]",
+            "alpha [production rate, 1/time]": "beta [transmission, 1/time]",
         },
     ))
 
@@ -12343,6 +12568,89 @@ def detect_topological_analogies(
             "localized front": "localized pulse",
             "nonlinear PDE": "reaction-diffusion PDE",
             "speed selection": "speed selection",
+        },
+    ))
+
+    # --- Seasonal Predator-Prey topological ---
+    analogies.append(Analogy(
+        domain_a="seasonal_predator_prey",
+        domain_b="lotka_volterra",
+        analogy_type="topological",
+        strength=0.85,
+        description=(
+            "Both exhibit limit cycles in 2D predator-prey phase space; "
+            "seasonal forcing creates quasi-periodic or subharmonic orbits."
+        ),
+        mapping={
+            "limit_cycle": "limit_cycle",
+            "2D_phase_portrait": "2D_phase_portrait",
+            "predator_prey_oscillation": "predator_prey_oscillation",
+        },
+    ))
+
+    # --- KdV topological ---
+    analogies.append(Analogy(
+        domain_a="kdv",
+        domain_b="sine_gordon",
+        analogy_type="topological",
+        strength=0.78,
+        description=(
+            "Both exhibit localized soliton solutions that maintain shape "
+            "during propagation; KdV sech^2 pulse vs SG topological kink."
+        ),
+        mapping={
+            "soliton_localization": "kink_localization",
+            "elastic_collision": "elastic_collision",
+            "traveling_wave": "traveling_wave",
+        },
+    ))
+
+    # --- SIR Metapopulation topological ---
+    analogies.append(Analogy(
+        domain_a="sir_metapopulation",
+        domain_b="coupled_lorenz",
+        analogy_type="topological",
+        strength=0.65,
+        description=(
+            "Both are coupled dynamical systems where inter-unit coupling "
+            "can synchronize dynamics; epidemic waves vs chaos synchronization."
+        ),
+        mapping={
+            "multi_unit_coupling": "diffusive_coupling",
+            "synchronization": "synchronization",
+            "wave_propagation": "signal_propagation",
+        },
+    ))
+
+    # --- Toggle Switch Stochastic topological ---
+    analogies.append(Analogy(
+        domain_a="toggle_switch_stochastic",
+        domain_b="double_well",
+        analogy_type="topological",
+        strength=0.82,
+        description=(
+            "Both have bistable topology with two attracting fixed points "
+            "separated by a saddle; noise drives stochastic basin hopping."
+        ),
+        mapping={
+            "two_basins": "two_wells",
+            "saddle_separatrix": "barrier",
+            "noise_driven_transitions": "Kramers_escape",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="toggle_switch_stochastic",
+        domain_b="allee_predator_prey",
+        analogy_type="topological",
+        strength=0.70,
+        description=(
+            "Both exhibit bistability with coexisting attractors; Allee "
+            "threshold separates extinction/survival like toggle separatrix."
+        ),
+        mapping={
+            "bistable_fixed_points": "bistable_equilibria",
+            "separatrix": "Allee_threshold",
+            "basin_boundary": "extinction_boundary",
         },
     ))
 

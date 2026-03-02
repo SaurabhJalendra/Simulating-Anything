@@ -311,6 +311,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.age_structured import run_age_structured_rediscovery
     from simulating_anything.rediscovery.burgers_1d import run_burgers_1d_rediscovery
     from simulating_anything.rediscovery.sir_network_adaptive import run_sir_network_adaptive_rediscovery
+    from simulating_anything.rediscovery.seasonal_predator_prey import run_seasonal_predator_prey_rediscovery
+    from simulating_anything.rediscovery.kdv import run_kdv_rediscovery
+    from simulating_anything.rediscovery.sir_metapopulation import run_sir_metapopulation_rediscovery
+    from simulating_anything.rediscovery.toggle_switch_stochastic import run_toggle_switch_stochastic_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1205,6 +1209,26 @@ def run_all_rediscoveries(
         "sir_network_adaptive": {
             "label": "SIR Network Adaptive",
             "fn": run_sir_network_adaptive_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "seasonal_predator_prey": {
+            "label": "Seasonal Predator-Prey",
+            "fn": run_seasonal_predator_prey_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "kdv": {
+            "label": "KdV",
+            "fn": run_kdv_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sir_metapopulation": {
+            "label": "SIR Metapopulation",
+            "fn": run_sir_metapopulation_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "toggle_switch_stochastic": {
+            "label": "Toggle Switch Stochastic",
+            "fn": run_toggle_switch_stochastic_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

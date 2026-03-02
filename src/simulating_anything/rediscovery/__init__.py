@@ -211,6 +211,10 @@ from simulating_anything.rediscovery.glycolytic_oscillator import run_glycolytic
 from simulating_anything.rediscovery.age_structured import run_age_structured_rediscovery
 from simulating_anything.rediscovery.burgers_1d import run_burgers_1d_rediscovery
 from simulating_anything.rediscovery.sir_network_adaptive import run_sir_network_adaptive_rediscovery
+from simulating_anything.rediscovery.seasonal_predator_prey import run_seasonal_predator_prey_rediscovery
+from simulating_anything.rediscovery.kdv import run_kdv_rediscovery
+from simulating_anything.rediscovery.sir_metapopulation import run_sir_metapopulation_rediscovery
+from simulating_anything.rediscovery.toggle_switch_stochastic import run_toggle_switch_stochastic_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -392,4 +396,8 @@ __all__ = [
     "run_age_structured_rediscovery",
     "run_burgers_1d_rediscovery",
     "run_sir_network_adaptive_rediscovery",
+    "run_seasonal_predator_prey_rediscovery",
+    "run_kdv_rediscovery",
+    "run_sir_metapopulation_rediscovery",
+    "run_toggle_switch_stochastic_rediscovery",
 ]

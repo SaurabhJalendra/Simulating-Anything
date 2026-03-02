@@ -188,6 +188,10 @@ class Domain(str, Enum):
     AGE_STRUCTURED = "age_structured"
     BURGERS_1D = "burgers_1d"
     SIR_NETWORK_ADAPTIVE = "sir_network_adaptive"
+    SEASONAL_PREDATOR_PREY = "seasonal_predator_prey"
+    KDV = "kdv"
+    SIR_METAPOPULATION = "sir_metapopulation"
+    TOGGLE_SWITCH_STOCHASTIC = "toggle_switch_stochastic"
 
 
 class SimulationBackend(str, Enum):
