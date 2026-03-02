@@ -959,6 +959,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"a": 0.44, "b": 1.1, "c": 1.0},
         "dt": 0.01, "n_steps": 500, "math_class": "Jerk ODE",
     },
+    "lu_chen": {
+        "module": "simulating_anything.simulation.lu_chen",
+        "cls": "LuChenSimulation",
+        "domain": Domain.LU_CHEN,
+        "params": {"a": 36.0, "b": 3.0, "c": 20.0},
+        "dt": 0.001, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "qi": {
+        "module": "simulating_anything.simulation.qi",
+        "cls": "QiSimulation",
+        "domain": Domain.QI,
+        "params": {"a": 10.0, "b": 2.667, "c": 28.0, "d": 1.0},
+        "dt": 0.001, "n_steps": 500, "math_class": "4D Chaotic ODE",
+    },
+    "windmi": {
+        "module": "simulating_anything.simulation.windmi",
+        "cls": "WindmiSimulation",
+        "domain": Domain.WINDMI,
+        "params": {"a": 0.7, "b": 2.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Space Weather ODE",
+    },
+    "finance": {
+        "module": "simulating_anything.simulation.finance",
+        "cls": "FinanceSimulation",
+        "domain": Domain.FINANCE,
+        "params": {"a": 1.0, "b": 0.1, "c": 1.0},
+        "dt": 0.005, "n_steps": 500, "math_class": "Economics ODE",
+    },
 }
 
 

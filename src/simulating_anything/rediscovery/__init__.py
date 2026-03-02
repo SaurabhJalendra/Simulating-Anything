@@ -128,7 +128,11 @@ from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_redisc
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
 from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
 from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
+from simulating_anything.rediscovery.windmi import run_windmi_rediscovery
 from simulating_anything.rediscovery.wilson_cowan import run_wilson_cowan_rediscovery
+from simulating_anything.rediscovery.finance import run_finance_rediscovery
+from simulating_anything.rediscovery.lu_chen import run_lu_chen_rediscovery
+from simulating_anything.rediscovery.qi import run_qi_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -234,4 +238,8 @@ __all__ = [
     "run_sakarya_rediscovery",
     "run_dadras_rediscovery",
     "run_genesio_tesi_rediscovery",
+    "run_lu_chen_rediscovery",
+    "run_qi_rediscovery",
+    "run_windmi_rediscovery",
+    "run_finance_rediscovery",
 ]
