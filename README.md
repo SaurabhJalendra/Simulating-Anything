@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-3699%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-3882%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-119-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-123-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **119 domains** spanning **73 mathematical classes**.
+simulation data across **123 domains** spanning **76 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 325 mathematical isomorphisms detected across 119 domains
+**Cross-domain analysis:** 339 mathematical isomorphisms detected across 123 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -149,6 +149,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #117: Predator-Two-Prey** -- 1 predator + 2 prey ecological system.
 **Domain #118: Autocatalator** -- Chemical oscillator with autocatalytic reaction (A+2B->3B).
 **Domain #119: SEIR** -- SEIR epidemic model with exposed/latent compartment.
+**Domain #120: Ueda** -- Forced cubic oscillator, strange attractor chaos.
+**Domain #121: Cubic Map** -- 1D discrete map with odd symmetry, Feigenbaum cascade.
+**Domain #122: Zombie-SIR** -- Modified epidemic with zombie resurrection dynamics.
+**Domain #123: Elastic Collision** -- 1D particle chain, Newton's cradle physics.
 
 ---
 
