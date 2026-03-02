@@ -2228,6 +2228,68 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="goodwin",
+            math_type="gene_regulatory_oscillator",  # 3-variable cyclic repression
+            state_dim=3,
+            n_parameters=4,  # alpha, K, n, gamma
+            conserved_quantities=[],
+            symmetries=["Z3_cyclic_symmetry"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dx/dt = alpha*K^n/(K^n + z^n) - gamma*x",
+                "dy/dt = alpha*K^n/(K^n + x^n) - gamma*y",
+                "dz/dt = alpha*K^n/(K^n + y^n) - gamma*z",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="toggle_switch",
+            math_type="bistable_gene_circuit",  # 2-gene mutual repression
+            state_dim=2,
+            n_parameters=4,  # alpha1, alpha2, beta, gamma
+            conserved_quantities=[],
+            symmetries=["Z2_exchange_symmetry"],
+            phase_portrait_type="bistable",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "du/dt = alpha1/(1+v^beta) - gamma*u",
+                "dv/dt = alpha2/(1+u^gamma_h) - gamma*v",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="stommel",
+            math_type="thermohaline_circulation",  # Box model ocean dynamics
+            state_dim=2,
+            n_parameters=3,  # eta1, eta2, eta3
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="bistable",
+            characteristic_timescale="1/eta3",
+            discovered_equations=[
+                "dT/dt = eta1 - T*(1 + |T-S|)",
+                "dS/dt = eta2 - S*(eta3 + |T-S|)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="predator_prey_parasite",
+            math_type="eco_epidemiological_ode",  # 3-species: prey, infected prey, predator
+            state_dim=3,
+            n_parameters=7,  # r, K, beta, alpha, gamma, delta, mu
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dS/dt = r*S*(1-(S+I)/K) - beta*S*I - alpha*S*P",
+                "dI/dt = beta*S*I - gamma*I - alpha*I*P",
+                "dP/dt = delta*alpha*(S+I)*P - mu*P",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -5480,6 +5542,138 @@ def detect_structural_analogies(
         },
     ))
 
+    # Structural: Goodwin <-> Repressilator (cyclic gene regulation)
+    analogies.append(Analogy(
+        domain_a="goodwin",
+        domain_b="repressilator",
+        analogy_type="structural",
+        description=(
+            "Both are 3-variable cyclic gene regulatory oscillators with Hill "
+            "function repression. Goodwin: single gene product cascade. "
+            "Repressilator: 3 mRNA-protein pairs. Same Z3 cyclic symmetry."
+        ),
+        strength=0.90,
+        mapping={
+            "Hill repression K^n/(K^n+x^n)": "Hill repression alpha/(1+p^n)",
+            "cyclic 3-variable": "cyclic 3-variable",
+            "Z3 symmetry": "Z3 symmetry",
+            "limit cycle oscillation": "limit cycle oscillation",
+        },
+    ))
+
+    # Structural: Toggle Switch <-> Double Well (bistability)
+    analogies.append(Analogy(
+        domain_a="toggle_switch",
+        domain_b="double_well",
+        analogy_type="structural",
+        description=(
+            "Both exhibit bistability with two stable states. Toggle switch: "
+            "mutual Hill repression creates two gene expression states. "
+            "Double well: quartic potential V=x^4/4-x^2/2 with two minima."
+        ),
+        strength=0.72,
+        mapping={
+            "high-u/low-v state": "left well minimum",
+            "low-u/high-v state": "right well minimum",
+            "separatrix": "barrier at x=0",
+            "mutual repression": "cubic restoring force",
+        },
+    ))
+
+    # Structural: Stommel <-> Allee Predator-Prey (hysteresis/bistability)
+    analogies.append(Analogy(
+        domain_a="stommel",
+        domain_b="allee_predator_prey",
+        analogy_type="structural",
+        description=(
+            "Both exhibit bistable dynamics with hysteresis and saddle-node "
+            "bifurcations. Stommel: thermally- vs salinity-driven circulation. "
+            "Allee: extinction vs coexistence. Both have fold catastrophe."
+        ),
+        strength=0.70,
+        mapping={
+            "thermal mode": "coexistence equilibrium",
+            "haline mode": "extinction state",
+            "saddle-node bifurcation": "saddle-node bifurcation",
+            "hysteresis loop": "hysteresis loop",
+        },
+    ))
+
+    # Structural: Predator-Prey-Parasite <-> Eco-Epidemic (disease in ecology)
+    analogies.append(Analogy(
+        domain_a="predator_prey_parasite",
+        domain_b="eco_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both model disease spreading within a predator-prey system. "
+            "PPP: prey split into S/I with parasite transmission. "
+            "Eco-epidemic: predator disease with recovery. Same eco-epidemiological structure."
+        ),
+        strength=0.85,
+        mapping={
+            "susceptible prey S": "susceptible prey",
+            "infected prey I": "infected predator",
+            "beta*S*I transmission": "beta*S*I transmission",
+            "predation on both classes": "predation coupling",
+        },
+    ))
+
+    # Structural: Goodwin <-> Goldbeter Glycolysis (biochemical oscillation)
+    analogies.append(Analogy(
+        domain_a="goodwin",
+        domain_b="goldbeter_glycolysis",
+        analogy_type="structural",
+        description=(
+            "Both are biochemical oscillators with nonlinear feedback. "
+            "Goodwin: Hill function product inhibition in gene cascade. "
+            "Goldbeter: allosteric enzyme activation in glycolysis. "
+            "Both require cooperativity (Hill coeff n>8 or allosteric L) for oscillation."
+        ),
+        strength=0.73,
+        mapping={
+            "Hill repression": "allosteric activation",
+            "cooperativity n": "allosteric cooperativity L",
+            "product inhibition": "substrate activation",
+            "Hopf bifurcation": "Hopf bifurcation",
+        },
+    ))
+
+    # Structural: Toggle Switch <-> Stommel (bistable dynamics)
+    analogies.append(Analogy(
+        domain_a="toggle_switch",
+        domain_b="stommel",
+        analogy_type="structural",
+        description=(
+            "Both 2D systems with two stable steady states and a saddle "
+            "separating them. Toggle: mutual repression between genes. "
+            "Stommel: temperature-salinity competition in ocean circulation."
+        ),
+        strength=0.68,
+        mapping={
+            "mutual repression": "T-S competition",
+            "bistable equilibria": "bistable equilibria",
+            "separatrix": "separatrix",
+        },
+    ))
+
+    # Structural: Predator-Prey-Parasite <-> Three Species (3-compartment ecology)
+    analogies.append(Analogy(
+        domain_a="predator_prey_parasite",
+        domain_b="three_species",
+        analogy_type="structural",
+        description=(
+            "Both are 3-species ecological ODE systems with trophic interactions. "
+            "PPP: prey split by infection + predator. Three-species: bottom-up "
+            "food chain. Both have logistic prey growth and bilinear predation."
+        ),
+        strength=0.75,
+        mapping={
+            "logistic prey growth": "logistic basal growth",
+            "bilinear predation": "bilinear predation",
+            "3-compartment ODE": "3-compartment ODE",
+        },
+    ))
+
     return analogies
 
 
@@ -6834,6 +7028,79 @@ def detect_dimensional_analogies(
         mapping={
             "1/a [exc time]": "tau_E [exc time]",
             "1/b [inh time]": "tau_I [inh time]",
+        },
+    ))
+
+    # Dimensional: Goodwin <-> Repressilator (gene regulation timescales)
+    analogies.append(Analogy(
+        domain_a="goodwin",
+        domain_b="repressilator",
+        analogy_type="dimensional",
+        description=(
+            "Both gene regulatory oscillators share the same dimensional "
+            "scaling: oscillation period T ~ n/gamma where n is Hill "
+            "coefficient and 1/gamma is degradation time. Same dimensions."
+        ),
+        strength=0.82,
+        mapping={
+            "1/gamma [degradation time]": "1/gamma [degradation time]",
+            "alpha [max production rate]": "alpha [max production rate]",
+            "K [repression threshold]": "K [repression threshold]",
+        },
+    ))
+
+    # Dimensional: Toggle Switch <-> Bazykin (bifurcation parameter scaling)
+    analogies.append(Analogy(
+        domain_a="toggle_switch",
+        domain_b="bazykin",
+        analogy_type="dimensional",
+        description=(
+            "Both have saddle-node bifurcation with similar parameter scaling. "
+            "Toggle: alpha_c ~ gamma for switching threshold. "
+            "Bazykin: K_c for enrichment paradox threshold. "
+            "Bifurcation parameter has dimension of [rate]."
+        ),
+        strength=0.60,
+        mapping={
+            "alpha [production rate]": "K [carrying capacity]",
+            "gamma [decay rate]": "mu [death rate]",
+        },
+    ))
+
+    # Dimensional: Stommel <-> Lorenz (nonlinear dissipative scaling)
+    analogies.append(Analogy(
+        domain_a="stommel",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both are low-dimensional models of large-scale geophysical flows. "
+            "Stommel: thermohaline forcing eta1, eta2 vs dissipation. "
+            "Lorenz: thermal forcing rho vs viscous dissipation sigma. "
+            "Same forcing/dissipation dimensional balance."
+        ),
+        strength=0.65,
+        mapping={
+            "eta1 [thermal forcing]": "rho [Rayleigh number]",
+            "eta3 [salinity damping]": "sigma [Prandtl number]",
+        },
+    ))
+
+    # Dimensional: Predator-Prey-Parasite <-> Eco-Epidemic (epi timescales)
+    analogies.append(Analogy(
+        domain_a="predator_prey_parasite",
+        domain_b="eco_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Both eco-epidemiological models share transmission rate beta "
+            "[1/(individual*time)], recovery rate gamma [1/time], and "
+            "predation rate alpha [1/(individual*time)]. Same dimensional "
+            "structure as SIR embedded in predator-prey."
+        ),
+        strength=0.80,
+        mapping={
+            "beta [transmission rate]": "beta [transmission rate]",
+            "gamma [recovery rate]": "gamma [recovery rate]",
+            "alpha [predation rate]": "alpha [predation rate]",
         },
     ))
 
@@ -9153,6 +9420,98 @@ def detect_topological_analogies(
             "unstable spiral": "unstable spiral",
             "stable limit cycle": "stable limit cycle",
             "Hopf bifurcation": "Hopf bifurcation",
+        },
+    ))
+
+    # Topological: Goodwin <-> Repressilator (identical cyclic limit cycle topology)
+    analogies.append(Analogy(
+        domain_a="goodwin",
+        domain_b="repressilator",
+        analogy_type="topological",
+        description=(
+            "Both have identical 3D phase portrait topology: single unstable "
+            "fixed point with Z3 symmetry surrounded by a stable limit cycle. "
+            "Poincare section shows same single closed orbit."
+        ),
+        strength=0.88,
+        mapping={
+            "unstable spiral (Z3)": "unstable spiral (Z3)",
+            "stable limit cycle": "stable limit cycle",
+            "Hopf bifurcation at n_c": "Hopf bifurcation at n_c",
+        },
+    ))
+
+    # Topological: Toggle Switch <-> Double Well (bistable phase portrait)
+    analogies.append(Analogy(
+        domain_a="toggle_switch",
+        domain_b="double_well",
+        analogy_type="topological",
+        description=(
+            "Both have two stable nodes separated by a saddle point. "
+            "Toggle: 2D nullcline intersection gives 3 fixed points. "
+            "Double well: 1D potential with 3 critical points. "
+            "Same topological index structure (+1, -1, +1)."
+        ),
+        strength=0.80,
+        mapping={
+            "stable node A": "left well minimum",
+            "stable node B": "right well minimum",
+            "saddle point": "barrier maximum",
+        },
+    ))
+
+    # Topological: Stommel <-> Toggle Switch (cusp catastrophe)
+    analogies.append(Analogy(
+        domain_a="stommel",
+        domain_b="toggle_switch",
+        analogy_type="topological",
+        description=(
+            "Both exhibit cusp catastrophe topology: two saddle-node "
+            "bifurcations form hysteresis loop in parameter space. "
+            "Stommel: eta1-eta2 plane. Toggle: alpha1-alpha2 plane. "
+            "Same fold bifurcation structure."
+        ),
+        strength=0.75,
+        mapping={
+            "fold bifurcation 1": "fold bifurcation 1",
+            "fold bifurcation 2": "fold bifurcation 2",
+            "hysteresis region": "hysteresis region",
+        },
+    ))
+
+    # Topological: Predator-Prey-Parasite <-> Three Species (3D limit cycle)
+    analogies.append(Analogy(
+        domain_a="predator_prey_parasite",
+        domain_b="three_species",
+        analogy_type="topological",
+        description=(
+            "Both 3D ecological systems can exhibit stable limit cycles "
+            "in R^3 via Hopf bifurcation. PPP: disease-ecology oscillation. "
+            "Three-species: trophic cascade oscillation. Same 3D orbit topology."
+        ),
+        strength=0.72,
+        mapping={
+            "3D limit cycle": "3D limit cycle",
+            "Hopf bifurcation": "Hopf bifurcation",
+            "interior equilibrium": "interior equilibrium",
+        },
+    ))
+
+    # Topological: Goodwin <-> Goldbeter (biochemical Hopf oscillator)
+    analogies.append(Analogy(
+        domain_a="goodwin",
+        domain_b="goldbeter_glycolysis",
+        analogy_type="topological",
+        description=(
+            "Both biochemical oscillators share Hopf bifurcation topology: "
+            "stable spiral -> limit cycle transition as cooperativity increases. "
+            "Goodwin: Hill n crosses threshold. Goldbeter: allosteric L crosses threshold."
+        ),
+        strength=0.78,
+        mapping={
+            "stable spiral": "stable spiral",
+            "supercritical Hopf": "supercritical Hopf",
+            "stable limit cycle": "stable limit cycle",
         },
     ))
 

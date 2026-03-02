@@ -59,6 +59,7 @@ from simulating_anything.rediscovery.four_species_lv import run_four_species_lv_
 from simulating_anything.rediscovery.gauss_map import run_gauss_map_rediscovery
 from simulating_anything.rediscovery.genesio_tesi import run_genesio_tesi_rediscovery
 from simulating_anything.rediscovery.goldbeter_glycolysis import run_goldbeter_glycolysis_rediscovery
+from simulating_anything.rediscovery.goodwin import run_goodwin_rediscovery
 from simulating_anything.rediscovery.fput import run_fput_rediscovery
 from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
@@ -104,6 +105,9 @@ from simulating_anything.rediscovery.oregonator_1d import run_oregonator_1d_redi
 from simulating_anything.rediscovery.predator_prey_mutualist import (
     run_predator_prey_mutualist_rediscovery,
 )
+from simulating_anything.rediscovery.predator_prey_parasite import (
+    run_predator_prey_parasite_rediscovery,
+)
 from simulating_anything.rediscovery.projectile import run_projectile_rediscovery
 from simulating_anything.rediscovery.quantum_oscillator import run_quantum_oscillator_rediscovery
 from simulating_anything.rediscovery.rabinovich_fabrikant import (
@@ -135,6 +139,7 @@ from simulating_anything.rediscovery.sir_vital import run_sir_vital_rediscovery
 from simulating_anything.rediscovery.spring_mass_chain import run_spring_mass_chain_rediscovery
 from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
 from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
+from simulating_anything.rediscovery.stommel import run_stommel_rediscovery
 from simulating_anything.rediscovery.stuart_landau import run_stuart_landau_rediscovery
 from simulating_anything.rediscovery.swinging_atwood import run_swinging_atwood_rediscovery
 from simulating_anything.rediscovery.thomas import run_thomas_rediscovery
@@ -142,6 +147,7 @@ from simulating_anything.rediscovery.tent_map import run_tent_map_rediscovery
 from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
 from simulating_anything.rediscovery.tinkerbell_map import run_tinkerbell_map_rediscovery
 from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_rediscovery
+from simulating_anything.rediscovery.toggle_switch import run_toggle_switch_rediscovery
 from simulating_anything.rediscovery.van_der_pol import run_van_der_pol_rediscovery
 from simulating_anything.rediscovery.vicsek import run_vicsek_rediscovery
 from simulating_anything.rediscovery.wilberforce import run_wilberforce_rediscovery
@@ -308,4 +314,8 @@ __all__ = [
     "run_ring_oscillator_rediscovery",
     "run_jansen_rit_rediscovery",
     "run_goldbeter_glycolysis_rediscovery",
+    "run_goodwin_rediscovery",
+    "run_toggle_switch_rediscovery",
+    "run_stommel_rediscovery",
+    "run_predator_prey_parasite_rediscovery",
 ]

@@ -1211,6 +1211,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"v": 0.36, "sigma": 0.1, "q": 1.0, "k_s": 0.02},
         "dt": 0.1, "n_steps": 500, "math_class": "Metabolic Oscillator",
     },
+    "goodwin": {
+        "module": "simulating_anything.simulation.goodwin",
+        "cls": "GoodwinSimulation",
+        "domain": Domain.GOODWIN,
+        "params": {"a": 1.0, "K": 1.0, "n": 9.0, "b": 0.1},
+        "dt": 0.1, "n_steps": 500, "math_class": "Gene Regulatory Oscillator",
+    },
+    "toggle_switch": {
+        "module": "simulating_anything.simulation.toggle_switch",
+        "cls": "ToggleSwitchSimulation",
+        "domain": Domain.TOGGLE_SWITCH,
+        "params": {"alpha1": 4.0, "alpha2": 4.0, "beta": 4.0, "gamma": 4.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Bistable Gene Circuit",
+    },
+    "stommel": {
+        "module": "simulating_anything.simulation.stommel",
+        "cls": "StommelSimulation",
+        "domain": Domain.STOMMEL,
+        "params": {"eta1": 3.0, "eta2": 1.0, "eta3": 0.3},
+        "dt": 0.01, "n_steps": 500, "math_class": "Thermohaline Circulation",
+    },
+    "predator_prey_parasite": {
+        "module": "simulating_anything.simulation.predator_prey_parasite",
+        "cls": "PredatorPreyParasiteSimulation",
+        "domain": Domain.PREDATOR_PREY_PARASITE,
+        "params": {"r": 1.0, "K": 10.0, "a": 0.1, "e": 0.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Eco-Epidemiological ODE",
+    },
 }
 
 

@@ -271,6 +271,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.ring_oscillator import run_ring_oscillator_rediscovery
     from simulating_anything.rediscovery.jansen_rit import run_jansen_rit_rediscovery
     from simulating_anything.rediscovery.goldbeter_glycolysis import run_goldbeter_glycolysis_rediscovery
+    from simulating_anything.rediscovery.goodwin import run_goodwin_rediscovery
+    from simulating_anything.rediscovery.toggle_switch import run_toggle_switch_rediscovery
+    from simulating_anything.rediscovery.stommel import run_stommel_rediscovery
+    from simulating_anything.rediscovery.predator_prey_parasite import run_predator_prey_parasite_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -965,6 +969,26 @@ def run_all_rediscoveries(
         "goldbeter_glycolysis": {
             "label": "Goldbeter Glycolysis Oscillator",
             "fn": run_goldbeter_glycolysis_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "goodwin": {
+            "label": "Goodwin Gene Regulatory Oscillator",
+            "fn": run_goodwin_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "toggle_switch": {
+            "label": "Genetic Toggle Switch Bistability",
+            "fn": run_toggle_switch_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "stommel": {
+            "label": "Stommel Box Model Thermohaline",
+            "fn": run_stommel_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "predator_prey_parasite": {
+            "label": "Predator-Prey-Parasite Eco-Epidemiology",
+            "fn": run_predator_prey_parasite_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

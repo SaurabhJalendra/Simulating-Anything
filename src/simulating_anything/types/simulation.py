@@ -148,6 +148,10 @@ class Domain(str, Enum):
     RING_OSCILLATOR = "ring_oscillator"
     JANSEN_RIT = "jansen_rit"
     GOLDBETER_GLYCOLYSIS = "goldbeter_glycolysis"
+    GOODWIN = "goodwin"
+    TOGGLE_SWITCH = "toggle_switch"
+    STOMMEL = "stommel"
+    PREDATOR_PREY_PARASITE = "predator_prey_parasite"
 
 
 class SimulationBackend(str, Enum):
