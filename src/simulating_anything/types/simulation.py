@@ -100,6 +100,10 @@ class Domain(str, Enum):
     LASER_RATE = "laser_rate"
     BAZYKIN = "bazykin"
     SIR_VACCINATION = "sir_vaccination"
+    LORENZ_STENFLO = "lorenz_stenflo"
+    FHN_LATTICE = "fhn_lattice"
+    FOUR_SPECIES_LV = "four_species_lv"
+    CHEN = "chen"
 
 
 class SimulationBackend(str, Enum):
