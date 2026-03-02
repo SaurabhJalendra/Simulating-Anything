@@ -1,14 +1,14 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-3403%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-3553%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-111-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-115-orange)](src/simulating_anything/simulation/)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **111 domains** spanning **69 mathematical classes**.
+simulation data across **115 domains** spanning **72 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -41,7 +41,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 300 mathematical isomorphisms detected across 111 domains
+**Cross-domain analysis:** 312 mathematical isomorphisms detected across 115 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -141,6 +141,10 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #109: Newton-Leipnik** -- multistable 3D chaos with coexisting strange attractors.
 **Domain #110: Wang** -- single-wing chaotic attractor with 4-parameter quadratic ODE.
 **Domain #111: Arneodo** -- cubic jerk system chaos (x^3 nonlinearity, period-doubling).
+**Domain #112: Rucklidge** -- double convection chaos (thermosolutal model).
+**Domain #113: Liu** -- 6-parameter quadratic chaotic attractor.
+**Domain #114: Hadley** -- atmospheric Hadley cell circulation model.
+**Domain #115: Vallis** -- ENSO (El Nino-Southern Oscillation) climate model.
 
 ---
 
