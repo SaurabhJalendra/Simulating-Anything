@@ -1795,6 +1795,74 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        # --- Domain #112: Rucklidge ---
+        DomainSignature(
+            name="rucklidge",
+            math_type="chaotic",  # Double convection
+            state_dim=3,
+            n_parameters=2,  # kappa, lambda
+            conserved_quantities=[],
+            symmetries=["inversion"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/kappa",
+            discovered_equations=[
+                "dx/dt = -kappa*x + lambda*y - y*z",
+                "dy/dt = x",
+                "dz/dt = -z + y^2",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #113: Liu ---
+        DomainSignature(
+            name="liu",
+            math_type="chaotic",  # 6-parameter quadratic system
+            state_dim=3,
+            n_parameters=6,  # a, b, c, e, k, m
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = -a*x - e*y^2",
+                "dy/dt = b*y - k*x*z",
+                "dz/dt = -c*z + m*x*y",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #114: Hadley ---
+        DomainSignature(
+            name="hadley",
+            math_type="chaotic",  # Atmospheric Hadley circulation
+            state_dim=3,
+            n_parameters=4,  # a, b, F, G
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = -y^2 - z^2 - a*x + a*F",
+                "dy/dt = x*y - b*x*z - y + G",
+                "dz/dt = b*x*y + x*z - z",
+            ],
+            r_squared=[],
+        ),
+        # --- Domain #115: Vallis ---
+        DomainSignature(
+            name="vallis",
+            math_type="chaotic",  # ENSO climate model
+            state_dim=3,
+            n_parameters=3,  # B, C, p
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/C",
+            discovered_equations=[
+                "dx/dt = B*y - C*(x - p)",
+                "dy/dt = -y + x*z",
+                "dz/dt = -z - x*y + 1",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -4355,6 +4423,92 @@ def detect_structural_analogies(
         },
     ))
 
+    # Rucklidge <-> Shimizu-Morioka (Lorenz-like with y^2 nonlinearity)
+    analogies.append(Analogy(
+        domain_a="rucklidge",
+        domain_b="shimizu_morioka",
+        analogy_type="structural",
+        description=(
+            "Both have y^2 (or x^2) quadratic nonlinearity in z-equation and "
+            "are related to Lorenz convection. Rucklidge: dz/dt=-z+y^2. "
+            "Shimizu-Morioka: dz/dt=-bz+x^2."
+        ),
+        strength=0.78,
+        mapping={
+            "y^2 nonlinearity": "x^2 nonlinearity",
+            "-z + y^2": "-b*z + x^2",
+        },
+    ))
+
+    # Liu <-> Lorenz (quadratic 3D chaotic ODE)
+    analogies.append(Analogy(
+        domain_a="liu",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are 3D systems with quadratic cross-coupling (xz and xy terms). "
+            "Liu adds y^2 and has 6 parameters vs Lorenz's 3."
+        ),
+        strength=0.65,
+        mapping={
+            "k*x*z coupling": "x*z coupling",
+            "m*x*y coupling": "x*y coupling",
+            "e*y^2 extra": "no y^2 term",
+        },
+    ))
+
+    # Hadley <-> Lorenz-84 (atmospheric circulation models)
+    analogies.append(Analogy(
+        domain_a="hadley",
+        domain_b="lorenz_84",
+        analogy_type="structural",
+        description=(
+            "Both model atmospheric circulation. Hadley: y^2+z^2 energy terms, "
+            "rotation coupling bxz, bxy. Lorenz-84: similar structure for "
+            "baroclinic wave interactions."
+        ),
+        strength=0.82,
+        mapping={
+            "y^2+z^2 [energy]": "y^2+z^2 [wave amplitude]",
+            "b*x*z rotation": "x*z coupling",
+            "forcing F": "forcing F",
+        },
+    ))
+
+    # Vallis <-> Lorenz (ENSO as Lorenz-type chaos)
+    analogies.append(Analogy(
+        domain_a="vallis",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Vallis ENSO has same bilinear structure as Lorenz: xz and xy "
+            "coupling terms. Ocean-atmosphere coupling maps to convection."
+        ),
+        strength=0.75,
+        mapping={
+            "x*z [ocean-wind]": "x*z [convection]",
+            "x*y [feedback]": "x*y [rotation]",
+            "B*y [coupling]": "sigma*y [mixing]",
+        },
+    ))
+
+    # Hadley <-> Rayleigh-Benard (convection models)
+    analogies.append(Analogy(
+        domain_a="hadley",
+        domain_b="rayleigh_benard",
+        analogy_type="structural",
+        description=(
+            "Both model thermal convection. Hadley: atmospheric Hadley cell "
+            "circulation. Rayleigh-Benard: fluid convection between heated plates. "
+            "Both have thermal forcing parameters."
+        ),
+        strength=0.70,
+        mapping={
+            "F [thermal forcing]": "Ra [Rayleigh number]",
+            "quadratic coupling": "nonlinear advection",
+        },
+    ))
+
     return analogies
 
 
@@ -5363,6 +5517,54 @@ def detect_dimensional_analogies(
         mapping={
             "1/a [x-decay]": "1/a [mixing]",
             "-(a+0.4-b) [div]": "-(2a+b)/3 [div]",
+        },
+    ))
+
+    # Dimensional: Rucklidge <-> Lorenz (convection timescale)
+    analogies.append(Analogy(
+        domain_a="rucklidge",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both convection models have primary timescale 1/kappa (Rucklidge) "
+            "or 1/sigma (Lorenz) for mixing."
+        ),
+        strength=0.75,
+        mapping={
+            "1/kappa [mixing]": "1/sigma [mixing]",
+            "1/1 [z-decay]": "1/beta [z-decay]",
+        },
+    ))
+
+    # Dimensional: Hadley <-> Lorenz-84 (atmospheric timescale)
+    analogies.append(Analogy(
+        domain_a="hadley",
+        domain_b="lorenz_84",
+        analogy_type="dimensional",
+        description=(
+            "Both atmospheric models have 1/a as primary damping timescale "
+            "and F as driving parameter."
+        ),
+        strength=0.80,
+        mapping={
+            "1/a [damping]": "1/a [damping]",
+            "F [forcing]": "F [forcing]",
+        },
+    ))
+
+    # Dimensional: Vallis <-> Lorenz (bilinear coupling timescale)
+    analogies.append(Analogy(
+        domain_a="vallis",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both have primary timescale set by linear damping: "
+            "1/C (Vallis) or 1/sigma (Lorenz) for x-decay."
+        ),
+        strength=0.68,
+        mapping={
+            "1/C [x-damping]": "1/sigma [x-mixing]",
+            "B [coupling]": "rho [driving]",
         },
     ))
 
@@ -7163,6 +7365,70 @@ def detect_topological_analogies(
         mapping={
             "jerk chaos": "jerk chaos",
             "minimal parameters": "minimal parameters",
+        },
+    ))
+
+    # Topological: Rucklidge <-> Lorenz (butterfly strange attractors)
+    analogies.append(Analogy(
+        domain_a="rucklidge",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both produce butterfly-shaped strange attractors from convection "
+            "models with two symmetric equilibria."
+        ),
+        strength=0.80,
+        mapping={
+            "double-lobe attractor": "butterfly wings",
+            "symmetric fixed points": "symmetric fixed points",
+        },
+    ))
+
+    # Topological: Liu <-> Dadras (multi-parameter strange attractors)
+    analogies.append(Analogy(
+        domain_a="liu",
+        domain_b="dadras",
+        analogy_type="topological",
+        description=(
+            "Both are multi-parameter (5-6) quadratic chaotic systems producing "
+            "complex strange attractors with period-doubling routes to chaos."
+        ),
+        strength=0.63,
+        mapping={
+            "6-parameter chaos": "5-parameter chaos",
+            "spiral attractor": "spiral attractor",
+        },
+    ))
+
+    # Topological: Hadley <-> Lorenz-84 (atmospheric circulation attractors)
+    analogies.append(Analogy(
+        domain_a="hadley",
+        domain_b="lorenz_84",
+        analogy_type="topological",
+        description=(
+            "Both model atmospheric circulation and produce chaotic attractors "
+            "representing irregular weather/climate dynamics."
+        ),
+        strength=0.82,
+        mapping={
+            "atmospheric chaos": "atmospheric chaos",
+            "Hadley cell": "baroclinic wave",
+        },
+    ))
+
+    # Topological: Vallis <-> Lorenz (ENSO as Lorenz-type attractor)
+    analogies.append(Analogy(
+        domain_a="vallis",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Vallis ENSO produces a Lorenz-like strange attractor. "
+            "Irregular ENSO cycles map to orbits around the attractor lobes."
+        ),
+        strength=0.75,
+        mapping={
+            "El Nino/La Nina lobes": "convection lobes",
+            "strange attractor": "strange attractor",
         },
     ))
 

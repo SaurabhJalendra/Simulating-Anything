@@ -137,6 +137,10 @@ from simulating_anything.rediscovery.shimizu_morioka import run_shimizu_morioka_
 from simulating_anything.rediscovery.newton_leipnik import run_newton_leipnik_rediscovery
 from simulating_anything.rediscovery.wang import run_wang_rediscovery
 from simulating_anything.rediscovery.arneodo import run_arneodo_rediscovery
+from simulating_anything.rediscovery.rucklidge import run_rucklidge_rediscovery
+from simulating_anything.rediscovery.liu import run_liu_rediscovery
+from simulating_anything.rediscovery.hadley import run_hadley_rediscovery
+from simulating_anything.rediscovery.vallis import run_vallis_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -250,4 +254,8 @@ __all__ = [
     "run_newton_leipnik_rediscovery",
     "run_wang_rediscovery",
     "run_arneodo_rediscovery",
+    "run_rucklidge_rediscovery",
+    "run_liu_rediscovery",
+    "run_hadley_rediscovery",
+    "run_vallis_rediscovery",
 ]
