@@ -2168,6 +2168,66 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="repressilator",
+            math_type="gene_regulatory_network",  # Cyclic gene repression
+            state_dim=6,
+            n_parameters=4,  # alpha, alpha0, n, beta
+            conserved_quantities=[],
+            symmetries=["Z3_cyclic_symmetry"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="T_osc",
+            discovered_equations=[
+                "dm_i/dt = -m_i + alpha/(1+p_{i-1}^n) + alpha0",
+                "dp_i/dt = beta*(m_i - p_i)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="ring_oscillator",
+            math_type="electronic_oscillator",  # 3-stage inverter ring
+            state_dim=3,
+            n_parameters=1,  # gain
+            conserved_quantities=[],
+            symmetries=["Z3_cyclic_symmetry"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="6*tau",
+            discovered_equations=[
+                "dx_i/dt = -x_i + tanh(g*(-x_{i-1}))",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="jansen_rit",
+            math_type="neural_mass_model",  # Cortical column EEG
+            state_dim=6,
+            n_parameters=8,  # A, B, a, b, C, vmax, v0, r, p
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dy3/dt = A*a*S(y1-y2) - 2*a*y3 - a^2*y0",
+                "dy4/dt = A*a*(p+C2*S(C1*y0)) - 2*a*y4 - a^2*y1",
+                "dy5/dt = B*b*C4*S(C3*y0) - 2*b*y5 - b^2*y2",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="goldbeter_glycolysis",
+            math_type="metabolic_oscillator",  # Allosteric glycolysis
+            state_dim=2,
+            n_parameters=5,  # v, sigma, q, k_s, L
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/k_s",
+            discovered_equations=[
+                "dx/dt = v - sigma*phi(x,y)",
+                "dy/dt = q*sigma*phi(x,y) - k_s*y",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -5330,6 +5390,96 @@ def detect_structural_analogies(
         },
     ))
 
+    # Structural: Repressilator <-> Ring Oscillator (Z3 cyclic oscillation)
+    analogies.append(Analogy(
+        domain_a="repressilator",
+        domain_b="ring_oscillator",
+        analogy_type="structural",
+        description=(
+            "Both are 3-stage cyclic oscillators with Z3 symmetry. "
+            "Repressilator: gene repression cycle. Ring oscillator: "
+            "inverting amplifier chain. Same 120-degree phase-shifted oscillation."
+        ),
+        strength=0.88,
+        mapping={
+            "Hill repression": "tanh inversion",
+            "mRNA/protein pairs": "voltage stages",
+            "Z3 phase shift": "Z3 phase shift",
+        },
+    ))
+
+    # Structural: Goldbeter Glycolysis <-> Selkov (glycolytic oscillation)
+    analogies.append(Analogy(
+        domain_a="goldbeter_glycolysis",
+        domain_b="selkov",
+        analogy_type="structural",
+        description=(
+            "Both model glycolytic oscillations via PFK allosteric regulation. "
+            "Goldbeter: detailed allosteric rate phi. Selkov: simplified substrate "
+            "inhibition. Both show Hopf bifurcation at critical substrate flux."
+        ),
+        strength=0.92,
+        mapping={
+            "allosteric phi": "substrate inhibition",
+            "v input flux": "v0 input",
+            "Hopf bifurcation": "Hopf bifurcation",
+        },
+    ))
+
+    # Structural: Jansen-Rit <-> Hodgkin-Huxley (neural oscillation)
+    analogies.append(Analogy(
+        domain_a="jansen_rit",
+        domain_b="hodgkin_huxley",
+        analogy_type="structural",
+        description=(
+            "Both model neural oscillations with sigmoid/sigmoidal activation. "
+            "JR: population-level mean-field. HH: single-neuron biophysical. "
+            "Both have excitatory-inhibitory balance driving oscillation."
+        ),
+        strength=0.70,
+        mapping={
+            "sigmoid S(v)": "m_inf sigmoid",
+            "E-I balance": "Na/K balance",
+            "EEG output": "membrane potential",
+        },
+    ))
+
+    # Structural: Goldbeter Glycolysis <-> Brusselator (chemical Hopf)
+    analogies.append(Analogy(
+        domain_a="goldbeter_glycolysis",
+        domain_b="brusselator",
+        analogy_type="structural",
+        description=(
+            "Both are chemical oscillators exhibiting Hopf bifurcation. "
+            "Goldbeter: allosteric enzyme regulation. Brusselator: autocatalytic "
+            "reaction scheme. Same transition from steady state to limit cycle."
+        ),
+        strength=0.82,
+        mapping={
+            "allosteric regulation": "autocatalysis",
+            "Hopf bifurcation": "Hopf bifurcation",
+            "substrate-product cycle": "A-B-X-Y cycle",
+        },
+    ))
+
+    # Structural: Repressilator <-> Wilson-Cowan (cyclic interaction)
+    analogies.append(Analogy(
+        domain_a="repressilator",
+        domain_b="wilson_cowan",
+        analogy_type="structural",
+        description=(
+            "Both use sigmoidal activation with coupled populations. "
+            "Repressilator: 3 repressive genes. Wilson-Cowan: E-I populations. "
+            "Both exhibit oscillation via inhibitory coupling."
+        ),
+        strength=0.68,
+        mapping={
+            "Hill repression": "sigmoid activation",
+            "cyclic inhibition": "E-I inhibition",
+            "oscillation threshold": "oscillation threshold",
+        },
+    ))
+
     return analogies
 
 
@@ -6634,6 +6784,56 @@ def detect_dimensional_analogies(
         mapping={
             "lambda [nats/iter]": "lambda [nats/iter]",
             "beta [control]": "r [control]",
+        },
+    ))
+
+    # Dimensional: Repressilator <-> Ring Oscillator (oscillation timescales)
+    analogies.append(Analogy(
+        domain_a="repressilator",
+        domain_b="ring_oscillator",
+        analogy_type="dimensional",
+        description=(
+            "Both 3-stage cyclic oscillators have period T ~ 6*tau, where "
+            "tau is the single-stage time constant. Repressilator: 1/beta "
+            "protein degradation. Ring: RC time constant."
+        ),
+        strength=0.80,
+        mapping={
+            "1/beta [protein time]": "RC [circuit time]",
+            "T [oscillation period]": "T [oscillation period]",
+        },
+    ))
+
+    # Dimensional: Goldbeter Glycolysis <-> Oregonator (biochemical timescales)
+    analogies.append(Analogy(
+        domain_a="goldbeter_glycolysis",
+        domain_b="oregonator",
+        analogy_type="dimensional",
+        description=(
+            "Both biochemical oscillators have fast catalytic and slow "
+            "substrate timescales. Goldbeter: 1/k_s slow efflux. "
+            "Oregonator: epsilon fast/slow ratio."
+        ),
+        strength=0.72,
+        mapping={
+            "1/k_s [efflux time]": "1/k5 [catalyst time]",
+            "v [flux rate]": "f [stoichiometric factor]",
+        },
+    ))
+
+    # Dimensional: Jansen-Rit <-> Wilson-Cowan (neural mass timescales)
+    analogies.append(Analogy(
+        domain_a="jansen_rit",
+        domain_b="wilson_cowan",
+        analogy_type="dimensional",
+        description=(
+            "Both neural population models have excitatory and inhibitory "
+            "time constants. JR: 1/a (exc) and 1/b (inh). WC: tau_E and tau_I."
+        ),
+        strength=0.78,
+        mapping={
+            "1/a [exc time]": "tau_E [exc time]",
+            "1/b [inh time]": "tau_I [inh time]",
         },
     ))
 
@@ -8880,6 +9080,79 @@ def detect_topological_analogies(
             "transcritical bifurcation": "washout bifurcation",
             "R0=1 threshold": "D=D_c threshold",
             "endemic equilibrium": "coexistence equilibrium",
+        },
+    ))
+
+    # Topological: Repressilator <-> Ring Oscillator (Z3 limit cycle)
+    analogies.append(Analogy(
+        domain_a="repressilator",
+        domain_b="ring_oscillator",
+        analogy_type="topological",
+        description=(
+            "Both have a Z3-symmetric limit cycle in phase space with "
+            "identical topological structure: 120-degree rotational symmetry "
+            "in the cyclic subspace. Same Hopf bifurcation from symmetric "
+            "fixed point to symmetric limit cycle."
+        ),
+        strength=0.85,
+        mapping={
+            "Z3 limit cycle": "Z3 limit cycle",
+            "symmetric fixed point": "origin fixed point",
+            "Hopf bifurcation": "Hopf bifurcation",
+        },
+    ))
+
+    # Topological: Goldbeter Glycolysis <-> VdP (relaxation oscillation)
+    analogies.append(Analogy(
+        domain_a="goldbeter_glycolysis",
+        domain_b="van_der_pol",
+        analogy_type="topological",
+        description=(
+            "Both exhibit relaxation oscillations with fast/slow segments "
+            "on the limit cycle. Same topological structure: slow manifold "
+            "tracking with fast jumps between branches."
+        ),
+        strength=0.70,
+        mapping={
+            "slow manifold": "slow manifold",
+            "fast jump": "fast jump",
+            "relaxation cycle": "relaxation cycle",
+        },
+    ))
+
+    # Topological: Jansen-Rit <-> FitzHugh-Nagumo (excitable/oscillatory)
+    analogies.append(Analogy(
+        domain_a="jansen_rit",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="topological",
+        description=(
+            "Both neural models exhibit transition between excitable and "
+            "oscillatory regimes via Hopf bifurcation. Same topological "
+            "change in phase portrait as input current/external drive varies."
+        ),
+        strength=0.72,
+        mapping={
+            "excitable regime": "excitable regime",
+            "oscillatory regime": "oscillatory regime",
+            "sigmoid activation": "cubic nullcline",
+        },
+    ))
+
+    # Topological: Goldbeter <-> Selkov (same glycolytic phase portrait)
+    analogies.append(Analogy(
+        domain_a="goldbeter_glycolysis",
+        domain_b="selkov",
+        analogy_type="topological",
+        description=(
+            "Both glycolysis models have identical phase portrait topology: "
+            "unique unstable fixed point surrounded by stable limit cycle "
+            "in oscillatory regime. Same Hopf bifurcation structure."
+        ),
+        strength=0.88,
+        mapping={
+            "unstable spiral": "unstable spiral",
+            "stable limit cycle": "stable limit cycle",
+            "Hopf bifurcation": "Hopf bifurcation",
         },
     ))
 

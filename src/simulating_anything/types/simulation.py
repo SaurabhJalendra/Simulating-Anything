@@ -144,6 +144,10 @@ class Domain(str, Enum):
     CIRCLE_MAP = "circle_map"
     COUPLED_ROSSLER = "coupled_rossler"
     SIR_VITAL = "sir_vital"
+    REPRESSILATOR = "repressilator"
+    RING_OSCILLATOR = "ring_oscillator"
+    JANSEN_RIT = "jansen_rit"
+    GOLDBETER_GLYCOLYSIS = "goldbeter_glycolysis"
 
 
 class SimulationBackend(str, Enum):

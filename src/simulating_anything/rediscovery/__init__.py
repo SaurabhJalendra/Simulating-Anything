@@ -58,6 +58,7 @@ from simulating_anything.rediscovery.fitzhugh_rinzel import run_fitzhugh_rinzel_
 from simulating_anything.rediscovery.four_species_lv import run_four_species_lv_rediscovery
 from simulating_anything.rediscovery.gauss_map import run_gauss_map_rediscovery
 from simulating_anything.rediscovery.genesio_tesi import run_genesio_tesi_rediscovery
+from simulating_anything.rediscovery.goldbeter_glycolysis import run_goldbeter_glycolysis_rediscovery
 from simulating_anything.rediscovery.fput import run_fput_rediscovery
 from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
@@ -74,6 +75,7 @@ from simulating_anything.rediscovery.hodgkin_huxley import run_hodgkin_huxley_re
 from simulating_anything.rediscovery.ikeda_map import run_ikeda_map_rediscovery
 from simulating_anything.rediscovery.izhikevich import run_izhikevich_rediscovery
 from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
+from simulating_anything.rediscovery.jansen_rit import run_jansen_rit_rediscovery
 from simulating_anything.rediscovery.kapitza_pendulum import run_kapitza_pendulum_rediscovery
 from simulating_anything.rediscovery.kepler import run_kepler_rediscovery
 from simulating_anything.rediscovery.langford import run_langford_rediscovery
@@ -108,7 +110,9 @@ from simulating_anything.rediscovery.rabinovich_fabrikant import (
     run_rabinovich_fabrikant_rediscovery,
 )
 from simulating_anything.rediscovery.rayleigh_benard import run_rayleigh_benard_rediscovery
+from simulating_anything.rediscovery.repressilator import run_repressilator_rediscovery
 from simulating_anything.rediscovery.ricker_map import run_ricker_map_rediscovery
+from simulating_anything.rediscovery.ring_oscillator import run_ring_oscillator_rediscovery
 from simulating_anything.rediscovery.rikitake import run_rikitake_rediscovery
 from simulating_anything.rediscovery.rosenzweig_macarthur import (
     run_rosenzweig_macarthur_rediscovery,
@@ -300,4 +304,8 @@ __all__ = [
     "run_circle_map_rediscovery",
     "run_coupled_rossler_rediscovery",
     "run_sir_vital_rediscovery",
+    "run_repressilator_rediscovery",
+    "run_ring_oscillator_rediscovery",
+    "run_jansen_rit_rediscovery",
+    "run_goldbeter_glycolysis_rediscovery",
 ]

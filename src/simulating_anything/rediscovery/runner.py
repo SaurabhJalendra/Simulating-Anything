@@ -267,6 +267,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.circle_map import run_circle_map_rediscovery
     from simulating_anything.rediscovery.coupled_rossler import run_coupled_rossler_rediscovery
     from simulating_anything.rediscovery.sir_vital import run_sir_vital_rediscovery
+    from simulating_anything.rediscovery.repressilator import run_repressilator_rediscovery
+    from simulating_anything.rediscovery.ring_oscillator import run_ring_oscillator_rediscovery
+    from simulating_anything.rediscovery.jansen_rit import run_jansen_rit_rediscovery
+    from simulating_anything.rediscovery.goldbeter_glycolysis import run_goldbeter_glycolysis_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -941,6 +945,26 @@ def run_all_rediscoveries(
         "sir_vital": {
             "label": "SIR Vital Dynamics Endemic",
             "fn": run_sir_vital_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "repressilator": {
+            "label": "Repressilator Gene Oscillatory Network",
+            "fn": run_repressilator_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "ring_oscillator": {
+            "label": "Ring Oscillator 3-Stage Electronic",
+            "fn": run_ring_oscillator_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "jansen_rit": {
+            "label": "Jansen-Rit Neural Mass EEG",
+            "fn": run_jansen_rit_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "goldbeter_glycolysis": {
+            "label": "Goldbeter Glycolysis Oscillator",
+            "fn": run_goldbeter_glycolysis_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

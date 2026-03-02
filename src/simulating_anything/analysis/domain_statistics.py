@@ -1183,6 +1183,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"beta": 0.4, "gamma": 0.1, "mu": 0.01},
         "dt": 0.1, "n_steps": 500, "math_class": "Epidemic ODE",
     },
+    "repressilator": {
+        "module": "simulating_anything.simulation.repressilator",
+        "cls": "RepressilatorSimulation",
+        "domain": Domain.REPRESSILATOR,
+        "params": {"alpha": 216.0, "alpha0": 0.001, "n": 2.0, "beta": 5.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Gene Regulatory Network",
+    },
+    "ring_oscillator": {
+        "module": "simulating_anything.simulation.ring_oscillator",
+        "cls": "RingOscillatorSimulation",
+        "domain": Domain.RING_OSCILLATOR,
+        "params": {"gain": 5.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Electronic Oscillator",
+    },
+    "jansen_rit": {
+        "module": "simulating_anything.simulation.jansen_rit",
+        "cls": "JansenRitSimulation",
+        "domain": Domain.JANSEN_RIT,
+        "params": {"A": 3.25, "B": 22.0, "a": 100.0, "b": 50.0, "p": 120.0},
+        "dt": 0.001, "n_steps": 500, "math_class": "Neural Mass Model",
+    },
+    "goldbeter_glycolysis": {
+        "module": "simulating_anything.simulation.goldbeter_glycolysis",
+        "cls": "GoldbeterGlycolysisSimulation",
+        "domain": Domain.GOLDBETER_GLYCOLYSIS,
+        "params": {"v": 0.36, "sigma": 0.1, "q": 1.0, "k_s": 0.02},
+        "dt": 0.1, "n_steps": 500, "math_class": "Metabolic Oscillator",
+    },
 }
 
 
