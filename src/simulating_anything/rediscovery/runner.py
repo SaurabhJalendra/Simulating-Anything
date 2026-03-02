@@ -307,6 +307,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.brusselator_1d import run_brusselator_1d_rediscovery
     from simulating_anything.rediscovery.tumor_growth import run_tumor_growth_rediscovery
     from simulating_anything.rediscovery.sir_stochastic import run_sir_stochastic_rediscovery
+    from simulating_anything.rediscovery.glycolytic_oscillator import run_glycolytic_oscillator_rediscovery
+    from simulating_anything.rediscovery.age_structured import run_age_structured_rediscovery
+    from simulating_anything.rediscovery.burgers_1d import run_burgers_1d_rediscovery
+    from simulating_anything.rediscovery.sir_network_adaptive import run_sir_network_adaptive_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1181,6 +1185,26 @@ def run_all_rediscoveries(
         "sir_stochastic": {
             "label": "SIR Stochastic",
             "fn": run_sir_stochastic_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "glycolytic_oscillator": {
+            "label": "Glycolytic Oscillator",
+            "fn": run_glycolytic_oscillator_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "age_structured": {
+            "label": "Age-Structured Pred-Prey",
+            "fn": run_age_structured_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "burgers_1d": {
+            "label": "Burgers 1D",
+            "fn": run_burgers_1d_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sir_network_adaptive": {
+            "label": "SIR Network Adaptive",
+            "fn": run_sir_network_adaptive_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

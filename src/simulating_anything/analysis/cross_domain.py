@@ -2768,6 +2768,68 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="glycolytic_oscillator",
+            math_type="biochemical_oscillator",
+            state_dim=2,
+            n_parameters=3,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="hopf_bifurcation",
+            characteristic_timescale="1/k2",
+            discovered_equations=[
+                "dS/dt = v_in - k1*S*P^2",
+                "dP/dt = k1*S*P^2 - k2*P",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="age_structured",
+            math_type="age_structured_ode",
+            state_dim=4,
+            n_parameters=10,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="damped_oscillation",
+            characteristic_timescale="1/mu_N",
+            discovered_equations=[
+                "dN_j/dt = b_N*N_a - m_j_N*N_j - mu_N*N_j",
+                "dN_a/dt = mu_N*N_j - d_N*N_a - a*N_a*P_a/(1+h*N_a)",
+                "dP_j/dt = e*a*N_a*P_a/(1+h*N_a) - m_j_P*P_j - mu_P*P_j",
+                "dP_a/dt = mu_P*P_j - d_P*P_a",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="burgers_1d",
+            math_type="nonlinear_pde",
+            state_dim=256,
+            n_parameters=2,
+            conserved_quantities=["total_mass"],
+            symmetries=["translational"],
+            phase_portrait_type="shock_formation",
+            characteristic_timescale="1/(A*k)",
+            discovered_equations=[
+                "du/dt + u*du/dx = nu*d2u/dx2",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sir_network_adaptive",
+            math_type="network_epidemic",
+            state_dim=3,
+            n_parameters=5,
+            conserved_quantities=["S+I+R=1"],
+            symmetries=[],
+            phase_portrait_type="stochastic_transient",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "S-I edge: infect with prob beta",
+                "I node: recover with prob gamma",
+                "S node: rewire from I with prob w",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -6993,6 +7055,98 @@ def detect_structural_analogies(
         },
     ))
 
+    # --- Batch #176-179 structural analogies ---
+    analogies.append(Analogy(
+        domain_a="glycolytic_oscillator",
+        domain_b="selkov",
+        analogy_type="structural",
+        description=(
+            "Both model glycolytic oscillations -- Higgins (substrate/product"
+            " autocatalysis) and Selkov (product-activated). Both have Hopf bifurcations."
+        ),
+        strength=0.91,
+        mapping={
+            "autocatalytic feedback": "product activation",
+            "Hopf bifurcation": "Hopf bifurcation",
+            "substrate-product": "substrate-product",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="glycolytic_oscillator",
+        domain_b="goldbeter_glycolysis",
+        analogy_type="structural",
+        description=(
+            "Both are glycolysis oscillator models -- Higgins two-variable"
+            " vs Goldbeter allosteric enzyme kinetics."
+        ),
+        strength=0.89,
+        mapping={
+            "glycolytic pathway": "glycolytic pathway",
+            "PFK activation": "PFK activation",
+            "limit cycle": "limit cycle",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="age_structured",
+        domain_b="predator_two_prey",
+        analogy_type="structural",
+        description=(
+            "Both have 4-variable coupled predator-prey dynamics -- age classes"
+            " (juvenile/adult) vs multiple prey species."
+        ),
+        strength=0.78,
+        mapping={
+            "4-dim ODE": "4-dim ODE",
+            "Holling Type II": "functional response",
+            "maturation coupling": "competition coupling",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="burgers_1d",
+        domain_b="advection_1d",
+        analogy_type="structural",
+        description=(
+            "Burgers adds nonlinear self-advection and viscous diffusion to"
+            " the linear advection equation -- shock formation vs smooth translation."
+        ),
+        strength=0.88,
+        mapping={
+            "advection": "advection",
+            "wave propagation": "wave propagation",
+            "CFL condition": "CFL condition",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="burgers_1d",
+        domain_b="kuramoto_sivashinsky",
+        analogy_type="structural",
+        description=(
+            "Both are nonlinear PDEs exhibiting complex spatiotemporal dynamics --"
+            " Burgers forms shocks, KS develops spatiotemporal chaos."
+        ),
+        strength=0.80,
+        mapping={
+            "nonlinear advection": "nonlinear instability",
+            "viscous dissipation": "hyperviscous dissipation",
+            "energy cascade": "energy cascade",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="sir_network_adaptive",
+        domain_b="network_sis",
+        analogy_type="structural",
+        description=(
+            "Both model epidemics on networks -- adaptive SIR rewires to slow"
+            " transmission, network SIS uses fixed topology."
+        ),
+        strength=0.87,
+        mapping={
+            "network topology": "network topology",
+            "epidemic threshold": "spectral threshold",
+            "contact-based transmission": "contact-based transmission",
+        },
+    ))
+
     return analogies
 
 
@@ -8961,6 +9115,68 @@ def detect_dimensional_analogies(
             "beta [transmission]": "beta [transmission]",
             "gamma [recovery]": "gamma [recovery]",
             "N [population]": "N [population]",
+        },
+    ))
+
+    # --- Batch #176-179 dimensional analogies ---
+    analogies.append(Analogy(
+        domain_a="glycolytic_oscillator",
+        domain_b="brusselator",
+        analogy_type="dimensional",
+        description=(
+            "Both are two-variable chemical oscillators with Hopf bifurcations --"
+            " substrate/product vs activator/inhibitor."
+        ),
+        strength=0.83,
+        mapping={
+            "v_in [input flux]": "a [source]",
+            "k1 [autocatalytic]": "b [bifurcation]",
+            "k2 [removal]": "1+a [linear decay]",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="age_structured",
+        domain_b="three_species",
+        analogy_type="dimensional",
+        description=(
+            "Both are multi-component trophic models with maturation/transition"
+            " between classes -- age structure vs food chain."
+        ),
+        strength=0.77,
+        mapping={
+            "mu_N [maturation]": "transfer rate",
+            "b_N [birth rate]": "r [growth rate]",
+            "d_N [death]": "d [death]",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="burgers_1d",
+        domain_b="navier_stokes_2d",
+        analogy_type="dimensional",
+        description=(
+            "Burgers is the 1D analog of Navier-Stokes -- both have nonlinear"
+            " advection + viscous diffusion, same Reynolds number scaling."
+        ),
+        strength=0.86,
+        mapping={
+            "nu [viscosity]": "nu [viscosity]",
+            "Re = UL/nu": "Re = UL/nu",
+            "energy dissipation": "energy dissipation",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="sir_network_adaptive",
+        domain_b="sir_vaccination",
+        analogy_type="dimensional",
+        description=(
+            "Both reduce epidemic spread through behavioral intervention --"
+            " network rewiring vs prophylactic vaccination."
+        ),
+        strength=0.80,
+        mapping={
+            "w [rewiring rate]": "v [vaccination rate]",
+            "beta [transmission]": "beta [transmission]",
+            "gamma [recovery]": "gamma [recovery]",
         },
     ))
 
@@ -12050,6 +12266,83 @@ def detect_topological_analogies(
             "bistable fate": "bistable fate",
             "threshold effect": "Allee threshold",
             "saddle-node": "saddle-node",
+        },
+    ))
+
+    # --- Batch #176-179 topological analogies ---
+    analogies.append(Analogy(
+        domain_a="glycolytic_oscillator",
+        domain_b="repressilator",
+        analogy_type="topological",
+        description=(
+            "Both are biochemical oscillators with feedback loops -- glycolysis"
+            " (autocatalytic product) vs genetic toggle (mutual repression)."
+        ),
+        strength=0.78,
+        mapping={
+            "limit cycle": "limit cycle",
+            "Hopf bifurcation": "Hopf bifurcation",
+            "biochemical feedback": "genetic feedback",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="age_structured",
+        domain_b="delayed_predator_prey",
+        analogy_type="topological",
+        description=(
+            "Both capture delay-like effects in predator-prey -- age structure"
+            " as distributed delay vs explicit DDE delay."
+        ),
+        strength=0.80,
+        mapping={
+            "maturation delay": "gestation delay",
+            "juvenile stage": "delay term",
+            "Hopf from delay": "delay-induced Hopf",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="burgers_1d",
+        domain_b="sine_gordon",
+        analogy_type="topological",
+        description=(
+            "Both are nonlinear 1D PDEs with localized structures -- Burgers"
+            " shocks (dissipative) vs sine-Gordon kinks (conservative)."
+        ),
+        strength=0.76,
+        mapping={
+            "shock front": "kink soliton",
+            "gradient steepening": "topological charge",
+            "viscous smoothing": "dispersion balance",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="sir_network_adaptive",
+        domain_b="vicsek",
+        analogy_type="topological",
+        description=(
+            "Both model collective behavior on dynamic interaction networks --"
+            " epidemic on adaptive graph vs flocking on metric neighbors."
+        ),
+        strength=0.74,
+        mapping={
+            "adaptive network": "metric neighborhood",
+            "state-dependent rewiring": "alignment interaction",
+            "phase transition": "order-disorder transition",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="burgers_1d",
+        domain_b="fhn_pulse",
+        analogy_type="topological",
+        description=(
+            "Both form localized structures in 1D -- Burgers shocks from"
+            " nonlinear steepening vs FHN pulses from excitable kinetics."
+        ),
+        strength=0.75,
+        mapping={
+            "localized front": "localized pulse",
+            "nonlinear PDE": "reaction-diffusion PDE",
+            "speed selection": "speed selection",
         },
     ))
 

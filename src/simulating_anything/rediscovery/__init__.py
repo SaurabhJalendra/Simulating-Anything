@@ -207,6 +207,10 @@ from simulating_anything.rediscovery.allee_two import run_allee_two_rediscovery
 from simulating_anything.rediscovery.brusselator_1d import run_brusselator_1d_rediscovery
 from simulating_anything.rediscovery.tumor_growth import run_tumor_growth_rediscovery
 from simulating_anything.rediscovery.sir_stochastic import run_sir_stochastic_rediscovery
+from simulating_anything.rediscovery.glycolytic_oscillator import run_glycolytic_oscillator_rediscovery
+from simulating_anything.rediscovery.age_structured import run_age_structured_rediscovery
+from simulating_anything.rediscovery.burgers_1d import run_burgers_1d_rediscovery
+from simulating_anything.rediscovery.sir_network_adaptive import run_sir_network_adaptive_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -384,4 +388,8 @@ __all__ = [
     "run_brusselator_1d_rediscovery",
     "run_tumor_growth_rediscovery",
     "run_sir_stochastic_rediscovery",
+    "run_glycolytic_oscillator_rediscovery",
+    "run_age_structured_rediscovery",
+    "run_burgers_1d_rediscovery",
+    "run_sir_network_adaptive_rediscovery",
 ]

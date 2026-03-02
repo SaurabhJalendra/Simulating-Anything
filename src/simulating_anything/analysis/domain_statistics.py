@@ -1463,6 +1463,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"beta": 0.5, "gamma": 0.1, "N0": 1000.0, "sigma": 0.1},
         "dt": 0.1, "n_steps": 500, "math_class": "Stochastic ODE",
     },
+    "glycolytic_oscillator": {
+        "module": "simulating_anything.simulation.glycolytic_oscillator",
+        "cls": "GlycolyticOscillatorSimulation",
+        "domain": Domain.GLYCOLYTIC_OSCILLATOR,
+        "params": {"v_in": 1.0, "k1": 0.1, "k2": 0.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Biochemical Oscillator",
+    },
+    "age_structured": {
+        "module": "simulating_anything.simulation.age_structured",
+        "cls": "AgeStructuredSimulation",
+        "domain": Domain.AGE_STRUCTURED,
+        "params": {"b_N": 2.0, "mu_N": 0.5, "d_N": 0.1, "a": 0.02, "e": 0.5},
+        "dt": 0.01, "n_steps": 500, "math_class": "Age-Structured ODE",
+    },
+    "burgers_1d": {
+        "module": "simulating_anything.simulation.burgers_1d",
+        "cls": "Burgers1DSimulation",
+        "domain": Domain.BURGERS_1D,
+        "params": {"nu": 0.01, "L": 6.283, "N": 256},
+        "dt": 0.005, "n_steps": 500, "math_class": "Nonlinear PDE",
+    },
+    "sir_network_adaptive": {
+        "module": "simulating_anything.simulation.sir_network_adaptive",
+        "cls": "SIRNetworkAdaptiveSimulation",
+        "domain": Domain.SIR_NETWORK_ADAPTIVE,
+        "params": {"N_nodes": 200.0, "k_avg": 6.0, "beta": 0.1, "gamma": 0.05, "w": 0.3},
+        "dt": 1.0, "n_steps": 200, "math_class": "Network Epidemic",
+    },
 }
 
 

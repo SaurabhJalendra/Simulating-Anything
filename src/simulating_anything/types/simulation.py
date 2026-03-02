@@ -184,6 +184,10 @@ class Domain(str, Enum):
     BRUSSELATOR_1D = "brusselator_1d"
     TUMOR_GROWTH = "tumor_growth"
     SIR_STOCHASTIC = "sir_stochastic"
+    GLYCOLYTIC_OSCILLATOR = "glycolytic_oscillator"
+    AGE_STRUCTURED = "age_structured"
+    BURGERS_1D = "burgers_1d"
+    SIR_NETWORK_ADAPTIVE = "sir_network_adaptive"
 
 
 class SimulationBackend(str, Enum):
