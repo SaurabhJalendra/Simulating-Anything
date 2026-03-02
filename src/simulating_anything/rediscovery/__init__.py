@@ -187,6 +187,10 @@ from simulating_anything.rediscovery.amari_neural_field import run_amari_neural_
 from simulating_anything.rediscovery.lotka_volterra_delay import run_lotka_volterra_delay_rediscovery
 from simulating_anything.rediscovery.fhn_stochastic import run_fhn_stochastic_rediscovery
 from simulating_anything.rediscovery.sird import run_sird_rediscovery
+from simulating_anything.rediscovery.gompertz import run_gompertz_rediscovery
+from simulating_anything.rediscovery.sis_endemic import run_sis_endemic_rediscovery
+from simulating_anything.rediscovery.bernoulli_ode import run_bernoulli_ode_rediscovery
+from simulating_anything.rediscovery.beddington_deangelis import run_beddington_deangelis_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -344,4 +348,8 @@ __all__ = [
     "run_lotka_volterra_delay_rediscovery",
     "run_fhn_stochastic_rediscovery",
     "run_sird_rediscovery",
+    "run_gompertz_rediscovery",
+    "run_sis_endemic_rediscovery",
+    "run_bernoulli_ode_rediscovery",
+    "run_beddington_deangelis_rediscovery",
 ]

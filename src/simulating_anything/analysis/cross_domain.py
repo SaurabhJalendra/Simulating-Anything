@@ -2479,6 +2479,60 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="gompertz",
+            math_type="growth_ode",
+            state_dim=1,
+            n_parameters=3,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/r",
+            discovered_equations=["dN/dt = r*N*ln(K/N)"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sis_endemic",
+            math_type="epidemiological_ode",
+            state_dim=2,
+            n_parameters=3,
+            conserved_quantities=["S+I=N"],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dS/dt = -beta*S*I/N + gamma*I",
+                "dI/dt = beta*S*I/N - gamma*I",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="bernoulli_ode",
+            math_type="nonlinear_ode",
+            state_dim=1,
+            n_parameters=4,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/|a|",
+            discovered_equations=["dy/dt = a*y + b*y^n"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="beddington_deangelis",
+            math_type="predator_prey_ode",
+            state_dim=2,
+            n_parameters=7,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="stable_spiral",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN/dt = r*N*(1-N/K) - a*N*P/(1+b*N+c*P)",
+                "dP/dt = e*a*N*P/(1+b*N+c*P) - d*P",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -6195,6 +6249,114 @@ def detect_structural_analogies(
         },
     ))
 
+    # -- Batch #156-159: Gompertz, SIS Endemic, Bernoulli ODE, Beddington-DeAngelis --
+
+    analogies.append(Analogy(
+        domain_a="gompertz",
+        domain_b="harvested_population",
+        analogy_type="structural",
+        description=(
+            "Both are 1D population growth ODEs with saturating dynamics. "
+            "Gompertz: dN/dt = r*N*ln(K/N) decelerates earlier than logistic. "
+            "Harvested: logistic + constant harvest term. Both approach K."
+        ),
+        strength=0.72,
+        mapping={
+            "saturating growth": "logistic growth",
+            "carrying capacity K": "carrying capacity K",
+            "r*N*ln(K/N)": "r*N*(1-N/K) - h",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sis_endemic",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both are compartmental epidemic models with bilinear incidence. "
+            "SIS: recovered return to susceptible (endemic). SIR: permanent "
+            "immunity. Both have R0 = beta/gamma threshold."
+        ),
+        strength=0.90,
+        mapping={
+            "bilinear incidence": "bilinear incidence",
+            "R0 = beta/gamma": "R0 = beta/gamma",
+            "S+I=N conservation": "S+I+R=N conservation",
+            "endemic equilibrium": "epidemic peak + final size",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sis_endemic",
+        domain_b="sird",
+        analogy_type="structural",
+        description=(
+            "Both extend the basic SIR framework: SIS removes permanent "
+            "immunity, SIRD adds mortality. Both have transcritical "
+            "bifurcation at R0=1 and bilinear incidence."
+        ),
+        strength=0.80,
+        mapping={
+            "no immunity": "mortality compartment",
+            "endemic eq I*": "final epidemic size",
+            "R0 threshold": "R0 threshold",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="beddington_deangelis",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Both are predator-prey with saturating functional response. "
+            "BD: a*N/(1+b*N+c*P) includes predator interference c*P. "
+            "RM: Holling II a*N/(1+b*N) without interference. "
+            "BD stabilizes against paradox of enrichment."
+        ),
+        strength=0.88,
+        mapping={
+            "BD functional response": "Holling II response",
+            "predator interference c*P": "(no analog)",
+            "logistic prey": "logistic prey",
+            "coexistence equilibrium": "coexistence equilibrium",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="bernoulli_ode",
+        domain_b="gompertz",
+        analogy_type="structural",
+        description=(
+            "Both are single-variable nonlinear ODEs with exact analytical "
+            "solutions via substitution. Bernoulli: v=y^(1-n) linearizes. "
+            "Gompertz: u=ln(N) linearizes to du/dt = r*(ln(K)-u)."
+        ),
+        strength=0.70,
+        mapping={
+            "nonlinear substitution": "logarithmic substitution",
+            "exact solution": "exact solution",
+            "steady state y_ss": "carrying capacity K",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="beddington_deangelis",
+        domain_b="bazykin",
+        analogy_type="structural",
+        description=(
+            "Both are predator-prey with saturating functional response and "
+            "enrichment dynamics. BD: mutual interference stabilizes. "
+            "Bazykin: Holling II + predator density-dependence. "
+            "Both can prevent paradox of enrichment."
+        ),
+        strength=0.78,
+        mapping={
+            "saturating response": "Holling II response",
+            "predator interference": "predator density-dependence",
+            "enrichment stabilization": "enrichment paradox",
+        },
+    ))
+
     return analogies
 
 
@@ -7833,6 +7995,76 @@ def detect_dimensional_analogies(
             "beta [transmission rate]": "beta [transmission rate]",
             "gamma [recovery rate]": "gamma [recovery rate]",
             "mu [mortality rate]": "(no SIR analog)",
+        },
+    ))
+
+    # -- Batch #156-159 dimensional analogies --
+
+    analogies.append(Analogy(
+        domain_a="gompertz",
+        domain_b="harvested_population",
+        analogy_type="dimensional",
+        description=(
+            "Both have growth rate r [1/time] and carrying capacity K [pop]. "
+            "Gompertz: inflection at K/e. Harvested: max sustainable yield "
+            "at K/2. Both share [pop/time] flux dimensions."
+        ),
+        strength=0.75,
+        mapping={
+            "r [growth rate]": "r [growth rate]",
+            "K [carrying capacity]": "K [carrying capacity]",
+            "K/e [inflection]": "K/2 [MSY point]",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sis_endemic",
+        domain_b="sir_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Identical dimensional structure: beta [1/(pop*time)] transmission, "
+            "gamma [1/time] recovery, N [pop] total. R0 dimensionless ratio "
+            "beta/gamma in both models."
+        ),
+        strength=0.95,
+        mapping={
+            "beta [transmission]": "beta [transmission]",
+            "gamma [recovery]": "gamma [recovery]",
+            "N [population]": "N [population]",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="bernoulli_ode",
+        domain_b="gompertz",
+        analogy_type="dimensional",
+        description=(
+            "Both are 1D ODEs with rate coefficient a [1/time]. "
+            "Bernoulli: b has dim [1/(y^(n-1)*time)]. "
+            "Gompertz: K is dimensionless ratio target."
+        ),
+        strength=0.60,
+        mapping={
+            "a [1/time]": "r [1/time]",
+            "y_ss [state]": "K [carrying capacity]",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="beddington_deangelis",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="dimensional",
+        description=(
+            "Both share r [1/time], K [prey], a [1/(pred*time)] attack rate, "
+            "b [1/prey] handling time, d [1/time] predator mortality. "
+            "BD adds c [1/pred] mutual interference parameter."
+        ),
+        strength=0.90,
+        mapping={
+            "r [prey growth]": "r [prey growth]",
+            "a [attack rate]": "a [attack rate]",
+            "b [handling time]": "b [handling time]",
+            "c [interference]": "(no analog)",
         },
     ))
 
@@ -10510,6 +10742,92 @@ def detect_topological_analogies(
             "4D epidemic flow": "4D epidemic flow",
             "DFE transcritical": "DFE transcritical",
             "I peak trajectory": "I peak trajectory",
+        },
+    ))
+
+    # -- Batch #156-159 topological analogies --
+
+    analogies.append(Analogy(
+        domain_a="gompertz",
+        domain_b="harvested_population",
+        analogy_type="topological",
+        description=(
+            "Both are 1D flows with stable fixed point at carrying capacity "
+            "(Gompertz: K, Harvested: K-h/r). Gompertz: single attractor. "
+            "Harvested: saddle-node bifurcation at h = rK/4."
+        ),
+        strength=0.65,
+        mapping={
+            "stable K attractor": "stable equilibrium",
+            "monotone approach": "monotone approach (below MSY)",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sis_endemic",
+        domain_b="sir_epidemic",
+        analogy_type="topological",
+        description=(
+            "Both have transcritical bifurcation at R0=1: DFE stable below, "
+            "unstable above. SIS: endemic eq is global attractor when R0>1. "
+            "SIR: epidemic peak then decay to DFE (transient, not endemic)."
+        ),
+        strength=0.82,
+        mapping={
+            "transcritical at R0=1": "transcritical at R0=1",
+            "DFE stability": "DFE stability",
+            "endemic attractor": "epidemic transient",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sis_endemic",
+        domain_b="sird",
+        analogy_type="topological",
+        description=(
+            "Both exhibit transcritical bifurcation at R0=1. "
+            "SIS: endemic equilibrium is globally stable for R0>1. "
+            "SIRD: epidemic dies out but leaves permanent deceased fraction."
+        ),
+        strength=0.75,
+        mapping={
+            "transcritical bifurcation": "transcritical bifurcation",
+            "endemic fixed point": "epidemic transient + DFE",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="beddington_deangelis",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="topological",
+        description=(
+            "Both have coexistence equilibrium that can be spiral or node. "
+            "RM: Hopf bifurcation (paradox of enrichment) as K increases. "
+            "BD: interference c stabilizes, preventing Hopf. "
+            "BD has simpler phase portrait (no limit cycles for large c)."
+        ),
+        strength=0.82,
+        mapping={
+            "coexistence spiral": "coexistence spiral",
+            "stabilized by c": "destabilized by K (Hopf)",
+            "no paradox": "paradox of enrichment",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="bernoulli_ode",
+        domain_b="double_well",
+        analogy_type="topological",
+        description=(
+            "Both are 1D systems with nontrivial fixed points. "
+            "Bernoulli: y=0 and y_ss=(-a/b)^(1/(n-1)). "
+            "Double well: x=0 (unstable), x=+-1 (stable). "
+            "Both have stability depending on parameter signs."
+        ),
+        strength=0.60,
+        mapping={
+            "two fixed points": "three fixed points",
+            "stability exchange": "pitchfork bifurcation",
         },
     ))
 

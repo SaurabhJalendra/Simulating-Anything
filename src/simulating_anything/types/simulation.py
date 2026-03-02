@@ -164,6 +164,10 @@ class Domain(str, Enum):
     LOTKA_VOLTERRA_DELAY = "lotka_volterra_delay"
     FHN_STOCHASTIC = "fhn_stochastic"
     SIRD = "sird"
+    GOMPERTZ = "gompertz"
+    SIS_ENDEMIC = "sis_endemic"
+    BERNOULLI_ODE = "bernoulli_ode"
+    BEDDINGTON_DEANGELIS = "beddington_deangelis"
 
 
 class SimulationBackend(str, Enum):

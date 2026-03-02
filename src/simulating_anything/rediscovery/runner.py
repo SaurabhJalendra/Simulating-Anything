@@ -287,6 +287,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.lotka_volterra_delay import run_lotka_volterra_delay_rediscovery
     from simulating_anything.rediscovery.fhn_stochastic import run_fhn_stochastic_rediscovery
     from simulating_anything.rediscovery.sird import run_sird_rediscovery
+    from simulating_anything.rediscovery.gompertz import run_gompertz_rediscovery
+    from simulating_anything.rediscovery.sis_endemic import run_sis_endemic_rediscovery
+    from simulating_anything.rediscovery.bernoulli_ode import run_bernoulli_ode_rediscovery
+    from simulating_anything.rediscovery.beddington_deangelis import run_beddington_deangelis_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1061,6 +1065,26 @@ def run_all_rediscoveries(
         "sird": {
             "label": "SIRD Epidemic",
             "fn": run_sird_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "gompertz": {
+            "label": "Gompertz Growth",
+            "fn": run_gompertz_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sis_endemic": {
+            "label": "SIS Endemic",
+            "fn": run_sis_endemic_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "bernoulli_ode": {
+            "label": "Bernoulli ODE",
+            "fn": run_bernoulli_ode_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "beddington_deangelis": {
+            "label": "Beddington-DeAngelis",
+            "fn": run_beddington_deangelis_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

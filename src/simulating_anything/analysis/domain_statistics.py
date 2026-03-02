@@ -1323,6 +1323,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"beta": 0.4, "gamma": 0.1, "mu": 0.02, "N0": 1000.0},
         "dt": 0.1, "n_steps": 500, "math_class": "Epidemiological ODE",
     },
+    "gompertz": {
+        "module": "simulating_anything.simulation.gompertz",
+        "cls": "GompertzSimulation",
+        "domain": Domain.GOMPERTZ,
+        "params": {"r": 0.5, "K": 100.0, "N_0": 1.0},
+        "dt": 0.1, "n_steps": 500, "math_class": "Growth ODE",
+    },
+    "sis_endemic": {
+        "module": "simulating_anything.simulation.sis_endemic",
+        "cls": "SISEndemicSimulation",
+        "domain": Domain.SIS_ENDEMIC,
+        "params": {"beta": 0.5, "gamma": 0.2, "N0": 1000.0, "I_0": 10.0},
+        "dt": 0.1, "n_steps": 500, "math_class": "Epidemiological ODE",
+    },
+    "bernoulli_ode": {
+        "module": "simulating_anything.simulation.bernoulli_ode",
+        "cls": "BernoulliODESimulation",
+        "domain": Domain.BERNOULLI_ODE,
+        "params": {"a": 1.0, "b": -1.0, "n": 2.0, "y_0": 0.1},
+        "dt": 0.01, "n_steps": 500, "math_class": "Nonlinear ODE",
+    },
+    "beddington_deangelis": {
+        "module": "simulating_anything.simulation.beddington_deangelis",
+        "cls": "BeddingtonDeAngelisSimulation",
+        "domain": Domain.BEDDINGTON_DEANGELIS,
+        "params": {"r": 1.0, "K": 10.0, "a": 1.0, "b": 0.5, "c": 0.5, "e": 0.5, "d": 0.3},
+        "dt": 0.01, "n_steps": 500, "math_class": "Predator-Prey ODE",
+    },
 }
 
 
