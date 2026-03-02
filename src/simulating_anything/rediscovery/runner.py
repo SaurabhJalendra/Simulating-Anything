@@ -241,6 +241,14 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.liu import run_liu_rediscovery
     from simulating_anything.rediscovery.hadley import run_hadley_rediscovery
     from simulating_anything.rediscovery.vallis import run_vallis_rediscovery
+    from simulating_anything.rediscovery.tigan import run_tigan_rediscovery
+    from simulating_anything.rediscovery.predator_two_prey import (
+        run_predator_two_prey_rediscovery,
+    )
+    from simulating_anything.rediscovery.autocatalator import (
+        run_autocatalator_rediscovery,
+    )
+    from simulating_anything.rediscovery.seir import run_seir_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -815,6 +823,26 @@ def run_all_rediscoveries(
         "vallis": {
             "label": "Vallis ENSO Climate Oscillation",
             "fn": run_vallis_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "tigan": {
+            "label": "Tigan T-System Generalized Lorenz",
+            "fn": run_tigan_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "predator_two_prey": {
+            "label": "Predator-Two-Prey Apparent Competition",
+            "fn": run_predator_two_prey_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "autocatalator": {
+            "label": "Autocatalator Chemical Oscillation",
+            "fn": run_autocatalator_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "seir": {
+            "label": "SEIR Epidemic with Latent Period",
+            "fn": run_seir_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
