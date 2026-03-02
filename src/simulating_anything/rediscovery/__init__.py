@@ -215,6 +215,10 @@ from simulating_anything.rediscovery.seasonal_predator_prey import run_seasonal_
 from simulating_anything.rediscovery.kdv import run_kdv_rediscovery
 from simulating_anything.rediscovery.sir_metapopulation import run_sir_metapopulation_rediscovery
 from simulating_anything.rediscovery.toggle_switch_stochastic import run_toggle_switch_stochastic_rediscovery
+from simulating_anything.rediscovery.lienard import run_lienard_rediscovery
+from simulating_anything.rediscovery.predator_prey_toxin import run_predator_prey_toxin_rediscovery
+from simulating_anything.rediscovery.swift_hohenberg import run_swift_hohenberg_rediscovery
+from simulating_anything.rediscovery.sis_adaptive import run_sis_adaptive_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -400,4 +404,8 @@ __all__ = [
     "run_kdv_rediscovery",
     "run_sir_metapopulation_rediscovery",
     "run_toggle_switch_stochastic_rediscovery",
+    "run_lienard_rediscovery",
+    "run_predator_prey_toxin_rediscovery",
+    "run_swift_hohenberg_rediscovery",
+    "run_sis_adaptive_rediscovery",
 ]

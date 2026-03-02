@@ -315,6 +315,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.kdv import run_kdv_rediscovery
     from simulating_anything.rediscovery.sir_metapopulation import run_sir_metapopulation_rediscovery
     from simulating_anything.rediscovery.toggle_switch_stochastic import run_toggle_switch_stochastic_rediscovery
+    from simulating_anything.rediscovery.lienard import run_lienard_rediscovery
+    from simulating_anything.rediscovery.predator_prey_toxin import run_predator_prey_toxin_rediscovery
+    from simulating_anything.rediscovery.swift_hohenberg import run_swift_hohenberg_rediscovery
+    from simulating_anything.rediscovery.sis_adaptive import run_sis_adaptive_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1229,6 +1233,26 @@ def run_all_rediscoveries(
         "toggle_switch_stochastic": {
             "label": "Toggle Switch Stochastic",
             "fn": run_toggle_switch_stochastic_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "lienard": {
+            "label": "Lienard",
+            "fn": run_lienard_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "predator_prey_toxin": {
+            "label": "Predator-Prey Toxin",
+            "fn": run_predator_prey_toxin_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "swift_hohenberg": {
+            "label": "Swift-Hohenberg",
+            "fn": run_swift_hohenberg_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sis_adaptive": {
+            "label": "SIS Adaptive",
+            "fn": run_sis_adaptive_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

@@ -2891,6 +2891,66 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="lienard",
+            math_type="nonlinear_oscillator",
+            state_dim=2,
+            n_parameters=2,
+            conserved_quantities=["energy_if_mu_zero"],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="2*pi/omega",
+            discovered_equations=[
+                "dx/dt = v",
+                "dv/dt = -mu*(x^2-1)*v - x - alpha*x^3",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="predator_prey_toxin",
+            math_type="predator_prey_ode",
+            state_dim=2,
+            n_parameters=7,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN/dt = r*N*(1-N/K) - a*N*P/(1+a*h*N+c*N^2)",
+                "dP/dt = e*a*N*P/(1+a*h*N+c*N^2) - d*P",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="swift_hohenberg",
+            math_type="pattern_formation_pde",
+            state_dim=256,
+            n_parameters=2,
+            conserved_quantities=[],
+            symmetries=["translational", "reflection"],
+            phase_portrait_type="pattern_formation",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "du/dt = r*u - (1+nabla^2)^2*u + g*u^2 - u^3",
+                "wavelength = 2*pi (critical k=1)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sis_adaptive",
+            math_type="behavioral_epidemic",
+            state_dim=1,
+            n_parameters=3,
+            conserved_quantities=["S+I=1"],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dI/dt = beta0*S*I/(1+kappa*I) - gamma*I",
+                "I* = (beta0-gamma)/(beta0+kappa*gamma)",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -7306,6 +7366,104 @@ def detect_structural_analogies(
         },
     ))
 
+    # --- Lienard analogies ---
+    analogies.append(Analogy(
+        domain_a="lienard",
+        domain_b="van_der_pol",
+        analogy_type="structural",
+        description=(
+            "Van der Pol is a special case of Lienard with f(x)=mu*(x^2-1) "
+            "and g(x)=x; both exhibit stable limit cycles via same mechanism."
+        ),
+        strength=0.92,
+        mapping={
+            "self_excitation": "self_excitation",
+            "limit_cycle": "limit_cycle",
+            "relaxation_oscillation": "relaxation_oscillation",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="lienard",
+        domain_b="duffing",
+        analogy_type="structural",
+        description=(
+            "Lienard with alpha*x^3 restoring force contains Duffing-type "
+            "nonlinearity; both have cubic potential energy terms."
+        ),
+        strength=0.78,
+        mapping={
+            "cubic_restoring_force": "cubic_restoring_force",
+            "nonlinear_oscillator": "nonlinear_oscillator",
+            "hardening_spring": "hardening_spring",
+        },
+    ))
+
+    # --- Predator-Prey-Toxin analogies ---
+    analogies.append(Analogy(
+        domain_a="predator_prey_toxin",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Predator-prey-toxin extends Rosenzweig-MacArthur with c*N^2 "
+            "group defense in the functional response denominator."
+        ),
+        strength=0.88,
+        mapping={
+            "Holling_functional_response": "Holling_Type_II",
+            "predator_prey_ODE": "predator_prey_ODE",
+            "enrichment_paradox": "enrichment_paradox",
+        },
+    ))
+
+    # --- Swift-Hohenberg analogies ---
+    analogies.append(Analogy(
+        domain_a="swift_hohenberg",
+        domain_b="brusselator_diffusion",
+        analogy_type="structural",
+        description=(
+            "Both are pattern-forming PDEs with Turing-like instability; "
+            "SH has a single field with 4th-order spatial operator."
+        ),
+        strength=0.75,
+        mapping={
+            "pattern_formation": "Turing_instability",
+            "critical_wavenumber": "critical_wavenumber",
+            "stripe_patterns": "stripe_patterns",
+        },
+    ))
+
+    # --- SIS Adaptive analogies ---
+    analogies.append(Analogy(
+        domain_a="sis_adaptive",
+        domain_b="network_sis",
+        analogy_type="structural",
+        description=(
+            "Both extend SIS with additional mechanisms: adaptive behavior "
+            "reduces contact rate, network topology modifies transmission."
+        ),
+        strength=0.80,
+        mapping={
+            "SIS_compartments": "SIS_compartments",
+            "epidemic_threshold": "spectral_threshold",
+            "transmission_reduction": "heterogeneous_contacts",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="sis_adaptive",
+        domain_b="sir_vaccination",
+        analogy_type="structural",
+        description=(
+            "Both model disease control: adaptive behavior is voluntary "
+            "contact reduction while vaccination is direct immunity."
+        ),
+        strength=0.72,
+        mapping={
+            "disease_control": "disease_control",
+            "reduced_transmission": "immunity",
+            "behavioral_feedback": "vaccination_campaign",
+        },
+    ))
+
     return analogies
 
 
@@ -9402,6 +9560,73 @@ def detect_dimensional_analogies(
         mapping={
             "sigma [noise intensity]": "sigma [noise intensity]",
             "alpha [production rate, 1/time]": "beta [transmission, 1/time]",
+        },
+    ))
+
+    # --- Lienard dimensional ---
+    analogies.append(Analogy(
+        domain_a="lienard",
+        domain_b="van_der_pol",
+        analogy_type="dimensional",
+        description=(
+            "Both share identical dimensional structure: mu [damping, dimensionless] "
+            "controls relaxation oscillation amplitude and period."
+        ),
+        strength=0.90,
+        mapping={
+            "mu [damping, dimensionless]": "mu [damping, dimensionless]",
+            "T [period, time]": "T [period, time]",
+            "A [amplitude, length]": "A [amplitude, length]",
+        },
+    ))
+
+    # --- Predator-Prey-Toxin dimensional ---
+    analogies.append(Analogy(
+        domain_a="predator_prey_toxin",
+        domain_b="allee_predator_prey",
+        analogy_type="dimensional",
+        description=(
+            "Both modify standard predation with density-dependent effects: "
+            "toxin c has dimensions [1/prey^2] analogous to Allee threshold."
+        ),
+        strength=0.75,
+        mapping={
+            "c [toxin, 1/prey^2]": "A [Allee threshold, prey]",
+            "r [growth, 1/time]": "r [growth, 1/time]",
+            "K [capacity, prey]": "K [capacity, prey]",
+        },
+    ))
+
+    # --- Swift-Hohenberg dimensional ---
+    analogies.append(Analogy(
+        domain_a="swift_hohenberg",
+        domain_b="cahn_hilliard",
+        analogy_type="dimensional",
+        description=(
+            "Both are 4th-order PDEs with pattern selection: SH selects "
+            "wavelength k_c=1, CH selects coarsening length L~t^(1/3)."
+        ),
+        strength=0.72,
+        mapping={
+            "r [control, 1/time]": "epsilon [mobility, length^4/time]",
+            "lambda [wavelength, length]": "L [coarsening, length]",
+        },
+    ))
+
+    # --- SIS Adaptive dimensional ---
+    analogies.append(Analogy(
+        domain_a="sis_adaptive",
+        domain_b="sir_vaccination",
+        analogy_type="dimensional",
+        description=(
+            "Both share epidemic dimensional structure with additional "
+            "control parameter: kappa [behavior] vs v [vaccination rate]."
+        ),
+        strength=0.78,
+        mapping={
+            "beta0 [transmission, 1/time]": "beta [transmission, 1/time]",
+            "gamma [recovery, 1/time]": "gamma [recovery, 1/time]",
+            "kappa [behavior, 1/prevalence]": "v [vaccination, 1/time]",
         },
     ))
 
@@ -12651,6 +12876,89 @@ def detect_topological_analogies(
             "bistable_fixed_points": "bistable_equilibria",
             "separatrix": "Allee_threshold",
             "basin_boundary": "extinction_boundary",
+        },
+    ))
+
+    # --- Lienard topological ---
+    analogies.append(Analogy(
+        domain_a="lienard",
+        domain_b="van_der_pol",
+        analogy_type="topological",
+        description=(
+            "Both have a unique stable limit cycle surrounding an unstable "
+            "fixed point; Lienard theorem guarantees topological equivalence."
+        ),
+        strength=0.92,
+        mapping={
+            "stable_limit_cycle": "stable_limit_cycle",
+            "unstable_spiral": "unstable_spiral",
+            "unique_periodic_orbit": "unique_periodic_orbit",
+        },
+    ))
+
+    # --- Predator-Prey-Toxin topological ---
+    analogies.append(Analogy(
+        domain_a="predator_prey_toxin",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="topological",
+        description=(
+            "Both exhibit limit cycles via Hopf bifurcation of coexistence "
+            "equilibrium; toxin defense modifies the basin structure."
+        ),
+        strength=0.82,
+        mapping={
+            "Hopf_bifurcation": "Hopf_bifurcation",
+            "coexistence_limit_cycle": "predator_prey_cycle",
+            "prey_nullcline": "prey_nullcline",
+        },
+    ))
+
+    # --- Swift-Hohenberg topological ---
+    analogies.append(Analogy(
+        domain_a="swift_hohenberg",
+        domain_b="ginzburg_landau",
+        analogy_type="topological",
+        description=(
+            "Both exhibit spatially periodic attractors via supercritical "
+            "bifurcation; SH rolls and CGLE plane waves share topology."
+        ),
+        strength=0.75,
+        mapping={
+            "spatially_periodic_attractor": "plane_wave_attractor",
+            "pitchfork_bifurcation": "supercritical_bifurcation",
+            "pattern_selection": "wavenumber_selection",
+        },
+    ))
+
+    # --- SIS Adaptive topological ---
+    analogies.append(Analogy(
+        domain_a="sis_adaptive",
+        domain_b="network_sis",
+        analogy_type="topological",
+        description=(
+            "Both have a disease-free fixed point and endemic fixed point; "
+            "transcritical bifurcation at R0=1 determines epidemic threshold."
+        ),
+        strength=0.82,
+        mapping={
+            "disease_free_equilibrium": "disease_free_equilibrium",
+            "endemic_equilibrium": "endemic_equilibrium",
+            "transcritical_bifurcation": "epidemic_threshold",
+        },
+    ))
+    analogies.append(Analogy(
+        domain_a="sis_adaptive",
+        domain_b="chemostat",
+        analogy_type="topological",
+        description=(
+            "Both have washout/disease-free and survival/endemic states "
+            "with transcritical bifurcation at a critical parameter."
+        ),
+        strength=0.68,
+        mapping={
+            "disease_free": "washout",
+            "endemic": "survival",
+            "R0_threshold": "dilution_threshold",
         },
     ))
 

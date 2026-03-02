@@ -1519,6 +1519,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"alpha1": 5.0, "alpha2": 5.0, "beta_hill": 2.0, "gamma_hill": 2.0, "sigma": 0.3},
         "dt": 0.01, "n_steps": 500, "math_class": "Stochastic Gene Network",
     },
+    "lienard": {
+        "module": "simulating_anything.simulation.lienard",
+        "cls": "LienardSimulation",
+        "domain": Domain.LIENARD,
+        "params": {"mu": 1.0, "alpha": 0.1, "x_0": 2.0, "v_0": 0.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Lienard Oscillator",
+    },
+    "predator_prey_toxin": {
+        "module": "simulating_anything.simulation.predator_prey_toxin",
+        "cls": "PredatorPreyToxinSimulation",
+        "domain": Domain.PREDATOR_PREY_TOXIN,
+        "params": {"r": 1.0, "K": 100.0, "a": 0.5, "h": 0.02, "e": 0.4, "d": 0.2, "c": 0.001},
+        "dt": 0.01, "n_steps": 500, "math_class": "Toxin Defense ODE",
+    },
+    "swift_hohenberg": {
+        "module": "simulating_anything.simulation.swift_hohenberg",
+        "cls": "SwiftHohenbergSimulation",
+        "domain": Domain.SWIFT_HOHENBERG,
+        "params": {"r": 0.5, "g": 0.0, "N": 256.0, "L": 62.83},
+        "dt": 0.1, "n_steps": 500, "math_class": "Pattern Formation PDE",
+    },
+    "sis_adaptive": {
+        "module": "simulating_anything.simulation.sis_adaptive",
+        "cls": "SISAdaptiveSimulation",
+        "domain": Domain.SIS_ADAPTIVE,
+        "params": {"beta0": 0.5, "gamma": 0.1, "kappa": 5.0, "I_0": 0.01},
+        "dt": 0.1, "n_steps": 500, "math_class": "Behavioral Epidemic",
+    },
 }
 
 

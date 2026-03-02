@@ -192,6 +192,10 @@ class Domain(str, Enum):
     KDV = "kdv"
     SIR_METAPOPULATION = "sir_metapopulation"
     TOGGLE_SWITCH_STOCHASTIC = "toggle_switch_stochastic"
+    LIENARD = "lienard"
+    PREDATOR_PREY_TOXIN = "predator_prey_toxin"
+    SWIFT_HOHENBERG = "swift_hohenberg"
+    SIS_ADAPTIVE = "sis_adaptive"
 
 
 class SimulationBackend(str, Enum):
