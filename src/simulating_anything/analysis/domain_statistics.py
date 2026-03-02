@@ -903,6 +903,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"a": 35.0, "b": 3.0, "c": 28.0},
         "dt": 0.001, "n_steps": 500, "math_class": "Chaotic ODE",
     },
+    "aizawa": {
+        "module": "simulating_anything.simulation.aizawa",
+        "cls": "AizawaSimulation",
+        "domain": Domain.AIZAWA,
+        "params": {"a": 0.95, "b": 0.7, "c": 0.6, "d": 3.5, "e": 0.25, "f": 0.1},
+        "dt": 0.01, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "halvorsen": {
+        "module": "simulating_anything.simulation.halvorsen",
+        "cls": "HalvorsenSimulation",
+        "domain": Domain.HALVORSEN,
+        "params": {"a": 1.89},
+        "dt": 0.01, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "burke_shaw": {
+        "module": "simulating_anything.simulation.burke_shaw",
+        "cls": "BurkeShawSimulation",
+        "domain": Domain.BURKE_SHAW,
+        "params": {"s": 10.0, "v": 4.272},
+        "dt": 0.005, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
+    "nose_hoover": {
+        "module": "simulating_anything.simulation.nose_hoover",
+        "cls": "NoseHooverSimulation",
+        "domain": Domain.NOSE_HOOVER,
+        "params": {"a": 1.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Thermostat ODE",
+    },
 }
 
 

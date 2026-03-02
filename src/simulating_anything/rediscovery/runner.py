@@ -48,7 +48,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.bouncing_ball import (
         run_bouncing_ball_rediscovery,
     )
+    from simulating_anything.rediscovery.aizawa import run_aizawa_rediscovery
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+    from simulating_anything.rediscovery.burke_shaw import run_burke_shaw_rediscovery
     from simulating_anything.rediscovery.chen import run_chen_rediscovery
     from simulating_anything.rediscovery.brusselator_2d import (
         run_brusselator_2d_rediscovery,
@@ -118,6 +120,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.gray_scott_1d import (
         run_gray_scott_1d_rediscovery,
     )
+    from simulating_anything.rediscovery.halvorsen import run_halvorsen_rediscovery
     from simulating_anything.rediscovery.harmonic_oscillator import (
         run_harmonic_oscillator_rediscovery,
     )
@@ -160,6 +163,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.morris_lecar import run_morris_lecar_rediscovery
     from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
     from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
+    from simulating_anything.rediscovery.nose_hoover import run_nose_hoover_rediscovery
     from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
     from simulating_anything.rediscovery.oregonator_1d import (
         run_oregonator_1d_rediscovery,
@@ -691,6 +695,26 @@ def run_all_rediscoveries(
         "chen": {
             "label": "Chen Attractor Chaos & Lorenz Dual",
             "fn": run_chen_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "aizawa": {
+            "label": "Aizawa Attractor Chaos & Mushroom Dynamics",
+            "fn": run_aizawa_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "halvorsen": {
+            "label": "Halvorsen Attractor Cyclic Symmetry & Chaos",
+            "fn": run_halvorsen_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "burke_shaw": {
+            "label": "Burke-Shaw Chaos & Fixed Point Analysis",
+            "fn": run_burke_shaw_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "nose_hoover": {
+            "label": "Nose-Hoover Thermostat & Temperature Equilibration",
+            "fn": run_nose_hoover_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

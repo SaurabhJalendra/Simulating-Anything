@@ -1530,6 +1530,70 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="aizawa",
+            math_type="chaotic",  # 3D chaotic ODE
+            state_dim=3,
+            n_parameters=6,  # a, b, c, d, e, f
+            conserved_quantities=[],
+            symmetries=["rotational_xy (coupled x,y rotation)"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/d",
+            discovered_equations=[
+                "dx/dt = (z-b)*x - d*y",
+                "dy/dt = d*x + (z-b)*y",
+                "dz/dt = c + a*z - z^3/3 - (x^2+y^2)*(1+e*z) + f*z*x^3",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="halvorsen",
+            math_type="chaotic",  # 3D chaotic ODE
+            state_dim=3,
+            n_parameters=1,  # a
+            conserved_quantities=[],
+            symmetries=["cyclic_S3 (x->y->z->x)"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = -a*x - 4*y - 4*z - y^2",
+                "dy/dt = -a*y - 4*z - 4*x - z^2",
+                "dz/dt = -a*z - 4*x - 4*y - x^2",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="burke_shaw",
+            math_type="chaotic",  # 3D chaotic ODE
+            state_dim=3,
+            n_parameters=2,  # s, v
+            conserved_quantities=[],
+            symmetries=["Z2 (x,y -> -x,-y)"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/s",
+            discovered_equations=[
+                "dx/dt = -s*(x+y)",
+                "dy/dt = -y - s*x*z",
+                "dz/dt = s*x*y + v",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="nose_hoover",
+            math_type="chaotic",  # Volume-preserving-like ODE
+            state_dim=3,
+            n_parameters=1,  # a
+            conserved_quantities=["time-avg divergence ~ 0"],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1",
+            discovered_equations=[
+                "dx/dt = y",
+                "dy/dt = -x + y*z",
+                "dz/dt = a - y^2",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -3677,6 +3741,108 @@ def detect_structural_analogies(
         },
     ))
 
+    # Aizawa <-> Rossler (3D chaotic attractors with spiral structure)
+    analogies.append(Analogy(
+        domain_a="aizawa",
+        domain_b="rossler",
+        analogy_type="structural",
+        description=(
+            "Both are 3D chaotic ODEs producing spiral-type strange attractors. "
+            "Aizawa has mushroom geometry, Rossler has band-type spiral."
+        ),
+        strength=0.72,
+        mapping={
+            "(z-b)*x - d*y": "-y - z",
+            "d*x + (z-b)*y": "x + a*y",
+            "c + a*z - z^3/3 - r^2": "b + z*(x-c)",
+        },
+    ))
+
+    # Halvorsen <-> Thomas (cyclic symmetry in chaotic ODEs)
+    analogies.append(Analogy(
+        domain_a="halvorsen",
+        domain_b="thomas",
+        analogy_type="structural",
+        description=(
+            "Both exhibit cyclic symmetry (S3 permutation x->y->z->x). "
+            "Thomas uses sin() dissipation, Halvorsen uses quadratic coupling."
+        ),
+        strength=0.80,
+        mapping={
+            "-a*x - 4*y - 4*z - y^2": "-b*x + sin(y)",
+            "cyclic_S3": "cyclic_S3",
+        },
+    ))
+
+    # Burke-Shaw <-> Lorenz (3D chaotic ODE with quadratic nonlinearity)
+    analogies.append(Analogy(
+        domain_a="burke_shaw",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Both are 3D chaotic ODEs with quadratic nonlinear coupling (xz, xy). "
+            "Burke-Shaw has s*(x+y) diffusion, Lorenz has sigma*(y-x)."
+        ),
+        strength=0.75,
+        mapping={
+            "-s*(x+y)": "sigma*(y-x)",
+            "-y - s*x*z": "rho*x - y - x*z",
+            "s*x*y + v": "x*y - beta*z",
+        },
+    ))
+
+    # Burke-Shaw <-> Chen (3D quadratic chaotic, Z2 symmetry)
+    analogies.append(Analogy(
+        domain_a="burke_shaw",
+        domain_b="chen",
+        analogy_type="structural",
+        description=(
+            "Both are 3D chaotic ODEs with Z2 symmetry (x,y -> -x,-y) "
+            "and quadratic bilinear coupling terms xz, xy."
+        ),
+        strength=0.73,
+        mapping={
+            "Z2 symmetry": "Z2 symmetry",
+            "xz coupling": "xz coupling",
+            "xy coupling": "xy coupling",
+        },
+    ))
+
+    # Nose-Hoover <-> Sprott (minimal chaotic ODE, 3D single-parameter)
+    analogies.append(Analogy(
+        domain_a="nose_hoover",
+        domain_b="sprott",
+        analogy_type="structural",
+        description=(
+            "Both are minimal 3D chaotic ODEs with few parameters. "
+            "Nose-Hoover derives from statistical mechanics, Sprott from "
+            "exhaustive search for simplest chaos."
+        ),
+        strength=0.70,
+        mapping={
+            "y": "y (linear coupling)",
+            "-x + y*z": "quadratic nonlinearity",
+            "a - y^2": "constant + quadratic",
+        },
+    ))
+
+    # Nose-Hoover <-> Harmonic Oscillator (thermostatted harmonic oscillator origin)
+    analogies.append(Analogy(
+        domain_a="nose_hoover",
+        domain_b="harmonic_oscillator",
+        analogy_type="structural",
+        description=(
+            "Nose-Hoover is a harmonic oscillator (dx=y, dy=-x) coupled to "
+            "a thermostat variable z. Setting z=0 recovers SHO."
+        ),
+        strength=0.78,
+        mapping={
+            "dx/dt = y": "dx/dt = v",
+            "dy/dt = -x": "dv/dt = -omega^2*x",
+            "z thermostat": "no damping term",
+        },
+    ))
+
     return analogies
 
 
@@ -4492,6 +4658,54 @@ def detect_dimensional_analogies(
         mapping={
             "1/sigma [x-y mixing]": "1/sigma [x-y mixing]",
             "1/sigma [w decay]": "N/A (3D)",
+        },
+    ))
+
+    # Dimensional: Aizawa <-> Langford (xy-rotation timescale d)
+    analogies.append(Analogy(
+        domain_a="aizawa",
+        domain_b="langford",
+        analogy_type="dimensional",
+        description=(
+            "Both feature xy-plane rotation with angular frequency parameter d. "
+            "Aizawa: (z-b)*x - d*y, Langford: (z-eps)*x - omega*y."
+        ),
+        strength=0.75,
+        mapping={
+            "d [rotation rate]": "omega [rotation rate]",
+            "1/a [z timescale]": "1/lambda [growth rate]",
+        },
+    ))
+
+    # Dimensional: Burke-Shaw <-> Lorenz (s ~ sigma coupling strength)
+    analogies.append(Analogy(
+        domain_a="burke_shaw",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Both use a large coupling parameter (s=10, sigma=10) that sets "
+            "the fast relaxation timescale. Same order of magnitude."
+        ),
+        strength=0.80,
+        mapping={
+            "1/s [diffusion]": "1/sigma [relaxation]",
+            "v [forcing]": "rho*sigma [effective forcing]",
+        },
+    ))
+
+    # Dimensional: Nose-Hoover <-> Van der Pol (unit timescale oscillation)
+    analogies.append(Analogy(
+        domain_a="nose_hoover",
+        domain_b="van_der_pol",
+        analogy_type="dimensional",
+        description=(
+            "Both have unit-frequency oscillation (omega=1) as base dynamics. "
+            "Nose-Hoover: dx=y, dy=-x. VdP: dx=y, dy=-x+mu*(1-x^2)*y."
+        ),
+        strength=0.72,
+        mapping={
+            "omega=1 [natural freq]": "omega_0=1 [natural freq]",
+            "z [thermostat]": "mu*(1-x^2) [nonlinear damping]",
         },
     ))
 
@@ -6031,6 +6245,70 @@ def detect_topological_analogies(
         mapping={
             "4D hyperchaos potential": "6D sync/desync transition",
             "s parameter": "epsilon coupling",
+        },
+    ))
+
+    # Topological: Aizawa <-> Lorenz (3D strange attractor with double-wing structure)
+    analogies.append(Analogy(
+        domain_a="aizawa",
+        domain_b="lorenz",
+        analogy_type="topological",
+        description=(
+            "Both produce 3D strange attractors with nested structure. "
+            "Lorenz: butterfly wings. Aizawa: mushroom-shaped with toroidal base."
+        ),
+        strength=0.70,
+        mapping={
+            "mushroom attractor": "butterfly attractor",
+            "positive Lyapunov": "positive Lyapunov",
+        },
+    ))
+
+    # Topological: Halvorsen <-> Thomas (cyclically symmetric chaos)
+    analogies.append(Analogy(
+        domain_a="halvorsen",
+        domain_b="thomas",
+        analogy_type="topological",
+        description=(
+            "Both produce chaotic attractors with S3 cyclic symmetry. "
+            "Halvorsen: propeller-shaped. Thomas: labyrinth attractor."
+        ),
+        strength=0.78,
+        mapping={
+            "S3 cyclic orbit": "S3 cyclic orbit",
+            "propeller attractor": "labyrinth attractor",
+        },
+    ))
+
+    # Topological: Burke-Shaw <-> Chua (double-scroll strange attractors)
+    analogies.append(Analogy(
+        domain_a="burke_shaw",
+        domain_b="chua",
+        analogy_type="topological",
+        description=(
+            "Both produce double-scroll type strange attractors with Z2 symmetry. "
+            "Burke-Shaw: magnetic origin. Chua: electronic circuit origin."
+        ),
+        strength=0.74,
+        mapping={
+            "double-scroll": "double-scroll",
+            "Z2 symmetry": "Z2 symmetry",
+        },
+    ))
+
+    # Topological: Nose-Hoover <-> Duffing (chaotic oscillator)
+    analogies.append(Analogy(
+        domain_a="nose_hoover",
+        domain_b="duffing",
+        analogy_type="topological",
+        description=(
+            "Both are modified oscillators producing chaotic trajectories. "
+            "Nose-Hoover: thermostat coupling. Duffing: forced cubic restoring force."
+        ),
+        strength=0.62,
+        mapping={
+            "thermostatted SHO": "forced nonlinear oscillator",
+            "z-modulated damping": "periodic driving",
         },
     ))
 

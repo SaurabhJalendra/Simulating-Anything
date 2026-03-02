@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from simulating_anything.rediscovery.aizawa import run_aizawa_rediscovery
 from simulating_anything.rediscovery.allee_predator_prey import (
     run_allee_predator_prey_rediscovery,
 )
 from simulating_anything.rediscovery.bak_sneppen import run_bak_sneppen_rediscovery
 from simulating_anything.rediscovery.bazykin import run_bazykin_rediscovery
 from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
+from simulating_anything.rediscovery.burke_shaw import run_burke_shaw_rediscovery
 from simulating_anything.rediscovery.bouncing_ball import run_bouncing_ball_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
 from simulating_anything.rediscovery.chen import run_chen_rediscovery
@@ -51,6 +53,7 @@ from simulating_anything.rediscovery.fput import run_fput_rediscovery
 from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
 from simulating_anything.rediscovery.gray_scott_1d import run_gray_scott_1d_rediscovery
+from simulating_anything.rediscovery.halvorsen import run_halvorsen_rediscovery
 from simulating_anything.rediscovery.harmonic_oscillator import run_harmonic_oscillator_rediscovery
 from simulating_anything.rediscovery.harvested_population import (
     run_harvested_population_rediscovery,
@@ -81,6 +84,7 @@ from simulating_anything.rediscovery.may_leonard import run_may_leonard_rediscov
 from simulating_anything.rediscovery.morris_lecar import run_morris_lecar_rediscovery
 from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
 from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
+from simulating_anything.rediscovery.nose_hoover import run_nose_hoover_rediscovery
 from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
 from simulating_anything.rediscovery.oregonator_1d import run_oregonator_1d_rediscovery
 from simulating_anything.rediscovery.predator_prey_mutualist import (
@@ -218,4 +222,8 @@ __all__ = [
     "run_four_species_lv_rediscovery",
     "run_lorenz_stenflo_rediscovery",
     "run_chen_rediscovery",
+    "run_aizawa_rediscovery",
+    "run_halvorsen_rediscovery",
+    "run_burke_shaw_rediscovery",
+    "run_nose_hoover_rediscovery",
 ]
