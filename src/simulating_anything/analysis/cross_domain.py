@@ -1932,6 +1932,65 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="ueda",
+            math_type="ode_forced",  # Forced Duffing without linear term
+            state_dim=2,
+            n_parameters=2,  # delta, B
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="strange_attractor",
+            characteristic_timescale="2*pi",
+            discovered_equations=[
+                "dx/dt = y",
+                "dy/dt = -delta*y - x^3 + B*cos(t)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="cubic_map",
+            math_type="map_1d",  # Discrete map
+            state_dim=1,
+            n_parameters=1,  # r
+            conserved_quantities=[],
+            symmetries=["odd_symmetry"],
+            phase_portrait_type="period_doubling",
+            characteristic_timescale="1",
+            discovered_equations=["x_{n+1} = r*x_n - x_n^3"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="zombie_sir",
+            math_type="ode_nonlinear",  # Modified epidemic
+            state_dim=4,
+            n_parameters=6,  # beta, alpha, zeta, delta, rho, Pi
+            conserved_quantities=["total_population"],
+            symmetries=[],
+            phase_portrait_type="fixed_point",
+            characteristic_timescale="1/rho",
+            discovered_equations=[
+                "dS/dt = -beta*S*Z + Pi",
+                "dI/dt = beta*S*Z - rho*I - delta*I",
+                "dZ/dt = rho*I + zeta*R - alpha*S*Z",
+                "dR/dt = delta*I + alpha*S*Z - zeta*R",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="elastic_collision",
+            math_type="particle_mechanics",  # Collision dynamics
+            state_dim=10,  # 5 particles x 2 (pos, vel)
+            n_parameters=3,  # n_particles, mass, restitution
+            conserved_quantities=["momentum", "kinetic_energy"],
+            symmetries=["galilean_invariance"],
+            phase_portrait_type="integrable",
+            characteristic_timescale="spacing/velocity",
+            discovered_equations=[
+                "p_total = sum(m_i * v_i) = const",
+                "KE_total = sum(0.5 * m_i * v_i^2) = const",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -4682,6 +4741,130 @@ def detect_structural_analogies(
         },
     ))
 
+    # Structural: Ueda <-> Duffing (forced cubic oscillators)
+    analogies.append(Analogy(
+        domain_a="ueda",
+        domain_b="duffing",
+        analogy_type="structural",
+        description=(
+            "Both are forced nonlinear oscillators with cubic restoring force. "
+            "Ueda: x^3 only, no linear term. Duffing: alpha*x + beta*x^3. "
+            "Both show strange attractors under periodic forcing."
+        ),
+        strength=0.90,
+        mapping={
+            "cubic x^3": "beta*x^3 restoring",
+            "B*cos(t)": "gamma*cos(omega*t)",
+            "delta damping": "delta damping",
+        },
+    ))
+
+    # Structural: Ueda <-> Driven Pendulum (forced chaotic oscillators)
+    analogies.append(Analogy(
+        domain_a="ueda",
+        domain_b="driven_pendulum",
+        analogy_type="structural",
+        description=(
+            "Both are forced, damped nonlinear oscillators showing chaos. "
+            "Ueda: cubic potential, driven_pendulum: sinusoidal potential. "
+            "Both show period-doubling routes to chaos."
+        ),
+        strength=0.75,
+        mapping={
+            "x^3 nonlinearity": "sin(theta) nonlinearity",
+            "B*cos(t) forcing": "F*cos(omega*t) forcing",
+        },
+    ))
+
+    # Structural: Cubic Map <-> Logistic Map (1D discrete chaos)
+    analogies.append(Analogy(
+        domain_a="cubic_map",
+        domain_b="logistic_map",
+        analogy_type="structural",
+        description=(
+            "Both are 1D discrete maps exhibiting period-doubling cascade. "
+            "Cubic: x_{n+1}=r*x-x^3 with odd symmetry. "
+            "Logistic: x_{n+1}=r*x*(1-x) on [0,1]."
+        ),
+        strength=0.85,
+        mapping={
+            "r control parameter": "r control parameter",
+            "x^3 nonlinearity": "x^2 nonlinearity",
+            "Feigenbaum delta": "Feigenbaum delta",
+        },
+    ))
+
+    # Structural: Cubic Map <-> Henon Map (discrete chaos)
+    analogies.append(Analogy(
+        domain_a="cubic_map",
+        domain_b="henon_map",
+        analogy_type="structural",
+        description=(
+            "Both are discrete maps with polynomial nonlinearity and "
+            "period-doubling cascade to chaos. Cubic: 1D cubic. "
+            "Henon: 2D quadratic with dissipation."
+        ),
+        strength=0.65,
+        mapping={
+            "period-doubling": "period-doubling",
+            "Lyapunov positive": "Lyapunov positive",
+        },
+    ))
+
+    # Structural: Zombie-SIR <-> SIR (epidemic compartment models)
+    analogies.append(Analogy(
+        domain_a="zombie_sir",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both are compartmental epidemic models with bilinear transmission. "
+            "SIR: 3 compartments, recovered permanently. "
+            "Zombie-SIR: 4 compartments with resurrection from R to Z."
+        ),
+        strength=0.85,
+        mapping={
+            "beta*S*Z transmission": "beta*S*I transmission",
+            "alpha kill rate": "gamma recovery rate",
+            "zombie Z": "infected I",
+        },
+    ))
+
+    # Structural: Zombie-SIR <-> SEIR (extended epidemic)
+    analogies.append(Analogy(
+        domain_a="zombie_sir",
+        domain_b="seir",
+        analogy_type="structural",
+        description=(
+            "Both are 4-compartment epidemic models extending basic SIR. "
+            "SEIR: adds exposed/latent period. "
+            "Zombie-SIR: adds resurrection and zombie predation."
+        ),
+        strength=0.75,
+        mapping={
+            "4 compartments": "4 compartments",
+            "bilinear transmission": "bilinear transmission",
+            "resurrection zeta*R": "incubation sigma*E",
+        },
+    ))
+
+    # Structural: Elastic Collision <-> Boltzmann Gas (particle mechanics)
+    analogies.append(Analogy(
+        domain_a="elastic_collision",
+        domain_b="boltzmann_gas",
+        analogy_type="structural",
+        description=(
+            "Both model elastic particle collisions conserving momentum and "
+            "energy. Elastic collision: 1D chain with ordered particles. "
+            "Boltzmann: 2D hard-sphere gas with random collisions."
+        ),
+        strength=0.80,
+        mapping={
+            "momentum conservation": "momentum conservation",
+            "energy conservation": "energy conservation",
+            "elastic collision": "hard-sphere collision",
+        },
+    ))
+
     return analogies
 
 
@@ -5787,6 +5970,56 @@ def detect_dimensional_analogies(
         mapping={
             "sigma [fast reaction]": "oscillation period",
             "mu [slow feed]": "a [feed rate]",
+        },
+    ))
+
+    # Dimensional: Ueda <-> Duffing (forcing timescales)
+    analogies.append(Analogy(
+        domain_a="ueda",
+        domain_b="duffing",
+        analogy_type="dimensional",
+        description=(
+            "Both forced oscillators share forcing period T=2*pi/omega as "
+            "primary timescale and damping timescale 1/delta. "
+            "Ueda: omega=1 fixed. Duffing: omega parameter."
+        ),
+        strength=0.88,
+        mapping={
+            "2*pi [forcing period]": "2*pi/omega [forcing period]",
+            "1/delta [damping]": "1/delta [damping]",
+        },
+    ))
+
+    # Dimensional: Zombie-SIR <-> SIR (epidemic timescales)
+    analogies.append(Analogy(
+        domain_a="zombie_sir",
+        domain_b="sir_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Both share bilinear transmission rate beta and removal rate. "
+            "SIR: recovery gamma. Zombie-SIR: kill rate alpha. "
+            "Both have R0-like threshold beta/alpha or beta/gamma."
+        ),
+        strength=0.85,
+        mapping={
+            "1/rho [zombification]": "1/gamma [recovery]",
+            "beta/alpha [R0-zombie]": "beta/gamma [R0]",
+        },
+    ))
+
+    # Dimensional: Elastic Collision <-> Boltzmann Gas (mechanical timescales)
+    analogies.append(Analogy(
+        domain_a="elastic_collision",
+        domain_b="boltzmann_gas",
+        analogy_type="dimensional",
+        description=(
+            "Both particle systems share collision timescale = spacing/velocity "
+            "and conserve total momentum and kinetic energy."
+        ),
+        strength=0.78,
+        mapping={
+            "spacing/v [collision time]": "mean_free_path/v [collision time]",
+            "m*v [momentum]": "m*v [momentum]",
         },
     ))
 
@@ -7718,6 +7951,78 @@ def detect_topological_analogies(
             "epidemic trajectory": "epidemic trajectory",
             "R0=1 threshold": "R0=1 threshold",
             "4-compartment flow": "3-compartment flow",
+        },
+    ))
+
+    # Topological: Ueda <-> Duffing (strange attractor topology)
+    analogies.append(Analogy(
+        domain_a="ueda",
+        domain_b="duffing",
+        analogy_type="topological",
+        description=(
+            "Both forced oscillators produce strange attractors with "
+            "fractal structure in Poincare section. Both show "
+            "period-doubling routes to chaos."
+        ),
+        strength=0.88,
+        mapping={
+            "strange attractor": "chaotic attractor",
+            "Poincare fractal": "Poincare fractal",
+            "period-doubling": "period-doubling",
+        },
+    ))
+
+    # Topological: Cubic Map <-> Logistic Map (1D map topology)
+    analogies.append(Analogy(
+        domain_a="cubic_map",
+        domain_b="logistic_map",
+        analogy_type="topological",
+        description=(
+            "Both 1D maps show identical period-doubling cascade topology "
+            "with universal Feigenbaum constants. Both have dense periodic "
+            "orbits in the chaotic regime."
+        ),
+        strength=0.90,
+        mapping={
+            "period-doubling tree": "period-doubling tree",
+            "Feigenbaum delta": "Feigenbaum delta",
+            "chaotic bands": "chaotic bands",
+        },
+    ))
+
+    # Topological: Zombie-SIR <-> SIR (epidemic topology)
+    analogies.append(Analogy(
+        domain_a="zombie_sir",
+        domain_b="sir_epidemic",
+        analogy_type="topological",
+        description=(
+            "Both have threshold-dependent dynamics: below threshold, "
+            "disease/zombie-free stable; above threshold, epidemic/outbreak. "
+            "Zombie-SIR adds resurrection creating persistent dynamics."
+        ),
+        strength=0.80,
+        mapping={
+            "outbreak trajectory": "epidemic trajectory",
+            "beta/alpha threshold": "R0=1 threshold",
+            "doomsday equilibrium": "endemic equilibrium",
+        },
+    ))
+
+    # Topological: Elastic Collision <-> Spring Mass Chain (1D particle topology)
+    analogies.append(Analogy(
+        domain_a="elastic_collision",
+        domain_b="spring_mass_chain",
+        analogy_type="topological",
+        description=(
+            "Both are 1D ordered particle chains. Elastic collision: "
+            "free particles with contact interaction. Spring chain: "
+            "coupled particles with continuous interaction."
+        ),
+        strength=0.65,
+        mapping={
+            "ordered 1D chain": "ordered 1D chain",
+            "momentum conservation": "momentum conservation",
+            "energy transfer": "phonon propagation",
         },
     ))
 

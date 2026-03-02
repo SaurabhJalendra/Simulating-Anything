@@ -249,6 +249,12 @@ def run_all_rediscoveries(
         run_autocatalator_rediscovery,
     )
     from simulating_anything.rediscovery.seir import run_seir_rediscovery
+    from simulating_anything.rediscovery.ueda import run_ueda_rediscovery
+    from simulating_anything.rediscovery.cubic_map import run_cubic_map_rediscovery
+    from simulating_anything.rediscovery.zombie_sir import run_zombie_sir_rediscovery
+    from simulating_anything.rediscovery.elastic_collision import (
+        run_elastic_collision_rediscovery,
+    )
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -843,6 +849,26 @@ def run_all_rediscoveries(
         "seir": {
             "label": "SEIR Epidemic with Latent Period",
             "fn": run_seir_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "ueda": {
+            "label": "Ueda Forced Oscillator Chaos",
+            "fn": run_ueda_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "cubic_map": {
+            "label": "Cubic Map Discrete Chaos",
+            "fn": run_cubic_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "zombie_sir": {
+            "label": "Zombie SIR Epidemic",
+            "fn": run_zombie_sir_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "elastic_collision": {
+            "label": "1D Elastic Collision Chain",
+            "fn": run_elastic_collision_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

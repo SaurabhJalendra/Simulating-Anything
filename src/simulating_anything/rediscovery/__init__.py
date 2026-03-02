@@ -31,6 +31,7 @@ from simulating_anything.rediscovery.coupled_map_lattice import (
     run_coupled_map_lattice_rediscovery,
 )
 from simulating_anything.rediscovery.coupled_oscillators import run_coupled_oscillators_rediscovery
+from simulating_anything.rediscovery.cubic_map import run_cubic_map_rediscovery
 from simulating_anything.rediscovery.damped_wave import run_damped_wave_rediscovery
 from simulating_anything.rediscovery.delayed_predator_prey import (
     run_delayed_predator_prey_rediscovery,
@@ -43,6 +44,7 @@ from simulating_anything.rediscovery.duffing_van_der_pol import (
     run_duffing_van_der_pol_rediscovery,
 )
 from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
+from simulating_anything.rediscovery.elastic_collision import run_elastic_collision_rediscovery
 from simulating_anything.rediscovery.elastic_pendulum import run_elastic_pendulum_rediscovery
 from simulating_anything.rediscovery.fhn_ring import run_fhn_ring_rediscovery
 from simulating_anything.rediscovery.fhn_lattice import run_fhn_lattice_rediscovery
@@ -147,6 +149,8 @@ from simulating_anything.rediscovery.predator_two_prey import (
 )
 from simulating_anything.rediscovery.autocatalator import run_autocatalator_rediscovery
 from simulating_anything.rediscovery.seir import run_seir_rediscovery
+from simulating_anything.rediscovery.ueda import run_ueda_rediscovery
+from simulating_anything.rediscovery.zombie_sir import run_zombie_sir_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -268,4 +272,8 @@ __all__ = [
     "run_predator_two_prey_rediscovery",
     "run_autocatalator_rediscovery",
     "run_seir_rediscovery",
+    "run_ueda_rediscovery",
+    "run_cubic_map_rediscovery",
+    "run_zombie_sir_rediscovery",
+    "run_elastic_collision_rediscovery",
 ]
