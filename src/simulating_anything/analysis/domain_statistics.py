@@ -1379,6 +1379,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"r": 1.0, "K": 100.0, "N_0": 1.0},
         "dt": 0.1, "n_steps": 500, "math_class": "Growth ODE",
     },
+    "theta_neuron": {
+        "module": "simulating_anything.simulation.theta_neuron",
+        "cls": "ThetaNeuronSimulation",
+        "domain": Domain.THETA_NEURON,
+        "params": {"I": -0.1, "theta_0": 0.0},
+        "dt": 0.01, "n_steps": 500, "math_class": "Neural ODE",
+    },
+    "ivlev_predator_prey": {
+        "module": "simulating_anything.simulation.ivlev_predator_prey",
+        "cls": "IvlevPredatorPreySimulation",
+        "domain": Domain.IVLEV_PREDATOR_PREY,
+        "params": {"r": 1.0, "K": 10.0, "a": 1.5, "b": 0.3, "e": 0.5, "d": 0.3},
+        "dt": 0.01, "n_steps": 500, "math_class": "Predator-Prey ODE",
+    },
+    "diffusion_2d": {
+        "module": "simulating_anything.simulation.diffusion_2d",
+        "cls": "Diffusion2DSimulation",
+        "domain": Domain.DIFFUSION_2D,
+        "params": {"D": 0.1, "N_grid": 64, "L": 6.283},
+        "dt": 0.01, "n_steps": 500, "math_class": "Diffusion PDE",
+    },
+    "sirs": {
+        "module": "simulating_anything.simulation.sirs",
+        "cls": "SIRSSimulation",
+        "domain": Domain.SIRS,
+        "params": {"beta": 0.5, "gamma": 0.15, "xi": 0.05, "N0": 1000.0},
+        "dt": 0.1, "n_steps": 500, "math_class": "Epidemiological ODE",
+    },
 }
 
 

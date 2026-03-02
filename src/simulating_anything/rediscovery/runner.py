@@ -295,6 +295,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.gierer_meinhardt import run_gierer_meinhardt_rediscovery
     from simulating_anything.rediscovery.group_defense import run_group_defense_rediscovery
     from simulating_anything.rediscovery.logistic_ode import run_logistic_ode_rediscovery
+    from simulating_anything.rediscovery.theta_neuron import run_theta_neuron_rediscovery
+    from simulating_anything.rediscovery.ivlev_predator_prey import run_ivlev_predator_prey_rediscovery
+    from simulating_anything.rediscovery.diffusion_2d import run_diffusion_2d_rediscovery
+    from simulating_anything.rediscovery.sirs import run_sirs_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1109,6 +1113,26 @@ def run_all_rediscoveries(
         "logistic_ode": {
             "label": "Logistic ODE",
             "fn": run_logistic_ode_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "theta_neuron": {
+            "label": "Theta Neuron",
+            "fn": run_theta_neuron_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "ivlev_predator_prey": {
+            "label": "Ivlev Predator-Prey",
+            "fn": run_ivlev_predator_prey_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "diffusion_2d": {
+            "label": "2D Diffusion",
+            "fn": run_diffusion_2d_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "sirs": {
+            "label": "SIRS Epidemic",
+            "fn": run_sirs_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

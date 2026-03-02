@@ -195,6 +195,10 @@ from simulating_anything.rediscovery.sei import run_sei_rediscovery
 from simulating_anything.rediscovery.gierer_meinhardt import run_gierer_meinhardt_rediscovery
 from simulating_anything.rediscovery.group_defense import run_group_defense_rediscovery
 from simulating_anything.rediscovery.logistic_ode import run_logistic_ode_rediscovery
+from simulating_anything.rediscovery.theta_neuron import run_theta_neuron_rediscovery
+from simulating_anything.rediscovery.ivlev_predator_prey import run_ivlev_predator_prey_rediscovery
+from simulating_anything.rediscovery.diffusion_2d import run_diffusion_2d_rediscovery
+from simulating_anything.rediscovery.sirs import run_sirs_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -360,4 +364,8 @@ __all__ = [
     "run_gierer_meinhardt_rediscovery",
     "run_group_defense_rediscovery",
     "run_logistic_ode_rediscovery",
+    "run_theta_neuron_rediscovery",
+    "run_ivlev_predator_prey_rediscovery",
+    "run_diffusion_2d_rediscovery",
+    "run_sirs_rediscovery",
 ]

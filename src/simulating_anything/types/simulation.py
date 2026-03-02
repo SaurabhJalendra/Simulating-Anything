@@ -172,6 +172,10 @@ class Domain(str, Enum):
     GIERER_MEINHARDT = "gierer_meinhardt"
     GROUP_DEFENSE = "group_defense"
     LOGISTIC_ODE = "logistic_ode"
+    THETA_NEURON = "theta_neuron"
+    IVLEV_PREDATOR_PREY = "ivlev_predator_prey"
+    DIFFUSION_2D = "diffusion_2d"
+    SIRS = "sirs"
 
 
 class SimulationBackend(str, Enum):

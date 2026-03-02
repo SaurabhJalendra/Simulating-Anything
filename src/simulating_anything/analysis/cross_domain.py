@@ -2591,6 +2591,61 @@ def build_domain_signatures() -> list[DomainSignature]:
             discovered_equations=["dN/dt = r*N*(1-N/K)"],
             r_squared=[],
         ),
+        DomainSignature(
+            name="theta_neuron",
+            math_type="neural_ode",
+            state_dim=1,
+            n_parameters=2,
+            conserved_quantities=[],
+            symmetries=["circular"],
+            phase_portrait_type="snic_bifurcation",
+            characteristic_timescale="pi/sqrt(I)",
+            discovered_equations=["dtheta/dt = 1-cos(theta)+(1+cos(theta))*I"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="ivlev_predator_prey",
+            math_type="predator_prey_ode",
+            state_dim=2,
+            n_parameters=6,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="stable_spiral",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN/dt = r*N*(1-N/K) - a*(1-exp(-b*N))*P",
+                "dP/dt = e*a*(1-exp(-b*N))*P - d*P",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="diffusion_2d",
+            math_type="diffusion_pde",
+            state_dim=4096,
+            n_parameters=3,
+            conserved_quantities=["total_heat"],
+            symmetries=["translation", "rotation"],
+            phase_portrait_type="decay_to_uniform",
+            characteristic_timescale="L^2/D",
+            discovered_equations=["du/dt = D*(u_xx+u_yy)"],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sirs",
+            math_type="epidemiological_ode",
+            state_dim=3,
+            n_parameters=3,
+            conserved_quantities=["S+I+R=N"],
+            symmetries=[],
+            phase_portrait_type="damped_oscillation",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dS/dt = -beta*S*I/N + xi*R",
+                "dI/dt = beta*S*I/N - gamma*I",
+                "dR/dt = gamma*I - xi*R",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -6526,6 +6581,112 @@ def detect_structural_analogies(
         },
     ))
 
+    # -- Batch #164-167: Theta Neuron, Ivlev PP, Diffusion 2D, SIRS --
+
+    analogies.append(Analogy(
+        domain_a="theta_neuron",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="structural",
+        description=(
+            "Both model neural excitability. Theta neuron: Type I (SNIC), "
+            "1D on circle. FHN: Type II (Hopf), 2D fast-slow. "
+            "Both have threshold for oscillation, f-I curves."
+        ),
+        strength=0.72,
+        mapping={
+            "SNIC bifurcation": "Hopf bifurcation",
+            "f ~ sqrt(I)": "f ~ sqrt(I-I_c)",
+            "phase on circle": "v-w plane",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="ivlev_predator_prey",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "Both are predator-prey with saturating functional response. "
+            "Ivlev: a*(1-exp(-b*N)) exponential. RM: Holling II a*N/(1+b*N). "
+            "Both approach same saturation, differ in functional form."
+        ),
+        strength=0.85,
+        mapping={
+            "Ivlev response": "Holling II response",
+            "exponential saturation": "rational saturation",
+            "logistic prey": "logistic prey",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="diffusion_2d",
+        domain_b="heat_equation",
+        analogy_type="structural",
+        description=(
+            "Both are linear diffusion PDEs with spectral solutions. "
+            "2D: u_t = D*(u_xx+u_yy), modes decay as D*(kx^2+ky^2). "
+            "1D: u_t = D*u_xx, modes decay as D*k^2. 2D is natural extension."
+        ),
+        strength=0.95,
+        mapping={
+            "2D Laplacian": "1D Laplacian",
+            "FFT2 solver": "FFT solver",
+            "D*(kx^2+ky^2)": "D*k^2",
+            "total heat conservation": "total heat conservation",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sirs",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both are compartmental epidemic models. SIRS adds waning immunity "
+            "xi*R term returning recovered to susceptible. Produces endemic "
+            "equilibrium unlike SIR where epidemic dies out."
+        ),
+        strength=0.92,
+        mapping={
+            "bilinear incidence": "bilinear incidence",
+            "R0 = beta/gamma": "R0 = beta/gamma",
+            "waning immunity xi*R": "(permanent immunity)",
+            "endemic equilibrium": "epidemic final size",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sirs",
+        domain_b="sis_endemic",
+        analogy_type="structural",
+        description=(
+            "Both have endemic equilibria when R0>1. SIRS has transient R "
+            "compartment with waning. SIS has no R at all. "
+            "SIRS interpolates between SIR (xi=0) and SIS (xi->inf)."
+        ),
+        strength=0.82,
+        mapping={
+            "waning immunity": "no immunity",
+            "endemic I*": "endemic I*",
+            "damped oscillations": "monotone approach",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="ivlev_predator_prey",
+        domain_b="beddington_deangelis",
+        analogy_type="structural",
+        description=(
+            "Both are predator-prey with non-Holling-II functional responses. "
+            "Ivlev: exponential saturation a*(1-exp(-bN)). "
+            "BD: interference a*N/(1+bN+cP). Both modify standard model."
+        ),
+        strength=0.72,
+        mapping={
+            "exponential saturation": "rational with interference",
+            "logistic prey": "logistic prey",
+            "coexistence eq": "coexistence eq",
+        },
+    ))
+
     return analogies
 
 
@@ -8302,6 +8463,74 @@ def detect_dimensional_analogies(
             "a [attack rate]": "a [attack rate]",
             "b [handling time]": "b [handling time]",
             "c [group defense]": "(no analog)",
+            "d [mortality]": "d [mortality]",
+        },
+    ))
+
+    # -- Batch #164-167 dimensional analogies --
+
+    analogies.append(Analogy(
+        domain_a="theta_neuron",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="dimensional",
+        description=(
+            "Theta neuron has I [current], theta [rad] (dimensionless). "
+            "FHN has v [voltage], w [recovery], I [current], eps [1/time]. "
+            "Both share I as bifurcation parameter."
+        ),
+        strength=0.65,
+        mapping={
+            "I [external current]": "I [external current]",
+            "theta [phase angle]": "v [voltage]",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="diffusion_2d",
+        domain_b="heat_equation",
+        analogy_type="dimensional",
+        description=(
+            "Both have D [length^2/time] diffusion coefficient and "
+            "wavenumber k [1/length]. Decay rate D*k^2 [1/time] in both. "
+            "2D adds second spatial dimension."
+        ),
+        strength=0.95,
+        mapping={
+            "D [diffusion]": "D [diffusion]",
+            "kx,ky [wavenumber]": "k [wavenumber]",
+            "L [domain size]": "L [domain size]",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sirs",
+        domain_b="sir_epidemic",
+        analogy_type="dimensional",
+        description=(
+            "Both have beta [1/(pop*time)], gamma [1/time]. SIRS adds "
+            "xi [1/time] waning rate. R0 dimensionless in both."
+        ),
+        strength=0.90,
+        mapping={
+            "beta [transmission]": "beta [transmission]",
+            "gamma [recovery]": "gamma [recovery]",
+            "xi [waning rate]": "(no analog)",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="ivlev_predator_prey",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="dimensional",
+        description=(
+            "Both share r [1/time], K [prey], a [1/time] max predation, "
+            "e [dimensionless] conversion, d [1/time] mortality. "
+            "Ivlev b [1/prey] vs RM b [1/prey] handling."
+        ),
+        strength=0.88,
+        mapping={
+            "a [max predation]": "a [attack rate]",
+            "b [capture efficiency]": "b [handling time]",
             "d [mortality]": "d [mortality]",
         },
     ))
@@ -11151,6 +11380,93 @@ def detect_topological_analogies(
         mapping={
             "single stable K": "two equilibria (below MSY)",
             "monotone": "saddle-node bifurcation",
+        },
+    ))
+
+    # -- Batch #164-167 topological analogies --
+
+    analogies.append(Analogy(
+        domain_a="theta_neuron",
+        domain_b="morris_lecar",
+        analogy_type="topological",
+        description=(
+            "Both can exhibit SNIC (saddle-node on invariant circle) "
+            "bifurcation for Type I excitability. Theta neuron: canonical "
+            "1D form. Morris-Lecar: 2D with Type I parameter regime."
+        ),
+        strength=0.75,
+        mapping={
+            "SNIC bifurcation": "SNIC bifurcation (Type I)",
+            "f ~ sqrt(I)": "f ~ sqrt(I) (Type I)",
+            "1D circle": "2D v-w plane",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="diffusion_2d",
+        domain_b="heat_equation",
+        analogy_type="topological",
+        description=(
+            "Both have identical topology: all modes decay exponentially, "
+            "uniform state is globally stable attractor. Energy is Lyapunov "
+            "function. 2D has 2D wavenumber space but same qualitative behavior."
+        ),
+        strength=0.95,
+        mapping={
+            "exponential decay": "exponential decay",
+            "uniform attractor": "uniform attractor",
+            "energy Lyapunov": "energy Lyapunov",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sirs",
+        domain_b="sis_endemic",
+        analogy_type="topological",
+        description=(
+            "Both have endemic equilibrium as stable attractor when R0>1. "
+            "SIRS: damped oscillatory approach (spiral). SIS: monotone "
+            "approach (node). Both have DFE transcritical at R0=1."
+        ),
+        strength=0.80,
+        mapping={
+            "endemic spiral": "endemic node",
+            "transcritical R0=1": "transcritical R0=1",
+            "3D flow": "2D flow (on S+I=N manifold)",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="sirs",
+        domain_b="sir_epidemic",
+        analogy_type="topological",
+        description=(
+            "Both have DFE transcritical at R0=1. SIR: epidemic trajectory "
+            "approaches DFE (transient). SIRS: endemic equilibrium with "
+            "damped oscillations. Waning immunity changes global attractor."
+        ),
+        strength=0.82,
+        mapping={
+            "endemic attractor (xi>0)": "DFE attractor",
+            "damped oscillations": "monotone epidemic decay",
+            "transcritical R0=1": "transcritical R0=1",
+        },
+    ))
+
+    analogies.append(Analogy(
+        domain_a="ivlev_predator_prey",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="topological",
+        description=(
+            "Both have coexistence equilibrium that can undergo Hopf "
+            "bifurcation as K increases (paradox of enrichment). "
+            "Qualitatively same phase portrait: spiral or limit cycle."
+        ),
+        strength=0.85,
+        mapping={
+            "coexistence spiral": "coexistence spiral",
+            "Hopf bifurcation": "Hopf bifurcation",
+            "paradox of enrichment": "paradox of enrichment",
         },
     ))
 
