@@ -10,6 +10,7 @@ from simulating_anything.rediscovery.bazykin import run_bazykin_rediscovery
 from simulating_anything.rediscovery.boltzmann_gas import run_boltzmann_gas_rediscovery
 from simulating_anything.rediscovery.bouncing_ball import run_bouncing_ball_rediscovery
 from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+from simulating_anything.rediscovery.chen import run_chen_rediscovery
 from simulating_anything.rediscovery.brusselator_2d import run_brusselator_2d_rediscovery
 from simulating_anything.rediscovery.brusselator_diffusion import (
     run_brusselator_diffusion_rediscovery,
@@ -41,9 +42,11 @@ from simulating_anything.rediscovery.duffing_van_der_pol import (
 from simulating_anything.rediscovery.eco_epidemic import run_eco_epidemic_rediscovery
 from simulating_anything.rediscovery.elastic_pendulum import run_elastic_pendulum_rediscovery
 from simulating_anything.rediscovery.fhn_ring import run_fhn_ring_rediscovery
+from simulating_anything.rediscovery.fhn_lattice import run_fhn_lattice_rediscovery
 from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscovery
 from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
 from simulating_anything.rediscovery.fitzhugh_rinzel import run_fitzhugh_rinzel_rediscovery
+from simulating_anything.rediscovery.four_species_lv import run_four_species_lv_rediscovery
 from simulating_anything.rediscovery.fput import run_fput_rediscovery
 from simulating_anything.rediscovery.ginzburg_landau import run_ginzburg_landau_rediscovery
 from simulating_anything.rediscovery.gray_scott import run_gray_scott_analysis
@@ -70,6 +73,7 @@ from simulating_anything.rediscovery.logistic_map import run_logistic_map_redisc
 from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
 from simulating_anything.rediscovery.lorenz84 import run_lorenz84_rediscovery
 from simulating_anything.rediscovery.lorenz96 import run_lorenz96_rediscovery
+from simulating_anything.rediscovery.lorenz_stenflo import run_lorenz_stenflo_rediscovery
 from simulating_anything.rediscovery.lotka_volterra import run_lotka_volterra_rediscovery
 from simulating_anything.rediscovery.mackey_glass import run_mackey_glass_rediscovery
 from simulating_anything.rediscovery.magnetic_pendulum import run_magnetic_pendulum_rediscovery
@@ -210,4 +214,8 @@ __all__ = [
     "run_bazykin_rediscovery",
     "run_langford_rediscovery",
     "run_sir_vaccination_rediscovery",
+    "run_fhn_lattice_rediscovery",
+    "run_four_species_lv_rediscovery",
+    "run_lorenz_stenflo_rediscovery",
+    "run_chen_rediscovery",
 ]

@@ -1464,6 +1464,72 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="fhn_lattice",
+            math_type="ode_nonlinear",  # Lattice ODE
+            state_dim=2048,  # 2*32*32
+            n_parameters=6,  # a, b, eps, I, D, N
+            conserved_quantities=[],
+            symmetries=["translational (periodic)", "rotational (square)"],
+            phase_portrait_type="spiral_wave",
+            characteristic_timescale="1/eps",
+            discovered_equations=[
+                "dv/dt = v-v^3/3-w+I+D*Lap(v)",
+                "dw/dt = eps*(v+a-b*w)",
+                "Spiral wave formation on 2D lattice",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="four_species_lv",
+            math_type="ode_nonlinear",  # Food web ODE
+            state_dim=4,
+            n_parameters=12,  # r1,r2,a11,a12,a21,a22,b1,b2,c1,c2,d1,d2
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/d",
+            discovered_equations=[
+                "dx1/dt = x1*(r1-a11*x1-a12*x2-b1*y1)",
+                "dx2/dt = x2*(r2-a21*x1-a22*x2-b2*y2)",
+                "dy1/dt = y1*(-d1+c1*x1)",
+                "dy2/dt = y2*(-d2+c2*x2)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="lorenz_stenflo",
+            math_type="chaotic",  # Plasma chaos
+            state_dim=4,
+            n_parameters=4,  # sigma, r, b, s
+            conserved_quantities=[],
+            symmetries=["Z2 (x,y,w -> -x,-y,-w)"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/sigma",
+            discovered_equations=[
+                "dx/dt = sigma*(y-x) + s*w",
+                "dy/dt = r*x - y - x*z",
+                "dz/dt = x*y - b*z",
+                "dw/dt = -x - sigma*w",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="chen",
+            math_type="chaotic",  # Chaotic ODE
+            state_dim=3,
+            n_parameters=3,  # a, b, c
+            conserved_quantities=[],
+            symmetries=["Z2 (x,y -> -x,-y)"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = a*(y-x)",
+                "dy/dt = (c-a)*x - x*z + c*y",
+                "dz/dt = x*y - b*z",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -3494,6 +3560,123 @@ def detect_structural_analogies(
         },
     ))
 
+    # FHN Lattice <-> FHN Spatial (same equations, different discretization)
+    analogies.append(Analogy(
+        domain_a="fhn_lattice",
+        domain_b="fhn_spatial",
+        analogy_type="structural",
+        description=(
+            "Identical FHN equations with diffusion. Lattice: discrete 5-point stencil "
+            "on NxN grid. Spatial: continuous PDE with spectral or FD solver."
+        ),
+        strength=0.95,
+        mapping={
+            "discrete Laplacian": "continuous Laplacian",
+            "spiral waves": "spiral waves",
+            "lattice artifacts": "continuous patterns",
+        },
+    ))
+
+    # FHN Lattice <-> BZ Spiral (spiral wave excitable media)
+    analogies.append(Analogy(
+        domain_a="fhn_lattice",
+        domain_b="bz_spiral",
+        analogy_type="structural",
+        description=(
+            "Both exhibit spiral wave dynamics in 2D excitable media. "
+            "FHN: v-w system. BZ: Oregonator u-v system."
+        ),
+        strength=0.80,
+        mapping={
+            "FHN spiral": "BZ spiral",
+            "diffusion D": "diffusion D_u",
+        },
+    ))
+
+    # Four-Species LV <-> Three-Species (multi-trophic food web)
+    analogies.append(Analogy(
+        domain_a="four_species_lv",
+        domain_b="three_species",
+        analogy_type="structural",
+        description=(
+            "Both are multi-species food web models with trophic coupling. "
+            "4-species: 2 prey + 2 predators. 3-species: bottom-up cascade."
+        ),
+        strength=0.82,
+        mapping={
+            "x1,x2 prey": "x prey",
+            "y1,y2 predators": "y predator, z top predator",
+            "cross-competition a12": "trophic coupling",
+        },
+    ))
+
+    # Four-Species LV <-> Competitive LV (multi-species competition)
+    analogies.append(Analogy(
+        domain_a="four_species_lv",
+        domain_b="competitive_lv",
+        analogy_type="structural",
+        description=(
+            "Both model N-species Lotka-Volterra competition. 4-species: "
+            "cross-competition between prey. Competitive LV: symmetric competition."
+        ),
+        strength=0.85,
+        mapping={
+            "a_ij competition": "a_ij competition",
+            "competitive exclusion": "exclusion principle",
+        },
+    ))
+
+    # Lorenz-Stenflo <-> Lorenz (4D extension with wave field)
+    analogies.append(Analogy(
+        domain_a="lorenz_stenflo",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Lorenz-Stenflo reduces to Lorenz when s=0. The w equation "
+            "adds electromagnetic wave coupling: dw/dt = -x - sigma*w."
+        ),
+        strength=0.92,
+        mapping={
+            "sigma*(y-x)+s*w": "sigma*(y-x)",
+            "dw/dt = -x-sigma*w": "absent (3D)",
+            "s=0 reduces to Lorenz": "classic Lorenz",
+        },
+    ))
+
+    # Lorenz-Stenflo <-> Rossler Hyperchaos (4D hyperchaotic systems)
+    analogies.append(Analogy(
+        domain_a="lorenz_stenflo",
+        domain_b="rossler_hyperchaos",
+        analogy_type="structural",
+        description=(
+            "Both are 4D extensions of 3D chaotic systems capable of hyperchaos "
+            "(two positive Lyapunov exponents)."
+        ),
+        strength=0.70,
+        mapping={
+            "4th dimension w": "4th dimension w",
+            "potential hyperchaos": "confirmed hyperchaos",
+        },
+    ))
+
+    # Chen <-> Lorenz (Lorenz family dual)
+    analogies.append(Analogy(
+        domain_a="chen",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Chen is the algebraic dual of Lorenz in the generalized Lorenz system "
+            "family (a12*a21 < 0 for Chen, > 0 for Lorenz). Same 3D structure, "
+            "different coefficient signs."
+        ),
+        strength=0.88,
+        mapping={
+            "a*(y-x)": "sigma*(y-x)",
+            "(c-a)*x - xz + c*y": "rho*x - y - xz",
+            "xy - b*z": "xy - beta*z",
+        },
+    ))
+
     return analogies
 
 
@@ -4261,6 +4444,54 @@ def detect_dimensional_analogies(
         mapping={
             "1/gamma_S [photon]": "fast u timescale",
             "1/gamma_N [carrier]": "slow v timescale",
+        },
+    ))
+
+    # Dimensional: FHN Lattice <-> FHN Ring (same 1/eps timescale)
+    analogies.append(Analogy(
+        domain_a="fhn_lattice",
+        domain_b="fhn_ring",
+        analogy_type="dimensional",
+        description=(
+            "Both share the FHN timescale 1/eps. FHN Lattice: 2D square grid. "
+            "FHN Ring: 1D ring. Same diffusion coupling D."
+        ),
+        strength=0.88,
+        mapping={
+            "1/eps [recovery]": "1/eps [recovery]",
+            "D [diffusion]": "D [coupling]",
+        },
+    ))
+
+    # Dimensional: Chen <-> Lorenz (same 1/a ~ 1/sigma timescale)
+    analogies.append(Analogy(
+        domain_a="chen",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Same characteristic timescale 1/a ~ 1/sigma for convective mixing. "
+            "Chen: a=35, Lorenz: sigma=10 -- different values, same role."
+        ),
+        strength=0.82,
+        mapping={
+            "1/a [mixing]": "1/sigma [mixing]",
+            "1/b [damping]": "1/beta [damping]",
+        },
+    ))
+
+    # Dimensional: Lorenz-Stenflo <-> Lorenz (same sigma timescale)
+    analogies.append(Analogy(
+        domain_a="lorenz_stenflo",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Identical sigma timescale. Extra 1/sigma decay in w equation "
+            "introduces same-scale wave damping."
+        ),
+        strength=0.92,
+        mapping={
+            "1/sigma [x-y mixing]": "1/sigma [x-y mixing]",
+            "1/sigma [w decay]": "N/A (3D)",
         },
     ))
 
@@ -5734,6 +5965,72 @@ def detect_topological_analogies(
             "P_th (lasing onset)": "H_MSY (collapse onset)",
             "below threshold (spontaneous only)": "below MSY (sustainable)",
             "stable operating point": "stable equilibrium",
+        },
+    ))
+
+    # Topological: FHN Lattice <-> Schnakenberg (2D pattern formation)
+    analogies.append(Analogy(
+        domain_a="fhn_lattice",
+        domain_b="schnakenberg",
+        analogy_type="topological",
+        description=(
+            "Both form 2D spatial patterns via diffusion-driven instability. "
+            "FHN: excitable spirals. Schnakenberg: Turing spots/stripes."
+        ),
+        strength=0.70,
+        mapping={
+            "spiral wave": "Turing pattern",
+            "excitable medium": "activator-inhibitor",
+        },
+    ))
+
+    # Topological: Four-Species LV <-> May-Leonard (multi-species dynamics)
+    analogies.append(Analogy(
+        domain_a="four_species_lv",
+        domain_b="may_leonard",
+        analogy_type="topological",
+        description=(
+            "Both are multi-species competition systems that can show "
+            "heteroclinic-like orbits and competitive exclusion. "
+            "4-species: trophic layers. May-Leonard: cyclic competition."
+        ),
+        strength=0.68,
+        mapping={
+            "coexistence equilibrium": "interior fixed point",
+            "competitive exclusion": "heteroclinic cycle",
+        },
+    ))
+
+    # Topological: Chen <-> Rossler (3D strange attractors)
+    analogies.append(Analogy(
+        domain_a="chen",
+        domain_b="rossler",
+        analogy_type="topological",
+        description=(
+            "Both are 3D chaotic ODEs with butterfly-type strange attractors. "
+            "Chen: double-scroll via Z2 symmetry. Rossler: single-scroll spiral."
+        ),
+        strength=0.72,
+        mapping={
+            "double-scroll attractor": "single-scroll attractor",
+            "Z2 symmetry": "no symmetry",
+            "positive Lyapunov": "positive Lyapunov",
+        },
+    ))
+
+    # Topological: Lorenz-Stenflo <-> Coupled Lorenz (4D chaos extensions)
+    analogies.append(Analogy(
+        domain_a="lorenz_stenflo",
+        domain_b="coupled_lorenz",
+        analogy_type="topological",
+        description=(
+            "Both extend Lorenz dynamics to higher dimensions. "
+            "Stenflo: 4D wave-plasma. Coupled Lorenz: 6D sync of two copies."
+        ),
+        strength=0.65,
+        mapping={
+            "4D hyperchaos potential": "6D sync/desync transition",
+            "s parameter": "epsilon coupling",
         },
     ))
 

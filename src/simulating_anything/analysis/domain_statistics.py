@@ -865,6 +865,44 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         },
         "dt": 0.01, "n_steps": 500, "math_class": "Pred-Prey ODE",
     },
+    "fhn_lattice": {
+        "module": "simulating_anything.simulation.fhn_lattice",
+        "cls": "FHNLattice",
+        "domain": Domain.FHN_LATTICE,
+        "params": {
+            "a": 0.7, "b": 0.8, "eps": 0.08, "I": 0.5,
+            "D": 1.0, "N": 32,
+        },
+        "dt": 0.05, "n_steps": 500, "math_class": "Lattice ODE",
+    },
+    "four_species_lv": {
+        "module": "simulating_anything.simulation.four_species_lv",
+        "cls": "FourSpeciesLVSimulation",
+        "domain": Domain.FOUR_SPECIES_LV,
+        "params": {
+            "r1": 1.0, "r2": 0.8, "a11": 0.1, "a12": 0.05,
+            "a21": 0.05, "a22": 0.1, "b1": 0.5, "b2": 0.5,
+            "c1": 0.3, "c2": 0.3, "d1": 0.4, "d2": 0.4,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Food Web ODE",
+    },
+    "lorenz_stenflo": {
+        "module": "simulating_anything.simulation.lorenz_stenflo",
+        "cls": "LorenzStenfloSimulation",
+        "domain": Domain.LORENZ_STENFLO,
+        "params": {
+            "sigma": 10.0, "r": 28.0, "b": 2.6667,
+            "s": 1.0,
+        },
+        "dt": 0.01, "n_steps": 500, "math_class": "Plasma Chaos",
+    },
+    "chen": {
+        "module": "simulating_anything.simulation.chen",
+        "cls": "ChenSimulation",
+        "domain": Domain.CHEN,
+        "params": {"a": 35.0, "b": 3.0, "c": 28.0},
+        "dt": 0.001, "n_steps": 500, "math_class": "Chaotic ODE",
+    },
 }
 
 

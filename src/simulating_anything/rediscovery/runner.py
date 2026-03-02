@@ -49,6 +49,7 @@ def run_all_rediscoveries(
         run_bouncing_ball_rediscovery,
     )
     from simulating_anything.rediscovery.brusselator import run_brusselator_rediscovery
+    from simulating_anything.rediscovery.chen import run_chen_rediscovery
     from simulating_anything.rediscovery.brusselator_2d import (
         run_brusselator_2d_rediscovery,
     )
@@ -100,10 +101,14 @@ def run_all_rediscoveries(
         run_elastic_pendulum_rediscovery,
     )
     from simulating_anything.rediscovery.fhn_ring import run_fhn_ring_rediscovery
+    from simulating_anything.rediscovery.fhn_lattice import run_fhn_lattice_rediscovery
     from simulating_anything.rediscovery.fhn_spatial import run_fhn_spatial_rediscovery
     from simulating_anything.rediscovery.fitzhugh_nagumo import run_fitzhugh_nagumo_rediscovery
     from simulating_anything.rediscovery.fitzhugh_rinzel import (
         run_fitzhugh_rinzel_rediscovery,
+    )
+    from simulating_anything.rediscovery.four_species_lv import (
+        run_four_species_lv_rediscovery,
     )
     from simulating_anything.rediscovery.fput import run_fput_rediscovery
     from simulating_anything.rediscovery.ginzburg_landau import (
@@ -141,6 +146,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.lorenz import run_lorenz_rediscovery
     from simulating_anything.rediscovery.lorenz84 import run_lorenz84_rediscovery
     from simulating_anything.rediscovery.lorenz96 import run_lorenz96_rediscovery
+    from simulating_anything.rediscovery.lorenz_stenflo import (
+        run_lorenz_stenflo_rediscovery,
+    )
     from simulating_anything.rediscovery.lotka_volterra import (
         run_lotka_volterra_rediscovery,
     )
@@ -663,6 +671,26 @@ def run_all_rediscoveries(
         "bazykin": {
             "label": "Bazykin Predator-Prey Bifurcation & ODE",
             "fn": run_bazykin_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "fhn_lattice": {
+            "label": "FHN 2D Lattice Spiral Waves & Sync",
+            "fn": run_fhn_lattice_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "four_species_lv": {
+            "label": "Four-Species LV Food Web & Coexistence",
+            "fn": run_four_species_lv_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "lorenz_stenflo": {
+            "label": "Lorenz-Stenflo Plasma Chaos & Hyperchaos",
+            "fn": run_lorenz_stenflo_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "chen": {
+            "label": "Chen Attractor Chaos & Lorenz Dual",
+            "fn": run_chen_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
