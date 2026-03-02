@@ -1267,6 +1267,34 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "params": {"r": 1.0, "K": 10.0, "alpha": 0.5, "m": 0.3},
         "dt": 0.01, "n_steps": 500, "math_class": "Predator-Prey with Refuge",
     },
+    "glucose_insulin": {
+        "module": "simulating_anything.simulation.glucose_insulin",
+        "cls": "GlucoseInsulinSimulation",
+        "domain": Domain.GLUCOSE_INSULIN,
+        "params": {"p1": 0.028, "p2": 0.025, "p3": 5e-6, "n": 0.23},
+        "dt": 0.5, "n_steps": 500, "math_class": "Physiological Regulation",
+    },
+    "two_patch": {
+        "module": "simulating_anything.simulation.two_patch",
+        "cls": "TwoPatchSimulation",
+        "domain": Domain.TWO_PATCH,
+        "params": {"r": 1.0, "K": 10.0, "a": 0.5, "m_N": 0.1},
+        "dt": 0.01, "n_steps": 500, "math_class": "Spatial Predator-Prey",
+    },
+    "mapk_cascade": {
+        "module": "simulating_anything.simulation.mapk_cascade",
+        "cls": "MAPKCascadeSimulation",
+        "domain": Domain.MAPK_CASCADE,
+        "params": {"V1": 1.0, "V2": 0.3, "k3": 1.0, "V4": 0.3},
+        "dt": 0.01, "n_steps": 500, "math_class": "Signaling Cascade",
+    },
+    "circadian_clock": {
+        "module": "simulating_anything.simulation.circadian_clock",
+        "cls": "CircadianClockSimulation",
+        "domain": Domain.CIRCADIAN_CLOCK,
+        "params": {"v_s": 1.6, "n": 4, "k1": 0.33, "k2": 0.43},
+        "dt": 0.1, "n_steps": 500, "math_class": "Circadian Oscillator",
+    },
 }
 
 

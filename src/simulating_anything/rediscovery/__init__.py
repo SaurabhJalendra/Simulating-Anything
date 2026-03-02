@@ -179,6 +179,10 @@ from simulating_anything.rediscovery.fhn_coupled_pair import (
     run_fhn_coupled_pair_rediscovery,
 )
 from simulating_anything.rediscovery.prey_refuge import run_prey_refuge_rediscovery
+from simulating_anything.rediscovery.glucose_insulin import run_glucose_insulin_rediscovery
+from simulating_anything.rediscovery.two_patch import run_two_patch_rediscovery
+from simulating_anything.rediscovery.mapk_cascade import run_mapk_cascade_rediscovery
+from simulating_anything.rediscovery.circadian_clock import run_circadian_clock_rediscovery
 
 __all__ = [
     "run_boltzmann_gas_rediscovery",
@@ -328,4 +332,8 @@ __all__ = [
     "run_winfree_rediscovery",
     "run_fhn_coupled_pair_rediscovery",
     "run_prey_refuge_rediscovery",
+    "run_glucose_insulin_rediscovery",
+    "run_two_patch_rediscovery",
+    "run_mapk_cascade_rediscovery",
+    "run_circadian_clock_rediscovery",
 ]

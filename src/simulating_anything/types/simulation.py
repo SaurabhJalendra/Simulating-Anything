@@ -156,6 +156,10 @@ class Domain(str, Enum):
     WINFREE = "winfree"
     FHN_COUPLED_PAIR = "fhn_coupled_pair"
     PREY_REFUGE = "prey_refuge"
+    GLUCOSE_INSULIN = "glucose_insulin"
+    TWO_PATCH = "two_patch"
+    MAPK_CASCADE = "mapk_cascade"
+    CIRCADIAN_CLOCK = "circadian_clock"
 
 
 class SimulationBackend(str, Enum):

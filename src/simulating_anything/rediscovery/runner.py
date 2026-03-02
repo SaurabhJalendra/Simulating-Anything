@@ -279,6 +279,10 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.winfree import run_winfree_rediscovery
     from simulating_anything.rediscovery.fhn_coupled_pair import run_fhn_coupled_pair_rediscovery
     from simulating_anything.rediscovery.prey_refuge import run_prey_refuge_rediscovery
+    from simulating_anything.rediscovery.glucose_insulin import run_glucose_insulin_rediscovery
+    from simulating_anything.rediscovery.two_patch import run_two_patch_rediscovery
+    from simulating_anything.rediscovery.mapk_cascade import run_mapk_cascade_rediscovery
+    from simulating_anything.rediscovery.circadian_clock import run_circadian_clock_rediscovery
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -1013,6 +1017,26 @@ def run_all_rediscoveries(
         "prey_refuge": {
             "label": "Predator-Prey with Refuge",
             "fn": run_prey_refuge_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "glucose_insulin": {
+            "label": "Glucose-Insulin Bergman Minimal Model",
+            "fn": run_glucose_insulin_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "two_patch": {
+            "label": "Two-Patch Predator-Prey Migration",
+            "fn": run_two_patch_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "mapk_cascade": {
+            "label": "MAPK Cascade Ultrasensitivity",
+            "fn": run_mapk_cascade_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "circadian_clock": {
+            "label": "Circadian Clock Gonze-Goodwin",
+            "fn": run_circadian_clock_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

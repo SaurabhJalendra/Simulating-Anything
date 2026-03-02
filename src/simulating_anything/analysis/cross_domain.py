@@ -2352,6 +2352,71 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="glucose_insulin",
+            math_type="physiological_regulation",  # Bergman minimal model
+            state_dim=3,
+            n_parameters=8,  # p1, p2, p3, n, gamma, Gb, Ib, h
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="monotone_convergence",
+            characteristic_timescale="1/p1",
+            discovered_equations=[
+                "dG/dt = -(p1+X)*G + p1*Gb",
+                "dX/dt = -p2*X + p3*(I-Ib)",
+                "dI/dt = -n*(I-Ib) + gamma*max(G-h,0)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="two_patch",
+            math_type="spatial_predator_prey",  # Migration between patches
+            state_dim=4,
+            n_parameters=7,  # r, K, a, e, d, m_N, m_P
+            conserved_quantities=[],
+            symmetries=["Z2_patch_exchange"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r",
+            discovered_equations=[
+                "dN1/dt = r*N1*(1-N1/K) - a*N1*P1 + m_N*(N2-N1)",
+                "dP1/dt = e*a*N1*P1 - d*P1 + m_P*(P2-P1)",
+                "dN2/dt = r*N2*(1-N2/K) - a*N2*P2 + m_N*(N1-N2)",
+                "dP2/dt = e*a*N2*P2 - d*P2 + m_P*(P1-P2)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="mapk_cascade",
+            math_type="signaling_cascade",  # MAPK 3-tier enzymatic
+            state_dim=3,
+            n_parameters=12,  # V1, V2, k3, V4, k5, V6, K1-K6
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="monotone_convergence",
+            characteristic_timescale="K/V",
+            discovered_equations=[
+                "dX1/dt = V1*(1-X1)/(K1+1-X1) - V2*X1/(K2+X1)",
+                "dX2/dt = k3*X1*(1-X2)/(K3+1-X2) - V4*X2/(K4+X2)",
+                "dX3/dt = k5*X2*(1-X3)/(K5+1-X3) - V6*X3/(K6+X3)",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="circadian_clock",
+            math_type="circadian_oscillator",  # Gonze-Goodwin model
+            state_dim=3,
+            n_parameters=10,  # v_s, K_I, n, v_m, K_m, k_s, v_d, K_d, k1, k2
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="24h",
+            discovered_equations=[
+                "dM/dt = v_s*K_I^n/(K_I^n+Fn^n) - v_m*M/(K_m+M)",
+                "dFc/dt = k_s*M - v_d*Fc/(K_d+Fc) - k1*Fc + k2*Fn",
+                "dFn/dt = k1*Fc - k2*Fn",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -5848,6 +5913,115 @@ def detect_structural_analogies(
         },
     ))
 
+    # Structural: Glucose-Insulin <-> Michaelis-Menten (saturating enzyme kinetics)
+    analogies.append(Analogy(
+        domain_a="glucose_insulin",
+        domain_b="michaelis_menten",
+        analogy_type="structural",
+        description=(
+            "Both use saturating kinetics. Bergman: insulin-mediated glucose "
+            "uptake with remote insulin compartment X. MM: enzyme-substrate "
+            "binding with intermediate complex. Both have Michaelis-Menten-type rates."
+        ),
+        strength=0.70,
+        mapping={
+            "insulin sensitivity SI": "catalytic rate k2",
+            "glucose effectiveness p1": "binding rate k1",
+            "basal state convergence": "substrate depletion",
+        },
+    ))
+
+    # Structural: Two-Patch <-> Diffusive LV (spatial predator-prey)
+    analogies.append(Analogy(
+        domain_a="two_patch",
+        domain_b="diffusive_lv",
+        analogy_type="structural",
+        description=(
+            "Both extend predator-prey to spatial domains. Two-patch: discrete "
+            "migration m_N*(N2-N1). Diffusive LV: continuous D*nabla^2 N. "
+            "Both show spatial synchronization and rescue effects."
+        ),
+        strength=0.80,
+        mapping={
+            "m_N*(N2-N1) migration": "D*nabla^2 N diffusion",
+            "patch synchronization": "spatial pattern formation",
+            "rescue effect": "Fisher-KPP waves",
+        },
+    ))
+
+    # Structural: MAPK Cascade <-> Michaelis-Menten (enzymatic kinetics)
+    analogies.append(Analogy(
+        domain_a="mapk_cascade",
+        domain_b="michaelis_menten",
+        analogy_type="structural",
+        description=(
+            "Both use Michaelis-Menten saturating kinetics. MAPK: 3-tier cascade "
+            "of V*(1-X)/(K+1-X) activation. MM: single E+S<->ES->E+P. "
+            "Cascade amplifies ultrasensitivity via serial zero-order kinetics."
+        ),
+        strength=0.75,
+        mapping={
+            "Goldbeter-Koshland kinetics": "Michaelis-Menten kinetics",
+            "V/(K+S)": "V_max*S/(K_m+S)",
+            "3-tier amplification": "single enzyme",
+        },
+    ))
+
+    # Structural: Circadian Clock <-> Goodwin (gene regulatory oscillator)
+    analogies.append(Analogy(
+        domain_a="circadian_clock",
+        domain_b="goodwin",
+        analogy_type="structural",
+        description=(
+            "Both are gene regulatory oscillators with Hill function repression. "
+            "Circadian: M->Fc->Fn loop with nuclear translocation. "
+            "Goodwin: x->y->z cyclic repression. Same negative feedback oscillator."
+        ),
+        strength=0.88,
+        mapping={
+            "Hill repression K^n/(K^n+Fn^n)": "Hill repression K^n/(K^n+z^n)",
+            "mRNA -> protein -> nuclear": "x -> y -> z cascade",
+            "Hopf at n_c": "Hopf at n_c",
+            "~24h period": "oscillation period",
+        },
+    ))
+
+    # Structural: Circadian Clock <-> Repressilator (cyclic gene network)
+    analogies.append(Analogy(
+        domain_a="circadian_clock",
+        domain_b="repressilator",
+        analogy_type="structural",
+        description=(
+            "Both are 3-variable gene oscillators with Hill function feedback. "
+            "Circadian: single gene with translocation (M->Fc->Fn). "
+            "Repressilator: 3 genes with cyclic repression. Both need n>1."
+        ),
+        strength=0.75,
+        mapping={
+            "nuclear translocation loop": "cyclic repression loop",
+            "Hill repression": "Hill repression",
+            "limit cycle": "limit cycle",
+        },
+    ))
+
+    # Structural: Two-Patch <-> Coupled VdP (coupled oscillator sync)
+    analogies.append(Analogy(
+        domain_a="two_patch",
+        domain_b="coupled_vdp",
+        analogy_type="structural",
+        description=(
+            "Both are pairs of identical oscillators with diffusive coupling. "
+            "Two-patch: m*(N2-N1) migration coupling. Coupled VdP: g*(x2-x1) "
+            "coupling. Both show sync transition at critical coupling."
+        ),
+        strength=0.68,
+        mapping={
+            "migration coupling": "diffusive coupling",
+            "patch synchronization": "oscillator synchronization",
+            "critical m_c": "critical g_c",
+        },
+    ))
+
     return analogies
 
 
@@ -7345,6 +7519,76 @@ def detect_dimensional_analogies(
         mapping={
             "alpha*(1-m) [effective predation]": "beta [predation rate]",
             "r [growth rate]": "alpha [growth rate]",
+        },
+    ))
+
+    # Dimensional: Circadian Clock <-> Goodwin (gene regulation timescales)
+    analogies.append(Analogy(
+        domain_a="circadian_clock",
+        domain_b="goodwin",
+        analogy_type="dimensional",
+        description=(
+            "Both have mRNA degradation rate [1/time], protein degradation "
+            "rate [1/time], and Hill threshold [concentration]. Circadian: "
+            "v_m/K_m and v_d/K_d. Goodwin: gamma for all species."
+        ),
+        strength=0.80,
+        mapping={
+            "v_m [mRNA degradation]": "gamma [degradation rate]",
+            "K_I [Hill threshold]": "K [Hill threshold]",
+            "k1 [nuclear transport]": "production rate",
+        },
+    ))
+
+    # Dimensional: Two-Patch <-> Prey Refuge (predation rate scaling)
+    analogies.append(Analogy(
+        domain_a="two_patch",
+        domain_b="prey_refuge",
+        analogy_type="dimensional",
+        description=(
+            "Both have growth rate r [1/time], predation rate a or alpha "
+            "[1/(prey*time)], and carrying capacity K [prey]. Two-patch adds "
+            "migration m [1/time]. Prey refuge adds dimensionless m fraction."
+        ),
+        strength=0.72,
+        mapping={
+            "a [predation rate]": "alpha [predation rate]",
+            "r [growth rate]": "r [growth rate]",
+            "m_N [migration rate]": "m [refuge fraction]",
+        },
+    ))
+
+    # Dimensional: MAPK Cascade <-> Goldbeter Glycolysis (enzyme rate dimensions)
+    analogies.append(Analogy(
+        domain_a="mapk_cascade",
+        domain_b="goldbeter_glycolysis",
+        analogy_type="dimensional",
+        description=(
+            "Both use enzyme rates V [1/time] and Michaelis constants K "
+            "[dimensionless fraction]. MAPK: activation/deactivation at "
+            "each tier. Goldbeter: allosteric PFK rate. Same V/(K+X) structure."
+        ),
+        strength=0.72,
+        mapping={
+            "V1 [activation rate]": "v [substrate flux]",
+            "K1 [Michaelis constant]": "K_s [substrate affinity]",
+        },
+    ))
+
+    # Dimensional: Glucose-Insulin <-> Pharmacokinetics (clearance rates)
+    analogies.append(Analogy(
+        domain_a="glucose_insulin",
+        domain_b="chemostat",
+        analogy_type="dimensional",
+        description=(
+            "Both have clearance/dilution rates [1/time] and threshold "
+            "concentrations. Bergman: p1 [1/min] glucose effectiveness, "
+            "n [1/min] insulin clearance. Chemostat: D [1/time] dilution."
+        ),
+        strength=0.62,
+        mapping={
+            "p1 [glucose clearance]": "D [dilution rate]",
+            "Gb [basal conc]": "S0 [feed conc]",
         },
     ))
 
@@ -9844,6 +10088,94 @@ def detect_topological_analogies(
         mapping={
             "refuge stabilization": "Allee threshold",
             "coexistence equilibrium": "coexistence equilibrium",
+        },
+    ))
+
+    # Topological: Circadian Clock <-> Goodwin (identical Hopf topology)
+    analogies.append(Analogy(
+        domain_a="circadian_clock",
+        domain_b="goodwin",
+        analogy_type="topological",
+        description=(
+            "Both 3D gene oscillators have identical phase portrait topology: "
+            "unstable fixed point surrounded by stable limit cycle via "
+            "supercritical Hopf bifurcation as Hill coefficient n increases."
+        ),
+        strength=0.85,
+        mapping={
+            "unstable spiral": "unstable spiral",
+            "stable limit cycle": "stable limit cycle",
+            "Hopf at n_c": "Hopf at n_c",
+        },
+    ))
+
+    # Topological: MAPK Cascade <-> Michaelis-Menten (monotone convergence)
+    analogies.append(Analogy(
+        domain_a="mapk_cascade",
+        domain_b="michaelis_menten",
+        analogy_type="topological",
+        description=(
+            "Both have globally stable steady states with monotone convergence. "
+            "MAPK: each tier converges to X*=f(input). MM: S->0, P->S0. "
+            "No oscillation possible, only monotone relaxation."
+        ),
+        strength=0.72,
+        mapping={
+            "monotone convergence": "monotone convergence",
+            "steady state X*": "steady state P=S0",
+        },
+    ))
+
+    # Topological: Two-Patch <-> Coupled Lorenz (synchronized dynamics)
+    analogies.append(Analogy(
+        domain_a="two_patch",
+        domain_b="coupled_lorenz",
+        analogy_type="topological",
+        description=(
+            "Both pairs of coupled systems show sync transition. Two-patch: "
+            "limit cycle synchronization. Coupled Lorenz: chaotic synchronization. "
+            "Both have invariant sync manifold with stability transition."
+        ),
+        strength=0.65,
+        mapping={
+            "sync manifold (N1=N2, P1=P2)": "sync manifold (x1=x2)",
+            "desynchronized orbits": "desynchronized chaos",
+            "critical coupling m_c": "critical coupling eps_c",
+        },
+    ))
+
+    # Topological: Glucose-Insulin <-> Heat Equation (exponential relaxation)
+    analogies.append(Analogy(
+        domain_a="glucose_insulin",
+        domain_b="heat_equation",
+        analogy_type="topological",
+        description=(
+            "Both show exponential relaxation to equilibrium. Glucose: G->Gb "
+            "with rate ~p1. Heat: T->T_mean with rate ~D*k^2. Both are "
+            "dissipative with globally attracting fixed point."
+        ),
+        strength=0.60,
+        mapping={
+            "glucose relaxation G->Gb": "temperature relaxation T->T_avg",
+            "exponential decay rate": "exponential decay rate",
+        },
+    ))
+
+    # Topological: Circadian Clock <-> Brusselator (Hopf limit cycle)
+    analogies.append(Analogy(
+        domain_a="circadian_clock",
+        domain_b="brusselator",
+        analogy_type="topological",
+        description=(
+            "Both exhibit supercritical Hopf bifurcation from stable fixed "
+            "point to stable limit cycle. Circadian: Hill coefficient n is "
+            "bifurcation parameter. Brusselator: parameter b is bifurcation parameter."
+        ),
+        strength=0.72,
+        mapping={
+            "stable spiral -> limit cycle": "stable spiral -> limit cycle",
+            "supercritical Hopf": "supercritical Hopf",
+            "bifurcation parameter n": "bifurcation parameter b",
         },
     ))
 
