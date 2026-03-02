@@ -108,6 +108,10 @@ class Domain(str, Enum):
     HALVORSEN = "halvorsen"
     BURKE_SHAW = "burke_shaw"
     NOSE_HOOVER = "nose_hoover"
+    LORENZ_HAKEN = "lorenz_haken"
+    SAKARYA = "sakarya"
+    DADRAS = "dadras"
+    GENESIO_TESI = "genesio_tesi"
 
 
 class SimulationBackend(str, Enum):

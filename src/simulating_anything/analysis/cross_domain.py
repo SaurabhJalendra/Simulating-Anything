@@ -1594,6 +1594,70 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="lorenz_haken",
+            math_type="chaotic",  # Laser ODE (Lorenz-type)
+            state_dim=3,
+            n_parameters=3,  # sigma, r, b
+            conserved_quantities=[],
+            symmetries=["Z2 (x,y -> -x,-y)"],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/sigma",
+            discovered_equations=[
+                "dx/dt = sigma*(y-x)",
+                "dy/dt = (r-z)*x - y",
+                "dz/dt = x*y - b*z",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="sakarya",
+            math_type="chaotic",  # 3D chaotic ODE
+            state_dim=3,
+            n_parameters=2,  # a, b
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1",
+            discovered_equations=[
+                "dx/dt = -x + y + y*z",
+                "dy/dt = -x - y + a*x*z",
+                "dz/dt = z - b*x*y",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="dadras",
+            math_type="chaotic",  # 3D chaotic ODE
+            state_dim=3,
+            n_parameters=5,  # a, b, c, d, e
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = y - a*x + b*y*z",
+                "dy/dt = c*y - x*z + z",
+                "dz/dt = d*x*y - e*z",
+            ],
+            r_squared=[],
+        ),
+        DomainSignature(
+            name="genesio_tesi",
+            math_type="chaotic",  # 3rd-order jerk ODE
+            state_dim=3,
+            n_parameters=3,  # a, b, c
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="chaotic",
+            characteristic_timescale="1/a",
+            discovered_equations=[
+                "dx/dt = y",
+                "dy/dt = z",
+                "dz/dt = -c*x - b*y - a*z + x^2",
+            ],
+            r_squared=[],
+        ),
     ]
     return signatures
 
@@ -3843,6 +3907,108 @@ def detect_structural_analogies(
         },
     ))
 
+    # Lorenz-Haken <-> Lorenz (identical ODE structure, different physics)
+    analogies.append(Analogy(
+        domain_a="lorenz_haken",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Structurally identical ODEs: sigma*(y-x), (r-z)*x-y, x*y-b*z. "
+            "Lorenz: fluid convection. Lorenz-Haken: single-mode laser. "
+            "Different physics, same mathematics."
+        ),
+        strength=0.98,
+        mapping={
+            "sigma [cavity/polarization]": "sigma [Prandtl]",
+            "r [pump parameter]": "rho [Rayleigh]",
+            "b [decay ratio]": "beta [aspect ratio]",
+        },
+    ))
+
+    # Lorenz-Haken <-> Laser Rate (laser physics)
+    analogies.append(Analogy(
+        domain_a="lorenz_haken",
+        domain_b="laser_rate",
+        analogy_type="structural",
+        description=(
+            "Both model laser dynamics. Lorenz-Haken: single-mode with "
+            "polarization dynamics. Laser rate: semiconductor carrier-photon. "
+            "Both have lasing threshold as transcritical bifurcation."
+        ),
+        strength=0.75,
+        mapping={
+            "r [pump]": "P [pump power]",
+            "lasing threshold r=1": "threshold P_th",
+            "E field + polarization": "photon + carrier",
+        },
+    ))
+
+    # Sakarya <-> Burke-Shaw (3D chaotic with bilinear coupling)
+    analogies.append(Analogy(
+        domain_a="sakarya",
+        domain_b="burke_shaw",
+        analogy_type="structural",
+        description=(
+            "Both are 3D chaotic ODEs with bilinear coupling terms (xz, xy). "
+            "Sakarya: neural-inspired with yz, xz terms. Burke-Shaw: magnetic."
+        ),
+        strength=0.68,
+        mapping={
+            "y*z coupling": "x*z coupling",
+            "x*z coupling": "x*y coupling",
+        },
+    ))
+
+    # Dadras <-> Rossler (3D chaotic with mixed coupling)
+    analogies.append(Analogy(
+        domain_a="dadras",
+        domain_b="rossler",
+        analogy_type="structural",
+        description=(
+            "Both are 3D chaotic ODEs with quadratic bilinear terms. "
+            "Dadras has 5 parameters, Rossler 3 parameters. Both produce "
+            "spiral-type strange attractors."
+        ),
+        strength=0.70,
+        mapping={
+            "y - a*x + b*y*z": "-y - z (x equation)",
+            "d*x*y - e*z": "b + z*(x-c) (z equation)",
+        },
+    ))
+
+    # Genesio-Tesi <-> Sprott (minimal chaotic ODEs)
+    analogies.append(Analogy(
+        domain_a="genesio_tesi",
+        domain_b="sprott",
+        analogy_type="structural",
+        description=(
+            "Both are minimal 3D chaotic ODEs. Genesio-Tesi is a jerk system "
+            "(3rd-order ODE) with x^2 nonlinearity. Sprott systems are also "
+            "minimal-parameter chaotic flows."
+        ),
+        strength=0.73,
+        mapping={
+            "x''' + ax'' + bx' + cx = x^2": "minimal jerk form",
+            "3 parameters": "1-2 parameters",
+        },
+    ))
+
+    # Genesio-Tesi <-> Duffing (polynomial nonlinear oscillator)
+    analogies.append(Analogy(
+        domain_a="genesio_tesi",
+        domain_b="duffing",
+        analogy_type="structural",
+        description=(
+            "Both feature polynomial nonlinear restoring forces in oscillator "
+            "framework. Genesio-Tesi: x^2 term in jerk. Duffing: x^3 term."
+        ),
+        strength=0.65,
+        mapping={
+            "x^2 [quadratic]": "x^3 [cubic]",
+            "jerk form": "forced oscillator form",
+        },
+    ))
+
     return analogies
 
 
@@ -4706,6 +4872,54 @@ def detect_dimensional_analogies(
         mapping={
             "omega=1 [natural freq]": "omega_0=1 [natural freq]",
             "z [thermostat]": "mu*(1-x^2) [nonlinear damping]",
+        },
+    ))
+
+    # Dimensional: Lorenz-Haken <-> Lorenz (same timescale structure)
+    analogies.append(Analogy(
+        domain_a="lorenz_haken",
+        domain_b="lorenz",
+        analogy_type="dimensional",
+        description=(
+            "Same timescale structure 1/sigma, same parameterization. "
+            "Lorenz-Haken uses sigma=3 (laser), Lorenz sigma=10 (fluid)."
+        ),
+        strength=0.95,
+        mapping={
+            "1/sigma [field decay]": "1/sigma [thermal diffusion]",
+            "1/b [inversion decay]": "1/beta [mode damping]",
+        },
+    ))
+
+    # Dimensional: Dadras <-> Chen (multi-parameter chaotic with 1/a scale)
+    analogies.append(Analogy(
+        domain_a="dadras",
+        domain_b="chen",
+        analogy_type="dimensional",
+        description=(
+            "Both have a primary dissipation parameter (Dadras: a=3, Chen: a=35) "
+            "that sets the dominant timescale."
+        ),
+        strength=0.65,
+        mapping={
+            "1/a [dissipation]": "1/a [mixing]",
+            "1/e [z decay]": "1/b [z damping]",
+        },
+    ))
+
+    # Dimensional: Genesio-Tesi <-> Duffing (oscillation timescale)
+    analogies.append(Analogy(
+        domain_a="genesio_tesi",
+        domain_b="duffing",
+        analogy_type="dimensional",
+        description=(
+            "Both have oscillation timescale set by sqrt(1/c) or sqrt(1/omega^2). "
+            "Genesio-Tesi: 1/sqrt(c). Duffing: 1/omega."
+        ),
+        strength=0.68,
+        mapping={
+            "1/sqrt(c) [oscillation]": "1/omega [natural period]",
+            "1/a [damping]": "1/delta [damping]",
         },
     ))
 
@@ -6309,6 +6523,70 @@ def detect_topological_analogies(
         mapping={
             "thermostatted SHO": "forced nonlinear oscillator",
             "z-modulated damping": "periodic driving",
+        },
+    ))
+
+    # Topological: Lorenz-Haken <-> Chen (butterfly-type strange attractors)
+    analogies.append(Analogy(
+        domain_a="lorenz_haken",
+        domain_b="chen",
+        analogy_type="topological",
+        description=(
+            "Both produce double-wing butterfly attractors with Z2 symmetry. "
+            "Lorenz-Haken: laser origin. Chen: Lorenz algebraic dual."
+        ),
+        strength=0.80,
+        mapping={
+            "double-wing attractor": "double-wing attractor",
+            "Z2 symmetry": "Z2 symmetry",
+        },
+    ))
+
+    # Topological: Sakarya <-> Aizawa (3D chaotic with spiral structure)
+    analogies.append(Analogy(
+        domain_a="sakarya",
+        domain_b="aizawa",
+        analogy_type="topological",
+        description=(
+            "Both are 3D chaotic ODEs with non-standard attractor geometries. "
+            "Sakarya: neural-inspired branching chaos. Aizawa: mushroom-shaped."
+        ),
+        strength=0.62,
+        mapping={
+            "branching attractor": "mushroom attractor",
+            "positive Lyapunov": "positive Lyapunov",
+        },
+    ))
+
+    # Topological: Dadras <-> Rossler (spiral-type strange attractors)
+    analogies.append(Analogy(
+        domain_a="dadras",
+        domain_b="rossler",
+        analogy_type="topological",
+        description=(
+            "Both produce spiral-type single-scroll strange attractors. "
+            "Both show period-doubling routes to chaos."
+        ),
+        strength=0.72,
+        mapping={
+            "spiral attractor": "spiral attractor",
+            "period-doubling": "period-doubling",
+        },
+    ))
+
+    # Topological: Genesio-Tesi <-> Nose-Hoover (3D chaotic from simple ODEs)
+    analogies.append(Analogy(
+        domain_a="genesio_tesi",
+        domain_b="nose_hoover",
+        analogy_type="topological",
+        description=(
+            "Both are minimal 3D chaotic systems with simple polynomial nonlinearity. "
+            "Genesio-Tesi: x^2 jerk. Nose-Hoover: y*z coupling."
+        ),
+        strength=0.63,
+        mapping={
+            "jerk chaos": "thermostat chaos",
+            "quadratic nonlinearity": "bilinear nonlinearity",
         },
     ))
 
