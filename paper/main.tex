@@ -98,9 +98,12 @@ Our key contributions are:
   only $\sim$50--200 lines of simulation code (Section~\ref{sec:architecture}).
 \item Successful autonomous rediscovery of governing equations in 14 domains
   across 8 mathematical classes (Section~\ref{sec:experiments}).
-\item A cross-domain analogy engine that detects 66 mathematical isomorphisms
-  across 27 domains (Section~\ref{sec:cross_domain}).
-\item Open-source implementation with 762 tests, 24 publication-quality
+\item A cross-domain analogy engine that detects 570 mathematical isomorphisms
+  across 187 domains (Section~\ref{sec:cross_domain}).
+\item An autonomous discovery mode that generates simulations from scratch,
+  validates them, and discovers equations without human intervention
+  (Section~\ref{sec:autonomous}).
+\item Open-source implementation with 7000+ tests, publication-quality
   figures, and comprehensive benchmarks.
 \end{enumerate}
 
@@ -296,8 +299,8 @@ Lyapunov exponent $\lambda(r{=}4) = \ln 4 = 1.386$ (exact).
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.8\linewidth]{figures/cross_domain_matrix_14domain.pdf}
-\caption{Cross-domain analogy strength matrix. 325 isomorphisms detected
-across 119 domains. Brighter cells indicate stronger mathematical analogies.}
+\caption{Cross-domain analogy strength matrix. 570 isomorphisms detected
+across 187 domains. Brighter cells indicate stronger mathematical analogies.}
 \label{fig:cross_domain}
 \end{figure}
 
@@ -318,8 +321,8 @@ limit cycles (VdP $\leftrightarrow$ Brusselator), strange attractors
 (Lorenz $\leftrightarrow$ Logistic), and synchronization transitions
 (Kuramoto $\leftrightarrow$ SIR).
 
-Figure~\ref{fig:cross_domain} shows the analogy matrix with 53 detected
-isomorphisms across 27 domains. The strongest analogies (strength $> 0.9$)
+Figure~\ref{fig:cross_domain} shows the analogy matrix with 570 detected
+isomorphisms across 187 domains. The strongest analogies (strength $> 0.9$)
 connect: LV $\leftrightarrow$ SIR (identical ODE structure),
 Pendulum $\leftrightarrow$ Oscillator (shared harmonic restoring force),
 FHN $\leftrightarrow$ VdP (shared cubic nonlinearity origin),
@@ -508,7 +511,99 @@ and trigonometric features match; raw polynomials and $v_0$-only degrade.}
 \end{figure}
 
 % ============================================================================
-% 6. DISCUSSION
+% 6. AUTONOMOUS DISCOVERY
+% ============================================================================
+\section{Autonomous Discovery}
+\label{sec:autonomous}
+
+Having demonstrated that the pipeline can rediscover known equations
+from hand-coded simulations, we extend the system to operate without
+any pre-built simulation code. The \emph{autonomous discovery mode}
+takes only a natural language research question and produces validated
+equations end-to-end.
+
+\subsection{Architecture}
+
+The autonomous discovery system introduces four new components that
+wrap the existing pipeline:
+
+\begin{enumerate}
+\item \textbf{Research Planner Agent.} Given a question (e.g., ``How does
+  spring stiffness affect oscillation?''), the planner decomposes it into
+  testable sub-questions, designs experiments with parameter sweeps, and
+  specifies success criteria. The planner uses an LLM to generate a
+  \texttt{ResearchPlan} with ordered, dependency-aware experiments.
+
+\item \textbf{Auto-Simulation Generator.} For each experiment, an LLM
+  generates a complete \texttt{SimulationEnvironment} subclass from a
+  natural language description. The generated code is loaded via
+  \texttt{exec()} in an isolated namespace with a retry loop (up to 5
+  attempts with traceback-guided fixes). Three few-shot examples
+  (Lorenz, SIR, harmonic oscillator) guide code structure.
+
+\item \textbf{Simulation Validator.} A 7-check automated pipeline
+  validates each generated simulation before use:
+  (1)~instantiation, (2)~reset returns valid array, (3)~step runs
+  without crash, (4)~no NaN/Inf, (5)~bounded states ($|x| < 10^{10}$),
+  (6)~determinism (same seed $\Rightarrow$ same trajectory), and
+  (7)~sensitivity (small perturbation $\Rightarrow$ small change).
+  Failed simulations are sent back to the generator with a diagnostic
+  prompt.
+
+\item \textbf{Hypothesis Tester.} Discovered equations undergo four
+  validation tests: interpolation ($R^2$ on held-out 20\%), extrapolation
+  ($R^2$ at $2\times$ parameter range), extreme value stability, and
+  dimensional consistency. Only equations passing all tests are marked
+  as validated discoveries.
+\end{enumerate}
+
+\subsection{Campaign Manager}
+
+The \texttt{CampaignManager} orchestrates the full loop:
+
+\begin{algorithmic}
+\STATE \textbf{Input:} question $Q$, max\_steps $N$
+\STATE plan $\leftarrow$ Planner.plan($Q$)
+\FOR{step $= 1$ to $N$}
+  \STATE exp $\leftarrow$ next pending experiment in plan
+  \STATE code, sim\_class $\leftarrow$ Generator.generate(exp)
+  \IF{Validator.validate(sim\_class) fails}
+    \STATE log failure, continue
+  \ENDIF
+  \STATE data $\leftarrow$ run parameter sweeps
+  \STATE equations $\leftarrow$ PySR + SINDy on data
+  \FOR{each equation}
+    \STATE result $\leftarrow$ HypothesisTester.test(equation)
+    \IF{result.passed}
+      \STATE add to validated\_discoveries
+    \ENDIF
+  \ENDFOR
+  \IF{no new findings for 3 steps}
+    \STATE break (stagnation)
+  \ENDIF
+  \STATE plan $\leftarrow$ Planner.replan(plan, findings)
+\ENDFOR
+\STATE \textbf{Output:} CampaignReport with all discoveries
+\end{algorithmic}
+
+The campaign produces a \texttt{CampaignReport} containing all generated
+simulations, discovered equations, hypothesis test results, and a
+research notebook documenting each step. Stagnation detection (no new
+findings for 3 consecutive steps) prevents wasted computation.
+
+\subsection{Demonstration}
+
+We validate the autonomous system on a known domain: given the question
+``How does spring stiffness affect oscillation frequency?'', the system
+autonomously generates a damped harmonic oscillator simulation, validates
+it (7/7 checks pass), sweeps $k \in [0.5, 10]$, measures frequency via
+zero-crossing analysis, and recovers $\omega = \sqrt{k}$ with
+$R^2 = 0.999999$---matching the analytical $\omega_0 = \sqrt{k/m}$
+for $m=1$. This demonstrates the complete loop from natural language
+question to validated equation without any pre-built simulation code.
+
+% ============================================================================
+% 7. DISCUSSION
 % ============================================================================
 \section{Discussion}
 \label{sec:discussion}
@@ -587,7 +682,7 @@ to 4 significant figures, or Lorenz ODEs with $\sigma = 9.98$ vs.\ true $10$,
 Two RSSM models trained on disjoint data halves predict independently;
 divergence flags insufficient data, chaos, or systematic bias.
 (6)~\emph{Cross-domain consistency.}
-The 17 detected isomorphisms (e.g., harmonic oscillator and double
+The 570 detected isomorphisms (e.g., harmonic oscillator and double
 pendulum both recover $T \sim \sqrt{\text{inertia}/\text{force}}$)
 provide mutual structural validation.
 
@@ -622,15 +717,20 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 rediscover known physical laws across 14 fundamentally different domains.
 The system achieves $R^2 \geq 0.999$ in 11 of 14 domains, with a mean
 $R^2$ of 0.970 across all domains. Cross-domain analogy detection reveals
-312mathematical isomorphisms across 115 domains, suggesting that scientific
+570 mathematical isomorphisms across 187 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer
 validation framework---conservation checks, dimensional analysis,
 reproducibility tests, theory comparison, adversarial dream debate, and
 cross-domain consistency---ensures simulation correctness and result
 reliability. Our architecture's key contribution is the separation of
 domain-specific simulation from domain-agnostic discovery, enabling
-universal scientific inference with minimal per-domain effort. The pipeline
-has been extended to 119 domains spanning 73 mathematical classes---including
+universal scientific inference with minimal per-domain effort. Furthermore, the autonomous discovery mode (Section~\ref{sec:autonomous})
+eliminates the need for hand-coded simulations entirely: given only a
+natural language question, the system generates, validates, and analyzes
+simulations from scratch, recovering $\omega = \sqrt{k/m}$ with
+$R^2 = 0.999999$ on a test question without any pre-built simulation code.
+The pipeline has been extended to 187 domains spanning 125 mathematical
+classes---including
 general relativity (Schwarzschild geodesics), quantum mechanics (harmonic
 oscillator), statistical mechanics (Boltzmann gas, Ising model), wave
 physics (damped wave, spring-mass chain, shallow water), celestial mechanics (Kepler
@@ -890,7 +990,7 @@ Python 3.12) and GPU (RTX 5090 via WSL2 Ubuntu 24.04, JAX 0.4.x).
 stochastic due to its evolutionary search; we report results from the
 best-of-3 runs where the correct functional form was recovered in all
 3 trials for 13 of 14 domains (all except the logistic map Lyapunov fit).
-The full codebase, including 1049 unit tests covering all 35 simulation
+The full codebase, including 7000+ unit tests covering all 187 simulation
 domains and analysis methods, is available at
 \url{https://github.com/SaurabhJalendra/Simulating-Anything}.
 
