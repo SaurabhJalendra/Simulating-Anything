@@ -1,14 +1,15 @@
 """CLI entry point for simulating-anything.
 
 Usage:
-    simulating-anything demo         Run 3-domain pipeline demo (no GPU needed)
-    simulating-anything dashboard    Generate interactive HTML dashboard
-    simulating-anything figures      Generate publication-quality figures
-    simulating-anything cross        Run cross-domain analogy analysis
-    simulating-anything sensitivity  Run sensitivity analysis
-    simulating-anything ablation     Run pipeline ablation study
-    simulating-anything aggregate    Aggregate all results into unified summary
-    simulating-anything version      Show version
+    simulating-anything discover "question"  Autonomous discovery campaign
+    simulating-anything demo                 Run 3-domain pipeline demo (no GPU needed)
+    simulating-anything dashboard            Generate interactive HTML dashboard
+    simulating-anything figures              Generate publication-quality figures
+    simulating-anything cross                Run cross-domain analogy analysis
+    simulating-anything sensitivity          Run sensitivity analysis
+    simulating-anything ablation             Run pipeline ablation study
+    simulating-anything aggregate            Aggregate all results into unified summary
+    simulating-anything version              Show version
 """
 from __future__ import annotations
 
@@ -23,7 +24,9 @@ def main() -> None:
 
     command = sys.argv[1].lower()
 
-    if command == "demo":
+    if command == "discover":
+        _run_discover()
+    elif command == "demo":
         _run_demo()
     elif command == "dashboard":
         _run_dashboard()
@@ -46,6 +49,52 @@ def main() -> None:
         print(f"Unknown command: {command}")
         print(__doc__)
         sys.exit(1)
+
+
+def _run_discover() -> None:
+    """Run an autonomous discovery campaign."""
+    import logging
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+    if len(sys.argv) < 3:
+        print("Usage: simulating-anything discover \"your research question\"")
+        print("  Options: --max-steps N (default: 20)")
+        sys.exit(1)
+
+    question = sys.argv[2]
+    max_steps = 20
+
+    # Parse --max-steps
+    for i, arg in enumerate(sys.argv[3:], start=3):
+        if arg == "--max-steps" and i + 1 < len(sys.argv):
+            max_steps = int(sys.argv[i + 1])
+
+    print(f"\nAutonomous Discovery Campaign")
+    print(f"Question: {question}")
+    print(f"Max steps: {max_steps}")
+    print("=" * 60)
+
+    from simulating_anything.pipeline import Pipeline
+    pipeline = Pipeline()
+    report = pipeline.discover(question, max_steps=max_steps)
+
+    print(f"\nCampaign Complete")
+    print(f"Experiments run: {report.experiments_run}")
+    print(f"Experiments failed: {report.experiments_failed}")
+    print(f"Discoveries: {len(report.discoveries)}")
+    print(f"Validated: {len(report.validated_discoveries)}")
+    print(f"Generated simulations: {len(report.generated_simulations)}")
+
+    if report.validated_discoveries:
+        print("\nValidated Discoveries:")
+        for d in report.validated_discoveries:
+            print(f"  - {d.expression or d.description} (confidence: {d.confidence:.2f})")
+
+    print(f"\nConclusion: {report.conclusion}")
+
+    if report.research_notebook_md:
+        notebook_path = "output/campaigns/research_notebook.md"
+        print(f"\nResearch notebook saved to: {notebook_path}")
 
 
 def _run_demo() -> None:

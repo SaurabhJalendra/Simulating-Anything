@@ -9,6 +9,7 @@ from typing import Any
 
 from simulating_anything.agents.base import ClaudeCodeBackend
 from simulating_anything.agents.communicator import CommunicatorAgent
+from simulating_anything.campaign.manager import CampaignManager
 from simulating_anything.agents.domain_classifier import DomainClassifierAgent
 from simulating_anything.agents.problem_architect import ProblemArchitectAgent
 from simulating_anything.agents.simulation_builder import SimulationBuilderAgent
@@ -19,6 +20,7 @@ from simulating_anything.knowledge.trajectory_store import TrajectoryStore
 from simulating_anything.simulation.agent_based import LotkaVolterraSimulation
 from simulating_anything.simulation.reaction_diffusion import GrayScottSimulation
 from simulating_anything.simulation.rigid_body import ProjectileSimulation
+from simulating_anything.types.campaign import CampaignReport
 from simulating_anything.types.discovery import (
     AblationResult,
     Discovery,
@@ -146,6 +148,39 @@ class Pipeline:
         logger.info(f"Report saved to {report_path}")
 
         return markdown
+
+    def discover(
+        self,
+        question: str,
+        max_steps: int = 20,
+    ) -> CampaignReport:
+        """Run an autonomous discovery campaign for any question.
+
+        Unlike run(), this method does not require a pre-built simulation.
+        It auto-generates simulation code from natural language, validates it,
+        and chains experiments to make discoveries.
+
+        Args:
+            question: Any natural language research question.
+            max_steps: Maximum number of campaign steps.
+
+        Returns:
+            CampaignReport with discoveries, notebook, and generated sims.
+        """
+        logger.info("=" * 60)
+        logger.info("AUTONOMOUS DISCOVERY CAMPAIGN")
+        logger.info(f"Question: {question}")
+        logger.info("=" * 60)
+
+        campaign = CampaignManager(
+            backend=self.backend,
+            output_dir=str(self.output_dir / "campaigns"),
+            max_steps=max_steps,
+        )
+        report = campaign.run_campaign(question, max_steps=max_steps)
+
+        logger.info(f"Campaign complete: {len(report.discoveries)} discoveries")
+        return report
 
     def _run_simulations(
         self, config: SimulationConfig, spec: ProblemSpec
