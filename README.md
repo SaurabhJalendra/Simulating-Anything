@@ -272,7 +272,7 @@ python scripts/demo_pipeline.py
 ### Run Tests
 
 ```bash
-# Full suite (1049 tests):
+# Full suite (7000+ tests):
 python -m pytest tests/unit/ -v
 
 # Quick smoke test:
@@ -285,6 +285,7 @@ python scripts/verify_reproducibility.py
 ### CLI Commands
 
 ```bash
+python -m simulating_anything discover "How do sand dunes form?"  # Autonomous discovery
 python -m simulating_anything demo         # 3-domain pipeline demo
 python -m simulating_anything dashboard    # Interactive HTML dashboard
 python -m simulating_anything figures      # Publication figures
@@ -411,7 +412,7 @@ scripts/
   aggregate_all_results.py            # Unified JSON + LaTeX table
   train_world_models_14domain.py      # RSSM training (14 domains)
 
-tests/unit/                # 1049 tests, 54 files
+tests/unit/                # 7000+ tests, 130+ files
 notebooks/                 # Interactive demos
 docs/                      # Research and design documentation
 ```
@@ -422,16 +423,16 @@ docs/                      # Research and design documentation
 
 | Metric | Value |
 |--------|-------|
-| Simulation domains | 39 (14 core + 25 extended) |
-| Mathematical classes | 27 |
-| Tests | 1049 passing, 65 skipped |
+| Simulation domains | 187 (14 core + 173 extended) |
+| Mathematical classes | 125 |
+| Tests | 7000+ passing |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
-| Cross-domain analogies | 88 |
+| Cross-domain analogies | 570 |
 | Publication figures | 24 |
 | World models trained | 14/14 |
 | Lines per new domain | ~50-200 |
-| Total simulation code | ~1,700 lines |
+| Autonomous discovery | LLM-powered simulation generation |
 
 ## Technology Stack
 
