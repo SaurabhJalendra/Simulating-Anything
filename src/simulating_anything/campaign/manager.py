@@ -442,7 +442,9 @@ class CampaignManager:
 
     def _save_report(self, report: CampaignReport) -> None:
         """Save campaign report and notebook to disk."""
-        campaign_dir = self.output_dir / report.plan.question[:50].replace(" ", "_")
+        import re
+        safe_name = re.sub(r'[^\w\-]', '_', report.plan.question[:50])
+        campaign_dir = self.output_dir / safe_name
         campaign_dir.mkdir(parents=True, exist_ok=True)
 
         # Save notebook
