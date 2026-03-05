@@ -15,7 +15,7 @@ import numpy as np
 from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.campaign import ConfidenceLevel, HypothesisResult
 from simulating_anything.types.discovery import Discovery
-from simulating_anything.types.simulation import SimulationConfig
+from simulating_anything.types.simulation import Domain, SimulationConfig
 
 logger = logging.getLogger(__name__)
 
@@ -159,6 +159,7 @@ class HypothesisTester:
             params = dict(config.parameters)
             params[param_name] = float(val)
             sweep_config = SimulationConfig(
+                domain=config.domain,
                 parameters=params,
                 dt=config.dt,
                 n_steps=config.n_steps,

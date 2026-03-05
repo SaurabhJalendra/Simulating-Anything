@@ -18,7 +18,7 @@ from simulating_anything.agents.base import Agent, ClaudeCodeBackend
 from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.campaign import GeneratedSimulation
 from simulating_anything.types.problem_spec import ProblemSpec
-from simulating_anything.types.simulation import SimulationConfig
+from simulating_anything.types.simulation import Domain, SimulationConfig
 
 logger = logging.getLogger(__name__)
 
@@ -335,6 +335,7 @@ class SimulationGeneratorAgent(Agent):
     def _quick_smoke_test(self, sim_class: type) -> None:
         """Run a minimal smoke test on the generated simulation class."""
         config = SimulationConfig(
+            domain=Domain.CUSTOM,
             parameters={},
             dt=0.01,
             n_steps=10,

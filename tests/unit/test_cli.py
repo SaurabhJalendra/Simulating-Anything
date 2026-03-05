@@ -25,11 +25,12 @@ class TestCLI:
         result = _run_cli("version")
         assert result.returncode == 0
         assert "simulating-anything" in result.stdout
-        assert "0.2.0" in result.stdout
+        assert "0.3.0" in result.stdout
 
     def test_help(self):
         result = _run_cli("help")
         assert result.returncode == 0
+        assert "discover" in result.stdout
         assert "demo" in result.stdout
         assert "dashboard" in result.stdout
         assert "ablation" in result.stdout
@@ -49,7 +50,7 @@ class TestCLI:
     def test_version_flag(self):
         result = _run_cli("--version")
         assert result.returncode == 0
-        assert "0.2.0" in result.stdout
+        assert "0.3.0" in result.stdout
 
     def test_help_flag(self):
         result = _run_cli("-h")

@@ -196,6 +196,7 @@ class Domain(str, Enum):
     PREDATOR_PREY_TOXIN = "predator_prey_toxin"
     SWIFT_HOHENBERG = "swift_hohenberg"
     SIS_ADAPTIVE = "sis_adaptive"
+    CUSTOM = "custom"
 
 
 class SimulationBackend(str, Enum):

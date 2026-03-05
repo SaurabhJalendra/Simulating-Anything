@@ -28,7 +28,7 @@ from simulating_anything.types.campaign import (
 )
 from simulating_anything.types.discovery import Discovery, DiscoveryType, Evidence
 from simulating_anything.types.problem_spec import ProblemSpec
-from simulating_anything.types.simulation import SimulationConfig
+from simulating_anything.types.simulation import Domain, SimulationConfig
 from simulating_anything.verification.simulation_validator import SimulationValidator
 
 logger = logging.getLogger(__name__)
@@ -265,6 +265,7 @@ class CampaignManager:
             params[name] = (lo + hi) / 2.0
 
         return SimulationConfig(
+            domain=Domain.CUSTOM,
             parameters=params,
             dt=0.01,
             n_steps=self.n_sim_steps,
@@ -308,6 +309,7 @@ class CampaignManager:
                 params = dict(base_config.parameters)
                 params[param_name] = float(val)
                 config = SimulationConfig(
+                    domain=base_config.domain,
                     parameters=params,
                     dt=base_config.dt,
                     n_steps=base_config.n_steps,

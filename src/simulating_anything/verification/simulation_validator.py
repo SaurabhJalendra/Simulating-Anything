@@ -13,7 +13,7 @@ import numpy as np
 
 from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.discovery import CheckResult, ValidationReport
-from simulating_anything.types.simulation import SimulationConfig
+from simulating_anything.types.simulation import Domain, SimulationConfig
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +52,9 @@ class SimulationValidator:
             ValidationReport with results of all checks.
         """
         if config is None:
-            config = SimulationConfig(parameters={}, dt=0.01, n_steps=self.n_test_steps)
+            config = SimulationConfig(
+                domain=Domain.CUSTOM, parameters={}, dt=0.01, n_steps=self.n_test_steps,
+            )
 
         checks: list[CheckResult] = []
 
@@ -326,6 +328,7 @@ class SimulationValidator:
             perturbed_params[first_key] = original_val * (1 + self.sensitivity_eps)
 
             perturbed_config = SimulationConfig(
+                domain=config.domain,
                 parameters=perturbed_params,
                 dt=config.dt,
                 n_steps=config.n_steps,
