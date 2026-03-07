@@ -3,7 +3,7 @@
 [![CI](https://github.com/SaurabhJalendra/Simulating-Anything/actions/workflows/ci.yml/badge.svg)](https://github.com/SaurabhJalendra/Simulating-Anything/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-7421%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-188-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-187-orange)](src/simulating_anything/simulation/)
 [![Version](https://img.shields.io/badge/version-0.4.0-green)](pyproject.toml)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
@@ -400,13 +400,22 @@ src/simulating_anything/
   analysis/
     symbolic_regression.py # PySR wrapper
     equation_discovery.py  # SINDy wrapper
-    cross_domain.py        # Analogy engine (45 isomorphisms)
+    cross_domain.py        # Analogy engine (570 isomorphisms)
     sensitivity.py         # Noise/data sensitivity
     pipeline_ablation.py   # Component ablation study
     error_analysis.py      # Bootstrap confidence intervals
     domain_statistics.py   # Runtime benchmarks
-  rediscovery/             # Per-domain PySR/SINDy runners (25 domains)
+    baselines.py           # Baseline method comparisons
+    significance.py        # Permutation tests, bootstrap CI, Wilcoxon
+    robustness.py          # Noise tolerance, sample efficiency, extrapolation
+    computational_cost.py  # Wall-clock timing per pipeline stage
+    hypothesis_tester.py   # Discovery validation (interpolation, extrapolation)
+  rediscovery/             # Per-domain PySR/SINDy runners (131 domains)
   agents/                  # LLM agents (Claude Code CLI)
+  campaign/                # Autonomous discovery campaign manager
+  discovery/               # Open problems registry
+  knowledge/               # Persistent knowledge base
+  verification/            # Dimensional, conservation, transfer validation
   types/                   # Pydantic v2 data models
 
 paper/
@@ -423,9 +432,10 @@ scripts/
   generate_meta_analysis.py           # Aggregate statistics
   verify_reproducibility.py           # 15-domain determinism check
   aggregate_all_results.py            # Unified JSON + LaTeX table
+  generate_paper_tables.py            # Baselines, significance, robustness tables
   train_world_models_14domain.py      # RSSM training (14 domains)
 
-tests/unit/                # 7000+ tests, 130+ files
+tests/unit/                # 7400+ tests, 140+ files
 notebooks/                 # Interactive demos
 docs/                      # Research and design documentation
 ```
@@ -438,7 +448,7 @@ docs/                      # Research and design documentation
 |--------|-------|
 | Simulation domains | 187 (14 core + 173 extended) |
 | Mathematical classes | 125 |
-| Tests | 7000+ passing |
+| Tests | 7400+ passing |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
 | Cross-domain analogies | 570 |
