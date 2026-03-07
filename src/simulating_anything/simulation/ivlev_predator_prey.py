@@ -28,7 +28,7 @@ from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.simulation import SimulationConfig
 
 
-class IvlevPredatorPrey(SimulationEnvironment):
+class IvlevPredatorPreySimulation(SimulationEnvironment):
     """Predator-prey model with Ivlev functional response.
 
     State vector: [N, P] where N = prey density, P = predator density.

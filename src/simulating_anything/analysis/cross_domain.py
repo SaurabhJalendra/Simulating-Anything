@@ -9359,7 +9359,7 @@ def detect_dimensional_analogies(
     ))
     analogies.append(Analogy(
         domain_a="advection_1d",
-        domain_b="heat_equation_1d",
+        domain_b="heat_equation",
         analogy_type="dimensional",
         description=(
             "Both are fundamental 1D linear PDEs -- advection (hyperbolic,"
@@ -9468,7 +9468,7 @@ def detect_dimensional_analogies(
     ))
     analogies.append(Analogy(
         domain_a="burgers_1d",
-        domain_b="navier_stokes_2d",
+        domain_b="navier_stokes",
         analogy_type="dimensional",
         description=(
             "Burgers is the 1D analog of Navier-Stokes -- both have nonlinear"

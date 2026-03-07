@@ -1502,8 +1502,8 @@ DOMAIN_REGISTRY: dict[str, dict[str, Any]] = {
         "module": "simulating_anything.simulation.kdv",
         "cls": "KdVSimulation",
         "domain": Domain.KDV,
-        "params": {"c": 2.0, "x0": 10.0, "N": 256.0, "L": 40.0},
-        "dt": 0.001, "n_steps": 500, "math_class": "Integrable PDE",
+        "params": {"c": 2.0, "x0": 10.0, "N": 128.0, "L": 40.0},
+        "dt": 0.0001, "n_steps": 500, "math_class": "Integrable PDE",
     },
     "sir_metapopulation": {
         "module": "simulating_anything.simulation.sir_metapopulation",
