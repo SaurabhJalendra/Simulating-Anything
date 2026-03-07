@@ -219,7 +219,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (1142 passing, 71 skipped):
+# Full suite in WSL (7041 passing, 380 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -534,11 +534,19 @@ src/simulating_anything/
     rulkov_map.py          # Discrete spiking neuron (fast-slow)
     coupled_vdp.py         # Two coupled VdP oscillators (sync)
     stuart_landau.py       # Hopf normal form (r=sqrt(mu))
+    composable.py          # ComposedSimulation + 12 DynamicsModules
+    equation_parser.py     # EquationSimulation from NL equations
+    external_bridge.py     # File/Socket/Subprocess/PythonModule bridges
+    three_body.py          # CR3BP rotating frame (Lagrange points)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
+    rssm_v2.py             # RSSMv2 (DreamerV4-style mixed stochastic)
+    ensemble.py            # EnsembleRSSM (epistemic uncertainty)
     encoder.py             # CNNEncoder, MLPEncoder
     decoder.py             # CNNDecoder, MLPDecoder, symlog
+    advanced_encoders.py   # GNNEncoder, CNN3DEncoder, SetEncoder
     trainer.py             # WorldModelTrainer (Adam + cosine)
+    trainer_v2.py          # WorldModelTrainerV2 (RSSMv2 trainer)
   exploration/
     base.py                # Explorer ABC
     uncertainty_driven.py  # MC-dropout uncertainty explorer
@@ -553,6 +561,10 @@ src/simulating_anything/
     domain_statistics.py   # Runtime benchmarks for all domains
     error_analysis.py      # Bootstrap R², coefficient uncertainty
     scaling_analysis.py    # Runtime vs steps, dimension, data quantity
+    baselines.py           # Formal baseline comparisons (5 domains, LaTeX)
+    significance.py        # Permutation tests, bootstrap CI, Wilcoxon, Cohen's d
+    robustness.py          # Noise tolerance, sample efficiency, extrapolation
+    computational_cost.py  # Wall-clock timing per pipeline stage
   rediscovery/
     __init__.py            # Exports all rediscovery runners
     projectile.py          # Range equation R=v²sin(2θ)/g recovery
@@ -690,16 +702,29 @@ src/simulating_anything/
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
+    knowledge_base.py      # Persistent knowledge across sessions
+  discovery/
+    open_problems.py       # 6 open problems registry
+    discovery_runner.py    # Parameter sweep + equation fitting
   verification/
     dimensional.py         # Dimensional analysis checks
     conservation.py        # Mass, energy, positivity, boundedness
+    transfer_validation.py # Sim-to-real validation (12 metrics)
+    simulation_validator.py # 7-check auto-sim validation
   types/
     problem_spec.py        # ProblemSpec, Variable, Objective
-    simulation.py          # SimulationConfig, Domain, DomainClassification
+    simulation.py          # SimulationConfig, Domain (incl CUSTOM, EXTERNAL)
     trajectory.py          # TrajectoryData, TrajectoryMetadata
     discovery.py           # Discovery, Evidence, DiscoveryReport
+    campaign.py            # Experiment, ResearchPlan, CampaignReport
   utils/
     config.py              # load_config(), load_domain_config()
+  campaign/
+    manager.py             # CampaignManager (full autonomous loop)
+    notebook.py            # ResearchNotebook (append-only markdown log)
+  agents/
+    simulation_generator.py # LLM generates simulation code
+    research_planner.py    # Decomposes questions into experiments
 
 configs/
   default.yaml             # Global defaults
@@ -708,7 +733,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 4208 tests across 131+ files
+tests/unit/                # 7421 tests across 140+ files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -841,6 +866,7 @@ scripts/
   generate_ablation_figures.py # 5 ablation figures (sampling, method, data, features)
   aggregate_all_results.py   # Unified JSON + LaTeX table for all 14 domains
   build_7domain_notebook.py  # Builds 7-domain rediscovery notebook
+  generate_paper_tables.py   # Generates all paper LaTeX tables from code
 
 docs/
   RESEARCH.md              # Vision, universality argument (Section 4), contributions
