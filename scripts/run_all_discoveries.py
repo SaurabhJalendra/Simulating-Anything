@@ -253,11 +253,16 @@ def run_world_model_training(domains: list[str], n_epochs: int = 200) -> dict:
         logger.error("JAX not available -- must run in WSL2")
         return {"error": "JAX not available"}
 
-    from scripts.train_world_models import (
-        generate_lv_trajectories,
-        generate_projectile_trajectories,
-        train_domain,
+    import importlib.util
+    _spec = importlib.util.spec_from_file_location(
+        "train_world_models",
+        Path(__file__).parent / "train_world_models.py",
     )
+    _twm = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_twm)
+    generate_projectile_trajectories = _twm.generate_projectile_trajectories
+    generate_lv_trajectories = _twm.generate_lv_trajectories
+    train_domain = _twm.train_domain
 
     all_results = {}
     t0 = time.time()
@@ -276,16 +281,16 @@ def run_world_model_training(domains: list[str], n_epochs: int = 200) -> dict:
         # Use the simulation directly
         sim_module_map = {
             "sir_epidemic": ("simulating_anything.simulation.epidemiological", "SIRSimulation"),
-            "harmonic_oscillator": ("simulating_anything.simulation.harmonic_oscillator", "HarmonicOscillatorSimulation"),
+            "harmonic_oscillator": ("simulating_anything.simulation.harmonic_oscillator", "DampedHarmonicOscillator"),
             "lorenz": ("simulating_anything.simulation.lorenz", "LorenzSimulation"),
             "van_der_pol": ("simulating_anything.simulation.van_der_pol", "VanDerPolSimulation"),
             "brusselator": ("simulating_anything.simulation.brusselator", "BrusselatorSimulation"),
             "fitzhugh_nagumo": ("simulating_anything.simulation.fitzhugh_nagumo", "FitzHughNagumoSimulation"),
-            "duffing": ("simulating_anything.simulation.duffing", "DuffingSimulation"),
+            "duffing": ("simulating_anything.simulation.duffing", "DuffingOscillator"),
             "rossler": ("simulating_anything.simulation.rossler", "RosslerSimulation"),
-            "chua": ("simulating_anything.simulation.chua", "ChuaSimulation"),
+            "chua": ("simulating_anything.simulation.chua", "ChuaCircuit"),
             "hodgkin_huxley": ("simulating_anything.simulation.hodgkin_huxley", "HodgkinHuxleySimulation"),
-            "three_species": ("simulating_anything.simulation.three_species", "ThreeSpeciesSimulation"),
+            "three_species": ("simulating_anything.simulation.three_species", "ThreeSpecies"),
             "kuramoto": ("simulating_anything.simulation.kuramoto", "KuramotoSimulation"),
             "double_pendulum": ("simulating_anything.simulation.chaotic_ode", "DoublePendulumSimulation"),
         }
@@ -334,10 +339,22 @@ def run_world_model_training(domains: list[str], n_epochs: int = 200) -> dict:
     for domain in domains:
         logger.info(f"\n--- Training world model: {domain} ---")
 
-        if domain in trajectory_generators:
-            data = trajectory_generators[domain]()
-        else:
-            data = generate_generic_trajectories(domain)
+        # Skip if already trained
+        checkpoint_dir = WM_OUTPUT_DIR / domain
+        if (checkpoint_dir / "model.eqx").exists():
+            logger.info(f"  {domain}: checkpoint exists, skipping")
+            all_results[domain] = {"status": "already_trained"}
+            continue
+
+        try:
+            if domain in trajectory_generators:
+                data = trajectory_generators[domain]()
+            else:
+                data = generate_generic_trajectories(domain)
+        except Exception as e:
+            logger.error(f"  {domain} trajectory generation failed: {e}")
+            all_results[domain] = {"error": f"trajectory generation: {e}"}
+            continue
 
         if data is None:
             logger.warning(f"Skipping {domain} -- no trajectory data")

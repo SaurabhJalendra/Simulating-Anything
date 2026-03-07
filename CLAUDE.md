@@ -427,10 +427,10 @@ models, and produce real scientific discovery results.
 - [x] Statistical Mechanics: Ising (0.981), Bak-Sneppen (0.979), Vicsek (0.997), Lennard-Jones (0.718)
 - [x] New V5: Three-Body (1.0), Turbulent Flow (0.943), HP Protein (0.848)
 
-**Phase 4: World model training (RSSM on RTX 5090)**
-- [ ] Train RSSM on 18 key domains (200 epochs each)
-- [ ] Evaluate dreaming quality (MSE, error growth)
-- [ ] Save checkpoints + training curves
+**Phase 4: World model training (RSSM on RTX 5090)** -- COMPLETE (17/18, 37min)
+- [x] Train RSSM on 18 key domains (200 epochs each) -- 17 trained, gray_scott skipped (spatial)
+- [x] Evaluate dreaming quality (MSE, error growth) -- mean dream MSE=0.23, error growth 0.65-3.0x
+- [x] Save checkpoints + training curves -- all saved to output/world_models/
 
 **Phase 5: Novel discovery campaigns**
 - [ ] Three-body gravitational dynamics (no closed-form -- find scaling laws)
