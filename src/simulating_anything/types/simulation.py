@@ -197,6 +197,7 @@ class Domain(str, Enum):
     SWIFT_HOHENBERG = "swift_hohenberg"
     SIS_ADAPTIVE = "sis_adaptive"
     CUSTOM = "custom"
+    EXTERNAL = "external"
 
 
 class SimulationBackend(str, Enum):
