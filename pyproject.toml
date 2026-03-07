@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simulating-anything"
-version = "0.4.0"
+version = "0.5.0"
 description = "Domain-agnostic scientific discovery via world models and symbolic regression"
 readme = "README.md"
 license = {text = "MIT"}
@@ -67,6 +67,10 @@ analysis = [
 ]
 viz = [
     "networkx>=3.0",
+]
+docs = [
+    "sphinx>=7.0",
+    "sphinx-autodoc-typehints>=2.0",
 ]
 dev = [
     "pytest>=8.0",

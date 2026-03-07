@@ -196,6 +196,11 @@ class Domain(str, Enum):
     PREDATOR_PREY_TOXIN = "predator_prey_toxin"
     SWIFT_HOHENBERG = "swift_hohenberg"
     SIS_ADAPTIVE = "sis_adaptive"
+    TURBULENT_FLOW = "turbulent_flow"
+    HP_PROTEIN = "hp_protein"
+    LENNARD_JONES = "lennard_jones"
+    CARTPOLE_BRAX = "cartpole_brax"
+    THREE_BODY = "three_body"
     CUSTOM = "custom"
     EXTERNAL = "external"
 
