@@ -386,7 +386,7 @@ These are things that broke in previous sessions. Do not repeat them:
 - ~~Docker containerization~~ DONE (Dockerfile + .dockerignore)
 - ~~Sphinx API documentation~~ DONE (docs/conf.py + RST pages)
 - ~~Performance benchmarks~~ DONE (domain_statistics.py + scaling_analysis.py)
-- ~~Comprehensive test suite~~ DONE (7496 tests passing)
+- ~~Comprehensive test suite~~ DONE (7876 tests passing)
 - ~~Baseline comparisons: PySR alone, SINDy alone, manual simulation~~ DONE (baseline_comparison.py)
 
 ### Paper
