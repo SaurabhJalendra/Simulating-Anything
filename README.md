@@ -1,5 +1,6 @@
 # Simulating Anything
 
+[![CI](https://github.com/SaurabhJalendra/Simulating-Anything/actions/workflows/ci.yml/badge.svg)](https://github.com/SaurabhJalendra/Simulating-Anything/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-7421%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
 [![Domains](https://img.shields.io/badge/domains-188-orange)](src/simulating_anything/simulation/)
