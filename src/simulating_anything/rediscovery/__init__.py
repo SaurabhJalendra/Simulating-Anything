@@ -103,6 +103,7 @@ from simulating_anything.rediscovery.heat_equation import run_heat_equation_redi
 from simulating_anything.rediscovery.henon_map import run_henon_map_rediscovery
 from simulating_anything.rediscovery.hindmarsh_rose import run_hindmarsh_rose_rediscovery
 from simulating_anything.rediscovery.hodgkin_huxley import run_hodgkin_huxley_rediscovery
+from simulating_anything.rediscovery.hp_protein import run_hp_protein_analysis
 from simulating_anything.rediscovery.ikeda_map import run_ikeda_map_rediscovery
 from simulating_anything.rediscovery.ising_model import run_ising_model_rediscovery
 from simulating_anything.rediscovery.ivlev_predator_prey import run_ivlev_predator_prey_rediscovery
@@ -117,6 +118,7 @@ from simulating_anything.rediscovery.kuramoto_sivashinsky import (
 )
 from simulating_anything.rediscovery.langford import run_langford_rediscovery
 from simulating_anything.rediscovery.laser_rate import run_laser_rate_rediscovery
+from simulating_anything.rediscovery.lennard_jones import run_lennard_jones_rediscovery
 from simulating_anything.rediscovery.lienard import run_lienard_rediscovery
 from simulating_anything.rediscovery.liu import run_liu_rediscovery
 from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
@@ -213,6 +215,7 @@ from simulating_anything.rediscovery.swinging_atwood import run_swinging_atwood_
 from simulating_anything.rediscovery.tent_map import run_tent_map_rediscovery
 from simulating_anything.rediscovery.theta_neuron import run_theta_neuron_rediscovery
 from simulating_anything.rediscovery.thomas import run_thomas_rediscovery
+from simulating_anything.rediscovery.three_body import run_three_body_rediscovery
 from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
 from simulating_anything.rediscovery.tigan import run_tigan_rediscovery
 from simulating_anything.rediscovery.tinkerbell_map import run_tinkerbell_map_rediscovery
@@ -222,6 +225,7 @@ from simulating_anything.rediscovery.toggle_switch_stochastic import (
     run_toggle_switch_stochastic_rediscovery,
 )
 from simulating_anything.rediscovery.tumor_growth import run_tumor_growth_rediscovery
+from simulating_anything.rediscovery.turbulent_flow import run_turbulent_flow_analysis
 from simulating_anything.rediscovery.two_patch import run_two_patch_rediscovery
 from simulating_anything.rediscovery.ueda import run_ueda_rediscovery
 from simulating_anything.rediscovery.vallis import run_vallis_rediscovery
@@ -422,4 +426,8 @@ __all__ = [
     "run_predator_prey_toxin_rediscovery",
     "run_swift_hohenberg_rediscovery",
     "run_sis_adaptive_rediscovery",
+    "run_three_body_rediscovery",
+    "run_turbulent_flow_analysis",
+    "run_hp_protein_analysis",
+    "run_lennard_jones_rediscovery",
 ]

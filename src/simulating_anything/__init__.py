@@ -1,6 +1,6 @@
 """Simulating Anything: Domain-agnostic scientific discovery via world models and symbolic regression."""
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 from simulating_anything.campaign.manager import CampaignManager
 from simulating_anything.discovery.discovery_runner import DiscoveryRunner

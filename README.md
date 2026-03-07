@@ -1,16 +1,15 @@
 # Simulating Anything
 
-[![CI](https://github.com/SaurabhJalendra/Simulating-Anything/actions/workflows/ci.yml/badge.svg)](https://github.com/SaurabhJalendra/Simulating-Anything/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-7421%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-7876%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-187-orange)](src/simulating_anything/simulation/)
-[![Version](https://img.shields.io/badge/version-0.4.0-green)](pyproject.toml)
+[![Domains](https://img.shields.io/badge/domains-192-orange)](src/simulating_anything/simulation/)
+[![Version](https://img.shields.io/badge/version-0.5.0-green)](pyproject.toml)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
 
 A multi-agent pipeline that autonomously rediscovers known physical laws from
-simulation data across **187 domains** spanning **125 mathematical classes**.
+simulation data across **192 domains** spanning **125 mathematical classes**.
 Given a natural language description of any phenomenon, the system builds a
 simulation, trains an RSSM world model, explores the parameter space, and
 extracts human-interpretable equations using PySR and SINDy.
@@ -43,7 +42,7 @@ extracts human-interpretable equations using PySR and SINDy.
 | 13 | Heat Equation | Linear PDE | PySR | **1.0000** | Decay rate λ_k = D·k² (exact to machine precision) |
 | 14 | Logistic Map | Discrete | PySR | 0.6287 | Feigenbaum δ ∈ [4.0, 4.75], λ(r=4) = ln(4) exact |
 
-**Cross-domain analysis:** 570 mathematical isomorphisms detected across 187 domains
+**Cross-domain analysis:** 570 mathematical isomorphisms detected across 192 domains
 (structural, dimensional, and topological analogies).
 
 **Domain #15: Duffing oscillator** -- chaos detection, SINDy ODE recovery.
@@ -183,6 +182,11 @@ extracts human-interpretable equations using PySR and SINDy.
 **Domain #149: Two-Patch** -- Spatial predator-prey with migration, patch synchronization.
 **Domain #150: MAPK Cascade** -- 3-tier enzymatic signaling, Goldbeter-Koshland ultrasensitivity.
 **Domain #151: Circadian Clock** -- Gonze-Goodwin model, ~24h period, Hill repression oscillator.
+**Domain #152: Turbulent Flow 2D** -- High-Re Navier-Stokes, spectral methods, E(k)~k^(-3) enstrophy cascade.
+**Domain #153: HP Lattice Protein** -- Monte Carlo protein folding on 2D lattice, hydrophobic-polar model.
+**Domain #154: Lennard-Jones MD** -- Molecular dynamics with velocity Verlet, P=rho*T ideal gas law, diffusion.
+**Domain #155: CartPole-Brax** -- Brax-style cart-pole control, RK4 integration, action-driven dynamics.
+**Domain #156: Three-Body Problem** -- Restricted CR3BP, Jacobi constant conservation, Lagrange points.
 
 ---
 
@@ -435,7 +439,7 @@ scripts/
   generate_paper_tables.py            # Baselines, significance, robustness tables
   train_world_models_14domain.py      # RSSM training (14 domains)
 
-tests/unit/                # 7400+ tests, 140+ files
+tests/unit/                # 7876 tests, 150+ files
 notebooks/                 # Interactive demos
 docs/                      # Research and design documentation
 ```
@@ -446,9 +450,9 @@ docs/                      # Research and design documentation
 
 | Metric | Value |
 |--------|-------|
-| Simulation domains | 187 (14 core + 173 extended) |
+| Simulation domains | 192 (14 core + 178 extended) |
 | Mathematical classes | 125 |
-| Tests | 7400+ passing |
+| Tests | 7876 passing |
 | Domains with R² >= 0.999 | 11/14 |
 | Mean R² | 0.970 |
 | Cross-domain analogies | 570 |

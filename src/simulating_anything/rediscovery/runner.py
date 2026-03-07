@@ -176,6 +176,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.henon_map import run_henon_map_rediscovery
     from simulating_anything.rediscovery.hindmarsh_rose import run_hindmarsh_rose_rediscovery
     from simulating_anything.rediscovery.hodgkin_huxley import run_hodgkin_huxley_rediscovery
+    from simulating_anything.rediscovery.hp_protein import run_hp_protein_analysis
     from simulating_anything.rediscovery.ikeda_map import (
         run_ikeda_map_rediscovery,
     )
@@ -196,6 +197,7 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.langford import run_langford_rediscovery
     from simulating_anything.rediscovery.laser_rate import run_laser_rate_rediscovery
+    from simulating_anything.rediscovery.lennard_jones import run_lennard_jones_rediscovery
     from simulating_anything.rediscovery.lienard import run_lienard_rediscovery
     from simulating_anything.rediscovery.liu import run_liu_rediscovery
     from simulating_anything.rediscovery.logistic_map import run_logistic_map_rediscovery
@@ -322,6 +324,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.tent_map import run_tent_map_rediscovery
     from simulating_anything.rediscovery.theta_neuron import run_theta_neuron_rediscovery
     from simulating_anything.rediscovery.thomas import run_thomas_rediscovery
+    from simulating_anything.rediscovery.three_body import run_three_body_rediscovery
     from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
     from simulating_anything.rediscovery.tigan import run_tigan_rediscovery
     from simulating_anything.rediscovery.tinkerbell_map import run_tinkerbell_map_rediscovery
@@ -330,6 +333,7 @@ def run_all_rediscoveries(
         run_toggle_switch_stochastic_rediscovery,
     )
     from simulating_anything.rediscovery.tumor_growth import run_tumor_growth_rediscovery
+    from simulating_anything.rediscovery.turbulent_flow import run_turbulent_flow_analysis
     from simulating_anything.rediscovery.two_patch import run_two_patch_rediscovery
     from simulating_anything.rediscovery.ueda import run_ueda_rediscovery
     from simulating_anything.rediscovery.vallis import run_vallis_rediscovery
@@ -1277,6 +1281,26 @@ def run_all_rediscoveries(
         "sis_adaptive": {
             "label": "SIS Adaptive",
             "fn": run_sis_adaptive_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "hp_protein": {
+            "label": "HP Lattice Protein Folding",
+            "fn": run_hp_protein_analysis,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "lennard_jones": {
+            "label": "Lennard-Jones Molecular Dynamics",
+            "fn": run_lennard_jones_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "turbulent_flow": {
+            "label": "2D Turbulent Flow Energy Spectrum",
+            "fn": run_turbulent_flow_analysis,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "three_body": {
+            "label": "Three-Body Gravitational Problem",
+            "fn": run_three_body_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }
