@@ -16,7 +16,6 @@ Example:
 """
 from __future__ import annotations
 
-import math
 import re
 from typing import Any
 
@@ -24,7 +23,6 @@ import numpy as np
 
 from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.simulation import Domain, SimulationConfig
-
 
 # Safe math namespace for eval
 _SAFE_MATH_NS: dict[str, Any] = {

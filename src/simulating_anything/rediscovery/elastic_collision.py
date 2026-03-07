@@ -33,7 +33,7 @@ def _make_sim(
 ) -> ElasticCollisionSimulation:
     """Create an ElasticCollisionSimulation with the given parameters."""
     config = SimulationConfig(
-        domain=Domain.ELASTIC_COLLISION,  
+        domain=Domain.ELASTIC_COLLISION,
         dt=dt,
         n_steps=n_steps,
         parameters={

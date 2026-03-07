@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -310,7 +310,6 @@ def run_multi_domain_debate(
 ) -> dict:
     """Run dream debates across multiple domains and save results."""
     from simulating_anything.simulation.harmonic_oscillator import DampedHarmonicOscillator
-    from simulating_anything.simulation.lorenz import LorenzSimulation
     from simulating_anything.types.simulation import Domain
 
     output_path = Path(output_dir)

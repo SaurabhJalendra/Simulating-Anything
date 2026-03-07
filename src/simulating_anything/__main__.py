@@ -69,7 +69,7 @@ def _run_discover() -> None:
         if arg == "--max-steps" and i + 1 < len(sys.argv):
             max_steps = int(sys.argv[i + 1])
 
-    print(f"\nAutonomous Discovery Campaign")
+    print("\nAutonomous Discovery Campaign")
     print(f"Question: {question}")
     print(f"Max steps: {max_steps}")
     print("=" * 60)
@@ -78,7 +78,7 @@ def _run_discover() -> None:
     pipeline = Pipeline()
     report = pipeline.discover(question, max_steps=max_steps)
 
-    print(f"\nCampaign Complete")
+    print("\nCampaign Complete")
     print(f"Experiments run: {report.experiments_run}")
     print(f"Experiments failed: {report.experiments_failed}")
     print(f"Discoveries: {len(report.discoveries)}")

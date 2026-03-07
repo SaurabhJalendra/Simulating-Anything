@@ -27,7 +27,7 @@ def _make_config(
     x_0: float = 0.5,
 ) -> SimulationConfig:
     return SimulationConfig(
-        domain=Domain.CUBIC_MAP,  
+        domain=Domain.CUBIC_MAP,
         dt=1.0,
         n_steps=1000,
         parameters={"r": r, "x_0": x_0},

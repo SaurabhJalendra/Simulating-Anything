@@ -7,9 +7,6 @@ and relationships from simulation data.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Callable
-
-import numpy as np
 
 
 @dataclass

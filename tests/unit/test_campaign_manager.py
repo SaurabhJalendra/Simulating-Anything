@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 import json
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import numpy as np
-import pytest
 
 from simulating_anything.campaign.manager import CampaignManager
 from simulating_anything.campaign.notebook import ResearchNotebook
@@ -19,7 +18,6 @@ from simulating_anything.types.campaign import (
 )
 from simulating_anything.types.discovery import Discovery
 from simulating_anything.types.simulation import Domain, SimulationConfig
-
 
 # Valid simulation code for mock LLM responses
 _VALID_SIM_CODE = '''

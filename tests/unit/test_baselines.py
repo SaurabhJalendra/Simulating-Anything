@@ -2,29 +2,28 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from simulating_anything.analysis.baselines import (
     BaselineComparison,
     BaselineResult,
+    _fit_multivariate_poly,
+    _fit_polynomial,
+    _fit_power_law,
+    _fit_ratio,
+    _fit_sqrt_ratio,
+    _generate_decay_data,
+    _generate_oscillator_data,
+    _generate_pendulum_data,
+    _generate_projectile_data,
+    _generate_sir_data,
+    generate_latex_table,
     run_all_baselines,
     run_decay_baselines,
     run_oscillator_baselines,
     run_pendulum_baselines,
     run_projectile_baselines,
     run_sir_baselines,
-    generate_latex_table,
     save_results,
-    _fit_polynomial,
-    _fit_multivariate_poly,
-    _fit_power_law,
-    _fit_ratio,
-    _fit_sqrt_ratio,
-    _generate_projectile_data,
-    _generate_oscillator_data,
-    _generate_sir_data,
-    _generate_pendulum_data,
-    _generate_decay_data,
 )
 
 

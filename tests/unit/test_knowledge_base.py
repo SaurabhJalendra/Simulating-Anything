@@ -1,10 +1,6 @@
 """Tests for the persistent knowledge base."""
 from __future__ import annotations
 
-import json
-
-import pytest
-
 from simulating_anything.knowledge.knowledge_base import KnowledgeBase, KnowledgeEntry
 
 

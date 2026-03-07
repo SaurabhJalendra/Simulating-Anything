@@ -126,7 +126,9 @@ class DoublePendulumSimulation(SimulationEnvironment):
 
         return float(T + V)
 
-    def cartesian_positions(self, state: np.ndarray | None = None) -> tuple[tuple[float, float], tuple[float, float]]:
+    def cartesian_positions(
+        self, state: np.ndarray | None = None,
+    ) -> tuple[tuple[float, float], tuple[float, float]]:
         """Compute (x, y) positions of both pendulum bobs."""
         if state is None:
             state = self._state

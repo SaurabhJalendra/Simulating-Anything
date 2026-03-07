@@ -7,7 +7,7 @@ from typing import Any
 import numpy as np
 
 from simulating_anything.exploration.base import Explorer
-from simulating_anything.types.trajectory import TrajectoryData, TrajectoryMetadata
+from simulating_anything.types.trajectory import TrajectoryData
 
 
 class UncertaintyDrivenExplorer(Explorer):

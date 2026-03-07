@@ -1,8 +1,6 @@
 """Tests for baseline comparison benchmark."""
 from __future__ import annotations
 
-import pytest
-
 from simulating_anything.analysis.baseline_comparison import (
     BenchmarkResult,
     DomainBenchmark,

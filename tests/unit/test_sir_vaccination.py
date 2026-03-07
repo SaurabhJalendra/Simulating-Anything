@@ -333,10 +333,11 @@ class TestSIRVaccinationRediscovery:
 
     def test_run_rediscovery_structure(self):
         """run_sir_vaccination_rediscovery returns a dict with required keys."""
+        import tempfile
+
         from simulating_anything.rediscovery.sir_vaccination import (
             run_sir_vaccination_rediscovery,
         )
-        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             results = run_sir_vaccination_rediscovery(

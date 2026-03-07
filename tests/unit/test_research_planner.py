@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from unittest.mock import MagicMock
 
-import pytest
-
 from simulating_anything.agents.research_planner import ResearchPlannerAgent
 from simulating_anything.types.campaign import (
     Experiment,

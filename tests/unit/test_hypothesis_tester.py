@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from simulating_anything.analysis.hypothesis_tester import HypothesisTester
 from simulating_anything.simulation.base import SimulationEnvironment

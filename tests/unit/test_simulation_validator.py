@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.simulation import Domain, SimulationConfig
@@ -197,7 +196,9 @@ class TestSimulationValidator:
     def test_critical_vs_warnings(self):
         report = self.validator.validate(NonDeterministicSimulation)
         # Determinism is a warning, not critical
-        assert "determinism" not in [c.name for c in report.checks if not c.passed and c.name not in ("sensitivity", "determinism")]
+        warn_names = ("sensitivity", "determinism")
+        critical = [c.name for c in report.checks if not c.passed and c.name not in warn_names]
+        assert "determinism" not in critical
 
     def test_get_fix_prompt_all_passed(self):
         report = self.validator.validate(GoodSimulation)
@@ -231,7 +232,9 @@ class TestSimulationValidator:
 
     def test_check_results_have_names(self):
         report = self.validator.validate(GoodSimulation)
-        expected_names = {"instantiation", "reset", "step", "nan_inf", "boundedness", "determinism", "sensitivity"}
+        expected_names = {
+            "instantiation", "reset", "step", "nan_inf", "boundedness", "determinism", "sensitivity",
+        }
         actual_names = {c.name for c in report.checks}
         assert expected_names == actual_names
 

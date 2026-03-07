@@ -26,7 +26,7 @@ def _make_config(
     x_0: float = 1.0 / np.pi,
 ) -> SimulationConfig:
     return SimulationConfig(
-        domain=Domain.TENT_MAP,  
+        domain=Domain.TENT_MAP,
         dt=1.0,
         n_steps=1000,
         parameters={"r": r, "x_0": x_0},

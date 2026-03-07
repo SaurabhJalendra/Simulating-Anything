@@ -2,16 +2,13 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
-import numpy as np
 import pytest
 
 from simulating_anything.agents.simulation_generator import SimulationGeneratorAgent
 from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.problem_spec import ProblemSpec
-from simulating_anything.types.simulation import SimulationConfig
-
 
 # A valid simulation class source for testing
 _VALID_SIM_CODE = '''

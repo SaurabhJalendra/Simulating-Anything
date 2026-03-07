@@ -56,7 +56,7 @@ class CommunicatorAgent(Agent):
         """Generate structured Markdown report from template."""
         lines = []
         now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-        lines.append(f"# Discovery Report")
+        lines.append("# Discovery Report")
         lines.append(f"*Generated: {now}*\n")
 
         # Summary

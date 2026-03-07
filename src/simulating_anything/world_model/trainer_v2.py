@@ -12,7 +12,6 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any
 
 import equinox as eqx
 import jax
@@ -27,7 +26,7 @@ from simulating_anything.types.simulation import (
 )
 from simulating_anything.world_model.decoder import MLPDecoder, symlog
 from simulating_anything.world_model.encoder import MLPEncoder
-from simulating_anything.world_model.rssm_v2 import RSSMv2, RSSMv2State
+from simulating_anything.world_model.rssm_v2 import RSSMv2
 
 logger = logging.getLogger(__name__)
 

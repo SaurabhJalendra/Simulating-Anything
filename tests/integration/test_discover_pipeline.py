@@ -7,15 +7,11 @@ all work together correctly.
 from __future__ import annotations
 
 import json
-from unittest.mock import MagicMock, patch
-
-import numpy as np
-import pytest
+from unittest.mock import MagicMock
 
 from simulating_anything.campaign.manager import CampaignManager
 from simulating_anything.pipeline import Pipeline
 from simulating_anything.types.campaign import CampaignReport
-
 
 # Valid simulation code that the mock LLM will "generate"
 _OSCILLATOR_SIM_CODE = '''

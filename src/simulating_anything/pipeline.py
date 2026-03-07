@@ -5,15 +5,14 @@ from __future__ import annotations
 import logging
 import time
 from pathlib import Path
-from typing import Any
 
 from simulating_anything.agents.base import ClaudeCodeBackend
 from simulating_anything.agents.communicator import CommunicatorAgent
-from simulating_anything.campaign.manager import CampaignManager
 from simulating_anything.agents.domain_classifier import DomainClassifierAgent
 from simulating_anything.agents.problem_architect import ProblemArchitectAgent
 from simulating_anything.agents.simulation_builder import SimulationBuilderAgent
 from simulating_anything.analysis.ablation import run_ablation
+from simulating_anything.campaign.manager import CampaignManager
 from simulating_anything.exploration.uncertainty_driven import UncertaintyDrivenExplorer
 from simulating_anything.knowledge.discovery_log import DiscoveryLog
 from simulating_anything.knowledge.trajectory_store import TrajectoryStore
@@ -25,12 +24,10 @@ from simulating_anything.types.discovery import (
     AblationResult,
     Discovery,
     DiscoveryReport,
-    DiscoveryStatus,
 )
 from simulating_anything.types.problem_spec import ProblemSpec
 from simulating_anything.types.simulation import (
     Domain,
-    DomainClassification,
     SimulationConfig,
 )
 from simulating_anything.types.trajectory import TrajectoryData
@@ -276,8 +273,9 @@ class Pipeline:
         # Try symbolic regression / SINDy if we have enough data
         if len(trajectories) >= 2 and trajectories[0].states is not None:
             try:
-                from simulating_anything.analysis.equation_discovery import run_sindy
                 import numpy as np
+
+                from simulating_anything.analysis.equation_discovery import run_sindy
 
                 states = trajectories[0].states
                 if states.ndim <= 2:

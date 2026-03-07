@@ -7,7 +7,6 @@ import logging
 from simulating_anything.agents.base import Agent, ClaudeCodeBackend
 from simulating_anything.types.problem_spec import ProblemSpec
 from simulating_anything.types.simulation import (
-    Domain,
     DomainClassification,
     SimulationConfig,
 )

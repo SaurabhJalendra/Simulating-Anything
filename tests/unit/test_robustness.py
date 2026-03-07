@@ -1,15 +1,10 @@
 """Tests for robustness and failure mode analysis."""
 from __future__ import annotations
 
-import numpy as np
-import pytest
-
 from simulating_anything.analysis.robustness import (
-    ExtrapolationResult,
     NoiseToleranceResult,
     RobustnessReport,
     RobustnessResult,
-    SampleEfficiencyResult,
     run_robustness_analysis,
     test_extrapolation,
     test_noise_tolerance,

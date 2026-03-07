@@ -1,16 +1,11 @@
 """Tests for pipeline orchestration (mocked agents)."""
 
-from unittest.mock import MagicMock, patch
 
 import numpy as np
-import pytest
 
 from simulating_anything.types.discovery import Discovery, DiscoveryType
-from simulating_anything.types.problem_spec import ProblemSpec, SweepParameter
 from simulating_anything.types.simulation import (
     Domain,
-    DomainClassification,
-    SimulationBackend,
     SimulationConfig,
 )
 from simulating_anything.types.trajectory import TrajectoryData
@@ -24,7 +19,6 @@ from simulating_anything.verification.dimensional import (
     DIMENSIONLESS,
     LENGTH,
     TIME,
-    Dimensions,
     check_dimensional_consistency,
 )
 

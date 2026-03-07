@@ -12,10 +12,9 @@ from typing import Any
 
 import numpy as np
 
-from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.campaign import ConfidenceLevel, HypothesisResult
 from simulating_anything.types.discovery import Discovery
-from simulating_anything.types.simulation import Domain, SimulationConfig
+from simulating_anything.types.simulation import SimulationConfig
 
 logger = logging.getLogger(__name__)
 
@@ -269,8 +268,12 @@ class HypothesisTester:
             )
 
             # Remove NaN
-            valid_train = ~np.any(np.isnan(train_obs), axis=-1) if train_obs.ndim > 1 else ~np.isnan(train_obs)
-            valid_extrap = ~np.any(np.isnan(extrap_obs), axis=-1) if extrap_obs.ndim > 1 else ~np.isnan(extrap_obs)
+            valid_train = (
+                ~np.any(np.isnan(train_obs), axis=-1) if train_obs.ndim > 1 else ~np.isnan(train_obs)
+            )
+            valid_extrap = (
+                ~np.any(np.isnan(extrap_obs), axis=-1) if extrap_obs.ndim > 1 else ~np.isnan(extrap_obs)
+            )
 
             train_params = train_params[valid_train]
             train_obs = train_obs[valid_train]

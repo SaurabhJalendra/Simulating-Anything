@@ -4,16 +4,14 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from simulating_anything.discovery.open_problems import (
-    OPEN_PROBLEMS,
-    OpenProblem,
-    get_problem,
-    list_problems,
-)
 from simulating_anything.discovery.discovery_runner import (
     DiscoveryAttempt,
     DiscoveryResult,
     DiscoveryRunner,
+)
+from simulating_anything.discovery.open_problems import (
+    get_problem,
+    list_problems,
 )
 
 

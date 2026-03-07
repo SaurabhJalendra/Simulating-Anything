@@ -3,11 +3,9 @@
 import json
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from simulating_anything.agents.base import Agent, ClaudeCodeBackend
-from simulating_anything.agents.domain_classifier import DomainClassifierAgent
 from simulating_anything.agents.communicator import CommunicatorAgent
+from simulating_anything.agents.domain_classifier import DomainClassifierAgent
 from simulating_anything.types.discovery import (
     Discovery,
     DiscoveryReport,
@@ -15,8 +13,6 @@ from simulating_anything.types.discovery import (
     DiscoveryType,
 )
 from simulating_anything.types.problem_spec import (
-    Objective,
-    ObjectiveType,
     ProblemSpec,
     Variable,
     VariableType,

@@ -1,7 +1,6 @@
 """Tests for simulation engines."""
 
 import numpy as np
-import pytest
 
 from simulating_anything.simulation.agent_based import LotkaVolterraSimulation
 from simulating_anything.simulation.reaction_diffusion import GrayScottSimulation

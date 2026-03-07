@@ -14,9 +14,6 @@ from pathlib import Path
 
 import numpy as np
 
-from simulating_anything.simulation.reaction_diffusion import GrayScottSimulation
-from simulating_anything.types.simulation import Domain, SimulationConfig
-
 logger = logging.getLogger(__name__)
 
 

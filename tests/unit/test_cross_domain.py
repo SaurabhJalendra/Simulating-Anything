@@ -2,11 +2,8 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from simulating_anything.analysis.cross_domain import (
-    Analogy,
-    DomainSignature,
     build_domain_signatures,
     compute_equation_similarity,
     detect_dimensional_analogies,

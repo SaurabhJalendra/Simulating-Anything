@@ -6,7 +6,6 @@ from typing import Sequence
 
 import equinox as eqx
 import jax
-import jax.numpy as jnp
 
 
 class CNNEncoder(eqx.Module):

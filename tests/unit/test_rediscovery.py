@@ -5,18 +5,18 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from simulating_anything.rediscovery.projectile import (
-    generate_projectile_data,
-    theoretical_range,
+from simulating_anything.rediscovery.gray_scott import (
+    classify_pattern,
+    compute_dominant_wavelength,
+    compute_pattern_energy,
 )
 from simulating_anything.rediscovery.lotka_volterra import (
     generate_equilibrium_data,
     generate_ode_data,
 )
-from simulating_anything.rediscovery.gray_scott import (
-    compute_dominant_wavelength,
-    compute_pattern_energy,
-    classify_pattern,
+from simulating_anything.rediscovery.projectile import (
+    generate_projectile_data,
+    theoretical_range,
 )
 
 

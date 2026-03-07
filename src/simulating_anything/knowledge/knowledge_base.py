@@ -211,7 +211,9 @@ class KnowledgeBase:
         """Get all analogies involving a domain."""
         return self.query(category="analogy", domain=domain)
 
-    def get_hypotheses(self, domain: str | None = None, supported: bool | None = None) -> list[KnowledgeEntry]:
+    def get_hypotheses(
+        self, domain: str | None = None, supported: bool | None = None,
+    ) -> list[KnowledgeEntry]:
         """Get tested hypotheses."""
         results = self.query(category="hypothesis", domain=domain)
         if supported is not None:

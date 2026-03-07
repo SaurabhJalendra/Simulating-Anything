@@ -10,7 +10,7 @@ from simulating_anything.types.simulation import Domain, SimulationConfig
 
 def _make_config(r: float = 2.5, x_0: float = 0.5) -> SimulationConfig:
     return SimulationConfig(
-        domain=Domain.CUBIC_MAP,  
+        domain=Domain.CUBIC_MAP,
         dt=1.0,
         n_steps=100,
         parameters={"r": r, "x_0": x_0},

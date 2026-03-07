@@ -286,7 +286,7 @@ def run_harmonic_oscillator_rediscovery(
     logger.info(f"  Damping accuracy: mean rel error = {np.mean(damp_rel_error):.4%}")
 
     # PySR: decay_rate = f(k, m, c)
-    logger.info(f"  Running PySR for decay_rate = f(k, m, c)...")
+    logger.info("  Running PySR for decay_rate = f(k, m, c)...")
     X_damp = np.column_stack([damp_data["k"], damp_data["m"], damp_data["c"]])
     y_damp = damp_data["decay_rate_measured"]
 

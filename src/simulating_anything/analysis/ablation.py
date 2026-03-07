@@ -3,9 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Callable
-
-import numpy as np
+from typing import Callable
 
 from simulating_anything.types.discovery import AblationResult
 

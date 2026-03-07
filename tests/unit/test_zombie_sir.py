@@ -21,7 +21,7 @@ def _make_config(
     }
     params.update(param_overrides)
     return SimulationConfig(
-        domain=Domain.ZOMBIE_SIR,  
+        domain=Domain.ZOMBIE_SIR,
         dt=dt,
         n_steps=n_steps,
         parameters=params,

@@ -6,7 +6,6 @@ import numpy as np
 from simulating_anything.simulation.ueda import UedaSimulation
 from simulating_anything.types.simulation import Domain, SimulationConfig
 
-
 _DOMAIN = Domain.UEDA
 
 

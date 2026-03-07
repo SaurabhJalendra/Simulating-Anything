@@ -6,7 +6,6 @@ import pytest
 
 from simulating_anything.verification.transfer_validation import (
     TransferMetrics,
-    TransferReport,
     TransferValidator,
     validate_rediscovery,
 )

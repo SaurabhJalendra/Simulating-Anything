@@ -102,7 +102,7 @@ class TestMLPDecoder:
 
 class TestSymlog:
     def test_symlog_identity_at_zero(self):
-        from simulating_anything.world_model.decoder import symexp, symlog
+        from simulating_anything.world_model.decoder import symlog
 
         x = jnp.array(0.0)
         assert float(symlog(x)) == pytest.approx(0.0)

@@ -14,14 +14,13 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
 
 from simulating_anything.simulation.agent_based import LotkaVolterraSimulation
 from simulating_anything.simulation.harmonic_oscillator import DampedHarmonicOscillator
-from simulating_anything.simulation.rigid_body import ProjectileSimulation
 from simulating_anything.types.simulation import Domain, SimulationConfig
 
 logger = logging.getLogger(__name__)

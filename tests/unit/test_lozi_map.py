@@ -15,7 +15,7 @@ def _make_config(
     y_0: float = 0.0,
 ) -> SimulationConfig:
     return SimulationConfig(
-        domain=Domain.LOZI_MAP,  
+        domain=Domain.LOZI_MAP,
         dt=1.0,
         n_steps=100,
         parameters={"a": a, "b": b, "x_0": x_0, "y_0": y_0},

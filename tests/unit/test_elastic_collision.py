@@ -20,7 +20,7 @@ def _make_config(
     n_steps: int = 5000,
 ) -> SimulationConfig:
     return SimulationConfig(
-        domain=Domain.ELASTIC_COLLISION,  
+        domain=Domain.ELASTIC_COLLISION,
         dt=dt,
         n_steps=n_steps,
         parameters={

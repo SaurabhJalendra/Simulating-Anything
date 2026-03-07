@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from simulating_anything.simulation.lorenz import LorenzSimulation
 from simulating_anything.types.simulation import Domain, SimulationConfig

@@ -2,10 +2,9 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
-from simulating_anything.simulation.epidemiological import SIRSimulation
 from simulating_anything.simulation.chaotic_ode import DoublePendulumSimulation
+from simulating_anything.simulation.epidemiological import SIRSimulation
 from simulating_anything.types.simulation import Domain, SimulationConfig
 
 

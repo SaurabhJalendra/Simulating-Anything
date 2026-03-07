@@ -1,11 +1,7 @@
 """Tests for sensitivity analysis framework."""
 from __future__ import annotations
 
-import numpy as np
-import pytest
-
 from simulating_anything.analysis.sensitivity import (
-    SensitivityResult,
     sensitivity_data_quantity,
     sensitivity_noise,
     sensitivity_param_range,

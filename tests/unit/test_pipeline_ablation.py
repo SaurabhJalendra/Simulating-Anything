@@ -4,9 +4,6 @@ Verifies each ablation function returns correct structure and reasonable values.
 """
 from __future__ import annotations
 
-import numpy as np
-import pytest
-
 from simulating_anything.analysis.pipeline_ablation import (
     AblationExperiment,
     ablate_analysis_harmonic,

@@ -19,7 +19,6 @@ from simulating_anything.agents.research_planner import ResearchPlannerAgent
 from simulating_anything.agents.simulation_generator import SimulationGeneratorAgent
 from simulating_anything.analysis.hypothesis_tester import HypothesisTester
 from simulating_anything.campaign.notebook import ResearchNotebook
-from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.campaign import (
     CampaignReport,
     ExperimentStatus,

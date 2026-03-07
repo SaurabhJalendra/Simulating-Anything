@@ -11,7 +11,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from simulating_anything.types.campaign import (
-    CampaignReport,
     HypothesisResult,
     NotebookEntry,
 )

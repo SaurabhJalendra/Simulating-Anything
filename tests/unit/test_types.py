@@ -1,7 +1,6 @@
 """Tests for Pydantic data types."""
 
 import numpy as np
-import pytest
 
 from simulating_anything.types.discovery import (
     AblationResult,
@@ -32,7 +31,6 @@ from simulating_anything.types.simulation import (
     SimulationBackend,
     SimulationConfig,
     TrainingConfig,
-    ValidationMetrics,
     WorldModelCheckpoint,
 )
 from simulating_anything.types.trajectory import TrajectoryData, TrajectoryMetadata

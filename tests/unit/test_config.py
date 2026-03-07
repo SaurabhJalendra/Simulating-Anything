@@ -1,9 +1,8 @@
 """Tests for the configuration system."""
 
-import pytest
 import yaml
 
-from simulating_anything.types.simulation import Domain, SimulationBackend
+from simulating_anything.types.simulation import Domain
 from simulating_anything.utils.config import (
     DomainConfig,
     ExplorationConfig,

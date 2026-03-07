@@ -170,7 +170,7 @@ def run_sir_rediscovery(
     y_filtered = y[mask]
 
     logger.info(f"  {mask.sum()}/{len(mask)} epidemics with R0 > 1")
-    logger.info(f"  Running PySR for final size = f(beta, gamma)...")
+    logger.info("  Running PySR for final size = f(beta, gamma)...")
 
     # Use b_ and g_ to avoid sympy conflicts
     discoveries = run_symbolic_regression(

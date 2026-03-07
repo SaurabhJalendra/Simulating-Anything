@@ -141,7 +141,8 @@ def plot_lv_phase_portrait(
     if params:
         eq_prey = params.get("gamma", 0.4) / params.get("delta", 0.1)
         eq_pred = params.get("alpha", 1.1) / params.get("beta", 0.4)
-        ax.plot(eq_prey, eq_pred, "r*", markersize=15, label=f"Equilibrium ({eq_prey:.1f}, {eq_pred:.1f})", zorder=5)
+        eq_label = f"Equilibrium ({eq_prey:.1f}, {eq_pred:.1f})"
+        ax.plot(eq_prey, eq_pred, "r*", markersize=15, label=eq_label, zorder=5)
 
     ax.set_xlabel("Prey Population")
     ax.set_ylabel("Predator Population")
@@ -302,7 +303,6 @@ def plot_gs_wavelength_scaling(
     if len(dv) > 2:
         dv_fit = np.linspace(dv.min(), dv.max(), 100)
         # Fit lambda = a * sqrt(D_v) + b
-        from numpy.polynomial import polynomial as P
         coeffs = np.polyfit(np.sqrt(dv), wl, 1)
         wl_fit = np.polyval(coeffs, np.sqrt(dv_fit))
         axes[0].plot(dv_fit, wl_fit, "r--", linewidth=1.5,

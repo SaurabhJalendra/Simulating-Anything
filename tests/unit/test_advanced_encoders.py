@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from simulating_anything.world_model.advanced_encoders import (
     CNN3DEncoder,

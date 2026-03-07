@@ -1,6 +1,7 @@
 """Tests for RSSMv2, ensemble world model, and trainer v2."""
 from __future__ import annotations
 
+import numpy as np
 import pytest
 
 try:
@@ -292,7 +293,3 @@ class TestTrainerV2:
         val = trainer.get_validation_metrics(obs)
         assert val.reconstruction_mse >= 0
         assert np.isfinite(val.kl_divergence)
-
-
-# Need numpy for isfinite checks in TestTrainerV2
-import numpy as np

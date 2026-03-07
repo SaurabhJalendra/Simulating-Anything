@@ -3,14 +3,11 @@ from __future__ import annotations
 
 import json
 import os
-import tempfile
-from pathlib import Path
 
 import numpy as np
 import pytest
 
 from simulating_anything.simulation.external_bridge import (
-    ExternalSimulatorBridge,
     FileBasedBridge,
     PythonModuleBridge,
     create_bridge,

@@ -9,7 +9,6 @@ from __future__ import annotations
 import json
 import logging
 import textwrap
-from typing import Any
 
 from simulating_anything.agents.base import Agent, ClaudeCodeBackend
 from simulating_anything.types.campaign import (
@@ -270,9 +269,9 @@ class ResearchPlannerAgent(Agent):
         return ResearchPlan(
             question=question,
             sub_questions=[
-                f"What are the governing equations of the system?",
-                f"How does the system respond to parameter changes?",
-                f"Are there critical thresholds or phase transitions?",
+                "What are the governing equations of the system?",
+                "How does the system respond to parameter changes?",
+                "Are there critical thresholds or phase transitions?",
             ],
             experiments=[
                 Experiment(

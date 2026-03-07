@@ -1,22 +1,17 @@
 """Tests for statistical significance module."""
 from __future__ import annotations
 
-import math
-
 import numpy as np
-import pytest
 
 from simulating_anything.analysis.significance import (
-    EffectSize,
     PermutationTestResult,
-    SignificanceReport,
     WilcoxonResult,
+    _normal_cdf,
     bootstrap_r_squared,
     cohens_d,
     permutation_test_r_squared,
     run_significance_analysis,
     wilcoxon_signed_rank,
-    _normal_cdf,
 )
 
 

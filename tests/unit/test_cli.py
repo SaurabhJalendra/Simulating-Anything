@@ -7,8 +7,6 @@ from __future__ import annotations
 import subprocess
 import sys
 
-import pytest
-
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess:
     """Run the CLI with the given arguments."""

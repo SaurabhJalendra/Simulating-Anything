@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from simulating_anything.exploration.uncertainty_driven import UncertaintyDrivenExplorer
 from simulating_anything.types.trajectory import TrajectoryData, TrajectoryMetadata

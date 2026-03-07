@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 def _make_config(a: float = 1.7, b: float = 0.5) -> SimulationConfig:
     return SimulationConfig(
-        domain=Domain.LOZI_MAP,  
+        domain=Domain.LOZI_MAP,
         dt=1.0,
         n_steps=1000,
         parameters={"a": a, "b": b, "x_0": 0.0, "y_0": 0.0},

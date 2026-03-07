@@ -179,7 +179,7 @@ def run_navier_stokes_rediscovery(
         X = data["nu"][valid].reshape(-1, 1)
         y = data["decay_rate"][valid]
 
-        logger.info(f"  Running PySR: decay_rate = f(nu)...")
+        logger.info("  Running PySR: decay_rate = f(nu)...")
         discoveries = run_symbolic_regression(
             X, y,
             variable_names=["nu"],

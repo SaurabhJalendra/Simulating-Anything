@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from simulating_anything.simulation.navier_stokes import NavierStokes2DSimulation
 from simulating_anything.types.simulation import Domain, SimulationConfig

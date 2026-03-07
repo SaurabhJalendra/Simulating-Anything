@@ -7,7 +7,6 @@ class produces physically reasonable behavior.
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 import numpy as np
 
@@ -246,7 +245,8 @@ class SimulationValidator:
         self, states: np.ndarray, checks: list[CheckResult]
     ) -> None:
         """Check that states remain bounded."""
-        max_abs = float(np.max(np.abs(states[np.isfinite(states)]))) if np.any(np.isfinite(states)) else float("inf")
+        finite = states[np.isfinite(states)]
+        max_abs = float(np.max(np.abs(finite))) if np.any(np.isfinite(states)) else float("inf")
         checks.append(CheckResult(
             name="boundedness",
             passed=max_abs < self.bound_threshold,
@@ -367,7 +367,8 @@ class SimulationValidator:
         """Build a ValidationReport from check results."""
         passed = all(c.passed for c in checks)
         warnings = [c.message for c in checks if not c.passed and c.name in ("sensitivity", "determinism")]
-        critical_failures = [c.message for c in checks if not c.passed and c.name not in ("sensitivity", "determinism")]
+        warn_names = ("sensitivity", "determinism")
+        critical_failures = [c.message for c in checks if not c.passed and c.name not in warn_names]
         return ValidationReport(
             checks=checks,
             passed=passed,

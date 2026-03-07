@@ -1,9 +1,6 @@
 """Tests for computational cost analysis module."""
 from __future__ import annotations
 
-import numpy as np
-import pytest
-
 from simulating_anything.analysis.computational_cost import (
     CostReport,
     DomainCost,

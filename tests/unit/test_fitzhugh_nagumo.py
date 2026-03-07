@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
 from simulating_anything.simulation.fitzhugh_nagumo import FitzHughNagumoSimulation
 from simulating_anything.types.simulation import Domain, SimulationConfig

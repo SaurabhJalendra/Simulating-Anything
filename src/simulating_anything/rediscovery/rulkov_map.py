@@ -29,7 +29,7 @@ def _make_config(
     y_0: float = -3.0,
 ) -> SimulationConfig:
     return SimulationConfig(
-        domain=Domain.RULKOV_MAP,  
+        domain=Domain.RULKOV_MAP,
         dt=1.0,
         n_steps=1000,
         parameters={

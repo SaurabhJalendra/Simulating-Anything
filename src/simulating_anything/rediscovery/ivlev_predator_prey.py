@@ -17,7 +17,9 @@ from pathlib import Path
 
 import numpy as np
 
-from simulating_anything.simulation.ivlev_predator_prey import IvlevPredatorPreySimulation as IvlevPredatorPrey
+from simulating_anything.simulation.ivlev_predator_prey import (
+    IvlevPredatorPreySimulation as IvlevPredatorPrey,
+)
 from simulating_anything.types.simulation import Domain, SimulationConfig
 
 logger = logging.getLogger(__name__)

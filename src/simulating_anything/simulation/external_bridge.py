@@ -12,7 +12,6 @@ import os
 import shutil
 import subprocess
 import tempfile
-import time
 from abc import abstractmethod
 from pathlib import Path
 from typing import Any
@@ -21,7 +20,6 @@ import numpy as np
 
 from simulating_anything.simulation.base import SimulationEnvironment
 from simulating_anything.types.simulation import SimulationConfig
-from simulating_anything.types.trajectory import TrajectoryData, TrajectoryMetadata
 
 logger = logging.getLogger(__name__)
 
@@ -404,7 +402,10 @@ class PythonModuleBridge(ExternalSimulatorBridge):
         reset_fn = getattr(self._sim_instance, self._reset_method_name)
         result = reset_fn()
         if result is not None:
-            state = np.array(result, dtype=np.float64) if not isinstance(result, np.ndarray) else result.astype(np.float64)
+            state = (
+                np.array(result, dtype=np.float64) if not isinstance(result, np.ndarray)
+                else result.astype(np.float64)
+            )
         else:
             state = self._parse_output()
         self._state = state
