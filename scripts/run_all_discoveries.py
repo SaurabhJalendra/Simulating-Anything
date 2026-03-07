@@ -84,7 +84,7 @@ EXTENDED_BATCH_1 = [
     "oregonator",
     "brusselator_diffusion",
     "lorenz96",
-    "lorenz84",
+    "lorenz_84",
     "coupled_lorenz",
     "chen",
     "aizawa",

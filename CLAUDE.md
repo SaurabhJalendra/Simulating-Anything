@@ -393,29 +393,29 @@ These are things that broke in previous sessions. Do not repeat them:
 Run all simulations on GPU, execute PySR/SINDy equation recovery, train world
 models, and produce real scientific discovery results.
 
-**Phase 1: Core 14 domain rediscoveries (PySR + SINDy)**
-- [ ] Projectile: R = v^2*sin(2*theta)/g
-- [ ] Lotka-Volterra: equilibrium + ODE coefficients
-- [ ] Gray-Scott: Turing instability boundary + wavelength scaling
-- [ ] SIR Epidemic: R0 = beta/gamma + ODE recovery
-- [ ] Double Pendulum: T = 2*pi*sqrt(L/g) + energy conservation
-- [ ] Harmonic Oscillator: omega_0 = sqrt(k/m) + damping + ODE
-- [ ] Lorenz: SINDy ODE recovery + chaos transition + Lyapunov
-- [ ] Navier-Stokes 2D: viscous decay rate = 4*nu
-- [ ] Van der Pol: period scaling T(mu) + amplitude
-- [ ] Kuramoto: synchronization transition r(K)
-- [ ] Brusselator: Hopf bifurcation b_c = 1 + a^2
-- [ ] FitzHugh-Nagumo: f-I curve + SINDy ODE
-- [ ] Heat Equation 1D: mode decay rate D*k^2
-- [ ] Logistic Map: Feigenbaum delta + Lyapunov
+**Phase 1: Core 14 domain rediscoveries (PySR + SINDy)** -- COMPLETE (14/14, 30min)
+- [x] Projectile: R = v^2*sin(2*theta)/g (R²=1.0)
+- [x] Lotka-Volterra: equilibrium + ODE coefficients (R²=0.9999)
+- [x] Gray-Scott: Turing instability boundary + wavelength scaling (corr=0.927)
+- [x] SIR Epidemic: R0 = beta/gamma + ODE recovery (R²=1.0)
+- [x] Double Pendulum: T = 2*pi*sqrt(L/g) + energy conservation (R²=0.999993)
+- [x] Harmonic Oscillator: omega_0 = sqrt(k/m) + damping + ODE (R²=1.0)
+- [x] Lorenz: SINDy ODE recovery + chaos transition + Lyapunov (R²=0.99999)
+- [x] Navier-Stokes 2D: viscous decay rate = 4*nu (R²=1.0)
+- [x] Van der Pol: period scaling T(mu) + amplitude (R²=0.999999)
+- [x] Kuramoto: synchronization transition r(K) (R²=0.964)
+- [x] Brusselator: Hopf bifurcation b_c = 1 + a^2 (R²=0.9999)
+- [x] FitzHugh-Nagumo: f-I curve + SINDy ODE (R²=1.0)
+- [x] Heat Equation 1D: mode decay rate D*k^2 (R²=1.0)
+- [x] Logistic Map: Feigenbaum delta + Lyapunov (R²=0.672)
 
-**Phase 2: Extended domain rediscoveries (35 chaotic ODEs + oscillators)**
-- [ ] Duffing, Rossler, Chua, Chen, Aizawa, Halvorsen, Burke-Shaw
-- [ ] Sprott A-S, Thomas, Lorenz-84, Lorenz-96, Coupled Lorenz
-- [ ] Standard Map, Henon Map, Stuart-Landau, Coupled VdP
-- [ ] Selkov, Oregonator, Rikitake, Colpitts, Cart-Pole
-- [ ] Three-Species, Elastic Pendulum, Schwarzschild, Quantum HO
-- [ ] Boltzmann Gas, Spring-Mass Chain, Kepler, Driven Pendulum
+**Phase 2: Extended domain rediscoveries (35 chaotic ODEs + oscillators)** -- COMPLETE (35/35, 58min)
+- [x] Duffing, Rossler, Chua, Chen, Aizawa, Halvorsen, Burke-Shaw
+- [x] Sprott A-S, Thomas, Lorenz-84, Lorenz-96, Coupled Lorenz
+- [x] Standard Map, Henon Map, Stuart-Landau, Coupled VdP
+- [x] Selkov, Oregonator, Rikitake, Colpitts, Cart-Pole
+- [x] Three-Species, Elastic Pendulum, Schwarzschild, Quantum HO
+- [x] Boltzmann Gas, Spring-Mass Chain, Kepler, Driven Pendulum
 
 **Phase 3: Extended domain rediscoveries (65 ecology + epi + PDEs + neuro)**
 - [ ] Ecology: Rosenzweig-MacArthur, Competitive LV, Allee, Bazykin, May-Leonard

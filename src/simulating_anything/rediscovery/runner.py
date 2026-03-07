@@ -328,6 +328,7 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.three_species import run_three_species_rediscovery
     from simulating_anything.rediscovery.tigan import run_tigan_rediscovery
     from simulating_anything.rediscovery.tinkerbell_map import run_tinkerbell_map_rediscovery
+    from simulating_anything.rediscovery.toda_lattice import run_toda_lattice_rediscovery
     from simulating_anything.rediscovery.toggle_switch import run_toggle_switch_rediscovery
     from simulating_anything.rediscovery.toggle_switch_stochastic import (
         run_toggle_switch_stochastic_rediscovery,
@@ -986,6 +987,11 @@ def run_all_rediscoveries(
         "tinkerbell_map": {
             "label": "Tinkerbell Map 2D Strange Attractor",
             "fn": run_tinkerbell_map_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "toda_lattice": {
+            "label": "Toda Lattice Soliton Dynamics",
+            "fn": run_toda_lattice_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
         "rulkov_map": {
