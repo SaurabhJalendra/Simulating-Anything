@@ -603,7 +603,73 @@ for $m=1$. This demonstrates the complete loop from natural language
 question to validated equation without any pre-built simulation code.
 
 % ============================================================================
-% 7. DISCUSSION
+% 7. V4 CAPABILITIES
+% ============================================================================
+\section{Advanced Capabilities (V4)}
+\label{sec:v4}
+
+Building on the autonomous discovery engine, V4 introduces four capabilities
+that move the system toward fully autonomous, open-ended scientific research.
+
+\paragraph{Composable dynamics modules.}
+A library of reusable \texttt{DynamicsModule} building blocks (harmonic forces,
+nonlinear damping, Newtonian gravity, logistic growth, predator-prey
+interactions, SIR dynamics, etc.) that can be combined to construct new
+simulations without writing code. For example, a Duffing oscillator is
+composed from \texttt{HarmonicForce} + \texttt{CubicForce} +
+\texttt{LinearDamping} + \texttt{PeriodicForcing}. Cross-validation against
+monolithic implementations confirms correctness (31 tests).
+
+\paragraph{Equation-to-simulation auto-generation.}
+Given ODE strings such as ``$dx/dt = v$, $dv/dt = -kx$'', the system parses,
+validates (rejecting code injection), and runs them as full simulations with
+RK4 integration. Supports $d(x)/dt$, $x'$, $x\_dot$ formats, time-dependent
+terms, and arbitrary numpy math functions. Verified on SHO ($\omega = \sqrt{k}$),
+Lorenz (bounded chaos), SIR (population conservation), Brusselator (steady state),
+and Van der Pol (limit cycle). 24 tests.
+
+\paragraph{Enhanced world model (DreamerV4-style).}
+\texttt{RSSMv2}: 2-layer MLPs with LayerNorm in prior/posterior, mixed
+stochastic variables (categorical + continuous Gaussian), continue predictor,
+multi-step imagination. \texttt{EnsembleRSSM}: $N$ independent RSSM heads
+for epistemic uncertainty via prediction disagreement, driving uncertainty-based
+exploration to data-sparse parameter regions. All 21 tests pass on GPU.
+
+\paragraph{External simulator bridges.}
+Four bridge types connect non-Python simulators (OpenFOAM, GROMACS, SUMO)
+to the pipeline: file I/O, TCP/UDP socket, stdin/stdout subprocess, and
+Python module wrapping. All implement the \texttt{SimulationEnvironment}
+interface transparently. 17 tests.
+
+\paragraph{Sim-to-real transfer validation.}
+A framework for validating that simulation discoveries generalize to real-world
+data. Computes 12 metrics (R$^2$, RMSE, MAPE, KS test, Pearson/Spearman
+correlation, normalized RMSE) with composite transfer score and confidence
+levels (high/medium/low/failed). Supports equation validation, trajectory
+comparison, and parameter sweep verification. 22 tests.
+
+\paragraph{Persistent knowledge base.}
+JSON-persisted store for equations, analogies, parameters, hypotheses, and
+simulation results across sessions. Supports typed storage, querying by
+category/domain/tags/confidence, full-text search, and markdown export.
+21 tests.
+
+\paragraph{New discovery mode.}
+A registry of 6 genuinely unsolved problems (three-body stability boundaries,
+periodic orbit families, Lorenz chaos transition scaling, Kuramoto sync scaling,
+Gray-Scott pattern selection, Ising critical exponents) with automated
+parameter sweeps and polynomial/power-law fitting. Includes a full CR3BP
+(circular restricted three-body problem) simulation with Jacobi constant
+conservation, Lagrange point computation, and Lyapunov estimation.
+26 tests.
+
+\paragraph{Advanced encoders.}
+Graph neural network (message passing), 3D CNN (volumetric), and
+DeepSets (permutation-invariant) encoders for non-standard observation
+types. All numpy-based for CPU compatibility. 20 tests.
+
+% ============================================================================
+% 8. DISCUSSION
 % ============================================================================
 \section{Discussion}
 \label{sec:discussion}
@@ -990,8 +1056,8 @@ Python 3.12) and GPU (RTX 5090 via WSL2 Ubuntu 24.04, JAX 0.4.x).
 stochastic due to its evolutionary search; we report results from the
 best-of-3 runs where the correct functional form was recovered in all
 3 trials for 13 of 14 domains (all except the logistic map Lyapunov fit).
-The full codebase, including 7000+ unit tests covering all 187 simulation
-domains and analysis methods, is available at
+The full codebase, including 7200+ unit tests covering all 188 simulation
+domains, V4 modules, and analysis methods, is available at
 \url{https://github.com/SaurabhJalendra/Simulating-Anything}.
 
 \end{document}

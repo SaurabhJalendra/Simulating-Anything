@@ -1,8 +1,9 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-7024%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-7267%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
-[![Domains](https://img.shields.io/badge/domains-187-orange)](src/simulating_anything/simulation/)
+[![Domains](https://img.shields.io/badge/domains-188-orange)](src/simulating_anything/simulation/)
+[![Version](https://img.shields.io/badge/version-0.4.0-green)](pyproject.toml)
 [![R²](https://img.shields.io/badge/mean%20R%C2%B2-0.970-purple)](paper/results_table.tex)
 
 **Domain-Agnostic Scientific Discovery via World Models and Symbolic Regression**
@@ -233,6 +234,17 @@ Natural Language Query
 **Key insight:** Only the simulation layer is domain-specific. Everything else
 -- world model, exploration, analysis, and reporting -- operates on generic
 numpy arrays. Adding a new domain = one Python class with ~50-200 lines.
+
+### V4 Capabilities
+
+- **Composable dynamics modules**: Snap-together building blocks (harmonic forces, nonlinear damping, gravity, growth, SIR, etc.) to build simulations without writing code
+- **Equation-to-simulation**: Parse ODE strings like `dx/dt = v, dv/dt = -k*x` into running simulations with RK4 integration
+- **DreamerV4 world model**: RSSMv2 with mixed stochastic (categorical + Gaussian), LayerNorm, continue predictor; EnsembleRSSM for epistemic uncertainty
+- **External simulator bridges**: Connect OpenFOAM, GROMACS, SUMO, or any non-Python simulator via file/socket/subprocess/Python bridges
+- **Sim-to-real transfer validation**: 12 metrics (R², RMSE, MAPE, KS test, correlation) with composite confidence scores
+- **Persistent knowledge base**: JSON-backed store for equations, analogies, parameters, hypotheses across sessions
+- **New discovery mode**: Registry of 6 unsolved problems (three-body, Ising exponents, etc.) with automated parameter sweeps
+- **Advanced encoders**: GNN, 3D CNN, and DeepSets for graph/volumetric/particle data
 
 ---
 
