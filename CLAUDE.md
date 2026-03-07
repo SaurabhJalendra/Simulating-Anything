@@ -417,15 +417,15 @@ models, and produce real scientific discovery results.
 - [x] Three-Species, Elastic Pendulum, Schwarzschild, Quantum HO
 - [x] Boltzmann Gas, Spring-Mass Chain, Kepler, Driven Pendulum
 
-**Phase 3: Extended domain rediscoveries (65 ecology + epi + PDEs + neuro)**
-- [ ] Ecology: Rosenzweig-MacArthur, Competitive LV, Allee, Bazykin, May-Leonard
-- [ ] Epidemiology: SEIR, Network SIS, SIR-Vaccination, Zombie-SIR
-- [ ] Neuroscience: Hodgkin-Huxley, Hindmarsh-Rose, Morris-Lecar, Izhikevich
-- [ ] PDEs: KS, Ginzburg-Landau, Cahn-Hilliard, Sine-Gordon, Shallow Water
-- [ ] Reaction-Diffusion: Schnakenberg, Brusselator-2D, Gray-Scott-1D, BZ-Spiral
-- [ ] Solitons: Toda, FPUT, Diffusive LV
-- [ ] Statistical Mechanics: Ising, Bak-Sneppen, Vicsek, Lennard-Jones
-- [ ] New V5: Three-Body, Turbulent Flow, HP Protein
+**Phase 3: Extended domain rediscoveries (65 ecology + epi + PDEs + neuro)** -- COMPLETE (65/65, 59min)
+- [x] Ecology: Rosenzweig-MacArthur (0.9998), Competitive LV, Allee, Bazykin, May-Leonard
+- [x] Epidemiology: SEIR (R²=1.0), Network SIS, SIR-Vaccination (R²=1.0), Zombie-SIR
+- [x] Neuroscience: Hodgkin-Huxley, Hindmarsh-Rose (0.999), Morris-Lecar, Izhikevich (0.905)
+- [x] PDEs: KS, Ginzburg-Landau (0.936), Cahn-Hilliard, Sine-Gordon (1.0), Shallow Water (0.849)
+- [x] Reaction-Diffusion: Schnakenberg (1.0), Brusselator-2D (0.961), Gray-Scott-1D, BZ-Spiral (0.997)
+- [x] Solitons: Toda (1.0), FPUT (0.9998), Diffusive LV (0.830)
+- [x] Statistical Mechanics: Ising (0.981), Bak-Sneppen (0.979), Vicsek (0.997), Lennard-Jones (0.718)
+- [x] New V5: Three-Body (1.0), Turbulent Flow (0.943), HP Protein (0.848)
 
 **Phase 4: World model training (RSSM on RTX 5090)**
 - [ ] Train RSSM on 18 key domains (200 epochs each)
