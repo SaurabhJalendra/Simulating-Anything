@@ -1,6 +1,6 @@
 # Simulating Anything
 
-[![Tests](https://img.shields.io/badge/tests-7267%20passing-brightgreen)](tests/unit/)
+[![Tests](https://img.shields.io/badge/tests-7421%20passing-brightgreen)](tests/unit/)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org/)
 [![Domains](https://img.shields.io/badge/domains-188-orange)](src/simulating_anything/simulation/)
 [![Version](https://img.shields.io/badge/version-0.4.0-green)](pyproject.toml)
