@@ -1,7 +1,7 @@
 Simulation Domains
 ==================
 
-Simulating Anything includes 191 simulation domains spanning physics,
+Simulating Anything includes 192 simulation domains spanning physics,
 biology, chemistry, epidemiology, neuroscience, and more.
 
 Core Domains (14 rediscoveries)

@@ -545,6 +545,10 @@ src/simulating_anything/
     equation_parser.py     # EquationSimulation from NL equations
     external_bridge.py     # File/Socket/Subprocess/PythonModule bridges
     three_body.py          # CR3BP rotating frame (Lagrange points)
+    turbulent_flow.py      # High-Re 2D NS (spectral, ETDRK2, hyperviscosity)
+    hp_protein.py          # HP lattice protein folding (MC, 2D lattice)
+    lennard_jones.py       # LJ molecular dynamics (velocity Verlet, PBC)
+    cartpole_brax.py       # Brax-style cart-pole (RK4, action control)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     rssm_v2.py             # RSSMv2 (DreamerV4-style mixed stochastic)
@@ -705,7 +709,11 @@ src/simulating_anything/
     rulkov_map.py          # Discrete spiking analysis
     coupled_vdp.py         # Synchronization transition
     stuart_landau.py       # Hopf normal form verification
-    runner.py              # Unified runner for all 131 domains
+    three_body.py          # CR3BP Jacobi constant, Lagrange points
+    turbulent_flow.py      # High-Re 2D NS energy spectrum, enstrophy
+    hp_protein.py          # HP protein folding, specific heat, Rg
+    lennard_jones.py       # LJ MD equation of state, diffusion
+    runner.py              # Unified runner for all domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -740,7 +748,7 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 7421 tests across 140+ files
+tests/unit/                # 7876 tests across 150+ files
   test_types.py            # 28 tests — Pydantic model validation
   test_config.py           # 14 tests — Config loading
   test_simulation.py       # 14 tests — 3 V1 simulation engines
@@ -837,11 +845,21 @@ tests/unit/                # 7421 tests across 140+ files
   test_rossler_hyperchaos.py # 30 tests — 4D hyperchaos
   test_harvested_population.py # 28 tests — Resource ODE
   test_fhn_ring.py         # 23 tests — Neural ring network
-  # ... plus 60+ more test files for domains #97-131
+  # ... plus 60+ more test files for domains #97-192
   test_tinkerbell_map.py   # 37 tests — 2D complex quadratic map
   test_rulkov_map.py       # 32 tests — Discrete spiking neuron
   test_coupled_vdp.py      # 40 tests — Coupled VdP synchronization
   test_stuart_landau.py    # 37 tests — Hopf normal form
+  test_turbulent_flow.py   # Turbulent flow 2D simulation
+  test_hp_protein.py       # HP protein folding simulation
+  test_lennard_jones.py    # LJ molecular dynamics simulation
+  test_cartpole_brax.py    # CartPole-Brax simulation
+  test_three_body.py       # Three-body problem simulation
+  test_composable.py       # Composable dynamics modules
+  test_transfer_validation.py # Sim-to-real transfer validation
+  test_baseline_comparison.py # Baseline comparisons
+  test_advanced_encoders.py # GNN, 3D CNN, Set encoders
+  test_knowledge_base.py   # Persistent knowledge base
 
 output/rediscovery/          # Rediscovery results (not committed to git)
   projectile/results.json    # R = v²sin(2θ)/g recovered
@@ -878,6 +896,15 @@ scripts/
 docs/
   RESEARCH.md              # Vision, universality argument (Section 4), contributions
   DESIGN.md                # Architecture, domain expansion (Section 11), evaluation
+  conf.py                  # Sphinx configuration
+  index.rst                # Documentation index
+  quickstart.rst           # Installation and usage guide
+  architecture.rst         # System architecture overview
+  domains.rst              # All 192 domains listed
+  api/                     # API reference (autodoc)
+
+Dockerfile                 # Python 3.12-slim container
+.dockerignore              # Docker build exclusions
 
 notebooks/
   demos/demo.ipynb           # Three-domain demo

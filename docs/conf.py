@@ -3,7 +3,7 @@
 project = "Simulating Anything"
 copyright = "2025, SaurabhJalendra"
 author = "SaurabhJalendra"
-release = "0.4.0"
+release = "0.5.0"
 
 extensions = [
     "sphinx.ext.autodoc",
