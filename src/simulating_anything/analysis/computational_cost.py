@@ -16,7 +16,6 @@ import logging
 import sys
 import time
 from dataclasses import dataclass, field
-from pathlib import Path
 
 import numpy as np
 
@@ -178,25 +177,28 @@ def _get_simulation_class(domain: str):
     import importlib
 
     # Map domain names to module.class
+    _sim = "simulating_anything.simulation"
     module_map = {
-        "projectile": ("simulating_anything.simulation.rigid_body", "ProjectileSimulation"),
-        "lotka_volterra": ("simulating_anything.simulation.agent_based", "LotkaVolterraSimulation"),
+        "projectile": (f"{_sim}.rigid_body", "ProjectileSimulation"),
+        "lotka_volterra": (f"{_sim}.agent_based", "LotkaVolterraSimulation"),
         "harmonic_oscillator": (
-            "simulating_anything.simulation.harmonic_oscillator",
-            "DampedHarmonicOscillator",
+            f"{_sim}.harmonic_oscillator", "DampedHarmonicOscillator",
         ),
-        "lorenz": ("simulating_anything.simulation.lorenz", "LorenzSimulation"),
-        "sir_epidemic": ("simulating_anything.simulation.epidemiological", "SIRSimulation"),
-        "double_pendulum": ("simulating_anything.simulation.chaotic_ode", "DoublePendulumSimulation"),
-        "van_der_pol": ("simulating_anything.simulation.van_der_pol", "VanDerPolSimulation"),
-        "brusselator": ("simulating_anything.simulation.brusselator", "BrusselatorSimulation"),
+        "lorenz": (f"{_sim}.lorenz", "LorenzSimulation"),
+        "sir_epidemic": (f"{_sim}.epidemiological", "SIRSimulation"),
+        "double_pendulum": (
+            f"{_sim}.chaotic_ode", "DoublePendulumSimulation",
+        ),
+        "van_der_pol": (f"{_sim}.van_der_pol", "VanDerPolSimulation"),
+        "brusselator": (f"{_sim}.brusselator", "BrusselatorSimulation"),
         "fitzhugh_nagumo": (
-            "simulating_anything.simulation.fitzhugh_nagumo",
-            "FitzHughNagumoSimulation",
+            f"{_sim}.fitzhugh_nagumo", "FitzHughNagumoSimulation",
         ),
-        "heat_equation": ("simulating_anything.simulation.heat_equation", "HeatEquationSimulation"),
-        "logistic_map": ("simulating_anything.simulation.logistic_map", "LogisticMapSimulation"),
-        "kuramoto": ("simulating_anything.simulation.kuramoto", "KuramotoSimulation"),
+        "heat_equation": (
+            f"{_sim}.heat_equation", "HeatEquationSimulation",
+        ),
+        "logistic_map": (f"{_sim}.logistic_map", "LogisticMapSimulation"),
+        "kuramoto": (f"{_sim}.kuramoto", "KuramotoSimulation"),
     }
 
     if domain not in module_map:
@@ -219,7 +221,6 @@ def measure_fitting_cost(
 
     Returns timing for polynomial, power-law, and correct-form fitting.
     """
-    rng = np.random.default_rng(seed)
     costs = []
 
     # Generate projectile data
@@ -252,7 +253,7 @@ def measure_fitting_cost(
     # Correct-form fit
     t0 = time.monotonic()
     feature = V**2 * np.sin(2 * np.radians(T))
-    c = np.sum(feature * R) / np.sum(feature**2)
+    _ = np.sum(feature * R) / np.sum(feature**2)
     dt = time.monotonic() - t0
     costs.append(StageCost(
         stage="correct_form", domain="projectile", wall_time_s=dt,

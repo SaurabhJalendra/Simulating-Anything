@@ -1078,4 +1078,12 @@ The full codebase, including 7400+ unit tests covering all 188 simulation
 domains, V4 modules, and analysis methods, is available at
 \url{https://github.com/SaurabhJalendra/Simulating-Anything}.
 
+To reproduce all paper tables:
+\begin{verbatim}
+pip install -e ".[dev]"
+python -m pytest tests/unit/ -q       # 7400+ tests
+python scripts/generate_paper_tables.py  # baselines, significance,
+                                         # robustness, cost tables
+\end{verbatim}
+
 \end{document}
