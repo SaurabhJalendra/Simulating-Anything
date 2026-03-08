@@ -303,9 +303,21 @@ Beyond the core 14 domains, we ran the full PySR/SINDy discovery pipeline on
 178 additional domains spanning quantum mechanics, statistical mechanics,
 celestial mechanics, neuroscience, reaction-diffusion PDEs, gene regulatory
 networks, epidemiology, climate science, and more. Table~\ref{tab:extended}
-highlights the top-performing extended domains. Across all 192 domains with
+highlights the top-performing extended domains. Figure~\ref{fig:rediscovery_all}
+shows the distribution of R$^2$ scores across all domains.
+Across all 192 domains with
 equation recovery, 95 of 171 quantitative fits achieve $R^2 \geq 0.999$,
 109 achieve $R^2 \geq 0.99$, and the median $R^2$ is 0.9998.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/rediscovery_summary_192domain.pdf}
+\caption{Rediscovery R$^2$ scores across all 171 domains with quantitative fits,
+sorted by score. Green: $R^2 \geq 0.999$ (95 domains), blue: $R^2 \geq 0.99$ (14 more),
+orange: $R^2 \geq 0.9$ (21 more), red: $R^2 < 0.9$ (41 domains).
+Median $R^2 = 0.9998$.}
+\label{fig:rediscovery_all}
+\end{figure}
 
 \begin{table}[h]
 \centering
@@ -332,6 +344,15 @@ Kapitza Pend. & Parametric ODE & \textbf{1.000} & Inverted stable \\
 Wilberforce & Coupled ODE & \textbf{1.000} & Beat frequency \\
 Damped Wave & Wave PDE & \textbf{1.000} & $\omega_k = ck$ \\
 Stuart-Landau & Hopf Normal Form & \textbf{1.000} & $r = \sqrt{\mu}$ \\
+KdV & Integrable PDE & \textbf{1.000} & Soliton speed \\
+Bernoulli ODE & Nonlinear ODE & \textbf{1.000} & $y_{ss} = a/b$ \\
+Repressilator & Gene Reg.\ Network & \textbf{1.000} & 3-gene oscillation \\
+Michaelis-Menten & Enzyme Kinetics & \textbf{1.000} & $V_{\max}S/(K_m{+}S)$ \\
+SIRS & Epidemic ODE & \textbf{1.000} & Waning immunity \\
+Diffusion 2D & Diffusion PDE & \textbf{1.000} & $\lambda = Dk^2$ \\
+Stommel & Thermohaline ODE & \textbf{1.000} & Hysteresis \\
+Burgers 1D & Nonlinear PDE & \textbf{1.000} & $t_{shock} \sim 1/A$ \\
+Swift-Hohenberg & Pattern PDE & \textbf{1.000} & $A \sim \sqrt{r}$ \\
 \midrule
 FPUT Lattice & Integrable & 0.9998 & Recurrence \\
 Bouncing Ball & Impact Map & 0.998 & Feigenbaum \\
@@ -345,15 +366,17 @@ Turbulent Flow & Chaotic PDE & 0.943 & Energy spectrum \\
 \end{tabular}
 \end{table}
 
-Fifteen of the 100 extended domains achieve perfect $R^2 = 1.0$, spanning
+Twenty-five of the 178 extended domains achieve perfect $R^2 = 1.0$, spanning
 quantum mechanics (quantum oscillator energy spectrum), celestial mechanics
-(Kepler's third law, three-body Lagrange points), epidemiology (SEIR
-reproduction number, vaccination herd immunity threshold), topological
-solitons (Sine-Gordon kinks), integrable lattices (Toda), parametric
-stabilization (Kapitza), and Hopf normal forms (Stuart-Landau). The
-uniformly high accuracy across such diverse mathematical classes---achieved
-with zero per-domain hyperparameter tuning---validates the universality
-claim: the pipeline discovers equations regardless of the underlying dynamics.
+(Kepler's third law, three-body Lagrange points), epidemiology (SEIR, SIRS,
+vaccination herd immunity), topological solitons (Sine-Gordon kinks, KdV),
+integrable lattices (Toda), enzyme kinetics (Michaelis-Menten), gene regulatory
+networks (repressilator), thermohaline circulation (Stommel), pattern formation
+(Swift-Hohenberg), parametric stabilization (Kapitza), and Hopf normal forms
+(Stuart-Landau). The uniformly high accuracy across such diverse mathematical
+classes---achieved with zero per-domain hyperparameter tuning---validates the
+universality claim: the pipeline discovers equations regardless of the
+underlying dynamics.
 
 % ============================================================================
 % 5. CROSS-DOMAIN ANALYSIS

@@ -26,40 +26,40 @@
 \midrule
 \multicolumn{6}{l}{\textit{Extended domains (178 additional with full PySR/SINDy results, same pipeline infrastructure):}} \\
 \midrule
-15 & Duffing Osc. & Chaotic ODE & -- & -- & Period-doubling chaos \\
-16 & Schwarzschild & GR Geodesic & -- & -- & ISCO $= 6M$ \\
+15 & Duffing Osc. & Chaotic ODE & PySR+SINDy & \textbf{1.0000} & Period-doubling chaos \\
+16 & Schwarzschild & GR Geodesic & PySR & \textbf{1.0000} & ISCO $= 6M$ \\
 17 & Quantum Osc. & Quantum PDE & PySR & \textbf{1.0000} & $E_0 = \omega/2$ \\
-18 & Boltzmann Gas & Stat.\ Mech. & -- & -- & $PV = NkT$ \\
+18 & Boltzmann Gas & Stat.\ Mech. & PySR & \textbf{0.9998} & $PV = NkT$ \\
 19 & Spring Chain & Coupled ODE & PySR & \textbf{1.0000} & $\omega = 4\sin(k/2)$ \\
 20 & Kepler Orbit & Celestial & PySR & \textbf{1.0000} & $T^2 \propto a^3$ \\
-21 & Driven Pend. & Chaotic ODE & -- & -- & Feigenbaum cascade \\
-22 & Coupled Osc. & Coupled ODE & -- & -- & Beat frequency \\
-23 & Diffusive LV & RD-PDE & -- & -- & Fisher-KPP waves \\
+21 & Driven Pend. & Chaotic ODE & PySR & 0.9322 & Feigenbaum cascade \\
+22 & Coupled Osc. & Coupled ODE & PySR+SINDy & 0.9887 & Beat frequency \\
+23 & Diffusive LV & RD-PDE & PySR & 0.8304 & Fisher-KPP waves \\
 24 & Damped Wave & Wave PDE & PySR & \textbf{1.0000} & $\omega_k = ck$ dispersion \\
 25 & 2D Ising & Stat.\ Mech. & PySR & 0.9810 & $T_c$ phase transition \\
-26 & Cart-Pole & Nonlinear ODE & -- & -- & $\omega = \sqrt{g(M{+}m)/(ML)}$ \\
-27 & 3-Species & Nonlinear ODE & -- & -- & Trophic cascade ODE \\
-28 & Elastic Pend. & Nonlinear ODE & -- & -- & $\omega_r = \sqrt{k/m}$ \\
-29 & R\"ossler & Chaotic ODE & -- & -- & Period-doubling chaos \\
-30 & Bruss.-Diff. & RD-PDE & -- & -- & Turing instability \\
-31 & H\'enon Map & Discrete & -- & -- & Attractor $D \approx 1.26$ \\
-32 & Rosenzweig-MA & Nonlinear ODE & -- & -- & Holling Type II \\
-33 & Chua Circuit & Chaotic ODE & -- & -- & Double-scroll attractor \\
-34 & Shallow Water & PDE & -- & -- & $c = \sqrt{gh}$ \\
+26 & Cart-Pole & Nonlinear ODE & PySR & \textbf{0.9999} & $\omega = \sqrt{g(M{+}m)/(ML)}$ \\
+27 & 3-Species & Nonlinear ODE & SINDy & \textbf{1.0000} & Trophic cascade ODE \\
+28 & Elastic Pend. & Nonlinear ODE & PySR & \textbf{1.0000} & $\omega_r = \sqrt{k/m}$ \\
+29 & R\"ossler & Chaotic ODE & SINDy & \textbf{1.0000} & Period-doubling chaos \\
+30 & Bruss.-Diff. & RD-PDE & PySR & 0.9855 & Turing instability \\
+31 & H\'enon Map & Discrete & PySR & 0.8122 & Attractor $D \approx 1.26$ \\
+32 & Rosenzweig-MA & Nonlinear ODE & PySR+SINDy & 0.9624 & Holling Type II \\
+33 & Chua Circuit & Chaotic ODE & SINDy & 0.9872 & Double-scroll attractor \\
+34 & Shallow Water & PDE & PySR & 0.8494 & $c = \sqrt{gh}$ \\
 35 & Toda Lattice & Integrable & PySR & \textbf{1.0000} & Soliton propagation \\
 36 & Kuramoto-Siv. & Chaotic PDE & -- & -- & Spatiotemporal chaos \\
-37 & Ginzburg-Landau & Complex PDE & -- & -- & Benjamin-Feir instab. \\
-38 & Oregonator & Nonlinear ODE & -- & -- & BZ relaxation osc. \\
+37 & Ginzburg-Landau & Complex PDE & PySR & 0.9357 & Benjamin-Feir instab. \\
+38 & Oregonator & Nonlinear ODE & PySR+SINDy & 0.9105 & BZ relaxation osc. \\
 39 & Bak-Sneppen & SOC & PySR & 0.9790 & $f_c \approx 2/3$ \\
 40 & Lorenz-96 & High-dim.\ Chaos & -- & -- & Lyapunov $\lambda > 0$ at $F{=}8$ \\
 41 & Chemostat & Nonlinear ODE & PySR & 0.9980 & Monod kinetics \\
-42 & FHN Spatial & RD-PDE & -- & -- & Spiral wave patterns \\
+42 & FHN Spatial & RD-PDE & PySR & 0.5116 & Spiral wave patterns \\
 43 & Wilberforce & Coupled ODE & PySR & \textbf{1.0000} & Beat frequency $\omega_b$ \\
-44 & Standard Map & Hamiltonian & -- & -- & $K_c \approx 0.9716$ (KAM) \\
-45 & Hodgkin-Huxley & Biophysical ODE & -- & -- & f-I curve, action pot. \\
-46 & Rayleigh-B\'enard & Convection PDE & -- & -- & $\text{Ra}_c \approx 657.5$ \\
-47 & Eco-Epidemic & Eco-Epidemiol. & -- & -- & Predator disease ctrl \\
-48 & Hindmarsh-Rose & Bursting ODE & -- & -- & Burst dynamics \\
+44 & Standard Map & Hamiltonian & PySR & 0.9926 & $K_c \approx 0.9716$ (KAM) \\
+45 & Hodgkin-Huxley & Biophysical ODE & PySR & \textbf{0.9999} & f-I curve, action pot. \\
+46 & Rayleigh-B\'enard & Convection PDE & PySR & 0.9657 & $\text{Ra}_c \approx 657.5$ \\
+47 & Eco-Epidemic & Eco-Epidemiol. & SINDy & 0.9187 & Predator disease ctrl \\
+48 & Hindmarsh-Rose & Bursting ODE & SINDy & 0.5951 & Burst dynamics \\
 49 & Magnetic Pend. & Fractal Basin & -- & -- & Fractal basin boundaries \\
 50 & Competitive LV & Competitive ODE & -- & -- & Exclusion principle \\
 51 & Vicsek & Active Matter & PySR & 0.9970 & Flocking transition \\
@@ -67,137 +67,137 @@
 53 & BZ Spiral & Excitable PDE & PySR & 0.9970 & Spiral waves \\
 54 & Swing.\ Atwood & Lagrangian ODE & -- & -- & $E$ conservation \\
 55 & Allee Pred-Prey & Bistable ODE & -- & -- & Allee threshold $A$ \\
-56 & Mackey-Glass & DDE Chaos & -- & -- & Period-doubling cascade \\
+56 & Mackey-Glass & DDE Chaos & PySR & 0.7765 & Period-doubling cascade \\
 57 & Bouncing Ball & Impact Map & PySR & 0.9980 & Feigenbaum universality \\
 58 & Wilson-Cowan & Neural Pop.\ ODE & PySR & \textbf{1.0000} & E-I Hopf bifurcation \\
 59 & Cable Equation & Linear PDE & -- & -- & $V \sim e^{-|x|/\lambda}$ \\
 60 & Sine-Gordon & Nonlinear Wave & PySR & \textbf{1.0000} & Kink soliton $Q=1$ \\
-61 & Thomas & Cyclic Chaos & -- & -- & $b_c \approx 0.208$ \\
-62 & Ikeda Map & Discrete Chaos & -- & -- & $\det(J) = u^2$ \\
+61 & Thomas & Cyclic Chaos & SINDy & 0.2157 & $b_c \approx 0.208$ \\
+62 & Ikeda Map & Discrete Chaos & PySR & 0.4675 & $\det(J) = u^2$ \\
 63 & May-Leonard & Cyclic Comp. & -- & -- & Heteroclinic cycles \\
 64 & Cahn-Hilliard & Phase Field PDE & -- & -- & $L(t) \sim t^{1/3}$ \\
-65 & Delayed Pred-Prey & DDE & -- & -- & Hopf at $\tau_c$ \\
-66 & Duffing-VdP & Nonlinear ODE & -- & -- & VdP$+$Duffing hybrid \\
-67 & Network SIS & Network Epi. & -- & -- & $\beta_c = \gamma/\lambda_{\max}$ \\
-68 & Coupled Map Lattice & Spatiotemporal & -- & -- & Kaneko CML chaos \\
+65 & Delayed Pred-Prey & DDE & PySR & 0.9940 & Hopf at $\tau_c$ \\
+66 & Duffing-VdP & Nonlinear ODE & PySR+SINDy & \textbf{1.0000} & VdP$+$Duffing hybrid \\
+67 & Network SIS & Network Epi. & PySR & \textbf{0.9999} & $\beta_c = \gamma/\lambda_{\max}$ \\
+68 & Coupled Map Lattice & Spatiotemporal & PySR & 0.8819 & Kaneko CML chaos \\
 69 & Schnakenberg & RD-PDE & PySR & \textbf{1.0000} & Turing pattern formation \\
 70 & Kapitza Pend. & Parametric ODE & PySR & \textbf{1.0000} & Inverted stabilization \\
-71 & FitzHugh-Rinzel & Bursting ODE & -- & -- & 3-timescale bursting \\
-72 & Lorenz-84 & Low-dim.\ Atmos. & -- & -- & Hadley $x^*{=}F$ \\
-73 & Rabinovich-Fab. & Plasma Chaos & -- & -- & Multiscroll attractor \\
-74 & Sprott Systems & Minimal Chaos & -- & -- & Parameterless chaos \\
+71 & FitzHugh-Rinzel & Bursting ODE & SINDy & -32.2908 & 3-timescale bursting \\
+72 & Lorenz-84 & Low-dim.\ Atmos. & SINDy & \textbf{1.0000} & Hadley $x^*{=}F$ \\
+73 & Rabinovich-Fab. & Plasma Chaos & SINDy & 0.9910 & Multiscroll attractor \\
+74 & Sprott Systems & Minimal Chaos & SINDy & \textbf{1.0000} & Parameterless chaos \\
 75 & Gray-Scott 1D & 1D RD-PDE & -- & -- & Pulse splitting \\
-76 & Pred-Prey-Mut. & Mutualistic ODE & -- & -- & Holling II + mutualism \\
-77 & Brusselator 2D & 2D RD-PDE & -- & -- & Hex spots/stripes \\
+76 & Pred-Prey-Mut. & Mutualistic ODE & SINDy & 0.9686 & Holling II + mutualism \\
+77 & Brusselator 2D & 2D RD-PDE & PySR & 0.9610 & Hex spots/stripes \\
 78 & FPUT Lattice & Integrable Lattice & PySR & \textbf{0.9998} & Recurrence paradox \\
-79 & Selkov & Biochemical ODE & -- & -- & Glycolysis Hopf \\
-80 & Rikitake & Geophysical ODE & -- & -- & Polarity reversals \\
-81 & Oregonator 1D & 1D Excitable PDE & -- & -- & Traveling chem.\ pulses \\
-82 & Ricker Map & Discrete Pop. & -- & -- & Overcompensation chaos \\
-83 & Morris-Lecar & Conductance Neuron & -- & -- & Type I/II excitability \\
-84 & Colpitts Osc. & Electronic Chaos & -- & -- & Jerk-circuit chaos \\
-85 & R\"ossler Hyper. & Hyperchaotic ODE & -- & -- & Two positive LE \\
-86 & Harvested Pop. & Resource ODE & -- & -- & MSY saddle-node \\
-87 & FHN Ring & Neural Network & -- & -- & Ring traveling waves \\
-88 & Bazykin & Pred-Prey ODE & -- & -- & Holling II + quad. mort. \\
+79 & Selkov & Biochemical ODE & PySR+SINDy & \textbf{1.0000} & Glycolysis Hopf \\
+80 & Rikitake & Geophysical ODE & SINDy & \textbf{1.0000} & Polarity reversals \\
+81 & Oregonator 1D & 1D Excitable PDE & PySR+SINDy & 0.9105 & Traveling chem.\ pulses \\
+82 & Ricker Map & Discrete Pop. & PySR & 0.4591 & Overcompensation chaos \\
+83 & Morris-Lecar & Conductance Neuron & PySR+SINDy & 0.3922 & Type I/II excitability \\
+84 & Colpitts Osc. & Electronic Chaos & SINDy & 0.9659 & Jerk-circuit chaos \\
+85 & R\"ossler Hyper. & Hyperchaotic ODE & SINDy & \textbf{1.0000} & Two positive LE \\
+86 & Harvested Pop. & Resource ODE & PySR+SINDy & \textbf{1.0000} & MSY saddle-node \\
+87 & FHN Ring & Neural Network & PySR & 0.9443 & Ring traveling waves \\
+88 & Bazykin & Pred-Prey ODE & PySR+SINDy & 0.9980 & Holling II + quad. mort. \\
 89 & SIR-Vaccination & Epidemic ODE & PySR & \textbf{1.0000} & $p_c = (R_0{-}1)/R_0$ \\
-90 & Langford & Torus ODE & -- & -- & Hopf-Hopf bifurcation \\
-91 & Laser Rate & Laser Physics & -- & -- & $P_{th}$ threshold lasing \\
-92 & FHN Lattice & Neural Lattice & -- & -- & Spiral waves, sync \\
-93 & Four-Species LV & Food Web ODE & -- & -- & 4-species coexistence \\
-94 & Lorenz-Stenflo & 4D Chaotic ODE & -- & -- & EM wave coupling \\
-95 & Chen & Chaotic ODE & -- & -- & Lorenz algebraic dual \\
-96 & Aizawa & Chaotic ODE & -- & -- & Mushroom attractor \\
-97 & Halvorsen & Chaotic ODE & -- & -- & Cyclic S3 symmetry \\
-98 & Burke-Shaw & Chaotic ODE & -- & -- & Magnetic double-scroll \\
-99 & Nose-Hoover & Thermostat ODE & -- & -- & Thermostatted SHO chaos \\
-100 & Lorenz-Haken & Laser ODE & -- & -- & Maxwell-Bloch laser chaos \\
-101 & Sakarya & Chaotic ODE & -- & -- & Neural-inspired chaos \\
-102 & Dadras & Chaotic ODE & -- & -- & 5-param quadratic chaos \\
-103 & Genesio-Tesi & Jerk ODE & -- & -- & Minimal jerk chaos \\
-104 & Lu-Chen & Chaotic ODE & -- & -- & Unified Lorenz-Chen family \\
-105 & Qi & 4D Chaotic ODE & -- & -- & 4D hyperchaos, 2 pos. Lyapunov \\
-106 & WINDMI & Space Weather ODE & -- & -- & Magnetospheric jerk, $e^x$ \\
-107 & Finance & Economics ODE & -- & -- & Chaotic interest-investment-price \\
-108 & Shimizu-Morioka & Chaotic ODE & -- & -- & Lorenz-like simplified convection \\
-109 & Newton-Leipnik & Chaotic ODE & -- & -- & Multistable coexisting attractors \\
-110 & Wang & Chaotic ODE & -- & -- & Single-wing 4-param attractor \\
-111 & Arneodo & Jerk ODE & -- & -- & Cubic $x^3$ jerk chaos \\
-112 & Rucklidge & Convection ODE & -- & -- & Double convection chaos \\
-113 & Liu & Chaotic ODE & -- & -- & 6-parameter quadratic attractor \\
-114 & Hadley & Atmospheric ODE & -- & -- & Hadley cell circulation \\
-115 & Vallis & Climate ODE & -- & -- & ENSO El Ni\~{n}o chaos \\
-116 & Tigan & Chaotic ODE & -- & -- & Generalized Lorenz T-system \\
-117 & Predator-Two-Prey & Pred-Prey ODE & -- & -- & 1 predator + 2 prey ecology \\
-118 & Autocatalator & Autocatalytic ODE & -- & -- & $A + 2B \to 3B$ oscillator \\
+90 & Langford & Torus ODE & SINDy & \textbf{0.9995} & Hopf-Hopf bifurcation \\
+91 & Laser Rate & Laser Physics & SINDy & \textbf{1.0000} & $P_{th}$ threshold lasing \\
+92 & FHN Lattice & Neural Lattice & PySR & 0.5550 & Spiral waves, sync \\
+93 & Four-Species LV & Food Web ODE & SINDy & 0.9924 & 4-species coexistence \\
+94 & Lorenz-Stenflo & 4D Chaotic ODE & SINDy & \textbf{1.0000} & EM wave coupling \\
+95 & Chen & Chaotic ODE & SINDy & \textbf{1.0000} & Lorenz algebraic dual \\
+96 & Aizawa & Chaotic ODE & SINDy & \textbf{0.9994} & Mushroom attractor \\
+97 & Halvorsen & Chaotic ODE & SINDy & \textbf{1.0000} & Cyclic S3 symmetry \\
+98 & Burke-Shaw & Chaotic ODE & SINDy & \textbf{1.0000} & Magnetic double-scroll \\
+99 & Nose-Hoover & Thermostat ODE & SINDy & \textbf{1.0000} & Thermostatted SHO chaos \\
+100 & Lorenz-Haken & Laser ODE & SINDy & \textbf{1.0000} & Maxwell-Bloch laser chaos \\
+101 & Sakarya & Chaotic ODE & SINDy & \textbf{1.0000} & Neural-inspired chaos \\
+102 & Dadras & Chaotic ODE & SINDy & \textbf{1.0000} & 5-param quadratic chaos \\
+103 & Genesio-Tesi & Jerk ODE & SINDy & \textbf{1.0000} & Minimal jerk chaos \\
+104 & Lu-Chen & Chaotic ODE & SINDy & \textbf{1.0000} & Unified Lorenz-Chen family \\
+105 & Qi & 4D Chaotic ODE & SINDy & \textbf{1.0000} & 4D hyperchaos, 2 pos. Lyapunov \\
+106 & WINDMI & Space Weather ODE & SINDy & 0.9630 & Magnetospheric jerk, $e^x$ \\
+107 & Finance & Economics ODE & SINDy & \textbf{1.0000} & Chaotic interest-investment-price \\
+108 & Shimizu-Morioka & Chaotic ODE & SINDy & \textbf{1.0000} & Lorenz-like simplified convection \\
+109 & Newton-Leipnik & Chaotic ODE & SINDy & \textbf{1.0000} & Multistable coexisting attractors \\
+110 & Wang & Chaotic ODE & SINDy & 0.9916 & Single-wing 4-param attractor \\
+111 & Arneodo & Jerk ODE & SINDy & \textbf{1.0000} & Cubic $x^3$ jerk chaos \\
+112 & Rucklidge & Convection ODE & SINDy & \textbf{1.0000} & Double convection chaos \\
+113 & Liu & Chaotic ODE & SINDy & \textbf{1.0000} & 6-parameter quadratic attractor \\
+114 & Hadley & Atmospheric ODE & SINDy & \textbf{1.0000} & Hadley cell circulation \\
+115 & Vallis & Climate ODE & SINDy & \textbf{1.0000} & ENSO El Ni\~{n}o chaos \\
+116 & Tigan & Chaotic ODE & SINDy & \textbf{1.0000} & Generalized Lorenz T-system \\
+117 & Predator-Two-Prey & Pred-Prey ODE & SINDy & \textbf{1.0000} & 1 predator + 2 prey ecology \\
+118 & Autocatalator & Autocatalytic ODE & SINDy & \textbf{1.0000} & $A + 2B \to 3B$ oscillator \\
 119 & SEIR & Epidemic ODE & PySR & \textbf{1.0000} & $R_0 = \beta/\gamma$ \\
-120 & Ueda & Forced ODE & -- & -- & Forced cubic strange attractor \\
-121 & Cubic Map & Discrete Map & -- & -- & $x_{n+1} = rx_n - x_n^3$ chaos \\
-122 & Zombie-SIR & Epidemic ODE & -- & -- & Zombie outbreak + resurrection \\
-123 & Elastic Collision & Particle Mechanics & -- & -- & Newton's cradle, $p$ \& $E$ conservation \\
+120 & Ueda & Forced ODE & SINDy & \textbf{0.9996} & Forced cubic strange attractor \\
+121 & Cubic Map & Discrete Map & PySR & 0.7437 & $x_{n+1} = rx_n - x_n^3$ chaos \\
+122 & Zombie-SIR & Epidemic ODE & PySR+SINDy & 0.9912 & Zombie outbreak + resurrection \\
+123 & Elastic Collision & Particle Mechanics & PySR & 0.9798 & Newton's cradle, $p$ \& $E$ conservation \\
 124 & Tent Map & Discrete Map & PySR & \textbf{1.0000} & $\lambda = \ln r$ exact \\
-125 & Lozi Map & Discrete Map & -- & -- & 2D piecewise attractor, $\det(J) = -b$ \\
-126 & Izhikevich & Spiking Neuron & -- & -- & 7 firing patterns, efficient 2D model \\
-127 & Double Well & Bistable ODE & -- & -- & $V = x^4/4 - x^2/2$, Kramers escape \\
-128 & Tinkerbell Map & 2D Discrete Map & -- & -- & Complex quadratic map, strange attractor \\
-129 & Rulkov Map & Discrete Neuron & -- & -- & Fast-slow spiking, bursting dynamics \\
-130 & Coupled VdP & Coupled Oscillator & -- & -- & Synchronization of limit cycles \\
+125 & Lozi Map & Discrete Map & PySR & 0.9534 & 2D piecewise attractor, $\det(J) = -b$ \\
+126 & Izhikevich & Spiking Neuron & PySR & 0.9052 & 7 firing patterns, efficient 2D model \\
+127 & Double Well & Bistable ODE & PySR+SINDy & \textbf{1.0000} & $V = x^4/4 - x^2/2$, Kramers escape \\
+128 & Tinkerbell Map & 2D Discrete Map & PySR & 0.8132 & Complex quadratic map, strange attractor \\
+129 & Rulkov Map & Discrete Neuron & PySR & 0.8104 & Fast-slow spiking, bursting dynamics \\
+130 & Coupled VdP & Coupled Oscillator & SINDy & \textbf{1.0000} & Synchronization of limit cycles \\
 131 & Stuart-Landau & Hopf Normal Form & PySR & \textbf{1.0000} & $r = \sqrt{\mu}$ \\
-132 & Gauss Map & Gaussian Map & -- & -- & Period-doubling, Feigenbaum universality \\
-133 & Circle Map & Circle Map & -- & -- & Arnold tongues, devil's staircase \\
+132 & Gauss Map & Gaussian Map & PySR & 0.7428 & Period-doubling, Feigenbaum universality \\
+133 & Circle Map & Circle Map & PySR & \textbf{1.0000} & Arnold tongues, devil's staircase \\
 134 & Coupled Rossler & Coupled Chaotic ODE & -- & -- & Chaos synchronization transition \\
-135 & SIR Vital & Epidemic ODE & -- & -- & Endemic equilibrium, $R_0 = \beta/(\gamma+\mu)$ \\
-136 & Repressilator & Gene Regulatory Network & -- & -- & 3-gene cyclic oscillation, $Z_3$ symmetry \\
-137 & Ring Oscillator & Electronic Oscillator & -- & -- & 3-stage inverter, $T \sim 6\tau$ \\
-138 & Jansen-Rit & Neural Mass Model & -- & -- & Alpha rhythm ($\sim$10 Hz), EEG generation \\
-139 & Goldbeter Glycolysis & Metabolic Oscillator & -- & -- & Allosteric PFK, Hopf bifurcation \\
-140 & Goodwin & Gene Regulatory Osc. & -- & -- & Cyclic Hill repression, $Z_3$ symmetry \\
-141 & Toggle Switch & Bistable Gene Circuit & -- & -- & Mutual repression, cusp catastrophe \\
-142 & Stommel & Thermohaline Circ. & -- & -- & Hysteresis, bistable ocean circulation \\
-143 & Predator-Prey-Parasite & Eco-Epidemiol. & -- & -- & Disease in prey, 3-species dynamics \\
-144 & Michaelis-Menten & Enzyme Kinetics & -- & -- & $v = V_{\max}S/(K_m{+}S)$, QSSA \\
-145 & Winfree & Pulse-Coupled Osc. & -- & -- & Sync transition, predecessor to Kuramoto \\
-146 & FHN Coupled Pair & Coupled Neural ODE & -- & -- & Diffusive sync, $g_c$ critical coupling \\
-147 & Prey Refuge & Pred-Prey + Refuge & -- & -- & Refuge stabilizes, $N^*$ increases with $m$ \\
-148 & Glucose-Insulin & Physiological ODE & -- & -- & Bergman model, $S_I = p_3/p_2$, $S_G = p_1$ \\
-149 & Two-Patch & Spatial Pred-Prey & -- & -- & Migration sync, rescue effect \\
-150 & MAPK Cascade & Signaling Cascade & -- & -- & Ultrasensitivity, Hill $n_H > 1$ \\
-151 & Circadian Clock & Circadian Oscillator & -- & -- & $T \approx 24$h, Gonze-Goodwin model \\
-152 & Amari Neural Field & Neural Field PDE & -- & -- & Mexican hat kernel, bump solutions \\
-153 & LV Delay & Delay Diff. Eq. & -- & -- & Gestation delay Hopf, $\tau_c$ threshold \\
+135 & SIR Vital & Epidemic ODE & PySR+SINDy & \textbf{1.0000} & Endemic equilibrium, $R_0 = \beta/(\gamma+\mu)$ \\
+136 & Repressilator & Gene Regulatory Network & PySR+SINDy & \textbf{1.0000} & 3-gene cyclic oscillation, $Z_3$ symmetry \\
+137 & Ring Oscillator & Electronic Oscillator & SINDy & \textbf{0.9996} & 3-stage inverter, $T \sim 6\tau$ \\
+138 & Jansen-Rit & Neural Mass Model & PySR+SINDy & \textbf{0.9995} & Alpha rhythm ($\sim$10 Hz), EEG generation \\
+139 & Goldbeter Glycolysis & Metabolic Oscillator & PySR+SINDy & -0.0393 & Allosteric PFK, Hopf bifurcation \\
+140 & Goodwin & Gene Regulatory Osc. & PySR+SINDy & \textbf{1.0000} & Cyclic Hill repression, $Z_3$ symmetry \\
+141 & Toggle Switch & Bistable Gene Circuit & SINDy & \textbf{1.0000} & Mutual repression, cusp catastrophe \\
+142 & Stommel & Thermohaline Circ. & PySR+SINDy & \textbf{1.0000} & Hysteresis, bistable ocean circulation \\
+143 & Predator-Prey-Parasite & Eco-Epidemiol. & PySR+SINDy & 0.5273 & Disease in prey, 3-species dynamics \\
+144 & Michaelis-Menten & Enzyme Kinetics & PySR+SINDy & \textbf{1.0000} & $v = V_{\max}S/(K_m{+}S)$, QSSA \\
+145 & Winfree & Pulse-Coupled Osc. & PySR+SINDy & 0.9887 & Sync transition, predecessor to Kuramoto \\
+146 & FHN Coupled Pair & Coupled Neural ODE & SINDy & 0.9227 & Diffusive sync, $g_c$ critical coupling \\
+147 & Prey Refuge & Pred-Prey + Refuge & SINDy & \textbf{1.0000} & Refuge stabilizes, $N^*$ increases with $m$ \\
+148 & Glucose-Insulin & Physiological ODE & PySR+SINDy & 0.6666 & Bergman model, $S_I = p_3/p_2$, $S_G = p_1$ \\
+149 & Two-Patch & Spatial Pred-Prey & SINDy & 0.6792 & Migration sync, rescue effect \\
+150 & MAPK Cascade & Signaling Cascade & PySR+SINDy & 0.9795 & Ultrasensitivity, Hill $n_H > 1$ \\
+151 & Circadian Clock & Circadian Oscillator & PySR+SINDy & \textbf{1.0000} & $T \approx 24$h, Gonze-Goodwin model \\
+152 & Amari Neural Field & Neural Field PDE & PySR & 0.9015 & Mexican hat kernel, bump solutions \\
+153 & LV Delay & Delay Diff. Eq. & PySR & 0.9915 & Gestation delay Hopf, $\tau_c$ threshold \\
 154 & FHN Stochastic & Stochastic ODE & -- & -- & Coherence resonance, noise-induced spikes \\
-155 & SIRD & Epidemiological ODE & -- & -- & $R_0 = \beta/(\gamma+\mu)$, CFR \\
-156 & Gompertz & Growth ODE & -- & -- & $dN/dt = rN\ln(K/N)$, inflection at $K/e$ \\
-157 & SIS Endemic & Epidemiological ODE & -- & -- & $R_0 = \beta/\gamma$, endemic $I^* = N(1-1/R_0)$ \\
-158 & Bernoulli ODE & Nonlinear ODE & -- & -- & $dy/dt = ay + by^n$, linearizable \\
-159 & Beddington-DeAngelis & Predator-Prey ODE & -- & -- & Mutual interference, stabilizes enrichment \\
-160 & SEI & Epidemiological ODE & -- & -- & No recovery, $R_0 = \beta/\mu$, chronic infection \\
-161 & Gierer-Meinhardt & Reaction-Diffusion PDE & -- & -- & Activator-inhibitor Turing patterns \\
-162 & Group Defense & Predator-Prey ODE & -- & -- & Andrews response $aN/(1+bN+cN^2)$ \\
-163 & Logistic ODE & Growth ODE & -- & -- & $dN/dt = rN(1-N/K)$, inflection $K/2$ \\
-164 & Theta Neuron & Neural ODE & -- & -- & Phase model, $d\theta/dt = 1-\cos\theta + (1+\cos\theta)I$ \\
-165 & Ivlev Pred-Prey & Predator-Prey ODE & -- & -- & Exponential response $1-e^{-\lambda N}$ \\
-166 & Diffusion 2D & Diffusion PDE & -- & -- & Isotropic diffusion, Gaussian spreading \\
-167 & SIRS & Epidemiological ODE & -- & -- & Waning immunity $\xi$, endemic oscillations \\
-168 & FHN Pulse & Reaction-Diffusion PDE & -- & -- & 1D traveling pulse, $c \sim \sqrt{D_v}$ \\
-169 & SEIRS & Epidemiological ODE & -- & -- & Exposed + waning, $R_0 = \beta/\gamma$, damped oscillations \\
-170 & Ratio-Dependent & Predator-Prey ODE & -- & -- & Arditi-Ginzburg $aN/(N+bP)$, no paradox \\
+155 & SIRD & Epidemiological ODE & PySR+SINDy & \textbf{1.0000} & $R_0 = \beta/(\gamma+\mu)$, CFR \\
+156 & Gompertz & Growth ODE & PySR+SINDy & \textbf{0.9998} & $dN/dt = rN\ln(K/N)$, inflection at $K/e$ \\
+157 & SIS Endemic & Epidemiological ODE & PySR+SINDy & \textbf{1.0000} & $R_0 = \beta/\gamma$, endemic $I^* = N(1-1/R_0)$ \\
+158 & Bernoulli ODE & Nonlinear ODE & PySR+SINDy & \textbf{1.0000} & $dy/dt = ay + by^n$, linearizable \\
+159 & Beddington-DeAngelis & Predator-Prey ODE & PySR+SINDy & 0.9327 & Mutual interference, stabilizes enrichment \\
+160 & SEI & Epidemiological ODE & PySR+SINDy & \textbf{1.0000} & No recovery, $R_0 = \beta/\mu$, chronic infection \\
+161 & Gierer-Meinhardt & Reaction-Diffusion PDE & PySR+SINDy & 0.4897 & Activator-inhibitor Turing patterns \\
+162 & Group Defense & Predator-Prey ODE & PySR+SINDy & \textbf{1.0000} & Andrews response $aN/(1+bN+cN^2)$ \\
+163 & Logistic ODE & Growth ODE & PySR+SINDy & \textbf{0.9998} & $dN/dt = rN(1-N/K)$, inflection $K/2$ \\
+164 & Theta Neuron & Neural ODE & PySR+SINDy & 0.0798 & Phase model, $d\theta/dt = 1-\cos\theta + (1+\cos\theta)I$ \\
+165 & Ivlev Pred-Prey & Predator-Prey ODE & PySR+SINDy & 0.9869 & Exponential response $1-e^{-\lambda N}$ \\
+166 & Diffusion 2D & Diffusion PDE & PySR & \textbf{1.0000} & Isotropic diffusion, Gaussian spreading \\
+167 & SIRS & Epidemiological ODE & PySR+SINDy & \textbf{1.0000} & Waning immunity $\xi$, endemic oscillations \\
+168 & FHN Pulse & Reaction-Diffusion PDE & PySR & 0.5918 & 1D traveling pulse, $c \sim \sqrt{D_v}$ \\
+169 & SEIRS & Epidemiological ODE & PySR+SINDy & \textbf{1.0000} & Exposed + waning, $R_0 = \beta/\gamma$, damped oscillations \\
+170 & Ratio-Dependent & Predator-Prey ODE & SINDy & -7.4177 & Arditi-Ginzburg $aN/(N+bP)$, no paradox \\
 171 & Advection 1D & Hyperbolic PDE & -- & -- & $u_t + cu_x = 0$, exact translation, CFL \\
 172 & Allee Two & Predator-Prey ODE & -- & -- & Double Allee, four-state multistability \\
-173 & Brusselator 1D & Reaction-Diffusion PDE & -- & -- & 1D Turing patterns, $\lambda_c$ scaling \\
-174 & Tumor Growth & Tumor-Immune ODE & -- & -- & Elimination vs escape, dormancy regime \\
+173 & Brusselator 1D & Reaction-Diffusion PDE & PySR & 0.9811 & 1D Turing patterns, $\lambda_c$ scaling \\
+174 & Tumor Growth & Tumor-Immune ODE & PySR+SINDy & 0.6155 & Elimination vs escape, dormancy regime \\
 175 & SIR Stochastic & Stochastic ODE & -- & -- & Euler-Maruyama SDE, ensemble statistics \\
-176 & Glycolytic Oscillator & Biochemical Oscillator & -- & -- & Higgins $P^2$ autocatalysis, Hopf bifurcation \\
-177 & Age-Structured & Age-Structured ODE & -- & -- & Juvenile/adult, maturation dynamics \\
-178 & Burgers 1D & Nonlinear PDE & -- & -- & $u_t + uu_x = \nu u_{xx}$, shock formation \\
-179 & SIR Network Adaptive & Network Epidemic & -- & -- & Adaptive rewiring, epidemic suppression \\
+176 & Glycolytic Oscillator & Biochemical Oscillator & PySR+SINDy & \textbf{1.0000} & Higgins $P^2$ autocatalysis, Hopf bifurcation \\
+177 & Age-Structured & Age-Structured ODE & SINDy & \textbf{1.0000} & Juvenile/adult, maturation dynamics \\
+178 & Burgers 1D & Nonlinear PDE & PySR & \textbf{1.0000} & $u_t + uu_x = \nu u_{xx}$, shock formation \\
+179 & SIR Network Adaptive & Network Epidemic & PySR & 0.9899 & Adaptive rewiring, epidemic suppression \\
 180 & Seasonal Pred-Prey & Seasonally Forced ODE & -- & -- & Periodic $r(t)$, Holling II, subharmonic resonance \\
-181 & KdV & Integrable PDE & -- & -- & $u_t + 6uu_x + u_{xxx} = 0$, soliton speed$=c/2$ \\
+181 & KdV & Integrable PDE & PySR & \textbf{1.0000} & $u_t + 6uu_x + u_{xxx} = 0$, soliton speed$=c/2$ \\
 182 & SIR Metapopulation & Metapopulation Epidemic & -- & -- & Multi-patch SIR, migration coupling, wave spread \\
-183 & Toggle Switch Stochastic & Stochastic Gene Network & -- & -- & Hill repression SDE, bistable switching \\
-184 & Lienard & Lienard Oscillator & -- & -- & Generalized VdP-Duffing, $f(x)x' + g(x) = 0$ \\
-185 & Predator-Prey-Toxin & Toxin Defense ODE & -- & -- & Group defense $c N^2$, modified Holling \\
-186 & Swift-Hohenberg & Pattern Formation PDE & -- & -- & $(1+\nabla^2)^2 u$, rolls at $k_c=1$, $A\sim\sqrt{r}$ \\
+183 & Toggle Switch Stochastic & Stochastic Gene Network & SINDy & \textbf{1.0000} & Hill repression SDE, bistable switching \\
+184 & Lienard & Lienard Oscillator & PySR+SINDy & \textbf{1.0000} & Generalized VdP-Duffing, $f(x)x' + g(x) = 0$ \\
+185 & Predator-Prey-Toxin & Toxin Defense ODE & SINDy & 0.9972 & Group defense $c N^2$, modified Holling \\
+186 & Swift-Hohenberg & Pattern Formation PDE & PySR & \textbf{1.0000} & $(1+\nabla^2)^2 u$, rolls at $k_c=1$, $A\sim\sqrt{r}$ \\
 187 & SIS Adaptive & Behavioral Epidemic & -- & -- & $\beta(I)=\beta_0/(1+\kappa I)$, voluntary distancing \\
 \bottomrule
 \end{tabular}
