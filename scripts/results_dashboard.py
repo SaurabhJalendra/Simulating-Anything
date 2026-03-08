@@ -30,7 +30,10 @@ DEFAULT_WORLD_MODELS_DIR = PROJECT_ROOT / "output" / "world_models"
 DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "results_dashboard.json"
 
 # Novel discovery domains that deserve special highlighting.
-NOVEL_DOMAINS = {"lorenz_stommel", "stochastic_resonance", "replicator_mutator"}
+NOVEL_DOMAINS = {
+    "lorenz_stommel", "stochastic_resonance", "replicator_mutator",
+    "climate_epidemic", "neural_cardiac",
+}
 
 # ---------------------------------------------------------------------------
 # Domain classification: maps domain key to mathematical class.
