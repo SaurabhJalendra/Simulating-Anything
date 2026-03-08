@@ -459,18 +459,23 @@ models, and produce real scientific discovery results.
 ### V7 (Novel Scientific Discovery) -- IN PROGRESS
 Move beyond rediscovery to genuinely new scientific discoveries.
 
-**Phase 7A: Expanded World Model Training**
-- [ ] Train RSSM on 34 additional high-value domains (Kepler, SEIR, Toda, etc.)
-- [ ] Cross-domain world model transfer: train on domain A, evaluate on domain B
-  - Lorenz → Rossler (chaotic ODE transfer)
-  - SIR → SEIR (epidemic model generalization)
-  - Harmonic → Elastic Pendulum (simple → complex oscillator)
-- [ ] Universal latent space analysis: what do shared representations look like?
+**Phase 7A: Expanded World Model Training** -- IN PROGRESS
+- [x] Train RSSM on V7 novel domains (stochastic_resonance, replicator_mutator, lorenz_stommel)
+  - stochastic_resonance: loss=32.007, dream MSE=0.227
+  - replicator_mutator: loss=32.000, dream MSE=0.037 (excellent)
+  - lorenz_stommel: training in progress
+- [ ] Train RSSM on 12 additional high-value domains (Kepler, Toda, etc.)
+- [ ] Train RSSM on climate_epidemic and neural_cardiac
+- [x] Cross-domain transfer script ready (scripts/cross_domain_transfer.py)
+  - 6 pairs: Lorenz→Rossler, SIR→SEIR, HO→Duffing, LV→3Species, etc.
+- [x] Latent space analysis script ready (scripts/latent_space_analysis.py)
+  - PCA + CKA (Centered Kernel Alignment) for cross-domain similarity
+- [ ] Run latent space + transfer analysis (after models finish)
 
-**Phase 7B: Meta-Discovery Across 195 Domains** -- COMPLETE
+**Phase 7B: Meta-Discovery Across 197 Domains** -- COMPLETE
 - [x] Universal bifurcation analysis: 48 domains classified (43 chaos, 3 limit cycle, 2 hyperchaos)
 - [x] Universal scaling near Hopf bifurcations: 2/3 consistent with sqrt(mu-mu_c)
-- [x] R-squared distribution: 172/195 with R2 values, median=1.0, 121 >= 0.99
+- [x] R-squared distribution: 176/197 with R2 values, median=1.0, 123 >= 0.99
 - [x] Equation complexity analysis: 115 equations, complexity-R2 correlation = -0.204
 - [x] Domain classification: ODE/PDE/Map/Stochastic/Agent with per-category R2 stats
 
