@@ -279,7 +279,7 @@ def run_climate_epidemic_rediscovery(
         feature_names = ["T", "h", "tau", "S", "I", "R"]
 
         model = ps.SINDy(
-            optimizer=ps.STLSQ(threshold=0.05),
+            optimizer=ps.STLSQ(threshold=0.005),
             feature_library=ps.PolynomialLibrary(degree=2),
         )
         model.fit(X, t=0.01, x_dot=dXdt, feature_names=feature_names)
@@ -324,11 +324,10 @@ def run_climate_epidemic_rediscovery(
             populations=10,
             population_size=30,
             maxsize=15,
-            variable_names=["c_"],
             progress=False,
             verbosity=0,
         )
-        model_peak.fit(couplings, peak_I)
+        model_peak.fit(couplings, peak_I, variable_names=["c_"])
 
         pysr_peak = {"n_discoveries": len(model_peak.equations_), "discoveries": []}
         for _, row in model_peak.equations_.iterrows():

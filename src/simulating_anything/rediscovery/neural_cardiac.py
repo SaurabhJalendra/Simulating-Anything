@@ -256,11 +256,10 @@ def run_neural_cardiac_rediscovery(
             populations=10,
             population_size=30,
             maxsize=15,
-            variable_names=["c_"],
             progress=False,
             verbosity=0,
         )
-        model_corr.fit(couplings, corrs)
+        model_corr.fit(couplings, corrs, variable_names=["c_"])
 
         pysr_corr = {
             "n_discoveries": len(model_corr.equations_),
