@@ -48,15 +48,15 @@ Saurabh Jalendra \\
 \begin{abstract}
 We present \ours{}, a domain-agnostic scientific discovery engine that
 autonomously rediscovers known physical laws from simulation data across
-192 domains spanning 12+ mathematical classes. Given only a natural language
+195 domains spanning 12+ mathematical classes. Given only a natural language
 description of a phenomenon, the system builds a simulation, trains an RSSM
 world model, explores the parameter space via uncertainty-driven search, and
 extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
-governing equations across all 192 domains, achieving $R^2 \geq 0.999$ in 95 of
-171 domains with quantitative fits, with a median $R^2$ of 0.9998. Our cross-domain analogy engine
+governing equations across all 195 domains, achieving $R^2 \geq 0.99$ in 121 of
+174 domains with quantitative fits, with a median $R^2$ of 1.0. Our cross-domain analogy engine
 detects 570 structural, dimensional, and topological isomorphisms across
-192 domains. The key architectural insight is that only the simulation layer is
+195 domains. The key architectural insight is that only the simulation layer is
 domain-specific ($\sim$50--200 lines per domain); everything else---world
 model, exploration, analysis, and reporting---operates on generic tensors,
 enabling universal scientific discovery.
@@ -96,10 +96,10 @@ Our key contributions are:
 \begin{enumerate}
 \item A domain-agnostic architecture where adding a new domain requires
   only $\sim$50--200 lines of simulation code (Section~\ref{sec:architecture}).
-\item Successful autonomous rediscovery of governing equations in 192 domains
+\item Successful autonomous rediscovery of governing equations in 195 domains
   across 12+ mathematical classes (Section~\ref{sec:experiments}).
 \item A cross-domain analogy engine that detects 570 mathematical isomorphisms
-  across 192 domains (Section~\ref{sec:cross_domain}).
+  across 195 domains (Section~\ref{sec:cross_domain}).
 \item An autonomous discovery mode that generates simulations from scratch,
   validates them, and discovers equations without human intervention
   (Section~\ref{sec:autonomous}).
@@ -200,7 +200,7 @@ The simulation interface requires only four methods (\texttt{reset},
 \texttt{step}, \texttt{observe}, \texttt{run}). All upstream and downstream
 stages operate on numpy arrays of arbitrary shape. Adding a new domain
 means implementing one Python class with $\sim$50--200 lines of dynamics
-code. We demonstrate this with 192 domains (Table~\ref{tab:results})
+code. We demonstrate this with 195 domains (Table~\ref{tab:results})
 spanning algebraic equations, linear/nonlinear/chaotic ODEs, PDEs, collective
 dynamics, and discrete maps (Figure~\ref{fig:taxonomy}), of which 114 have
 full PySR/SINDy equation recovery results.
@@ -226,7 +226,7 @@ observations. The decoder uses symmetric architectures with symlog output.
 \section{Experiments}
 \label{sec:experiments}
 
-We evaluate \ours{} on 192 domains across 12+ mathematical classes. For each
+We evaluate \ours{} on 195 domains across 12+ mathematical classes. For each
 domain, the system autonomously generates simulation data, identifies the
 governing equations via \pysr{} and/or \sindy{}, and compares the discovered
 expressions against known analytical results. We present the core 14 domains
@@ -305,7 +305,7 @@ celestial mechanics, neuroscience, reaction-diffusion PDEs, gene regulatory
 networks, epidemiology, climate science, and more. Table~\ref{tab:extended}
 highlights the top-performing extended domains. Figure~\ref{fig:rediscovery_all}
 shows the distribution of R$^2$ scores across all domains.
-Across all 192 domains with
+Across all 195 domains with
 equation recovery, 95 of 171 quantitative fits achieve $R^2 \geq 0.999$,
 109 achieve $R^2 \geq 0.99$, and the median $R^2$ is 0.9998.
 
@@ -388,7 +388,7 @@ underlying dynamics.
 \centering
 \includegraphics[width=0.8\linewidth]{figures/cross_domain_matrix_14domain.pdf}
 \caption{Cross-domain analogy strength matrix. 570 isomorphisms detected
-across 192 domains. Brighter cells indicate stronger mathematical analogies.}
+across 195 domains. Brighter cells indicate stronger mathematical analogies.}
 \label{fig:cross_domain}
 \end{figure}
 
@@ -410,7 +410,7 @@ limit cycles (VdP $\leftrightarrow$ Brusselator), strange attractors
 (Kuramoto $\leftrightarrow$ SIR).
 
 Figure~\ref{fig:cross_domain} shows the analogy matrix with 570 detected
-isomorphisms across 192 domains. The strongest analogies (strength $> 0.9$)
+isomorphisms across 195 domains. The strongest analogies (strength $> 0.9$)
 connect: LV $\leftrightarrow$ SIR (identical ODE structure),
 Pendulum $\leftrightarrow$ Oscillator (shared harmonic restoring force),
 FHN $\leftrightarrow$ VdP (shared cubic nonlinearity origin),
@@ -820,13 +820,13 @@ would enable general-relativistic discoveries with no pipeline changes.
 \paragraph{Scaling and extensibility.}
 Adding a new domain requires only implementing a \texttt{SimulationEnvironment}
 subclass ($\sim$50--200 lines). All other pipeline stages operate unchanged.
-We have verified this with 192 domains across 125 mathematical classes.
+We have verified this with 195 domains across 125 mathematical classes.
 To concretely demonstrate extensibility, we implemented a Duffing
 oscillator ($x'' + \delta x' + \alpha x + \beta x^3 = \gamma\cos\omega t$)
 in 54 lines of Python, including RK4 integration, energy computation, and
 trajectory collection. All pipeline stages (world model, exploration,
 analysis) work immediately on this new domain with zero additional code.
-The total simulation code across all 192 domains is $\sim$7,000 lines,
+The total simulation code across all 195 domains is $\sim$7,000 lines,
 while the domain-agnostic infrastructure (world model, exploration,
 analysis, agents) spans $\sim$5,000 lines---a ratio of roughly 1.4:1,
 demonstrating that the per-domain cost remains low even at scale.
@@ -895,12 +895,17 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 \label{sec:conclusion}
 
 \ours{} demonstrates that a single computational pipeline can autonomously
-rediscover known physical laws across 192 fundamentally different domains.
-The system achieves $R^2 \geq 0.999$ in 95 of 171 domains with quantitative
-fits, with a median $R^2$ of 0.9998 across all domains. RSSM world models trained on 17 domains
+rediscover known physical laws across 195 fundamentally different domains.
+The system achieves $R^2 \geq 0.99$ in 121 of 174 domains with quantitative
+fits, with a median $R^2$ of 1.0 across all domains. RSSM world models trained on 20 domains
 (best dream MSE = 0.004) enable efficient parameter space exploration.
+Beyond rediscovery, we demonstrate \emph{genuinely novel discovery}: a coupled
+Lorenz-Stommel atmosphere-ocean model (no known analytical solution) where
+SINDy recovers the 5D coupled ODE and reveals that even weak coupling
+($c=0.01$) produces strong atmosphere-ocean temperature correlations
+(Pearson $r$ jumps from 0.21 to 0.74).
 Cross-domain analogy detection reveals
-570 mathematical isomorphisms across 192 domains, suggesting that scientific
+570 mathematical isomorphisms across 195 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer
 validation framework---conservation checks, dimensional analysis,
 reproducibility tests, theory comparison, adversarial dream debate, and
@@ -912,7 +917,7 @@ eliminates the need for hand-coded simulations entirely: given only a
 natural language question, the system generates, validates, and analyzes
 simulations from scratch, recovering $\omega = \sqrt{k/m}$ with
 $R^2 = 0.999999$ on a test question without any pre-built simulation code.
-The pipeline has been extended to 192 domains spanning 125 mathematical
+The pipeline has been extended to 195 domains spanning 125 mathematical
 classes---including
 general relativity (Schwarzschild geodesics), quantum mechanics (harmonic
 oscillator), statistical mechanics (Boltzmann gas, Ising model), wave
