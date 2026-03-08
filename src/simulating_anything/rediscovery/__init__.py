@@ -128,6 +128,9 @@ from simulating_anything.rediscovery.lorenz84 import run_lorenz84_rediscovery
 from simulating_anything.rediscovery.lorenz96 import run_lorenz96_rediscovery
 from simulating_anything.rediscovery.lorenz_haken import run_lorenz_haken_rediscovery
 from simulating_anything.rediscovery.lorenz_stenflo import run_lorenz_stenflo_rediscovery
+from simulating_anything.rediscovery.lorenz_stommel import (
+    run_lorenz_stommel_rediscovery,
+)
 from simulating_anything.rediscovery.lotka_volterra import run_lotka_volterra_rediscovery
 from simulating_anything.rediscovery.lotka_volterra_delay import (
     run_lotka_volterra_delay_rediscovery,
@@ -165,6 +168,9 @@ from simulating_anything.rediscovery.rabinovich_fabrikant import (
 )
 from simulating_anything.rediscovery.ratio_dependent import run_ratio_dependent_rediscovery
 from simulating_anything.rediscovery.rayleigh_benard import run_rayleigh_benard_rediscovery
+from simulating_anything.rediscovery.replicator_mutator import (
+    run_replicator_mutator_rediscovery,
+)
 from simulating_anything.rediscovery.repressilator import run_repressilator_rediscovery
 from simulating_anything.rediscovery.ricker_map import run_ricker_map_rediscovery
 from simulating_anything.rediscovery.rikitake import run_rikitake_rediscovery
@@ -208,6 +214,9 @@ from simulating_anything.rediscovery.sis_endemic import run_sis_endemic_rediscov
 from simulating_anything.rediscovery.spring_mass_chain import run_spring_mass_chain_rediscovery
 from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
 from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
+from simulating_anything.rediscovery.stochastic_resonance import (
+    run_stochastic_resonance_rediscovery,
+)
 from simulating_anything.rediscovery.stommel import run_stommel_rediscovery
 from simulating_anything.rediscovery.stuart_landau import run_stuart_landau_rediscovery
 from simulating_anything.rediscovery.swift_hohenberg import run_swift_hohenberg_rediscovery
@@ -430,4 +439,7 @@ __all__ = [
     "run_turbulent_flow_analysis",
     "run_hp_protein_analysis",
     "run_lennard_jones_rediscovery",
+    "run_stochastic_resonance_rediscovery",
+    "run_replicator_mutator_rediscovery",
+    "run_lorenz_stommel_rediscovery",
 ]
