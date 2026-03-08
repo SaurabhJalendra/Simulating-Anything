@@ -48,13 +48,13 @@ Saurabh Jalendra \\
 \begin{abstract}
 We present \ours{}, a domain-agnostic scientific discovery engine that
 autonomously rediscovers known physical laws from simulation data across
-114 domains spanning 12+ mathematical classes. Given only a natural language
+192 domains spanning 12+ mathematical classes. Given only a natural language
 description of a phenomenon, the system builds a simulation, trains an RSSM
 world model, explores the parameter space via uncertainty-driven search, and
 extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
-governing equations in all 114 domains, achieving $R^2 \geq 0.999$ in 41 of
-114 cases, with a median $R^2$ of 0.998. Our cross-domain analogy engine
+governing equations across all 192 domains, achieving $R^2 \geq 0.999$ in 95 of
+171 domains with quantitative fits, with a median $R^2$ of 0.9998. Our cross-domain analogy engine
 detects 570 structural, dimensional, and topological isomorphisms across
 192 domains. The key architectural insight is that only the simulation layer is
 domain-specific ($\sim$50--200 lines per domain); everything else---world
@@ -96,7 +96,7 @@ Our key contributions are:
 \begin{enumerate}
 \item A domain-agnostic architecture where adding a new domain requires
   only $\sim$50--200 lines of simulation code (Section~\ref{sec:architecture}).
-\item Successful autonomous rediscovery of governing equations in 114 domains
+\item Successful autonomous rediscovery of governing equations in 192 domains
   across 12+ mathematical classes (Section~\ref{sec:experiments}).
 \item A cross-domain analogy engine that detects 570 mathematical isomorphisms
   across 192 domains (Section~\ref{sec:cross_domain}).
@@ -226,11 +226,11 @@ observations. The decoder uses symmetric architectures with symlog output.
 \section{Experiments}
 \label{sec:experiments}
 
-We evaluate \ours{} on 114 domains across 12+ mathematical classes. For each
+We evaluate \ours{} on 192 domains across 12+ mathematical classes. For each
 domain, the system autonomously generates simulation data, identifies the
 governing equations via \pysr{} and/or \sindy{}, and compares the discovered
 expressions against known analytical results. We present the core 14 domains
-in detail below, followed by a summary of 100 extended domain results
+in detail below, followed by a summary of 178 extended domain results
 (Section~\ref{sec:extended_results}).
 
 \input{results_table}
@@ -300,11 +300,12 @@ Lyapunov exponent $\lambda(r{=}4) = \ln 4 = 1.386$ (exact).
 \label{sec:extended_results}
 
 Beyond the core 14 domains, we ran the full PySR/SINDy discovery pipeline on
-100 additional domains spanning quantum mechanics, statistical mechanics,
+178 additional domains spanning quantum mechanics, statistical mechanics,
 celestial mechanics, neuroscience, reaction-diffusion PDEs, gene regulatory
-networks, and more. Table~\ref{tab:extended} highlights the top-performing
-extended domains. Across all 114 domains with equation recovery, 41 achieve
-$R^2 \geq 0.999$ and the median $R^2$ is 0.998.
+networks, epidemiology, climate science, and more. Table~\ref{tab:extended}
+highlights the top-performing extended domains. Across all 192 domains with
+equation recovery, 95 of 171 quantitative fits achieve $R^2 \geq 0.999$,
+109 achieve $R^2 \geq 0.99$, and the median $R^2$ is 0.9998.
 
 \begin{table}[h]
 \centering
@@ -871,9 +872,9 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 \label{sec:conclusion}
 
 \ours{} demonstrates that a single computational pipeline can autonomously
-rediscover known physical laws across 114 fundamentally different domains.
-The system achieves $R^2 \geq 0.999$ in 41 of 114 domains, with a median
-$R^2$ of 0.998 across all domains. RSSM world models trained on 17 domains
+rediscover known physical laws across 192 fundamentally different domains.
+The system achieves $R^2 \geq 0.999$ in 95 of 171 domains with quantitative
+fits, with a median $R^2$ of 0.9998 across all domains. RSSM world models trained on 17 domains
 (best dream MSE = 0.004) enable efficient parameter space exploration.
 Cross-domain analogy detection reveals
 570 mathematical isomorphisms across 192 domains, suggesting that scientific

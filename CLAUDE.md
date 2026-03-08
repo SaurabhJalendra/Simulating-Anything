@@ -439,13 +439,22 @@ models, and produce real scientific discovery results.
 - [x] Climate: Vallis ENSO SINDy exact, 21/30 chaotic, Lyapunov=0.533
 - [x] Traffic jam: deferred (CampaignManager requires LLM API at runtime)
 
-**V6 Summary: 114 domains analyzed, 41 with R²>=0.999, median R²=0.998**
+**Phase 6: Remaining 80 domains** -- COMPLETE (78/80 succeeded, 3157s)
+- [x] 80 additional domains not covered in Phases 1-3 (advection, age_structured, etc.)
+- [x] 78/80 succeeded; 2 failed (fhn_stochastic, toggle_switch_stochastic -- API mismatch)
+- Results: all saved to output/rediscovery/{domain}/results.json
+
+**V6 Summary: 192 domains total, 171 with quantitative R² fits**
+**Median R² = 0.9998 | 95/171 with R² >= 0.999 | 109/171 with R² >= 0.99**
 **17 RSSM world models trained on RTX 5090 (200 epochs, best dream MSE=0.004)**
+**Paper updated to 192 domains with full statistics**
+**Full discovery showcase notebook: notebooks/full_discovery_showcase.ipynb**
 
 ### Paper
 - Target: AI4Science workshops (NeurIPS, ICML, ICLR)
 - Core contribution: domain-agnostic discovery architecture + rediscovery evidence
 - ~~Baseline comparisons: PySR alone, SINDy alone, manual simulation~~ DONE
+- ~~Paper updated to 192 domains~~ DONE (paper/main.tex + paper/results_table.tex)
 
 ---
 
