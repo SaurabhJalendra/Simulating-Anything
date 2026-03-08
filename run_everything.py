@@ -3,10 +3,11 @@
 Runs all phases of the Simulating-Anything discovery pipeline:
 1. Core 14 domain rediscoveries (PySR + SINDy)
 2. Extended 178 domain rediscoveries
-3. V7 novel discovery domains (3 new)
+3. V7 novel discovery domains (5 new)
 4. World model training (RSSM on RTX 5090)
 5. Meta-discovery cross-domain analysis
-6. Paper figure generation
+6. Latent space analysis (PCA + CKA)
+7. Cross-domain world model transfer
 
 Must run in WSL2 with GPU + Julia for PySR.
 
@@ -15,6 +16,8 @@ Usage:
     python run_everything.py --skip-training    # Skip world model training
     python run_everything.py --phase meta       # Meta-discovery only
     python run_everything.py --phase novel      # V7 novel domains only
+    python run_everything.py --phase latent     # Latent space analysis
+    python run_everything.py --phase transfer   # Cross-domain transfer
 """
 from __future__ import annotations
 
@@ -133,12 +136,44 @@ def run_meta_discovery():
     return results
 
 
+def run_latent_space_analysis():
+    """Run CKA latent space analysis across trained world models."""
+    import subprocess
+
+    logger.info("=" * 70)
+    logger.info("PHASE 6: Latent space analysis (PCA + CKA)")
+    logger.info("=" * 70)
+    t0 = time.time()
+
+    cmd = [sys.executable, "scripts/latent_space_analysis.py"]
+    result = subprocess.run(cmd, capture_output=False)
+    elapsed = time.time() - t0
+    logger.info(f"Latent space analysis complete in {elapsed:.1f}s")
+    return result.returncode == 0
+
+
+def run_cross_domain_transfer():
+    """Run cross-domain world model transfer experiments."""
+    import subprocess
+
+    logger.info("=" * 70)
+    logger.info("PHASE 7: Cross-domain transfer experiments")
+    logger.info("=" * 70)
+    t0 = time.time()
+
+    cmd = [sys.executable, "scripts/cross_domain_transfer.py"]
+    result = subprocess.run(cmd, capture_output=False)
+    elapsed = time.time() - t0
+    logger.info(f"Cross-domain transfer complete in {elapsed:.1f}s")
+    return result.returncode == 0
+
+
 def main():
     parser = argparse.ArgumentParser(description="Run all Simulating-Anything analyses")
     parser.add_argument(
         "--phase",
         default="all",
-        choices=["all", "rediscovery", "novel", "training", "meta"],
+        choices=["all", "rediscovery", "novel", "training", "meta", "latent", "transfer"],
         help="Which phase to run (default: all)",
     )
     parser.add_argument("--skip-training", action="store_true", help="Skip world model training")
@@ -162,6 +197,12 @@ def main():
 
     if args.phase in ("all", "meta"):
         run_meta_discovery()
+
+    if args.phase in ("all", "latent"):
+        run_latent_space_analysis()
+
+    if args.phase in ("all", "transfer"):
+        run_cross_domain_transfer()
 
     total_time = time.time() - t_total
     logger.info("=" * 70)
