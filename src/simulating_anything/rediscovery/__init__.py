@@ -37,6 +37,9 @@ from simulating_anything.rediscovery.chen import run_chen_rediscovery
 from simulating_anything.rediscovery.chua import run_chua_rediscovery
 from simulating_anything.rediscovery.circadian_clock import run_circadian_clock_rediscovery
 from simulating_anything.rediscovery.circle_map import run_circle_map_rediscovery
+from simulating_anything.rediscovery.climate_epidemic import (
+    run_climate_epidemic_rediscovery,
+)
 from simulating_anything.rediscovery.colpitts import run_colpitts_rediscovery
 from simulating_anything.rediscovery.competitive_lv import run_competitive_lv_rediscovery
 from simulating_anything.rediscovery.coupled_lorenz import run_coupled_lorenz_rediscovery
@@ -145,6 +148,9 @@ from simulating_anything.rediscovery.michaelis_menten import run_michaelis_mente
 from simulating_anything.rediscovery.morris_lecar import run_morris_lecar_rediscovery
 from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
 from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
+from simulating_anything.rediscovery.neural_cardiac import (
+    run_neural_cardiac_rediscovery,
+)
 from simulating_anything.rediscovery.newton_leipnik import run_newton_leipnik_rediscovery
 from simulating_anything.rediscovery.nose_hoover import run_nose_hoover_rediscovery
 from simulating_anything.rediscovery.oregonator import run_oregonator_rediscovery
@@ -442,4 +448,6 @@ __all__ = [
     "run_stochastic_resonance_rediscovery",
     "run_replicator_mutator_rediscovery",
     "run_lorenz_stommel_rediscovery",
+    "run_climate_epidemic_rediscovery",
+    "run_neural_cardiac_rediscovery",
 ]

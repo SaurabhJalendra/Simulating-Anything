@@ -86,6 +86,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.chua import run_chua_rediscovery
     from simulating_anything.rediscovery.circadian_clock import run_circadian_clock_rediscovery
     from simulating_anything.rediscovery.circle_map import run_circle_map_rediscovery
+    from simulating_anything.rediscovery.climate_epidemic import (
+        run_climate_epidemic_rediscovery,
+    )
     from simulating_anything.rediscovery.colpitts import (
         run_colpitts_rediscovery,
     )
@@ -230,6 +233,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.morris_lecar import run_morris_lecar_rediscovery
     from simulating_anything.rediscovery.navier_stokes import run_navier_stokes_rediscovery
     from simulating_anything.rediscovery.network_sis import run_network_sis_rediscovery
+    from simulating_anything.rediscovery.neural_cardiac import (
+        run_neural_cardiac_rediscovery,
+    )
     from simulating_anything.rediscovery.newton_leipnik import (
         run_newton_leipnik_rediscovery,
     )
@@ -1331,6 +1337,16 @@ def run_all_rediscoveries(
         "lorenz_stommel": {
             "label": "Lorenz-Stommel Coupled Atmosphere-Ocean (Novel)",
             "fn": run_lorenz_stommel_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "climate_epidemic": {
+            "label": "Coupled ENSO-Epidemic Climate-Disease (Novel)",
+            "fn": run_climate_epidemic_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "neural_cardiac": {
+            "label": "Coupled Neural-Cardiac Oscillator (Novel)",
+            "fn": run_neural_cardiac_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

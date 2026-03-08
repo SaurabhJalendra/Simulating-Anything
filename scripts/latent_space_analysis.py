@@ -50,6 +50,26 @@ TRAINED_DOMAINS = {
     "kuramoto": ("kuramoto", "KuramotoSimulation", None),
     "chua": ("chua", "ChuaCircuit", 3),
     "hodgkin_huxley": ("hodgkin_huxley", "HodgkinHuxleySimulation", 4),
+    # V7 novel domains
+    "stochastic_resonance": (
+        "stochastic_resonance", "StochasticResonanceSimulation", 2
+    ),
+    "replicator_mutator": (
+        "replicator_mutator", "ReplicatorMutatorSimulation", 3
+    ),
+    "lorenz_stommel": ("lorenz_stommel", "LorenzStommelSimulation", 5),
+    # Phase 7A additional domains
+    "kepler": ("kepler", "KeplerSimulation", 4),
+    "toda_lattice": ("toda_lattice", "TodaLattice", None),
+    "driven_pendulum": ("driven_pendulum", "DrivenPendulumSimulation", 2),
+    "elastic_pendulum": ("elastic_pendulum", "ElasticPendulumSimulation", 4),
+    "coupled_oscillators": (
+        "coupled_oscillators", "CoupledOscillatorSimulation", 4
+    ),
+    "selkov": ("selkov", "SelkovSimulation", 2),
+    "mackey_glass": ("mackey_glass", "MackeyGlassSimulation", None),
+    "wilson_cowan": ("wilson_cowan", "WilsonCowanSimulation", 2),
+    "langford": ("langford", "LangfordSimulation", 3),
 }
 
 WM_DIR = Path("output/world_models")
@@ -234,13 +254,94 @@ def compute_latent_statistics(encoded: dict) -> dict:
     }
 
 
+def linear_cka(X: np.ndarray, Y: np.ndarray) -> float:
+    """Compute linear Centered Kernel Alignment between two representations.
+
+    CKA measures similarity between representations independent of
+    orthogonal transforms and isotropic scaling. A value of 1.0 means
+    the representations capture identical structure; 0.0 means no
+    shared structure.
+
+    Reference: Kornblith et al., "Similarity of Neural Network
+    Representations Revisited" (ICML 2019).
+
+    Args:
+        X: Representation matrix (n_samples, d1).
+        Y: Representation matrix (n_samples, d2).
+
+    Returns:
+        CKA similarity score in [0, 1].
+    """
+    # Center the representations
+    X = X - X.mean(axis=0)
+    Y = Y - Y.mean(axis=0)
+
+    # HSIC estimators
+    hsic_xy = np.linalg.norm(X.T @ Y, "fro") ** 2
+    hsic_xx = np.linalg.norm(X.T @ X, "fro") ** 2
+    hsic_yy = np.linalg.norm(Y.T @ Y, "fro") ** 2
+
+    denom = np.sqrt(hsic_xx * hsic_yy)
+    if denom < 1e-12:
+        return 0.0
+    return float(hsic_xy / denom)
+
+
+def compute_cka_matrix(
+    encoded_list: list[dict],
+    n_samples: int = 500,
+) -> tuple[list[str], np.ndarray]:
+    """Compute pairwise CKA similarity between all domain latent spaces.
+
+    Subsamples each domain's deterministic latent states to n_samples
+    for fair comparison, then computes the full pairwise CKA matrix.
+
+    Args:
+        encoded_list: List of encoded dicts from load_model_and_encode.
+        n_samples: Number of samples to use per domain.
+
+    Returns:
+        Tuple of (domain_names, cka_matrix) where cka_matrix[i,j]
+        is the CKA similarity between domains i and j.
+    """
+    domains = [e["domain"] for e in encoded_list]
+    n = len(domains)
+
+    # Flatten and subsample deterministic states
+    flat_states = []
+    for e in encoded_list:
+        det = e["deterministic"]
+        flat = det.reshape(-1, det.shape[-1])
+        if len(flat) > n_samples:
+            idx = np.random.default_rng(42).choice(
+                len(flat), n_samples, replace=False
+            )
+            flat = flat[idx]
+        flat_states.append(flat)
+
+    cka_matrix = np.eye(n)
+    for i in range(n):
+        for j in range(i + 1, n):
+            # Use the minimum sample count for fair comparison
+            min_n = min(len(flat_states[i]), len(flat_states[j]))
+            Xi = flat_states[i][:min_n]
+            Yj = flat_states[j][:min_n]
+            cka = linear_cka(Xi, Yj)
+            cka_matrix[i, j] = cka
+            cka_matrix[j, i] = cka
+
+    return domains, cka_matrix
+
+
 def compare_latent_spaces(
     stats_list: list[dict],
+    encoded_list: list[dict] | None = None,
 ) -> dict:
     """Compare latent space structure across domains.
 
     Args:
         stats_list: List of per-domain statistics.
+        encoded_list: Optional list of encoded dicts for CKA analysis.
 
     Returns:
         Cross-domain comparison results.
@@ -252,7 +353,7 @@ def compare_latent_spaces(
     eff_dims = [s["effective_dim_95"] for s in stats_list]
     active_dims = [s["active_dimensions"] for s in stats_list]
 
-    return {
+    result = {
         "n_domains": len(domains),
         "domains": domains,
         "effective_dim_95": {
@@ -267,11 +368,40 @@ def compare_latent_spaces(
             "std": float(np.std(active_dims)),
             "per_domain": dict(zip(domains, active_dims)),
         },
-        "observation": (
-            "Domains with similar effective dimensionality may share "
-            "latent structure, suggesting transferable representations."
-        ),
     }
+
+    # Compute CKA similarity matrix if encoded data is available
+    if encoded_list is not None and len(encoded_list) >= 2:
+        logger.info("Computing CKA similarity matrix...")
+        cka_domains, cka_matrix = compute_cka_matrix(encoded_list)
+        result["cka_similarity"] = {
+            "domains": cka_domains,
+            "matrix": cka_matrix.tolist(),
+        }
+
+        # Find most similar pairs (excluding self-similarity)
+        pairs = []
+        n = len(cka_domains)
+        for i in range(n):
+            for j in range(i + 1, n):
+                pairs.append((cka_domains[i], cka_domains[j], cka_matrix[i, j]))
+        pairs.sort(key=lambda x: x[2], reverse=True)
+
+        result["cka_similarity"]["most_similar_pairs"] = [
+            {"domain_a": a, "domain_b": b, "cka": float(c)}
+            for a, b, c in pairs[:10]
+        ]
+        result["cka_similarity"]["mean_cka"] = float(
+            np.mean([c for _, _, c in pairs])
+        )
+
+    result["observation"] = (
+        "Domains with similar effective dimensionality and high CKA "
+        "similarity share latent structure, suggesting transferable "
+        "representations across dynamical system classes."
+    )
+
+    return result
 
 
 def main():
@@ -307,6 +437,7 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     all_stats = []
+    all_encoded = []
     t0 = time.time()
 
     for domain in domains:
@@ -319,14 +450,15 @@ def main():
 
         stats = compute_latent_statistics(encoded)
         all_stats.append(stats)
+        all_encoded.append(encoded)
         logger.info(
             f"  obs_dim={stats['obs_dim']}, "
             f"eff_dim_95={stats['effective_dim_95']}, "
             f"active={stats['active_dimensions']}/{stats['latent_dim']}"
         )
 
-    # Cross-domain comparison
-    comparison = compare_latent_spaces(all_stats)
+    # Cross-domain comparison with CKA similarity
+    comparison = compare_latent_spaces(all_stats, all_encoded)
 
     results = {
         "n_domains_analyzed": len(all_stats),
@@ -355,6 +487,16 @@ def main():
         logger.info(
             f"\n  Mean effective dim: {ed['mean']:.1f} +/- {ed['std']:.1f}"
         )
+
+    if "cka_similarity" in comparison:
+        cka = comparison["cka_similarity"]
+        logger.info(f"\n  Mean CKA similarity: {cka['mean_cka']:.4f}")
+        logger.info("  Most similar domain pairs:")
+        for pair in cka["most_similar_pairs"][:5]:
+            logger.info(
+                f"    {pair['domain_a']:20s} <-> {pair['domain_b']:20s}: "
+                f"CKA={pair['cka']:.4f}"
+            )
 
 
 if __name__ == "__main__":
