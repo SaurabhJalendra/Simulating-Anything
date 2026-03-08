@@ -498,14 +498,14 @@ For the harmonic oscillator, FFT-based frequency extraction achieves
 \subsection{World Model Training}
 \label{sec:world_model_results}
 
-We train RSSM world models on 17 domains using an RTX 5090 (32GB).
-Table~\ref{tab:world_models} shows training results with 50 epochs per domain,
-covering the core 14 domains plus 3 extended domains (Chua, Duffing,
-R\"ossler) from the V6 discovery campaign.
+We train RSSM world models on 24+ domains using an RTX 5090 (32GB).
+Table~\ref{tab:world_models} shows training results with 200 epochs per domain,
+covering the core 14 domains, 3 extended domains (Chua, Duffing,
+R\"ossler), 4 V7 novel domains, and additional high-value domains.
 
 \begin{table}[h]
 \centering
-\caption{RSSM world model training results (50 epochs, RTX 5090).}
+\caption{RSSM world model training results (200 epochs, RTX 5090). $^\dagger$ denotes novel domains.}
 \label{tab:world_models}
 \begin{tabular}{lccc}
 \toprule
@@ -526,25 +526,36 @@ Logistic Map & 1 & 32.00 & 134 \\
 Gray-Scott & 8192 & 32.06 & 248 \\
 Navier-Stokes 2D & 1024 & 32.20 & 515 \\
 \midrule
-Chua Circuit & 3 & 32.01 & 135 \\
-Duffing Osc. & 2 & 32.02 & 136 \\
-R\"ossler & 3 & 32.04 & 135 \\
+Chua Circuit & 3 & 32.00 & 432 \\
+Duffing Osc. & 2 & 32.00 & 456 \\
+R\"ossler & 3 & 32.00 & 436 \\
+\midrule
+SEIR & 4 & 32.01 & 720 \\
+Three Species & 3 & 32.00 & 440 \\
+Hodgkin-Huxley & 4 & 32.00 & 439 \\
+Kepler & 4 & 32.00 & 458 \\
+\midrule
+Stochastic Res.$^\dagger$ & 2 & 32.01 & 431 \\
+Replicator-Mut.$^\dagger$ & 3 & 32.00 & 431 \\
+Lorenz-Stommel$^\dagger$ & 5 & 32.02 & 437 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-All 17 domains converge to similar loss values ($32.0\pm0.2$) within
-50 epochs (Figure~\ref{fig:wm_summary}), demonstrating that the RSSM architecture generalizes across
+All 24 domains converge to similar loss values ($32.0\pm0.2$) within
+200 epochs (Figure~\ref{fig:wm_summary}), demonstrating that the RSSM architecture generalizes across
 state dimensions ($d = 1$ to $d = 8192$) and dynamics types
 (algebraic, linear/nonlinear/chaotic ODEs, collective dynamics,
-PDEs, discrete chaos) without hyperparameter tuning. The best dream MSE
-across all trained models is 0.004 (Chua circuit), indicating that the
-world model learns accurate internal representations even for chaotic
-double-scroll dynamics. The symlog loss transformation ensures stable
-training across domains with different observation scales. Training
-takes $\sim$136s per domain on an RTX 5090 (32GB), with PDE domains
-(Gray-Scott: 248s, Navier-Stokes: 515s) requiring more time due to
-larger observation dimensions.
+PDEs, discrete chaos, stochastic systems, evolutionary games) without
+hyperparameter tuning. The best dream MSE
+across all trained models is 0.004 (Chua circuit), with the novel
+replicator-mutator system achieving dream MSE = 0.037. The Lorenz-Stommel
+coupled atmosphere-ocean system has the highest dream MSE (1.23), reflecting
+the difficulty of dreaming in a 5D chaotic coupled system. The symlog loss
+transformation ensures stable training across domains with different
+observation scales. Training
+takes $\sim$440s per domain on an RTX 5090 (32GB, 200 epochs), with PDE domains
+requiring more time due to larger observation dimensions.
 
 \begin{figure}[h]
 \centering
