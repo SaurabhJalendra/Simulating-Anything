@@ -19,7 +19,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import sys
 import time
@@ -50,8 +49,14 @@ def run_all_rediscoveries(pysr_iterations: int = 40):
 
 def run_novel_discoveries(pysr_iterations: int = 40):
     """Run V7 novel discovery domains only."""
+    from simulating_anything.rediscovery.climate_epidemic import (
+        run_climate_epidemic_rediscovery,
+    )
     from simulating_anything.rediscovery.lorenz_stommel import (
         run_lorenz_stommel_rediscovery,
+    )
+    from simulating_anything.rediscovery.neural_cardiac import (
+        run_neural_cardiac_rediscovery,
     )
     from simulating_anything.rediscovery.replicator_mutator import (
         run_replicator_mutator_rediscovery,
@@ -70,6 +75,8 @@ def run_novel_discoveries(pysr_iterations: int = 40):
         ("stochastic_resonance", run_stochastic_resonance_rediscovery),
         ("replicator_mutator", run_replicator_mutator_rediscovery),
         ("lorenz_stommel", run_lorenz_stommel_rediscovery),
+        ("climate_epidemic", run_climate_epidemic_rediscovery),
+        ("neural_cardiac", run_neural_cardiac_rediscovery),
     ]:
         logger.info(f"\n--- {name} ---")
         try:

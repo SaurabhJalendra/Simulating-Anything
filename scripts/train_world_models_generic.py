@@ -71,6 +71,12 @@ DOMAIN_REGISTRY = {
         "sigma": 10.0, "rho": 28.0, "beta": 2.667, "eta1": 3.0, "eta2": 1.0,
         "delta": 0.3, "coupling_strength": 0.1, "ocean_feedback": 0.01,
     }),
+    "climate_epidemic": ("climate_epidemic", "ClimateEpidemicSimulation", {
+        "coupling_TC": 0.3, "beta_0": 0.5, "gamma_epi": 0.1, "mu_pop": 0.01,
+    }),
+    "neural_cardiac": ("neural_cardiac", "NeuralCardiacSimulation", {
+        "coupling_nc": 0.1, "coupling_cv": 0.05, "I_ext": 0.5, "mu_c": 1.0,
+    }),
 }
 
 # Domains already trained

@@ -444,7 +444,7 @@ models, and produce real scientific discovery results.
 - [x] 78/80 succeeded; 2 failed (fhn_stochastic, toggle_switch_stochastic -- API mismatch)
 - Results: all saved to output/rediscovery/{domain}/results.json
 
-**V6 Summary: 192 domains total (+ 3 V7 novel = 195), 174 with quantitative R² fits**
+**V6 Summary: 192 domains total (+ 5 V7 novel = 197), 174 with quantitative R² fits**
 **Median R² = 0.9998 | 95/171 with R² >= 0.999 | 109/171 with R² >= 0.99**
 **17 RSSM world models trained on RTX 5090 (200 epochs, best dream MSE=0.004)**
 **Paper updated to 192 domains with full statistics**
@@ -474,7 +474,7 @@ Move beyond rediscovery to genuinely new scientific discoveries.
 - [x] Equation complexity analysis: 115 equations, complexity-R2 correlation = -0.204
 - [x] Domain classification: ODE/PDE/Map/Stochastic/Agent with per-category R2 stats
 
-**Phase 7C: Genuinely Novel Discoveries** -- COMPLETE (3/3 novel domains)
+**Phase 7C: Genuinely Novel Discoveries** -- IN PROGRESS (5 novel domains, 3 with results)
 - [x] Multi-scale coupled systems: Lorenz-Stommel coupled atmosphere-ocean
   - SINDy recovered sigma=9.994, beta=2.665 from 5D coupled ODE (R²=0.772)
   - Coupling is slightly destabilizing (Lyapunov: 0.902 -> 0.910)
@@ -486,9 +486,10 @@ Move beyond rediscovery to genuinely new scientific discoveries.
   - PySR recovered Hawk-Dove ESS p*=V/C with R²=1.0 (exact!)
   - SINDy recovered full 3-strategy RPS ODE with R²=1.0
   - PD cooperation collapsed to 2.9e-87, mutation stabilizes (slope=-0.009)
+- [ ] Climate-epidemic coupling: ENSO-driven disease dynamics (6D, awaiting PySR)
+- [ ] Neural-cardiac coupling: FHN brain + VdP heart oscillators (4D, awaiting PySR)
 - [ ] Network epidemic on realistic graphs (future work)
 - [ ] Turbulence cascade: higher Re corrections (future work)
-- [ ] Protein folding landscape (future work)
 
 **Phase 7D: Production & Reproducibility** -- PARTIAL
 - [ ] Comprehensive results dashboard (Streamlit or Gradio)
@@ -654,6 +655,8 @@ src/simulating_anything/
     stochastic_resonance.py # Bistable double-well with periodic forcing + noise
     replicator_mutator.py  # Replicator-mutator evolutionary game dynamics
     lorenz_stommel.py      # Novel coupled Lorenz atmosphere + Stommel ocean
+    climate_epidemic.py    # Novel coupled ENSO + SIR epidemic (6D)
+    neural_cardiac.py      # Novel coupled FHN neural + VdP cardiac (4D)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     rssm_v2.py             # RSSMv2 (DreamerV4-style mixed stochastic)
@@ -821,6 +824,8 @@ src/simulating_anything/
     stochastic_resonance.py # SNR peak, Kramers escape rate
     replicator_mutator.py  # RPS cycles, Hawk-Dove ESS, PD collapse
     lorenz_stommel.py      # Novel coupled atm-ocean, Lyapunov + sync
+    climate_epidemic.py    # Novel ENSO-epidemic coupling sweep + SINDy
+    neural_cardiac.py      # Novel brain-heart phase locking + SINDy
     runner.py              # Unified runner for all domains
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
