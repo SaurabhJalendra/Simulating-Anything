@@ -22,7 +22,7 @@
 13 & Heat Eq. 1D & Linear PDE & PySR & \textbf{1.0000} & Spectral exact \\
 14 & Logistic Map & Discrete & PySR & 0.6287 & Fractal spectrum \\
 \midrule
-\multicolumn{6}{l}{Core 14: Mean R$^2$ = 0.970, 11/14 with R$^2 \geq 0.999$ | All 195: Median R$^2$ = 1.0, 121/174 with R$^2 \geq 0.99$. $^\dagger$Novel system.} \\
+\multicolumn{6}{l}{Core 14: Mean R$^2$ = 0.970, 11/14 with R$^2 \geq 0.999$ | All 197: Median R$^2$ = 1.0, 121/174 with R$^2 \geq 0.99$. $^\dagger$Novel system.} \\
 \midrule
 \multicolumn{6}{l}{\textit{Extended domains (178 additional with full PySR/SINDy results, same pipeline infrastructure):}} \\
 \midrule
@@ -200,11 +200,13 @@
 186 & Swift-Hohenberg & Pattern Formation PDE & PySR & \textbf{1.0000} & $(1+\nabla^2)^2 u$, rolls at $k_c=1$, $A\sim\sqrt{r}$ \\
 187 & SIS Adaptive & Behavioral Epidemic & -- & -- & $\beta(I)=\beta_0/(1+\kappa I)$, voluntary distancing \\
 \midrule
-\multicolumn{6}{l}{\textit{V7 Novel Discovery domains (3 new, including 1 genuinely novel coupled system):}} \\
+\multicolumn{6}{l}{\textit{V7 Novel Discovery domains (5 new, including 3 genuinely novel coupled systems):}} \\
 \midrule
 188 & Stochastic Resonance & Bistable Stochastic & PySR & 0.9972 & SNR peak at $D_\text{opt}=0.042$, Kramers rate \\
 189 & Replicator-Mutator & Evolutionary Game & PySR+SINDy & \textbf{1.0000} & $p^*=V/C$ ESS (exact), 3-strategy ODE \\
 190 & Lorenz-Stommel$^\dagger$ & Coupled Atm-Ocean & SINDy & 0.7718 & $\sigma{=}9.994$, $\beta{=}2.665$; corr$(x,T)$ jumps \\
+191 & Climate-Epidemic$^\dagger$ & Coupled ENSO-SIR & SINDy & -- & corr$(T, \dot{I})=0.995$; 6D coupled ODE \\
+192 & Neural-Cardiac$^\dagger$ & Coupled FHN-VdP & SINDy & -- & Phase ratio shifts, $|r_{vx}|=0.45$ \\
 \bottomrule
 \end{tabular}
 \end{table*}
