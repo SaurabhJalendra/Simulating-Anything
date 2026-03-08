@@ -389,7 +389,7 @@ def main():
         help="Which phase to run (1=core 14, 2=extended batch 1, 3=extended batch 2, 4=world models, all=everything)"
     )
     parser.add_argument("--domain", type=str, default=None,
-                        help="Run a single domain by name")
+                        help="Run domain(s) by name (comma-separated for multiple)")
     parser.add_argument("--pysr-iterations", type=int, default=40,
                         help="Number of PySR iterations")
     parser.add_argument("--wm-epochs", type=int, default=200,
@@ -399,7 +399,9 @@ def main():
     Path("output").mkdir(exist_ok=True)
 
     if args.domain:
-        run_rediscovery_phase([args.domain], f"single_{args.domain}", args.pysr_iterations)
+        domain_list = [d.strip() for d in args.domain.split(",")]
+        label = f"custom_{len(domain_list)}_domains"
+        run_rediscovery_phase(domain_list, label, args.pysr_iterations)
         return
 
     all_results = {}

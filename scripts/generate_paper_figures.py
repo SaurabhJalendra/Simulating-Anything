@@ -497,29 +497,21 @@ def fig_cross_domain_matrix() -> None:
         matrix[j, i] = max(matrix[j, i], a.strength)
     np.fill_diagonal(matrix, 1.0)
 
-    display_names = [
-        "Projectile", "Lotka-\nVolterra", "Gray-\nScott",
-        "SIR", "Double\nPendulum", "Harmonic\nOscillator", "Lorenz"
-    ]
+    fig, ax = plt.subplots(figsize=(10, 9))
+    im = ax.imshow(matrix, cmap="YlOrRd", vmin=0, vmax=1, aspect="auto")
 
-    fig, ax = plt.subplots(figsize=(8, 7))
-    im = ax.imshow(matrix, cmap="YlOrRd", vmin=0, vmax=1)
-
-    ax.set_xticks(range(n))
-    ax.set_yticks(range(n))
-    ax.set_xticklabels(display_names, fontsize=8)
-    ax.set_yticklabels(display_names, fontsize=8)
+    # Show ticks only every 10th domain for readability
+    tick_step = max(1, n // 20)
+    tick_positions = list(range(0, n, tick_step))
+    ax.set_xticks(tick_positions)
+    ax.set_yticks(tick_positions)
+    ax.set_xticklabels([names[i].replace("_", " ").title()[:12] for i in tick_positions], fontsize=6)
+    ax.set_yticklabels([names[i].replace("_", " ").title()[:12] for i in tick_positions], fontsize=6)
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
 
-    # Annotate cells
-    for i in range(n):
-        for j in range(n):
-            if matrix[i, j] > 0 and i != j:
-                ax.text(j, i, f"{matrix[i, j]:.2f}", ha="center", va="center",
-                        fontsize=7, color="white" if matrix[i, j] > 0.6 else "black")
-
+    n_analogies = sum(1 for a in all_analogies)
     plt.colorbar(im, ax=ax, label="Analogy Strength", shrink=0.8)
-    ax.set_title("Cross-Domain Mathematical Analogy Matrix\n(7 domains, 9 isomorphisms)")
+    ax.set_title(f"Cross-Domain Mathematical Analogy Matrix\n({n} domains, {n_analogies} isomorphisms)")
     fig.tight_layout()
     save(fig, "cross_domain_matrix")
 
