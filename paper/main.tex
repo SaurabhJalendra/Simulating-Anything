@@ -1171,6 +1171,38 @@ Feigenbaum $\delta \in [4.0, 4.75]$ (theory: 4.669);\quad
 $\lambda(r{=}4) = \ln 4 = 1.386$ (exact);\quad
 Lyapunov spectrum $R^2 = 0.63$ (fractal -- low $R^2$ expected)
 
+\paragraph{Stochastic Resonance (PySR).}
+Kramers escape rate $r_K(D)$ with $R^2 = 0.997$;\quad
+optimal noise $D_\text{opt} = 0.042$;\quad
+max SNR = 19614 confirms stochastic resonance
+
+\paragraph{Replicator-Mutator (PySR + SINDy).}
+Hawk-Dove ESS: $p^* = V/C$ with $R^2 = 1.0$ (exact);\quad
+RPS SINDy ODE: $\dot{x}_1 = 0.286\,x_2 - 0.286\,x_3 + \ldots$ ($R^2 = 1.0$);\quad
+PD cooperation collapses to $2.9 \times 10^{-87}$ without mutation
+
+\paragraph{Lorenz-Stommel$^\dagger$ (SINDy).}
+$\dot{x} = -\sigma x + \sigma y$ with $\sigma = 9.994$ (true: 10);\quad
+$\dot{z} = -\beta z + xy$ with $\beta = 2.665$ (true: 8/3);\quad
+5D coupled ODE, mean $R^2 = 0.772$;\quad
+Novel: corr$(x, T)$ jumps 0.21 $\to$ 0.74 at coupling $c = 0.01$
+
+\paragraph{Climate-Epidemic$^\dagger$ (PySR + SINDy).}
+6D coupled ENSO-SIR: $\dot{T} = \mu T - \omega h + c_{TI} I$;\quad
+$\dot{S} = -\beta_\text{eff} S I + \mu_\text{pop}(1-S)$ where
+$\beta_\text{eff} = \beta_0(1 + c_{TC} T)$;\quad
+All 6 ODEs recovered, mean $R^2 = 0.9997$;\quad
+ENSO subsystem $R^2 = 1.0$;\quad
+Novel: corr$(T, \dot{I}) = 0.995$ -- temperature drives infection rate
+
+\paragraph{Neural-Cardiac$^\dagger$ (SINDy).}
+4D coupled FHN-VdP:\quad
+$\dot{v} = 0.511 + 1.019v - 1.025w - 0.339v^3$ ($R^2 = 0.990$);\quad
+$\dot{w} = 0.056 + 0.080v - 0.064w$ ($R^2 = 1.0$);\quad
+$\dot{x} = 0.100v + 0.999x - 1.000y - 1.000x^3$ ($R^2 = 1.0$);\quad
+$\dot{y} = 0.300x$ ($R^2 = 1.0$);\quad
+Mean $R^2 = 0.997$; bidirectional coupling term $0.100v$ detected
+
 \section{Reproducibility}
 \label{app:reproducibility}
 
