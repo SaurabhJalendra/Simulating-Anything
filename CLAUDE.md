@@ -456,6 +456,47 @@ models, and produce real scientific discovery results.
 - ~~Baseline comparisons: PySR alone, SINDy alone, manual simulation~~ DONE
 - ~~Paper updated to 192 domains~~ DONE (paper/main.tex + paper/results_table.tex)
 
+### V7 (Novel Scientific Discovery) -- NEW
+Move beyond rediscovery to genuinely new scientific discoveries.
+
+**Phase 7A: Expanded World Model Training**
+- [ ] Train RSSM on 31 additional high-value domains (Kepler, SEIR, Toda, etc.)
+- [ ] Cross-domain world model transfer: train on domain A, evaluate on domain B
+  - Lorenz → Rossler (chaotic ODE transfer)
+  - SIR → SEIR (epidemic model generalization)
+  - Harmonic → Elastic Pendulum (simple → complex oscillator)
+- [ ] Universal latent space analysis: what do shared representations look like?
+
+**Phase 7B: Meta-Discovery Across 192 Domains**
+- [ ] Universal bifurcation analysis: extract Feigenbaum-like constants across
+  all chaotic domains (Logistic, Henon, Ricker, Ikeda, Duffing, etc.)
+- [ ] Universal scaling near Hopf bifurcations: amplitude ~ sqrt(mu - mu_c)
+  across Brusselator, VdP, Stuart-Landau, Selkov, Wilson-Cowan, etc.
+- [ ] Lyapunov exponent classification: cluster 192 domains by dynamical type
+  using maximal Lyapunov exponent as feature
+- [ ] PySR on the discovered equations themselves: find patterns in the
+  coefficients/structure across domains (meta-regression)
+
+**Phase 7C: Genuinely Novel Discoveries**
+- [ ] Multi-scale coupled systems: couple Lorenz (atmosphere) + Stommel (ocean)
+  to discover climate-ocean interaction equations
+- [ ] Network epidemic on realistic graphs: SIR on scale-free networks,
+  discover threshold dependence on degree distribution
+- [ ] Stochastic resonance: add noise to bistable systems (double well),
+  discover optimal noise intensity for signal amplification
+- [ ] Turbulence cascade: extend 2D NS to higher Reynolds numbers,
+  discover corrections to Kolmogorov -5/3 scaling
+- [ ] Protein folding landscape: systematic HP model study across
+  all 2^N sequences, discover folding universality classes
+- [ ] Evolutionary dynamics: replicator-mutator equations with
+  fitness landscapes, discover ESS (evolutionary stable strategies)
+
+**Phase 7D: Production & Reproducibility**
+- [ ] Comprehensive results dashboard (Streamlit or Gradio)
+- [ ] One-command reproduction: `python run_everything.py` generates all results
+- [ ] arXiv preprint with supplementary materials
+- [ ] Zenodo DOI for dataset + trained models
+
 ---
 
 ## 12. Directory Map
