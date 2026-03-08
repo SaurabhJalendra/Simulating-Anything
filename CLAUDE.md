@@ -444,7 +444,7 @@ models, and produce real scientific discovery results.
 - [x] 78/80 succeeded; 2 failed (fhn_stochastic, toggle_switch_stochastic -- API mismatch)
 - Results: all saved to output/rediscovery/{domain}/results.json
 
-**V6 Summary: 192 domains total, 171 with quantitative R² fits**
+**V6 Summary: 192 domains total (+ 3 V7 novel = 195), 174 with quantitative R² fits**
 **Median R² = 0.9998 | 95/171 with R² >= 0.999 | 109/171 with R² >= 0.99**
 **17 RSSM world models trained on RTX 5090 (200 epochs, best dream MSE=0.004)**
 **Paper updated to 192 domains with full statistics**
@@ -454,7 +454,7 @@ models, and produce real scientific discovery results.
 - Target: AI4Science workshops (NeurIPS, ICML, ICLR)
 - Core contribution: domain-agnostic discovery architecture + rediscovery evidence
 - ~~Baseline comparisons: PySR alone, SINDy alone, manual simulation~~ DONE
-- ~~Paper updated to 192 domains~~ DONE (paper/main.tex + paper/results_table.tex)
+- ~~Paper updated to 195 domains~~ DONE (paper/main.tex + paper/results_table.tex)
 
 ### V7 (Novel Scientific Discovery) -- IN PROGRESS
 Move beyond rediscovery to genuinely new scientific discoveries.
@@ -490,9 +490,9 @@ Move beyond rediscovery to genuinely new scientific discoveries.
 - [ ] Turbulence cascade: higher Re corrections (future work)
 - [ ] Protein folding landscape (future work)
 
-**Phase 7D: Production & Reproducibility**
+**Phase 7D: Production & Reproducibility** -- PARTIAL
 - [ ] Comprehensive results dashboard (Streamlit or Gradio)
-- [ ] One-command reproduction: `python run_everything.py` generates all results
+- [x] One-command reproduction: `python run_everything.py` generates all results
 - [ ] arXiv preprint with supplementary materials
 - [ ] Zenodo DOI for dataset + trained models
 
