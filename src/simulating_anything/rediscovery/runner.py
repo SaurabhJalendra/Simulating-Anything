@@ -209,6 +209,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.lorenz_stenflo import (
         run_lorenz_stenflo_rediscovery,
     )
+    from simulating_anything.rediscovery.lorenz_stommel import (
+        run_lorenz_stommel_rediscovery,
+    )
     from simulating_anything.rediscovery.lotka_volterra import (
         run_lotka_volterra_rediscovery,
     )
@@ -259,6 +262,9 @@ def run_all_rediscoveries(
     from simulating_anything.rediscovery.ratio_dependent import run_ratio_dependent_rediscovery
     from simulating_anything.rediscovery.rayleigh_benard import (
         run_rayleigh_benard_rediscovery,
+    )
+    from simulating_anything.rediscovery.replicator_mutator import (
+        run_replicator_mutator_rediscovery,
     )
     from simulating_anything.rediscovery.repressilator import run_repressilator_rediscovery
     from simulating_anything.rediscovery.ricker_map import run_ricker_map_rediscovery
@@ -315,6 +321,9 @@ def run_all_rediscoveries(
     )
     from simulating_anything.rediscovery.sprott import run_sprott_rediscovery
     from simulating_anything.rediscovery.standard_map import run_standard_map_rediscovery
+    from simulating_anything.rediscovery.stochastic_resonance import (
+        run_stochastic_resonance_rediscovery,
+    )
     from simulating_anything.rediscovery.stommel import run_stommel_rediscovery
     from simulating_anything.rediscovery.stuart_landau import run_stuart_landau_rediscovery
     from simulating_anything.rediscovery.swift_hohenberg import run_swift_hohenberg_rediscovery
@@ -1307,6 +1316,21 @@ def run_all_rediscoveries(
         "three_body": {
             "label": "Three-Body Gravitational Problem",
             "fn": run_three_body_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "stochastic_resonance": {
+            "label": "Stochastic Resonance (Bistable Double-Well)",
+            "fn": run_stochastic_resonance_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "replicator_mutator": {
+            "label": "Replicator-Mutator Evolutionary Dynamics",
+            "fn": run_replicator_mutator_rediscovery,
+            "kwargs": {"n_iterations": pysr_iterations},
+        },
+        "lorenz_stommel": {
+            "label": "Lorenz-Stommel Coupled Atmosphere-Ocean (Novel)",
+            "fn": run_lorenz_stommel_rediscovery,
             "kwargs": {"n_iterations": pysr_iterations},
         },
     }

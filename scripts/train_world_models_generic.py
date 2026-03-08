@@ -61,6 +61,16 @@ DOMAIN_REGISTRY = {
     "wilson_cowan": ("wilson_cowan", "WilsonCowanSimulation", {}),
     "langford": ("langford", "LangfordSimulation", {}),
     "finance": ("finance", "FinanceSimulation", {}),
+    "stochastic_resonance": ("stochastic_resonance", "StochasticResonanceSimulation", {
+        "gamma": 0.5, "signal_amplitude": 0.3, "signal_omega": 0.1, "noise_intensity": 0.3,
+    }),
+    "replicator_mutator": ("replicator_mutator", "ReplicatorMutatorSimulation", {
+        "n_strategies": 3.0, "mutation_rate": 0.0,
+    }),
+    "lorenz_stommel": ("lorenz_stommel", "LorenzStommelSimulation", {
+        "sigma": 10.0, "rho": 28.0, "beta": 2.667, "eta1": 3.0, "eta2": 1.0,
+        "delta": 0.3, "coupling_strength": 0.1, "ocean_feedback": 0.01,
+    }),
 }
 
 # Domains already trained
