@@ -55,7 +55,7 @@ extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations across all 197 domains, achieving $R^2 \geq 0.99$ in 121 of
 174 domains with quantitative fits, with a median $R^2$ of 1.0. Our cross-domain analogy engine
-detects 570 structural, dimensional, and topological isomorphisms across
+detects 579 structural, dimensional, and topological isomorphisms across
 197 domains. The key architectural insight is that only the simulation layer is
 domain-specific ($\sim$50--200 lines per domain); everything else---world
 model, exploration, analysis, and reporting---operates on generic tensors,
@@ -98,7 +98,7 @@ Our key contributions are:
   only $\sim$50--200 lines of simulation code (Section~\ref{sec:architecture}).
 \item Successful autonomous rediscovery of governing equations in 197 domains
   across 12+ mathematical classes (Section~\ref{sec:experiments}).
-\item A cross-domain analogy engine that detects 570 mathematical isomorphisms
+\item A cross-domain analogy engine that detects 579 mathematical isomorphisms
   across 197 domains (Section~\ref{sec:cross_domain}).
 \item An autonomous discovery mode that generates simulations from scratch,
   validates them, and discovers equations without human intervention
@@ -387,7 +387,7 @@ underlying dynamics.
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.8\linewidth]{figures/cross_domain_matrix_14domain.pdf}
-\caption{Cross-domain analogy strength matrix. 570 isomorphisms detected
+\caption{Cross-domain analogy strength matrix. 579 isomorphisms detected
 across 197 domains. Brighter cells indicate stronger mathematical analogies.}
 \label{fig:cross_domain}
 \end{figure}
@@ -409,7 +409,7 @@ limit cycles (VdP $\leftrightarrow$ Brusselator), strange attractors
 (Lorenz $\leftrightarrow$ Logistic), and synchronization transitions
 (Kuramoto $\leftrightarrow$ SIR).
 
-Figure~\ref{fig:cross_domain} shows the analogy matrix with 570 detected
+Figure~\ref{fig:cross_domain} shows the analogy matrix with 579 detected
 isomorphisms across 197 domains. The strongest analogies (strength $> 0.9$)
 connect: LV $\leftrightarrow$ SIR (identical ODE structure),
 Pendulum $\leftrightarrow$ Oscillator (shared harmonic restoring force),
@@ -863,7 +863,7 @@ to 4 significant figures, or Lorenz ODEs with $\sigma = 9.98$ vs.\ true $10$,
 Two RSSM models trained on disjoint data halves predict independently;
 divergence flags insufficient data, chaos, or systematic bias.
 (6)~\emph{Cross-domain consistency.}
-The 570 detected isomorphisms (e.g., harmonic oscillator and double
+The 579 detected isomorphisms (e.g., harmonic oscillator and double
 pendulum both recover $T \sim \sqrt{\text{inertia}/\text{force}}$)
 provide mutual structural validation.
 
@@ -910,7 +910,7 @@ and discovers that temperature directly drives infection rate changes
 to VdP cardiac pacemakers where SINDy recovers the 4D coupled ODE ($R^2=0.997$),
 detecting bidirectional coupling terms.
 Cross-domain analogy detection reveals
-570 mathematical isomorphisms across 197 domains, suggesting that scientific
+579 mathematical isomorphisms across 197 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer
 validation framework---conservation checks, dimensional analysis,
 reproducibility tests, theory comparison, adversarial dream debate, and

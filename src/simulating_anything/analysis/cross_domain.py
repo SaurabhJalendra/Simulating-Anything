@@ -2951,6 +2951,82 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[],
         ),
+        DomainSignature(
+            name="stochastic_resonance",
+            math_type="stochastic_ode",
+            state_dim=2,
+            n_parameters=4,
+            conserved_quantities=[],
+            symmetries=["Z2_symmetry"],
+            phase_portrait_type="bistable",
+            characteristic_timescale="1/gamma",
+            discovered_equations=[
+                "dx/dt = gamma*x - x^3 + A*cos(omega*t) + noise",
+                "Kramers_rate ~ exp(-DeltaV/D)",
+            ],
+            r_squared=[0.997],
+        ),
+        DomainSignature(
+            name="replicator_mutator",
+            math_type="ode_nonlinear",
+            state_dim=3,
+            n_parameters=4,
+            conserved_quantities=["simplex_sum_1"],
+            symmetries=["cyclic_RPS"],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/fitness",
+            discovered_equations=[
+                "dx_i/dt = x_i*(Ax)_i - x.Ax + mutation",
+                "ESS_hawk_dove = V/C",
+            ],
+            r_squared=[1.0],
+        ),
+        DomainSignature(
+            name="lorenz_stommel",
+            math_type="ode_chaotic",
+            state_dim=5,
+            n_parameters=8,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="strange_attractor",
+            characteristic_timescale="1/sigma",
+            discovered_equations=[
+                "dx/dt = sigma*(y-x) + coupling*T",
+                "dT/dt = eta1 - eta2*T - delta*T*S_o",
+            ],
+            r_squared=[0.772],
+        ),
+        DomainSignature(
+            name="climate_epidemic",
+            math_type="ode_coupled",
+            state_dim=6,
+            n_parameters=7,
+            conserved_quantities=["S+I+R=1"],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/omega, 1/gamma_epi",
+            discovered_equations=[
+                "dT/dt = mu*T - omega*h + coupling*I",
+                "dS/dt = -beta_eff*S*I + mu_pop*(1-S)",
+                "beta_eff = beta_0*(1 + c_TC*T)",
+            ],
+            r_squared=[0.9997],
+        ),
+        DomainSignature(
+            name="neural_cardiac",
+            math_type="ode_coupled",
+            state_dim=4,
+            n_parameters=6,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="coupled_oscillators",
+            characteristic_timescale="1/eps_n, 1/eps_c",
+            discovered_equations=[
+                "dv/dt = v - v^3/3 - w + I_ext + c_cv*x",
+                "dx/dt = mu_c*(1-x^2)*x - y + c_nc*v",
+            ],
+            r_squared=[0.997],
+        ),
     ]
     return signatures
 
@@ -7461,6 +7537,165 @@ def detect_structural_analogies(
             "disease_control": "disease_control",
             "reduced_transmission": "immunity",
             "behavioral_feedback": "vaccination_campaign",
+        },
+    ))
+
+    # Climate-epidemic <-> SIR (epidemic subsystem)
+    analogies.append(Analogy(
+        domain_a="climate_epidemic",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "Climate-epidemic contains an SIR subsystem driven by ENSO. "
+            "Same dS/dt, dI/dt, dR/dt structure with coupling."
+        ),
+        strength=0.88,
+        mapping={
+            "S": "S",
+            "I": "I",
+            "R": "R",
+            "beta_eff": "beta",
+        },
+    ))
+
+    # Climate-epidemic <-> Vallis ENSO (climate subsystem)
+    analogies.append(Analogy(
+        domain_a="climate_epidemic",
+        domain_b="vallis",
+        analogy_type="structural",
+        description=(
+            "Climate-epidemic ENSO subsystem (T, h, tau) shares the same "
+            "oscillatory structure as Vallis ENSO."
+        ),
+        strength=0.85,
+        mapping={
+            "T": "T",
+            "h": "h",
+            "oscillation": "oscillation",
+        },
+    ))
+
+    # Neural-cardiac <-> FitzHugh-Nagumo (neural subsystem)
+    analogies.append(Analogy(
+        domain_a="neural_cardiac",
+        domain_b="fitzhugh_nagumo",
+        analogy_type="structural",
+        description=(
+            "Neural-cardiac neural subsystem is exactly FHN: "
+            "dv/dt = v - v^3/3 - w + I_ext."
+        ),
+        strength=0.95,
+        mapping={
+            "v": "v",
+            "w": "w",
+            "v-v^3/3": "v-v^3/3",
+            "excitable": "excitable",
+        },
+    ))
+
+    # Neural-cardiac <-> Van der Pol (cardiac subsystem)
+    analogies.append(Analogy(
+        domain_a="neural_cardiac",
+        domain_b="van_der_pol",
+        analogy_type="structural",
+        description=(
+            "Neural-cardiac cardiac subsystem is VdP: "
+            "dx/dt = mu*(1-x^2)*x - y."
+        ),
+        strength=0.92,
+        mapping={
+            "x": "x",
+            "y": "y",
+            "mu*(1-x^2)": "mu*(1-x^2)",
+            "limit_cycle": "limit_cycle",
+        },
+    ))
+
+    # Lorenz-Stommel <-> Lorenz (atmospheric subsystem)
+    analogies.append(Analogy(
+        domain_a="lorenz_stommel",
+        domain_b="lorenz",
+        analogy_type="structural",
+        description=(
+            "Lorenz-Stommel atmospheric subsystem is exactly the Lorenz "
+            "attractor (sigma, rho, beta parameters)."
+        ),
+        strength=0.95,
+        mapping={
+            "x": "x",
+            "y": "y",
+            "z": "z",
+            "sigma": "sigma",
+            "rho": "rho",
+        },
+    ))
+
+    # Lorenz-Stommel <-> Stommel (ocean subsystem)
+    analogies.append(Analogy(
+        domain_a="lorenz_stommel",
+        domain_b="stommel",
+        analogy_type="structural",
+        description=(
+            "Lorenz-Stommel ocean subsystem shares thermohaline dynamics "
+            "with Stommel box model."
+        ),
+        strength=0.82,
+        mapping={
+            "T_ocean": "T",
+            "S_ocean": "S",
+            "thermohaline": "thermohaline",
+        },
+    ))
+
+    # Stochastic resonance <-> Double well (same potential)
+    analogies.append(Analogy(
+        domain_a="stochastic_resonance",
+        domain_b="double_well",
+        analogy_type="structural",
+        description=(
+            "Both use bistable double-well potential V(x) = -x^2/2 + x^4/4. "
+            "SR adds periodic forcing and noise to study escape dynamics."
+        ),
+        strength=0.90,
+        mapping={
+            "double_well": "double_well",
+            "Kramers_rate": "transition_rate",
+            "bistable": "bistable",
+        },
+    ))
+
+    # Replicator-mutator <-> Lotka-Volterra (competitive dynamics)
+    analogies.append(Analogy(
+        domain_a="replicator_mutator",
+        domain_b="competitive_lv",
+        analogy_type="structural",
+        description=(
+            "Both model N-species competition. Replicator dynamics on the "
+            "simplex are equivalent to competitive LV under transformation."
+        ),
+        strength=0.80,
+        mapping={
+            "strategy_frequency": "species_density",
+            "fitness": "growth_rate",
+            "ESS": "coexistence_equilibrium",
+        },
+    ))
+
+    # Neural-cardiac <-> Coupled VdP (two coupled oscillators)
+    analogies.append(Analogy(
+        domain_a="neural_cardiac",
+        domain_b="coupled_vdp",
+        analogy_type="structural",
+        description=(
+            "Both are coupled nonlinear oscillators. Neural-cardiac couples "
+            "FHN + VdP; coupled VdP couples two VdP oscillators."
+        ),
+        strength=0.78,
+        mapping={
+            "oscillator_1": "oscillator_1",
+            "oscillator_2": "oscillator_2",
+            "coupling": "coupling",
+            "synchronization": "synchronization",
         },
     ))
 
