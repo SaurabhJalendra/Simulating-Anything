@@ -205,8 +205,8 @@
 188 & Stochastic Resonance & Bistable Stochastic & PySR & 0.9972 & SNR peak at $D_\text{opt}=0.042$, Kramers rate \\
 189 & Replicator-Mutator & Evolutionary Game & PySR+SINDy & \textbf{1.0000} & $p^*=V/C$ ESS (exact), 3-strategy ODE \\
 190 & Lorenz-Stommel$^\dagger$ & Coupled Atm-Ocean & SINDy & 0.7718 & $\sigma{=}9.994$, $\beta{=}2.665$; corr$(x,T)$ jumps \\
-191 & Climate-Epidemic$^\dagger$ & Coupled ENSO-SIR & SINDy & -- & corr$(T, \dot{I})=0.995$; 6D coupled ODE \\
-192 & Neural-Cardiac$^\dagger$ & Coupled FHN-VdP & SINDy & -- & Phase ratio shifts, $|r_{vx}|=0.45$ \\
+191 & Climate-Epidemic$^\dagger$ & Coupled ENSO-SIR & PySR+SINDy & \textbf{0.9997} & corr$(T, \dot{I})=0.995$; 6D ODE R$^2>0.999$ \\
+192 & Neural-Cardiac$^\dagger$ & Coupled FHN-VdP & PySR+SINDy & 0.9975 & $v{-}v^3/3$ FHN + $x{-}x^3$ VdP coupled \\
 \bottomrule
 \end{tabular}
 \end{table*}

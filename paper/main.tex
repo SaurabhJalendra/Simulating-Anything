@@ -306,16 +306,16 @@ networks, epidemiology, climate science, and more. Table~\ref{tab:extended}
 highlights the top-performing extended domains. Figure~\ref{fig:rediscovery_all}
 shows the distribution of R$^2$ scores across all domains.
 Across all 197 domains with
-equation recovery, 95 of 171 quantitative fits achieve $R^2 \geq 0.999$,
-109 achieve $R^2 \geq 0.99$, and the median $R^2$ is 0.9998.
+equation recovery, 105 of 174 quantitative fits achieve $R^2 \geq 0.999$,
+123 achieve $R^2 \geq 0.99$, and the median $R^2$ is 1.0.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{figures/rediscovery_summary_192domain.pdf}
-\caption{Rediscovery R$^2$ scores across all 171 domains with quantitative fits,
-sorted by score. Green: $R^2 \geq 0.999$ (95 domains), blue: $R^2 \geq 0.99$ (14 more),
-orange: $R^2 \geq 0.9$ (21 more), red: $R^2 < 0.9$ (41 domains).
-Median $R^2 = 0.9998$.}
+\caption{Rediscovery R$^2$ scores across all 174 domains with quantitative fits,
+sorted by score. Green: $R^2 \geq 0.999$ (105 domains), blue: $R^2 \geq 0.99$ (18 more),
+orange: $R^2 \geq 0.9$ (20 more), red: $R^2 < 0.9$ (31 domains).
+Median $R^2 = 1.0$.}
 \label{fig:rediscovery_all}
 \end{figure}
 
@@ -895,15 +895,20 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 \label{sec:conclusion}
 
 \ours{} demonstrates that a single computational pipeline can autonomously
-rediscover known physical laws across 195 fundamentally different domains.
-The system achieves $R^2 \geq 0.99$ in 121 of 174 domains with quantitative
+rediscover known physical laws across 197 fundamentally different domains.
+The system achieves $R^2 \geq 0.99$ in 123 of 174 domains with quantitative
 fits, with a median $R^2$ of 1.0 across all domains. RSSM world models trained on 20 domains
 (best dream MSE = 0.004) enable efficient parameter space exploration.
-Beyond rediscovery, we demonstrate \emph{genuinely novel discovery}: a coupled
-Lorenz-Stommel atmosphere-ocean model (no known analytical solution) where
-SINDy recovers the 5D coupled ODE and reveals that even weak coupling
-($c=0.01$) produces strong atmosphere-ocean temperature correlations
-(Pearson $r$ jumps from 0.21 to 0.74).
+Beyond rediscovery, we demonstrate \emph{genuinely novel discovery} across
+five domains with no known analytical solutions: a coupled Lorenz-Stommel
+atmosphere-ocean model where SINDy recovers the 5D coupled ODE ($R^2=0.772$)
+and reveals that weak coupling ($c=0.01$) produces strong correlations
+($r$: 0.21$\to$0.74); a climate-epidemic system coupling ENSO oscillations to
+SIR disease dynamics where SINDy recovers all 6 coupled ODEs ($R^2=0.9997$)
+and discovers that temperature directly drives infection rate changes
+(corr$(T, \dot{I})=0.995$); and a neural-cardiac system coupling FHN neurons
+to VdP cardiac pacemakers where SINDy recovers the 4D coupled ODE ($R^2=0.997$),
+detecting bidirectional coupling terms.
 Cross-domain analogy detection reveals
 570 mathematical isomorphisms across 197 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer

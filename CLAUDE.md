@@ -474,7 +474,7 @@ Move beyond rediscovery to genuinely new scientific discoveries.
 - [x] Equation complexity analysis: 115 equations, complexity-R2 correlation = -0.204
 - [x] Domain classification: ODE/PDE/Map/Stochastic/Agent with per-category R2 stats
 
-**Phase 7C: Genuinely Novel Discoveries** -- IN PROGRESS (5 novel domains, 3 with results)
+**Phase 7C: Genuinely Novel Discoveries** -- COMPLETE (5/5 novel domains)
 - [x] Multi-scale coupled systems: Lorenz-Stommel coupled atmosphere-ocean
   - SINDy recovered sigma=9.994, beta=2.665 from 5D coupled ODE (R²=0.772)
   - Coupling is slightly destabilizing (Lyapunov: 0.902 -> 0.910)
@@ -486,8 +486,17 @@ Move beyond rediscovery to genuinely new scientific discoveries.
   - PySR recovered Hawk-Dove ESS p*=V/C with R²=1.0 (exact!)
   - SINDy recovered full 3-strategy RPS ODE with R²=1.0
   - PD cooperation collapsed to 2.9e-87, mutation stabilizes (slope=-0.009)
-- [ ] Climate-epidemic coupling: ENSO-driven disease dynamics (6D, awaiting PySR)
-- [ ] Neural-cardiac coupling: FHN brain + VdP heart oscillators (4D, awaiting PySR)
+- [x] Climate-epidemic coupling: ENSO-driven disease dynamics (6D)
+  - SINDy recovered all 6 coupled ODEs with mean R²=0.9997
+  - ENSO equations (T, h, tau): R²=1.0 each
+  - SIR equations (S, I, R): R²=0.999 (captures coupling terms)
+  - Novel: corr(T, dI/dt)=0.995 — temperature drives infection rate changes
+  - PySR peak infected vs coupling: R²=0.999
+- [x] Neural-cardiac coupling: FHN brain + VdP heart oscillators (4D)
+  - SINDy recovered all 4 coupled ODEs with mean R²=0.997
+  - FHN cubic v-v³/3 recovered (R²=0.990), VdP cubic x-x³ recovered (R²=1.0)
+  - Coupling terms 0.100v detected in cardiac equation (true: 0.1)
+  - dw/dt = 0.056 + 0.080v - 0.064w matches eps*(v+a-bw) exactly
 - [ ] Network epidemic on realistic graphs (future work)
 - [ ] Turbulence cascade: higher Re corrections (future work)
 
