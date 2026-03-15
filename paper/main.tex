@@ -55,7 +55,7 @@ extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations across all 197 domains, achieving $R^2 \geq 0.99$ in 123 of
 174 domains with quantitative fits, with a median $R^2$ of 1.0.
-We train 35 RSSM world models across all mathematical classes, showing that
+We train 38 RSSM world models across all mathematical classes, showing that
 latent representations compress dynamics to 5.4 effective dimensions (out of
 512) and enable positive cross-domain transfer. Our cross-domain analogy engine
 detects 579 structural, dimensional, and topological isomorphisms across
@@ -501,7 +501,7 @@ For the harmonic oscillator, FFT-based frequency extraction achieves
 \subsection{World Model Training}
 \label{sec:world_model_results}
 
-We train RSSM world models on 35 domains using an RTX 5090 (32GB).
+We train RSSM world models on 38 domains using an RTX 5090 (32GB).
 Table~\ref{tab:world_models} shows training results with 200 epochs per domain,
 covering the core 14 domains, 3 extended chaotic ODEs,
 9 additional dynamical systems, 5 novel coupled domains, and
@@ -553,11 +553,15 @@ Replicator-Mut.$^\dagger$ & 3 & 32.00 & 431 \\
 Lorenz-Stommel$^\dagger$ & 5 & 32.02 & 437 \\
 Climate-Epidemic$^\dagger$ & 6 & 32.00 & 448 \\
 Neural-Cardiac$^\dagger$ & 4 & 32.00 & 451 \\
+\midrule
+Pred.-Prey-Climate$^\dagger$ & 4 & 32.00 & 396 \\
+Epidemic-Economy$^\dagger$ & 4 & 32.00 & 360 \\
+Neural-Ecosystem$^\dagger$ & 4 & 32.00 & 364 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-All 35 domains converge to similar loss values ($32.0\pm0.2$) within
+All 38 domains converge to similar loss values ($32.0\pm0.2$) within
 200 epochs (Figure~\ref{fig:wm_summary}), demonstrating that the RSSM architecture generalizes across
 state dimensions ($d = 1$ to $d = 8192$) and dynamics types
 (algebraic, linear/nonlinear/chaotic ODEs, collective dynamics,
@@ -614,7 +618,7 @@ Brusselator & FitzHugh-Nagumo & 8.30 & $-$0.51 \\
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{figures/wm_combined_summary.pdf}
-\caption{RSSM world model training across 35 domains. (a) Best loss by domain.
+\caption{RSSM world model training across 38 domains. (a) Best loss by domain.
 (b) Training time scales with observation dimension. (c) Loss by mathematical
 class shows consistent convergence regardless of dynamics type.
 (d) Summary statistics.}

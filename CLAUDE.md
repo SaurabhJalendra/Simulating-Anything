@@ -526,8 +526,11 @@ Move beyond rediscovery to genuinely new scientific discoveries.
   - SINDy R²=0.977, S*I coupling detected, economy feedback recovered
 - [x] Neural-Ecosystem (4D): Wilson-Cowan + Lotka-Volterra
   - SINDy R²=1.000, neural-modulated predation, corr(E,N)=0.82
-- [ ] Train world models on 3 V8 domains (in progress)
-- [ ] Add V8 domains to cross-domain analyzer
+- [x] Train world models on 3 V8 domains (38 total models)
+  - predator_prey_climate: loss=32.002, dream MSE=0.455
+  - epidemic_economy: loss=32.000, dream MSE=0.084 (near-perfect stability)
+  - neural_ecosystem: loss=32.002, dream MSE=0.506
+- [x] Add V8 domains to cross-domain analyzer (7 new analogies)
 
 **Phase 7D: Production & Reproducibility** -- MOSTLY COMPLETE
 - [x] Results dashboard: `scripts/results_dashboard.py` (197 domains, 35 models)
