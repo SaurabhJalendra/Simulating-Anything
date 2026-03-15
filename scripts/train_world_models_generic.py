@@ -77,6 +77,15 @@ DOMAIN_REGISTRY = {
     "neural_cardiac": ("neural_cardiac", "NeuralCardiacSimulation", {
         "coupling_nc": 0.1, "coupling_cv": 0.05, "I_ext": 0.5, "mu_c": 1.0,
     }),
+    "predator_prey_climate": ("predator_prey_climate", "PredatorPreyClimateSimulation", {
+        "coupling_TK": 0.2, "coupling_Peta": 0.01,
+    }),
+    "epidemic_economy": ("epidemic_economy", "EpidemicEconomySimulation", {
+        "coupling_uS": 0.3, "coupling_Iu": 0.5,
+    }),
+    "neural_ecosystem": ("neural_ecosystem", "NeuralEcosystemSimulation", {
+        "coupling_EN": 0.2, "coupling_NE": 0.1,
+    }),
 }
 
 # Domains already trained
