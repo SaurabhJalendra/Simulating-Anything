@@ -519,9 +519,12 @@ Move beyond rediscovery to genuinely new scientific discoveries.
 - [ ] Network epidemic on realistic graphs (future work)
 - [ ] Turbulence cascade: higher Re corrections (future work)
 
-**Phase 7D: Production & Reproducibility** -- PARTIAL
-- [ ] Comprehensive results dashboard (Streamlit or Gradio)
+**Phase 7D: Production & Reproducibility** -- MOSTLY COMPLETE
+- [x] Results dashboard: `scripts/results_dashboard.py` (197 domains, 35 models)
 - [x] One-command reproduction: `python run_everything.py` generates all results
+- [x] Dream accuracy analysis: 25 domains, median MSE=0.267, 23/25 stable
+- [x] Ensemble uncertainty: 3 groups (2D/3D/4D), uncertainty scales with complexity
+- [x] Publication figures: R² distribution, CKA heatmap, transfer, dream accuracy
 - [ ] arXiv preprint with supplementary materials
 - [ ] Zenodo DOI for dataset + trained models
 
