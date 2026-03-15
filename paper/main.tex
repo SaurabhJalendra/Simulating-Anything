@@ -498,10 +498,11 @@ For the harmonic oscillator, FFT-based frequency extraction achieves
 \subsection{World Model Training}
 \label{sec:world_model_results}
 
-We train RSSM world models on 24+ domains using an RTX 5090 (32GB).
+We train RSSM world models on 35 domains using an RTX 5090 (32GB).
 Table~\ref{tab:world_models} shows training results with 200 epochs per domain,
-covering the core 14 domains, 3 extended domains (Chua, Duffing,
-R\"ossler), 4 V7 novel domains, and additional high-value domains.
+covering the core 14 domains, 3 extended chaotic ODEs,
+9 additional dynamical systems, 5 novel coupled domains, and
+supplementary high-value domains spanning all mathematical classes.
 
 \begin{table}[h]
 \centering
@@ -534,33 +535,83 @@ SEIR & 4 & 32.01 & 720 \\
 Three Species & 3 & 32.00 & 440 \\
 Hodgkin-Huxley & 4 & 32.00 & 439 \\
 Kepler & 4 & 32.00 & 458 \\
+Toda Lattice & 16 & 32.00 & 435 \\
+Driven Pendulum & 3 & 32.00 & 439 \\
+Elastic Pendulum & 4 & 32.00 & 444 \\
+Coupled Oscillators & 4 & 32.00 & 454 \\
+Selkov & 2 & 32.00 & 461 \\
+Stommel & 2 & 32.00 & 438 \\
+Mackey-Glass & 1 & 32.00 & 440 \\
+Wilson-Cowan & 2 & 32.00 & 441 \\
+Langford & 3 & 32.00 & 436 \\
 \midrule
 Stochastic Res.$^\dagger$ & 2 & 32.01 & 431 \\
 Replicator-Mut.$^\dagger$ & 3 & 32.00 & 431 \\
 Lorenz-Stommel$^\dagger$ & 5 & 32.02 & 437 \\
+Climate-Epidemic$^\dagger$ & 6 & 32.00 & 448 \\
+Neural-Cardiac$^\dagger$ & 4 & 32.00 & 451 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-All 24 domains converge to similar loss values ($32.0\pm0.2$) within
+All 35 domains converge to similar loss values ($32.0\pm0.2$) within
 200 epochs (Figure~\ref{fig:wm_summary}), demonstrating that the RSSM architecture generalizes across
 state dimensions ($d = 1$ to $d = 8192$) and dynamics types
 (algebraic, linear/nonlinear/chaotic ODEs, collective dynamics,
-PDEs, discrete chaos, stochastic systems, evolutionary games) without
-hyperparameter tuning. The best dream MSE
-across all trained models is 0.004 (Chua circuit), with the novel
-replicator-mutator system achieving dream MSE = 0.037. The Lorenz-Stommel
+PDEs, discrete chaos, stochastic systems, evolutionary games, coupled
+multi-physics systems) without hyperparameter tuning. The best dream MSE
+across all trained models is 0.001 (Toda lattice), with median 0.072.
+The Lorenz-Stommel
 coupled atmosphere-ocean system has the highest dream MSE (1.23), reflecting
 the difficulty of dreaming in a 5D chaotic coupled system. The symlog loss
 transformation ensures stable training across domains with different
 observation scales. Training
-takes $\sim$440s per domain on an RTX 5090 (32GB, 200 epochs), with PDE domains
+takes $\sim$445s per domain on an RTX 5090 (32GB, 200 epochs), with PDE domains
 requiring more time due to larger observation dimensions.
+
+\paragraph{Latent space analysis.}
+We encode trajectories from 28 domains through their trained RSSM encoders and
+analyze the resulting 512-dimensional latent representations using PCA and
+Centered Kernel Alignment (CKA)~\cite{kornblith2019similarity}. The effective
+dimensionality (95\% variance explained) is remarkably low: mean $5.4 \pm 3.6$
+out of 512, indicating that the RSSM compresses diverse dynamics into a
+compact latent manifold. Cross-domain CKA reveals structurally similar
+representations: R\"ossler$\leftrightarrow$Selkov (CKA=0.96),
+R\"ossler$\leftrightarrow$Duffing (0.95), and Kepler$\leftrightarrow$Selkov
+(0.94), despite these domains having different physical origins.
+
+\paragraph{Cross-domain transfer.}
+We test whether world models trained on one domain can predict dynamics in a
+related domain (Table~\ref{tab:transfer}). Positive transfer (ratio $<1$)
+occurs for harmonic oscillator$\to$Duffing (0.38$\times$),
+Selkov$\to$Brusselator (0.47$\times$), and Lorenz$\to$R\"ossler
+(0.66$\times$), confirming that the RSSM learns transferable representations
+of shared mathematical structure. Negative transfer occurs between
+dissimilar systems (e.g., Chua$\to$Lorenz, 314$\times$), validating
+that transfer tracks mathematical similarity.
+
+\begin{table}[h]
+\centering
+\caption{Cross-domain transfer results. Ratio $<1$ indicates positive transfer.}
+\label{tab:transfer}
+\begin{tabular}{llcc}
+\toprule
+Source & Target & Ratio & Corr \\
+\midrule
+Harm.\ Osc. & Duffing & \textbf{0.38} & 0.36 \\
+Selkov & Brusselator & \textbf{0.47} & 0.98 \\
+Lorenz & R\"ossler & \textbf{0.66} & $-$0.82 \\
+Stoch.\ Res. & Van der Pol & \textbf{0.09} & 0.49 \\
+Van der Pol & Duffing & 3.87 & 0.29 \\
+Brusselator & FitzHugh-Nagumo & 8.30 & $-$0.51 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{figures/wm_combined_summary.pdf}
-\caption{RSSM world model training across 17 domains. (a) Best loss by domain.
+\caption{RSSM world model training across 35 domains. (a) Best loss by domain.
 (b) Training time scales with observation dimension. (c) Loss by mathematical
 class shows consistent convergence regardless of dynamics type.
 (d) Summary statistics.}

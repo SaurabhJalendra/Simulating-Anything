@@ -459,18 +459,32 @@ models, and produce real scientific discovery results.
 ### V7 (Novel Scientific Discovery) -- IN PROGRESS
 Move beyond rediscovery to genuinely new scientific discoveries.
 
-**Phase 7A: Expanded World Model Training** -- IN PROGRESS
+**Phase 7A: Expanded World Model Training** -- COMPLETE
 - [x] Train RSSM on V7 novel domains (stochastic_resonance, replicator_mutator, lorenz_stommel)
   - stochastic_resonance: loss=32.007, dream MSE=0.227
   - replicator_mutator: loss=32.000, dream MSE=0.037 (excellent)
-  - lorenz_stommel: training in progress
-- [ ] Train RSSM on 12 additional high-value domains (Kepler, Toda, etc.)
-- [ ] Train RSSM on climate_epidemic and neural_cardiac
-- [x] Cross-domain transfer script ready (scripts/cross_domain_transfer.py)
-  - 6 pairs: Lorenz→Rossler, SIR→SEIR, HO→Duffing, LV→3Species, etc.
-- [x] Latent space analysis script ready (scripts/latent_space_analysis.py)
-  - PCA + CKA (Centered Kernel Alignment) for cross-domain similarity
-- [ ] Run latent space + transfer analysis (after models finish)
+  - lorenz_stommel: loss=32.020, dream MSE=1.231
+- [x] Train RSSM on 12 additional high-value domains
+  - kepler: loss=32.001, dream MSE=0.143
+  - toda_lattice: loss=32.000, dream MSE=0.001 (best across all domains)
+  - driven_pendulum: loss=32.000, dream MSE=0.058
+  - elastic_pendulum: loss=32.000, dream MSE=0.104
+  - coupled_oscillators: loss=32.001, dream MSE=0.147
+  - selkov: loss=32.000, dream MSE=0.018
+  - stommel: loss=32.000, dream MSE=0.072
+  - mackey_glass: loss=32.000, dream MSE=0.122
+  - wilson_cowan: loss=32.000, dream MSE=0.002 (near-perfect dreaming)
+  - langford: loss=32.000, dream MSE=0.010
+- [x] Train RSSM on climate_epidemic and neural_cardiac
+  - climate_epidemic: loss=32.001, dream MSE=0.067
+  - neural_cardiac: loss=32.001, dream MSE=0.049
+- [x] Cross-domain transfer: 10 pairs, 8 successful, 4 with positive transfer
+  - HO→Duffing: 0.38x, Selkov→Brusselator: 0.47x, Lorenz→Rossler: 0.66x
+  - StochRes→VdP: 0.09x (best transfer ratio)
+- [x] Latent space analysis: 28 domains, CKA similarity matrix
+  - Mean effective dim: 5.4/512 (extreme compression)
+  - Top CKA pairs: Rossler↔Selkov (0.96), Rossler↔Duffing (0.95)
+  - Mean CKA similarity: 0.365
 
 **Phase 7B: Meta-Discovery Across 197 Domains** -- COMPLETE
 - [x] Universal bifurcation analysis: 48 domains classified (43 chaos, 3 limit cycle, 2 hyperchaos)
