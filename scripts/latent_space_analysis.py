@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 TRAINED_DOMAINS = {
     "lorenz": ("lorenz", "LorenzSimulation", 3),
     "rossler": ("rossler", "RosslerSimulation", 3),
-    "double_pendulum": ("chaotic_ode", "DoublePendulum", 4),
+    "double_pendulum": ("chaotic_ode", "DoublePendulumSimulation", 4),
     "duffing": ("duffing", "DuffingOscillator", 2),
     "harmonic_oscillator": (
         "harmonic_oscillator", "DampedHarmonicOscillator", 2
@@ -59,17 +59,20 @@ TRAINED_DOMAINS = {
     ),
     "lorenz_stommel": ("lorenz_stommel", "LorenzStommelSimulation", 5),
     # Phase 7A additional domains
-    "kepler": ("kepler", "KeplerSimulation", 4),
+    "kepler": ("kepler", "KeplerOrbit", 4),
     "toda_lattice": ("toda_lattice", "TodaLattice", None),
-    "driven_pendulum": ("driven_pendulum", "DrivenPendulumSimulation", 2),
-    "elastic_pendulum": ("elastic_pendulum", "ElasticPendulumSimulation", 4),
+    "driven_pendulum": ("driven_pendulum", "DrivenPendulum", 3),
+    "elastic_pendulum": ("elastic_pendulum", "ElasticPendulum", 4),
     "coupled_oscillators": (
-        "coupled_oscillators", "CoupledOscillatorSimulation", 4
+        "coupled_oscillators", "CoupledOscillators", 4
     ),
     "selkov": ("selkov", "SelkovSimulation", 2),
-    "mackey_glass": ("mackey_glass", "MackeyGlassSimulation", None),
+    "stommel": ("stommel", "StommelSimulation", 2),
+    "mackey_glass": ("mackey_glass", "MackeyGlassSimulation", 1),
     "wilson_cowan": ("wilson_cowan", "WilsonCowanSimulation", 2),
     "langford": ("langford", "LangfordSimulation", 3),
+    "climate_epidemic": ("climate_epidemic", "ClimateEpidemicSimulation", 6),
+    "neural_cardiac": ("neural_cardiac", "NeuralCardiacSimulation", 4),
 }
 
 WM_DIR = Path("output/world_models")
@@ -94,10 +97,9 @@ def load_model_and_encode(
     import jax
     import jax.numpy as jnp
 
-    from simulating_anything.world_model.rssm import RSSM
-
     model_path = WM_DIR / domain / "model.eqx"
-    if not model_path.exists():
+    meta_path = WM_DIR / domain / "meta.json"
+    if not model_path.exists() or not meta_path.exists():
         logger.warning(f"No model for {domain} at {model_path}")
         return None
 
@@ -110,6 +112,18 @@ def load_model_and_encode(
         logger.info(f"Skipping {domain} (variable obs dim)")
         return None
 
+    # Load model metadata
+    import json
+    with open(meta_path) as f:
+        meta = json.load(f)
+    obs_shape = tuple(meta["obs_shape"])
+    action_size = meta["action_size"]
+
+    # Skip spatial models (CNN encoder, not comparable)
+    if len(obs_shape) >= 2 and obs_shape[-1] > 4 and obs_shape[-2] > 4:
+        logger.info(f"Skipping {domain} (spatial obs {obs_shape})")
+        return None
+
     # Generate trajectories
     try:
         import importlib
@@ -118,9 +132,10 @@ def load_model_and_encode(
         )
         sim_class = getattr(mod, class_name)
 
-        from simulating_anything.types.simulation import Domain, SimulationConfig
+        from simulating_anything.types.simulation import Domain as DomainEnum
+        from simulating_anything.types.simulation import SimulationConfig
         config = SimulationConfig(
-            domain=Domain.CUSTOM,
+            domain=DomainEnum.CUSTOM,
             dt=0.01,
             n_steps=seq_len,
             parameters={},
@@ -142,44 +157,52 @@ def load_model_and_encode(
         logger.warning(f"Failed to generate trajectories for {domain}: {e}")
         return None
 
-    # Load RSSM model
+    # Load model via WorldModelTrainer (handles encoder+rssm+decoder tree)
     try:
+        from simulating_anything.types.simulation import TrainingConfig
+        from simulating_anything.world_model.trainer import WorldModelTrainer
+
         key = jax.random.PRNGKey(0)
-        model = RSSM(
-            obs_shape=(actual_obs_dim,),
-            action_size=0,
-            deterministic_size=512,
-            stochastic_size=32,
-            num_categories=32,
-            key=key,
+        tc = TrainingConfig(
+            learning_rate=3e-4, batch_size=1, sequence_length=50,
+            n_epochs=100, warmup_steps=50, grad_clip_norm=100.0,
+            kl_free_bits=1.0, seed=42,
         )
-        model = eqx.tree_deserialise_leaves(str(model_path), model)
+        trainer = WorldModelTrainer(
+            obs_shape=obs_shape, action_size=action_size,
+            config=tc, key=key,
+        )
+        trainer.params = eqx.tree_deserialise_leaves(
+            str(model_path), trainer.params,
+        )
+        encoder, rssm, decoder = trainer.params
     except Exception as e:
         logger.warning(f"Failed to load model for {domain}: {e}")
         return None
 
-    # Encode trajectories
+    # Encode trajectories through encoder + RSSM
     try:
         all_deterministic = []
         all_stochastic = []
+        action = jnp.float32(0)
 
         for traj_idx in range(min(n_trajectories, obs_data.shape[0])):
             obs_seq = jnp.array(obs_data[traj_idx])
-            action = jnp.float32(0)
-
-            # Initialize RSSM state
-            h = jnp.zeros(512)
-            z = jnp.zeros(32 * 32)
+            state = rssm.initial_state()
 
             det_states = []
             sto_states = []
+            enc_key = jax.random.PRNGKey(traj_idx)
 
             for t in range(obs_seq.shape[0]):
                 obs_t = obs_seq[t]
-                # Observe step: encode observation and update state
-                h, z = model.observe_step(h, z, action, obs_t)
-                det_states.append(np.array(h))
-                sto_states.append(np.array(z))
+                embed = encoder(obs_t.reshape(-1))
+                enc_key, step_key = jax.random.split(enc_key)
+                state, _, _ = rssm.observe_step(
+                    state, action, embed, key=step_key,
+                )
+                det_states.append(np.array(state.deter))
+                sto_states.append(np.array(state.stoch))
 
             all_deterministic.append(np.array(det_states))
             all_stochastic.append(np.array(sto_states))

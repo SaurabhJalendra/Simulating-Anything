@@ -50,6 +50,10 @@ TRANSFER_PAIRS = [
     ("lotka_volterra", "three_species", "2-species -> 3-species ecology"),
     ("brusselator", "fitzhugh_nagumo", "Hopf bifurcation systems"),
     ("van_der_pol", "duffing", "nonlinear oscillators"),
+    ("chua", "lorenz", "dual 3D chaotic attractors"),
+    ("selkov", "brusselator", "2D chemical oscillators"),
+    ("stochastic_resonance", "van_der_pol", "2D nonlinear dynamics"),
+    ("replicator_mutator", "lorenz", "3D nonlinear dynamics"),
 ]
 
 
@@ -353,6 +357,78 @@ def _create_simulation(domain: str, rng: np.random.Generator):
             },
         )
         return config, VanDerPolSimulation(config)
+
+    if domain == "chua":
+        from simulating_anything.simulation.chua import ChuaCircuit
+
+        config = SimulationConfig(
+            domain=Domain.CUSTOM, dt=0.001, n_steps=300,
+            parameters={
+                "alpha": rng.uniform(9.0, 11.0),
+                "beta": rng.uniform(14.0, 16.0),
+                "m0": rng.uniform(-1.3, -1.1),
+                "m1": rng.uniform(-0.8, -0.6),
+                "x_0": rng.uniform(-0.5, 0.5),
+                "y_0": rng.uniform(-0.1, 0.1),
+                "z_0": rng.uniform(-0.1, 0.1),
+            },
+        )
+        return config, ChuaCircuit(config)
+
+    if domain == "selkov":
+        from simulating_anything.simulation.selkov import SelkovSimulation
+
+        config = SimulationConfig(
+            domain=Domain.CUSTOM, dt=0.01, n_steps=300,
+            parameters={
+                "a": rng.uniform(0.05, 0.15),
+                "b": rng.uniform(0.5, 1.0),
+                "x_0": rng.uniform(0.5, 2.0),
+                "y_0": rng.uniform(0.5, 2.0),
+            },
+        )
+        return config, SelkovSimulation(config)
+
+    if domain == "stochastic_resonance":
+        from simulating_anything.simulation.stochastic_resonance import (
+            StochasticResonanceSimulation,
+        )
+
+        config = SimulationConfig(
+            domain=Domain.CUSTOM, dt=0.01, n_steps=300,
+            parameters={
+                "gamma": rng.uniform(0.3, 0.7),
+                "signal_amplitude": rng.uniform(0.2, 0.4),
+                "signal_omega": rng.uniform(0.08, 0.12),
+                "noise_intensity": rng.uniform(0.1, 0.5),
+                "x_0": rng.uniform(-1.0, 1.0),
+                "v_0": 0.0,
+            },
+        )
+        return config, StochasticResonanceSimulation(config)
+
+    if domain == "replicator_mutator":
+        from simulating_anything.simulation.replicator_mutator import (
+            ReplicatorMutatorSimulation,
+        )
+
+        config = SimulationConfig(
+            domain=Domain.CUSTOM, dt=0.01, n_steps=300,
+            parameters={
+                "n_strategies": 3.0,
+                "mutation_rate": 0.0,
+                "A_0_0": 0.0,
+                "A_0_1": rng.uniform(-1.0, 1.0),
+                "A_0_2": rng.uniform(-1.0, 1.0),
+                "A_1_0": rng.uniform(-1.0, 1.0),
+                "A_1_1": 0.0,
+                "A_1_2": rng.uniform(-1.0, 1.0),
+                "A_2_0": rng.uniform(-1.0, 1.0),
+                "A_2_1": rng.uniform(-1.0, 1.0),
+                "A_2_2": 0.0,
+            },
+        )
+        return config, ReplicatorMutatorSimulation(config)
 
     raise ValueError(f"Unknown domain: {domain}")
 
