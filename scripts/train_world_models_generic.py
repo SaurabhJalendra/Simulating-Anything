@@ -89,6 +89,9 @@ DOMAIN_REGISTRY = {
     "tumor_immune": ("tumor_immune", "TumorImmuneSimulation", {
         "coupling_ct": 0.05,
     }),
+    "gene_metabolism": ("gene_metabolism", "GeneMetabolismSimulation", {
+        "coupling_gm": 0.5, "coupling_mg": 0.3,
+    }),
 }
 
 # Domains already trained
