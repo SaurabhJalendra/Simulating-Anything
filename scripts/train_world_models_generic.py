@@ -92,6 +92,9 @@ DOMAIN_REGISTRY = {
     "gene_metabolism": ("gene_metabolism", "GeneMetabolismSimulation", {
         "coupling_gm": 0.5, "coupling_mg": 0.3,
     }),
+    "plankton_ocean": ("plankton_ocean", "PlanktonOceanSimulation", {
+        "w_mix": 0.05,
+    }),
 }
 
 # Domains already trained
