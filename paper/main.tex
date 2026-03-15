@@ -54,7 +54,10 @@ world model, explores the parameter space via uncertainty-driven search, and
 extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations across all 197 domains, achieving $R^2 \geq 0.99$ in 123 of
-174 domains with quantitative fits, with a median $R^2$ of 1.0. Our cross-domain analogy engine
+174 domains with quantitative fits, with a median $R^2$ of 1.0.
+We train 35 RSSM world models across all mathematical classes, showing that
+latent representations compress dynamics to 5.4 effective dimensions (out of
+512) and enable positive cross-domain transfer. Our cross-domain analogy engine
 detects 579 structural, dimensional, and topological isomorphisms across
 197 domains. The key architectural insight is that only the simulation layer is
 domain-specific ($\sim$50--200 lines per domain); everything else---world
@@ -617,6 +620,15 @@ class shows consistent convergence regardless of dynamics type.
 (d) Summary statistics.}
 \label{fig:wm_summary}
 \end{figure}
+
+\paragraph{Dream accuracy.}
+Across 25 domains with dream evaluation data, the median dream MSE is 0.267
+in symlog space, with 23/25 domains showing stable error growth ($<$2$\times$).
+The best dreamers---Toda lattice (MSE=0.001), Chua circuit (0.002),
+Wilson-Cowan (0.003)---achieve near-perfect imagination, enabling
+simulation-free parameter exploration. The novel coupled domains also dream
+well: neural-cardiac (MSE=0.049, correlation 0.93) and
+climate-epidemic (MSE=0.067).
 
 \subsection{Pipeline Ablation}
 \label{sec:ablation}
