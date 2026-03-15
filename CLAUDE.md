@@ -530,6 +530,12 @@ Move beyond rediscovery to genuinely new scientific discoveries.
   - predator_prey_climate: loss=32.002, dream MSE=0.455
   - epidemic_economy: loss=32.000, dream MSE=0.084 (near-perfect stability)
   - neural_ecosystem: loss=32.002, dream MSE=0.506
+- [x] Tumor-Immune (4D): coupled growth + immune response
+  - SINDy R²=0.999, T*N killing and T*C suppression recovered
+  - World model: loss=32.001, dream MSE=0.314
+- [x] Gene-Metabolism (4D): coupled toggle switch + metabolic flux
+  - SINDy R²=1.000, corr(g1,m2)=1.000 (perfect gene-metabolite locking)
+  - World model: loss=32.002, dream MSE=0.150
 - [x] Add V8 domains to cross-domain analyzer (7 new analogies)
 
 **Phase 7D: Production & Reproducibility** -- MOSTLY COMPLETE
