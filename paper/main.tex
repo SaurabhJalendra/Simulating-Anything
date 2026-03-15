@@ -48,14 +48,14 @@ Saurabh Jalendra \\
 \begin{abstract}
 We present \ours{}, a domain-agnostic scientific discovery engine that
 autonomously rediscovers known physical laws from simulation data across
-200 domains spanning 12+ mathematical classes. Given only a natural language
+201 domains spanning 12+ mathematical classes. Given only a natural language
 description of a phenomenon, the system builds a simulation, trains an RSSM
 world model, explores the parameter space via uncertainty-driven search, and
 extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations across all 197 domains, achieving $R^2 \geq 0.99$ in 123 of
 174 domains with quantitative fits, with a median $R^2$ of 1.0.
-We train 38 RSSM world models across all mathematical classes, showing that
+We train 39 RSSM world models across all mathematical classes, showing that
 latent representations compress dynamics to 5.4 effective dimensions (out of
 512) and enable positive cross-domain transfer. Our cross-domain analogy engine
 detects 579 structural, dimensional, and topological isomorphisms across
@@ -501,7 +501,7 @@ For the harmonic oscillator, FFT-based frequency extraction achieves
 \subsection{World Model Training}
 \label{sec:world_model_results}
 
-We train RSSM world models on 38 domains using an RTX 5090 (32GB).
+We train RSSM world models on 39 domains using an RTX 5090 (32GB).
 Table~\ref{tab:world_models} shows training results with 200 epochs per domain,
 covering the core 14 domains, 3 extended chaotic ODEs,
 9 additional dynamical systems, 5 novel coupled domains, and
@@ -561,7 +561,7 @@ Neural-Ecosystem$^\dagger$ & 4 & 32.00 & 364 \\
 \end{tabular}
 \end{table}
 
-All 38 domains converge to similar loss values ($32.0\pm0.2$) within
+All 39 domains converge to similar loss values ($32.0\pm0.2$) within
 200 epochs (Figure~\ref{fig:wm_summary}), demonstrating that the RSSM architecture generalizes across
 state dimensions ($d = 1$ to $d = 8192$) and dynamics types
 (algebraic, linear/nonlinear/chaotic ODEs, collective dynamics,
@@ -618,7 +618,7 @@ Brusselator & FitzHugh-Nagumo & 8.30 & $-$0.51 \\
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{figures/wm_combined_summary.pdf}
-\caption{RSSM world model training across 38 domains. (a) Best loss by domain.
+\caption{RSSM world model training across 39 domains. (a) Best loss by domain.
 (b) Training time scales with observation dimension. (c) Loss by mathematical
 class shows consistent convergence regardless of dynamics type.
 (d) Summary statistics.}
@@ -1012,10 +1012,12 @@ detecting bidirectional coupling terms. In V8, three additional novel domains
 push further: a predator-prey-climate system (Rosenzweig-MacArthur + Stommel
 ocean, $R^2=0.999$, bifurcation at coupling=0.29); an epidemic-economy system
 (SIR + Goodwin oscillator, $R^2=0.977$, capturing disease-economics feedback);
-and a neural-ecosystem (Wilson-Cowan + Lotka-Volterra, $R^2=1.0$,
-corr(E,N)=0.82 showing strong neural-foraging synchronization).
+a neural-ecosystem (Wilson-Cowan + Lotka-Volterra, $R^2=1.0$,
+corr(E,N)=0.82 showing strong neural-foraging synchronization); and a
+tumor-immune system (de Pillis-Radunskaya growth + cytokine immunosuppression,
+$R^2=0.999$, recovering tumor-NK killing and cytokine evasion terms).
 Cross-domain analogy detection reveals
-579+ mathematical isomorphisms across 200 domains, suggesting that scientific
+586+ mathematical isomorphisms across 201 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer
 validation framework---conservation checks, dimensional analysis,
 reproducibility tests, theory comparison, adversarial dream debate, and
