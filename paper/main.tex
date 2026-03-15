@@ -48,7 +48,7 @@ Saurabh Jalendra \\
 \begin{abstract}
 We present \ours{}, a domain-agnostic scientific discovery engine that
 autonomously rediscovers known physical laws from simulation data across
-197 domains spanning 12+ mathematical classes. Given only a natural language
+200 domains spanning 12+ mathematical classes. Given only a natural language
 description of a phenomenon, the system builds a simulation, trains an RSSM
 world model, explores the parameter space via uncertainty-driven search, and
 extracts human-interpretable equations using \pysr{} symbolic regression and
@@ -982,9 +982,14 @@ SIR disease dynamics where SINDy recovers all 6 coupled ODEs ($R^2=0.9997$)
 and discovers that temperature directly drives infection rate changes
 (corr$(T, \dot{I})=0.995$); and a neural-cardiac system coupling FHN neurons
 to VdP cardiac pacemakers where SINDy recovers the 4D coupled ODE ($R^2=0.997$),
-detecting bidirectional coupling terms.
+detecting bidirectional coupling terms. In V8, three additional novel domains
+push further: a predator-prey-climate system (Rosenzweig-MacArthur + Stommel
+ocean, $R^2=0.999$, bifurcation at coupling=0.29); an epidemic-economy system
+(SIR + Goodwin oscillator, $R^2=0.977$, capturing disease-economics feedback);
+and a neural-ecosystem (Wilson-Cowan + Lotka-Volterra, $R^2=1.0$,
+corr(E,N)=0.82 showing strong neural-foraging synchronization).
 Cross-domain analogy detection reveals
-579 mathematical isomorphisms across 197 domains, suggesting that scientific
+579+ mathematical isomorphisms across 200 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer
 validation framework---conservation checks, dimensional analysis,
 reproducibility tests, theory comparison, adversarial dream debate, and

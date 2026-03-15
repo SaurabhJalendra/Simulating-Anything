@@ -519,6 +519,16 @@ Move beyond rediscovery to genuinely new scientific discoveries.
 - [ ] Network epidemic on realistic graphs (future work)
 - [ ] Turbulence cascade: higher Re corrections (future work)
 
+### V8 (Extended Novel Discovery) -- IN PROGRESS
+- [x] Predator-Prey-Climate (4D): RM ecology + Stommel ocean
+  - SINDy R²=0.999, bifurcation at coupling=0.29, corr(T,P)=0.81
+- [x] Epidemic-Economy (4D): SIR disease + Goodwin economy
+  - SINDy R²=0.977, S*I coupling detected, economy feedback recovered
+- [x] Neural-Ecosystem (4D): Wilson-Cowan + Lotka-Volterra
+  - SINDy R²=1.000, neural-modulated predation, corr(E,N)=0.82
+- [ ] Train world models on 3 V8 domains (in progress)
+- [ ] Add V8 domains to cross-domain analyzer
+
 **Phase 7D: Production & Reproducibility** -- MOSTLY COMPLETE
 - [x] Results dashboard: `scripts/results_dashboard.py` (197 domains, 35 models)
 - [x] One-command reproduction: `python run_everything.py` generates all results
