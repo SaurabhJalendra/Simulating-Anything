@@ -48,14 +48,14 @@ Saurabh Jalendra \\
 \begin{abstract}
 We present \ours{}, a domain-agnostic scientific discovery engine that
 autonomously rediscovers known physical laws from simulation data across
-202 domains spanning 12+ mathematical classes. Given only a natural language
+203 domains spanning 12+ mathematical classes. Given only a natural language
 description of a phenomenon, the system builds a simulation, trains an RSSM
 world model, explores the parameter space via uncertainty-driven search, and
 extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations across all 197 domains, achieving $R^2 \geq 0.99$ in 123 of
 174 domains with quantitative fits, with a median $R^2$ of 1.0.
-We train 40 RSSM world models across all mathematical classes, showing that
+We train 41 RSSM world models across all mathematical classes, showing that
 latent representations compress dynamics to 5.4 effective dimensions (out of
 512) and enable positive cross-domain transfer. Our cross-domain analogy engine
 detects 579 structural, dimensional, and topological isomorphisms across
@@ -501,7 +501,7 @@ For the harmonic oscillator, FFT-based frequency extraction achieves
 \subsection{World Model Training}
 \label{sec:world_model_results}
 
-We train RSSM world models on 40 domains using an RTX 5090 (32GB).
+We train RSSM world models on 41 domains using an RTX 5090 (32GB).
 Table~\ref{tab:world_models} shows training results with 200 epochs per domain,
 covering the core 14 domains, 3 extended chaotic ODEs,
 9 additional dynamical systems, 5 novel coupled domains, and
@@ -618,7 +618,7 @@ Brusselator & FitzHugh-Nagumo & 8.30 & $-$0.51 \\
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{figures/wm_combined_summary.pdf}
-\caption{RSSM world model training across 40 domains. (a) Best loss by domain.
+\caption{RSSM world model training across 41 domains. (a) Best loss by domain.
 (b) Training time scales with observation dimension. (c) Loss by mathematical
 class shows consistent convergence regardless of dynamics type.
 (d) Summary statistics.}
@@ -1017,7 +1017,7 @@ corr(E,N)=0.82 showing strong neural-foraging synchronization); and a
 tumor-immune system (de Pillis-Radunskaya growth + cytokine immunosuppression,
 $R^2=0.999$, recovering tumor-NK killing and cytokine evasion terms).
 Cross-domain analogy detection reveals
-586+ mathematical isomorphisms across 202 domains, suggesting that scientific
+586+ mathematical isomorphisms across 203 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer
 validation framework---conservation checks, dimensional analysis,
 reproducibility tests, theory comparison, adversarial dream debate, and
