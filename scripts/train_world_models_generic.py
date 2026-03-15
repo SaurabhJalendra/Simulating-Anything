@@ -86,6 +86,9 @@ DOMAIN_REGISTRY = {
     "neural_ecosystem": ("neural_ecosystem", "NeuralEcosystemSimulation", {
         "coupling_EN": 0.2, "coupling_NE": 0.1,
     }),
+    "tumor_immune": ("tumor_immune", "TumorImmuneSimulation", {
+        "coupling_ct": 0.05,
+    }),
 }
 
 # Domains already trained
