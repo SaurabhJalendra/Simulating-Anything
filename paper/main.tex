@@ -634,6 +634,28 @@ simulation-free parameter exploration. The novel coupled domains also dream
 well: neural-cardiac (MSE=0.049, correlation 0.93) and
 climate-epidemic (MSE=0.067).
 
+\subsection{Data Efficiency and Noise Robustness}
+\label{sec:robustness}
+
+We evaluate how SINDy equation recovery degrades with reduced data and
+measurement noise across five representative domains
+(Figure~\ref{fig:robustness}). Lorenz and Lotka-Volterra achieve $R^2=1.0$
+with just 2\% of data (100 points), while VdP and Brusselator require
+$\sim$5\% for high accuracy. For noise robustness, all domains maintain
+$R^2 > 0.75$ at 0.1\% noise, but degrade rapidly above 5\% noise. SIR is
+most noise-sensitive due to its constrained dynamics ($S+I+R=1$), while
+Lorenz remains robust ($R^2=0.78$ at 5\% noise). These results guide
+practitioners on minimum data requirements for reliable equation discovery.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/scaling_robustness.pdf}
+\caption{(a) Data efficiency: SINDy R$^2$ vs sample size. Most domains achieve
+near-perfect recovery with 250+ points. (b) Noise robustness: R$^2$ degrades
+above 1\% measurement noise for most domains.}
+\label{fig:robustness}
+\end{figure}
+
 \subsection{Pipeline Ablation}
 \label{sec:ablation}
 
