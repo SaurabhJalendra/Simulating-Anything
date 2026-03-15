@@ -3027,6 +3027,58 @@ def build_domain_signatures() -> list[DomainSignature]:
             ],
             r_squared=[0.997],
         ),
+        # V8 novel domains
+        DomainSignature(
+            name="predator_prey_climate",
+            math_type="ode_coupled",
+            state_dim=4,
+            n_parameters=8,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/r, 1/d, 1/eta1",
+            discovered_equations=[
+                "dN/dt = r*N*(1-N/K_eff) - a*N*P/(1+a*h*N)",
+                "dP/dt = e*a*N*P/(1+a*h*N) - d*P",
+                "dT/dt = eta1_eff - T - |T-S|*T",
+                "dS/dt = eta2 - delta*S - |T-S|*S",
+            ],
+            r_squared=[0.999],
+        ),
+        DomainSignature(
+            name="epidemic_economy",
+            math_type="ode_coupled",
+            state_dim=4,
+            n_parameters=8,
+            conserved_quantities=["S+I<=1"],
+            symmetries=[],
+            phase_portrait_type="limit_cycle",
+            characteristic_timescale="1/gamma, 1/alpha_e",
+            discovered_equations=[
+                "dS/dt = -beta_eff*S*I + mu*(1-S)",
+                "dI/dt = beta_eff*S*I - gamma*I - mu*I",
+                "dw/dt = w*(phi*(u_eff-rho) - alpha)",
+                "du/dt = u*(sigma*(1-w) - (alpha+beta_e))",
+            ],
+            r_squared=[0.977],
+        ),
+        DomainSignature(
+            name="neural_ecosystem",
+            math_type="ode_coupled",
+            state_dim=4,
+            n_parameters=10,
+            conserved_quantities=[],
+            symmetries=[],
+            phase_portrait_type="coupled_oscillators",
+            characteristic_timescale="tau_e, 1/alpha_lv",
+            discovered_equations=[
+                "dE/dt = (-E + S(w_ee*E - w_ei*In + I_ext))/tau_e",
+                "dIn/dt = (-In + S(w_ie*E - w_ii*In))/tau_i",
+                "dN/dt = alpha*N - beta_eff*N*P",
+                "dP/dt = delta*beta_eff*N*P - gamma*P",
+            ],
+            r_squared=[1.0],
+        ),
     ]
     return signatures
 
@@ -7697,6 +7749,99 @@ def detect_structural_analogies(
             "coupling": "coupling",
             "synchronization": "synchronization",
         },
+    ))
+
+    # V8 novel domain analogies
+
+    # Predator-prey-climate <-> Rosenzweig-MacArthur (ecology subsystem)
+    analogies.append(Analogy(
+        domain_a="predator_prey_climate",
+        domain_b="rosenzweig_macarthur",
+        analogy_type="structural",
+        description=(
+            "PPC contains Rosenzweig-MacArthur predator-prey as subsystem. "
+            "Holling Type II functional response in both."
+        ),
+        strength=0.92,
+        mapping={"N": "prey", "P": "predator", "a*N/(1+a*h*N)": "Holling_II"},
+    ))
+
+    # Predator-prey-climate <-> Stommel (ocean subsystem)
+    analogies.append(Analogy(
+        domain_a="predator_prey_climate",
+        domain_b="stommel",
+        analogy_type="structural",
+        description=(
+            "PPC contains Stommel thermohaline ocean as subsystem. "
+            "Same T,S state with overturning flow q=|T-S|."
+        ),
+        strength=0.90,
+        mapping={"T": "T", "S": "S", "q": "overturning_flow"},
+    ))
+
+    # Epidemic-economy <-> SIR (disease subsystem)
+    analogies.append(Analogy(
+        domain_a="epidemic_economy",
+        domain_b="sir_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both contain SIR compartmental disease dynamics. "
+            "Economy adds employment-modulated transmission."
+        ),
+        strength=0.88,
+        mapping={"S": "S", "I": "I", "beta*S*I": "mass_action"},
+    ))
+
+    # Epidemic-economy <-> Climate-epidemic (disease-external coupling)
+    analogies.append(Analogy(
+        domain_a="epidemic_economy",
+        domain_b="climate_epidemic",
+        analogy_type="structural",
+        description=(
+            "Both couple SIR disease to external dynamics. Climate-epidemic "
+            "couples to ENSO; epidemic-economy to Goodwin cycles."
+        ),
+        strength=0.82,
+        mapping={"transmission_modulation": "external_driver", "SIR": "SIR"},
+    ))
+
+    # Neural-ecosystem <-> Wilson-Cowan (neural subsystem)
+    analogies.append(Analogy(
+        domain_a="neural_ecosystem",
+        domain_b="wilson_cowan",
+        analogy_type="structural",
+        description=(
+            "NE contains Wilson-Cowan E/I neural populations as subsystem. "
+            "Same sigmoid activation dynamics."
+        ),
+        strength=0.91,
+        mapping={"E": "E", "In": "I", "sigmoid": "sigmoid", "tau": "tau"},
+    ))
+
+    # Neural-ecosystem <-> Lotka-Volterra (ecology subsystem)
+    analogies.append(Analogy(
+        domain_a="neural_ecosystem",
+        domain_b="lotka_volterra",
+        analogy_type="structural",
+        description=(
+            "NE contains Lotka-Volterra predator-prey as subsystem. "
+            "Neural activity modulates predation rate."
+        ),
+        strength=0.88,
+        mapping={"N": "prey", "P": "predator", "N*P": "interaction"},
+    ))
+
+    # Neural-ecosystem <-> Neural-cardiac (neural + coupled biological)
+    analogies.append(Analogy(
+        domain_a="neural_ecosystem",
+        domain_b="neural_cardiac",
+        analogy_type="structural",
+        description=(
+            "Both couple neural dynamics to biological oscillators. "
+            "NE couples to ecology; NC couples to cardiac pacemaker."
+        ),
+        strength=0.75,
+        mapping={"neural_subsystem": "neural", "biological_oscillator": "biological"},
     ))
 
     return analogies
