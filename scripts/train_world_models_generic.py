@@ -95,6 +95,9 @@ DOMAIN_REGISTRY = {
     "plankton_ocean": ("plankton_ocean", "PlanktonOceanSimulation", {
         "w_mix": 0.05,
     }),
+    "social_epidemic": ("social_epidemic", "SocialEpidemicSimulation", {
+        "coupling_IS": 1.0,
+    }),
 }
 
 # Domains already trained
