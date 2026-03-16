@@ -166,6 +166,16 @@ DOMAIN_REGISTRY = {
     "permafrost_thaw": ("permafrost_thaw", "PermafrostThawSimulation", {}),
     "biofilm_growth": ("biofilm_growth", "BiofilmGrowthSimulation", {}),
     "mangrove_coast": ("mangrove_coast", "MangroveCoastSimulation", {}),
+    "desalination_plant": ("desalination_plant", "DesalinationPlantSimulation", {}),
+    "wind_farm_wake": ("wind_farm_wake", "WindFarmWakeSimulation", {}),
+    "carbon_capture": ("carbon_capture", "CarbonCaptureSimulation", {}),
+    "invasive_species": ("invasive_species", "InvasiveSpeciesSimulation", {}),
+    "power_grid": ("power_grid", "PowerGridSimulation", {}),
+    "glacier_lake": ("glacier_lake", "GlacierLakeSimulation", {}),
+    "ocean_acidification": ("ocean_acidification", "OceanAcidificationSimulation", {}),
+    "drug_pharmacokinetics": ("drug_pharmacokinetics", "DrugPharmacokineticsSimulation", {}),
+    "predator_prey_habitat": ("predator_prey_habitat", "PredatorPreyHabitatSimulation", {}),
+    "bee_colony": ("bee_colony", "BeeColonySimulation", {}),
 }
 
 # Domains already trained
