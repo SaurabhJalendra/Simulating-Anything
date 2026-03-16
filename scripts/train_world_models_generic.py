@@ -118,6 +118,8 @@ DOMAIN_REGISTRY = {
     }),
     "resource_consumer_waste": ("resource_consumer_waste", "ResourceConsumerWasteSimulation", {}),
     "predator_prey_migration": ("predator_prey_migration", "PredatorPreyMigrationSimulation", {}),
+    "predator_prey_fear": ("predator_prey_fear", "PredatorPreyFearSimulation", {}),
+    "nutrient_phage_bacteria": ("nutrient_phage_bacteria", "NutrientPhageBacteriaSimulation", {}),
 }
 
 # Domains already trained
