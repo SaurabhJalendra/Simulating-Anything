@@ -133,6 +133,9 @@ DOMAIN_REGISTRY = {
     "river_pollution": ("river_pollution", "RiverPollutionSimulation", {}),
     "predator_prey_seasonal": ("predator_prey_seasonal", "PredatorPreySeasonalSimulation", {}),
     "immune_virus": ("immune_virus", "ImmuneVirusSimulation", {}),
+    "coral_reef": ("coral_reef", "CoralReefSimulation", {}),
+    "antibiotic_resistance": ("antibiotic_resistance", "AntibioticResistanceSimulation", {}),
+    "forest_fire": ("forest_fire", "ForestFireSimulation", {}),
 }
 
 # Domains already trained
