@@ -139,6 +139,8 @@ DOMAIN_REGISTRY = {
     "supply_chain": ("supply_chain", "SupplyChainSimulation", {}),
     "urban_heat_island": ("urban_heat_island", "UrbanHeatIslandSimulation", {}),
     "glacier_climate": ("glacier_climate", "GlacierClimateSimulation", {}),
+    "crop_pest": ("crop_pest", "CropPestSimulation", {}),
+    "groundwater_contaminant": ("groundwater_contaminant", "GroundwaterContaminantSimulation", {}),
 }
 
 # Domains already trained
