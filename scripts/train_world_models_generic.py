@@ -104,6 +104,9 @@ DOMAIN_REGISTRY = {
     "circadian_metabolism": ("circadian_metabolism", "CircadianMetabolismSimulation", {
         "coupling_PE": 0.3, "coupling_SM": 0.2,
     }),
+    "prey_disease_predator": ("prey_disease_predator", "PreyDiseasePredatorSimulation", {
+        "a_i": 0.6, "a_s": 0.3, "beta_d": 0.3,
+    }),
 }
 
 # Domains already trained
