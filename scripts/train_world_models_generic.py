@@ -136,6 +136,8 @@ DOMAIN_REGISTRY = {
     "coral_reef": ("coral_reef", "CoralReefSimulation", {}),
     "antibiotic_resistance": ("antibiotic_resistance", "AntibioticResistanceSimulation", {}),
     "forest_fire": ("forest_fire", "ForestFireSimulation", {}),
+    "supply_chain": ("supply_chain", "SupplyChainSimulation", {}),
+    "urban_heat_island": ("urban_heat_island", "UrbanHeatIslandSimulation", {}),
 }
 
 # Domains already trained
