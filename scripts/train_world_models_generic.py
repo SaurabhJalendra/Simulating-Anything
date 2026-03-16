@@ -107,6 +107,12 @@ DOMAIN_REGISTRY = {
     "prey_disease_predator": ("prey_disease_predator", "PreyDiseasePredatorSimulation", {
         "a_i": 0.6, "a_s": 0.3, "beta_d": 0.3,
     }),
+    "vegetation_hydrology": ("vegetation_hydrology", "VegetationHydrologySimulation", {
+        "coupling_vw": 0.5,
+    }),
+    "neuron_astrocyte": ("neuron_astrocyte", "NeuronAstrocyteSimulation", {
+        "coupling_na": 0.2, "coupling_an": 0.1,
+    }),
 }
 
 # Domains already trained
