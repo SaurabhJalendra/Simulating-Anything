@@ -113,6 +113,9 @@ DOMAIN_REGISTRY = {
     "neuron_astrocyte": ("neuron_astrocyte", "NeuronAstrocyteSimulation", {
         "coupling_na": 0.2, "coupling_an": 0.1,
     }),
+    "infection_immunity": ("infection_immunity", "InfectionImmunitySimulation", {
+        "coupling_MR": 2.0,
+    }),
 }
 
 # Domains already trained
