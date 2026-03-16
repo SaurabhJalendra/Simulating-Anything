@@ -55,7 +55,7 @@ extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
 governing equations across 500 domains spanning 38 scientific disciplines,
 achieving $R^2 \geq 0.99$ in 137+ of 216 domains with quantitative fits.
-We train 100 RSSM world models (78\% stable dreamers, 44\% excellent), showing that
+We train 110 RSSM world models (78\% stable dreamers, 44\% excellent), showing that
 latent representations compress dynamics to 5.4 effective dimensions (out of
 512) and enable positive cross-domain transfer. Our cross-domain analogy engine
 detects 579 structural, dimensional, and topological isomorphisms across
@@ -501,7 +501,7 @@ For the harmonic oscillator, FFT-based frequency extraction achieves
 \subsection{World Model Training}
 \label{sec:world_model_results}
 
-We train RSSM world models on 100 domains using an RTX 5090 (32GB).
+We train RSSM world models on 110 domains using an RTX 5090 (32GB).
 Table~\ref{tab:world_models} shows training results with 200 epochs per domain,
 covering the core 14 domains, 3 extended chaotic ODEs,
 9 additional dynamical systems, 5 novel coupled domains, and
@@ -618,7 +618,7 @@ Brusselator & FitzHugh-Nagumo & 8.30 & $-$0.51 \\
 \begin{figure}[h]
 \centering
 \includegraphics[width=\linewidth]{figures/wm_combined_summary.pdf}
-\caption{RSSM world model training across 100 domains. (a) Best loss by domain.
+\caption{RSSM world model training across 110 domains. (a) Best loss by domain.
 (b) Training time scales with observation dimension. (c) Loss by mathematical
 class shows consistent convergence regardless of dynamics type.
 (d) Summary statistics.}
