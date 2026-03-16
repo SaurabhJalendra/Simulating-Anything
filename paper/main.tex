@@ -53,8 +53,8 @@ description of a phenomenon, the system builds a simulation, trains an RSSM
 world model, explores the parameter space via uncertainty-driven search, and
 extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
-governing equations across all 197 domains, achieving $R^2 \geq 0.99$ in 123 of
-174 domains with quantitative fits, with a median $R^2$ of 1.0.
+governing equations across all 214 domains, achieving $R^2 \geq 0.99$ in 137 of
+191 domains with quantitative fits, with a median $R^2 \approx 1.0$.
 We train 54 RSSM world models across all mathematical classes, showing that
 latent representations compress dynamics to 5.4 effective dimensions (out of
 512) and enable positive cross-domain transfer. Our cross-domain analogy engine
@@ -996,9 +996,9 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 
 \ours{} demonstrates that a single computational pipeline can autonomously
 rediscover known physical laws across 214 fundamentally different domains.
-The system achieves $R^2 \geq 0.99$ in 138 of 189 domains with quantitative
+The system achieves $R^2 \geq 0.99$ in 137 of 191 domains with quantitative
 fits, with a median $R^2 \approx 1.0$ across all domains. RSSM world models
-trained on 52 domains (median dream MSE = 0.14, best = 0.001) enable
+trained on 54 domains (median dream MSE = 0.14, best = 0.001) enable
 efficient parameter space exploration without re-running simulations.
 Beyond rediscovery, we demonstrate \emph{genuinely novel discovery} across
 five domains with no known analytical solutions: a coupled Lorenz-Stommel
