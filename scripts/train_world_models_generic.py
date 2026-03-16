@@ -124,6 +124,9 @@ DOMAIN_REGISTRY = {
     "atmosphere_vegetation": ("atmosphere_vegetation", "AtmosphereVegetationSimulation", {}),
     "battery_thermal": ("battery_thermal", "BatteryThermalSimulation", {}),
     "earthquake_aftershock": ("earthquake_aftershock", "EarthquakeAftershockSimulation", {}),
+    "calcium_signaling": ("calcium_signaling", "CalciumSignalingSimulation", {}),
+    "ocean_carbon": ("ocean_carbon", "OceanCarbonSimulation", {}),
+    "hormone_glucose": ("hormone_glucose", "HormoneGlucoseSimulation", {}),
 }
 
 # Domains already trained
