@@ -120,6 +120,9 @@ DOMAIN_REGISTRY = {
     "predator_prey_migration": ("predator_prey_migration", "PredatorPreyMigrationSimulation", {}),
     "predator_prey_fear": ("predator_prey_fear", "PredatorPreyFearSimulation", {}),
     "nutrient_phage_bacteria": ("nutrient_phage_bacteria", "NutrientPhageBacteriaSimulation", {}),
+    "laser_absorber": ("laser_absorber", "LaserAbsorberSimulation", {}),
+    "atmosphere_vegetation": ("atmosphere_vegetation", "AtmosphereVegetationSimulation", {}),
+    "battery_thermal": ("battery_thermal", "BatteryThermalSimulation", {}),
 }
 
 # Domains already trained
