@@ -116,6 +116,8 @@ DOMAIN_REGISTRY = {
     "infection_immunity": ("infection_immunity", "InfectionImmunitySimulation", {
         "coupling_MR": 2.0,
     }),
+    "resource_consumer_waste": ("resource_consumer_waste", "ResourceConsumerWasteSimulation", {}),
+    "predator_prey_migration": ("predator_prey_migration", "PredatorPreyMigrationSimulation", {}),
 }
 
 # Domains already trained
