@@ -48,12 +48,12 @@ Saurabh Jalendra \\
 \begin{abstract}
 We present \ours{}, a domain-agnostic scientific discovery engine that
 autonomously rediscovers known physical laws from simulation data across
-350 domains spanning 14+ mathematical classes. Given only a natural language
+400 domains spanning 14+ mathematical classes. Given only a natural language
 description of a phenomenon, the system builds a simulation, trains an RSSM
 world model, explores the parameter space via uncertainty-driven search, and
 extracts human-interpretable equations using \pysr{} symbolic regression and
 \sindy{} sparse identification. We demonstrate successful rediscovery of
-governing equations across 350 domains spanning 38 scientific disciplines,
+governing equations across 400 domains spanning 38 scientific disciplines,
 achieving $R^2 \geq 0.99$ in 137+ of 216 domains with quantitative fits.
 We train 82 RSSM world models (78\% stable dreamers, 44\% excellent), showing that
 latent representations compress dynamics to 5.4 effective dimensions (out of
@@ -995,7 +995,7 @@ Lotka-Volterra & $x, y > 0$ & exact \\
 \label{sec:conclusion}
 
 \ours{} demonstrates that a single computational pipeline can autonomously
-rediscover known physical laws across 350 fundamentally different domains.
+rediscover known physical laws across 400 fundamentally different domains.
 The system achieves $R^2 \geq 0.99$ in 137 of 191 domains with quantitative
 fits, with a median $R^2 \approx 1.0$ across all domains. RSSM world models
 trained on 54 domains (median dream MSE = 0.14, best = 0.001) enable
@@ -1018,7 +1018,7 @@ corr(E,N)=0.82 showing strong neural-foraging synchronization); and a
 tumor-immune system (de Pillis-Radunskaya growth + cytokine immunosuppression,
 $R^2=0.999$, recovering tumor-NK killing and cytokine evasion terms).
 Cross-domain analogy detection reveals
-586+ mathematical isomorphisms across 350 domains, suggesting that scientific
+586+ mathematical isomorphisms across 400 domains, suggesting that scientific
 domains share more structure than is commonly appreciated. A six-layer
 validation framework---conservation checks, dimensional analysis,
 reproducibility tests, theory comparison, adversarial dream debate, and
@@ -1030,7 +1030,7 @@ eliminates the need for hand-coded simulations entirely: given only a
 natural language question, the system generates, validates, and analyzes
 simulations from scratch, recovering $\omega = \sqrt{k/m}$ with
 $R^2 = 0.999999$ on a test question without any pre-built simulation code.
-The pipeline has been extended to 350 domains spanning 125+ mathematical
+The pipeline has been extended to 400 domains spanning 125+ mathematical
 classes---including
 general relativity (Schwarzschild geodesics), quantum mechanics (harmonic
 oscillator), statistical mechanics (Boltzmann gas, Ising model), wave
