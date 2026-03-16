@@ -123,6 +123,7 @@ DOMAIN_REGISTRY = {
     "laser_absorber": ("laser_absorber", "LaserAbsorberSimulation", {}),
     "atmosphere_vegetation": ("atmosphere_vegetation", "AtmosphereVegetationSimulation", {}),
     "battery_thermal": ("battery_thermal", "BatteryThermalSimulation", {}),
+    "earthquake_aftershock": ("earthquake_aftershock", "EarthquakeAftershockSimulation", {}),
 }
 
 # Domains already trained
