@@ -129,6 +129,10 @@ DOMAIN_REGISTRY = {
     "hormone_glucose": ("hormone_glucose", "HormoneGlucoseSimulation", {}),
     "soil_carbon_nitrogen": ("soil_carbon_nitrogen", "SoilCarbonNitrogenSimulation", {}),
     "dopamine_reward": ("dopamine_reward", "DopamineRewardSimulation", {}),
+    "muscle_tendon": ("muscle_tendon", "MuscleTendonSimulation", {}),
+    "river_pollution": ("river_pollution", "RiverPollutionSimulation", {}),
+    "predator_prey_seasonal": ("predator_prey_seasonal", "PredatorPreySeasonalSimulation", {}),
+    "immune_virus": ("immune_virus", "ImmuneVirusSimulation", {}),
 }
 
 # Domains already trained
