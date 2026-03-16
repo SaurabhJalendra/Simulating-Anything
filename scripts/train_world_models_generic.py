@@ -148,6 +148,14 @@ DOMAIN_REGISTRY = {
     "thermostat_building": ("thermostat_building", "ThermostatBuildingSimulation", {}),
     "wind_turbine": ("wind_turbine", "WindTurbineSimulation", {}),
     "lake_eutrophication": ("lake_eutrophication", "LakeEutrophicationSimulation", {}),
+    "blood_coagulation": ("blood_coagulation", "BloodCoagulationSimulation", {}),
+    "traffic_congestion": ("traffic_congestion", "TrafficCongestionSimulation", {}),
+    "solar_wind": ("solar_wind", "SolarWindSimulation", {}),
+    "pandemic_behavior": ("pandemic_behavior", "PandemicBehaviorSimulation", {}),
+    "bone_remodeling": ("bone_remodeling", "BoneRemodelingSimulation", {}),
+    "semiconductor_thermal": ("semiconductor_thermal", "SemiconductorThermalSimulation", {}),
+    "wetland_carbon": ("wetland_carbon", "WetlandCarbonSimulation", {}),
+    "volcanic_eruption": ("volcanic_eruption", "VolcanicEruptionSimulation", {}),
 }
 
 # Domains already trained
