@@ -156,6 +156,16 @@ DOMAIN_REGISTRY = {
     "semiconductor_thermal": ("semiconductor_thermal", "SemiconductorThermalSimulation", {}),
     "wetland_carbon": ("wetland_carbon", "WetlandCarbonSimulation", {}),
     "volcanic_eruption": ("volcanic_eruption", "VolcanicEruptionSimulation", {}),
+    "oil_spill": ("oil_spill", "OilSpillSimulation", {}),
+    "mosquito_population": ("mosquito_population", "MosquitoPopulationSimulation", {}),
+    "landslide": ("landslide", "LandslideSimulation", {}),
+    "ocean_plastic": ("ocean_plastic", "OceanPlasticSimulation", {}),
+    "urban_sprawl": ("urban_sprawl", "UrbanSprawlSimulation", {}),
+    "biogas_digester": ("biogas_digester", "BiogasDigesterSimulation", {}),
+    "coral_bleaching": ("coral_bleaching", "CoralBleachingSimulation", {}),
+    "permafrost_thaw": ("permafrost_thaw", "PermafrostThawSimulation", {}),
+    "biofilm_growth": ("biofilm_growth", "BiofilmGrowthSimulation", {}),
+    "mangrove_coast": ("mangrove_coast", "MangroveCoastSimulation", {}),
 }
 
 # Domains already trained
