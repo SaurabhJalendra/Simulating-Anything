@@ -141,6 +141,13 @@ DOMAIN_REGISTRY = {
     "glacier_climate": ("glacier_climate", "GlacierClimateSimulation", {}),
     "crop_pest": ("crop_pest", "CropPestSimulation", {}),
     "groundwater_contaminant": ("groundwater_contaminant", "GroundwaterContaminantSimulation", {}),
+    "aquifer_saltwater": ("aquifer_saltwater", "AquiferSaltwaterSimulation", {}),
+    "fishery_economics": ("fishery_economics", "FisheryEconomicsSimulation", {}),
+    "stem_cell_niche": ("stem_cell_niche", "StemCellNicheSimulation", {}),
+    "wastewater_treatment": ("wastewater_treatment", "WastewaterTreatmentSimulation", {}),
+    "thermostat_building": ("thermostat_building", "ThermostatBuildingSimulation", {}),
+    "wind_turbine": ("wind_turbine", "WindTurbineSimulation", {}),
+    "lake_eutrophication": ("lake_eutrophication", "LakeEutrophicationSimulation", {}),
 }
 
 # Domains already trained
