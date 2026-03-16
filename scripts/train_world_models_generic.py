@@ -127,6 +127,8 @@ DOMAIN_REGISTRY = {
     "calcium_signaling": ("calcium_signaling", "CalciumSignalingSimulation", {}),
     "ocean_carbon": ("ocean_carbon", "OceanCarbonSimulation", {}),
     "hormone_glucose": ("hormone_glucose", "HormoneGlucoseSimulation", {}),
+    "soil_carbon_nitrogen": ("soil_carbon_nitrogen", "SoilCarbonNitrogenSimulation", {}),
+    "dopamine_reward": ("dopamine_reward", "DopamineRewardSimulation", {}),
 }
 
 # Domains already trained
