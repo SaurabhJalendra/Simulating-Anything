@@ -519,24 +519,29 @@ Move beyond rediscovery to genuinely new scientific discoveries.
 - [ ] Network epidemic on realistic graphs (future work)
 - [ ] Turbulence cascade: higher Re corrections (future work)
 
-### V8 (Extended Novel Discovery) -- IN PROGRESS
+### V8 (Extended Novel Discovery) -- COMPLETE (9 domains, 44 world models)
 - [x] Predator-Prey-Climate (4D): RM ecology + Stommel ocean
   - SINDy R²=0.999, bifurcation at coupling=0.29, corr(T,P)=0.81
 - [x] Epidemic-Economy (4D): SIR disease + Goodwin economy
   - SINDy R²=0.977, S*I coupling detected, economy feedback recovered
 - [x] Neural-Ecosystem (4D): Wilson-Cowan + Lotka-Volterra
   - SINDy R²=1.000, neural-modulated predation, corr(E,N)=0.82
-- [x] Train world models on 3 V8 domains (38 total models)
-  - predator_prey_climate: loss=32.002, dream MSE=0.455
-  - epidemic_economy: loss=32.000, dream MSE=0.084 (near-perfect stability)
-  - neural_ecosystem: loss=32.002, dream MSE=0.506
 - [x] Tumor-Immune (4D): coupled growth + immune response
   - SINDy R²=0.999, T*N killing and T*C suppression recovered
-  - World model: loss=32.001, dream MSE=0.314
 - [x] Gene-Metabolism (4D): coupled toggle switch + metabolic flux
   - SINDy R²=1.000, corr(g1,m2)=1.000 (perfect gene-metabolite locking)
-  - World model: loss=32.002, dream MSE=0.150
-- [x] Add V8 domains to cross-domain analyzer (7 new analogies)
+- [x] Plankton-Ocean (4D): NPZ-D marine ecology + nutrient cycling
+  - SINDy R²=0.984, Monod + Holling III + remineralization
+- [x] Social-Epidemic (4D): opinion dynamics + SIR + vaccination
+  - SINDy R²=1.000, corr(opinion,I)=0.987, disease fear drives vaccination
+- [x] Predator-Prey-Pollution (4D): LV + toxin bioaccumulation
+  - SINDy R²=0.9998, pollution reduces carrying capacity
+- [x] Circadian-Metabolism (4D): Goodwin clock + metabolic flux
+  - SINDy R²=1.000, clock-enzyme-metabolite cycle recovered
+- [x] 44 world models trained on RTX 5090 (200 epochs each)
+- [x] Add V8 domains to cross-domain analyzer (7+ new analogies)
+- [x] Scaling analysis: SINDy R²=1.0 with 2% data for Lorenz/LV
+- [x] Noise robustness: R²>0.75 at 0.1% noise, degrades >5%
 
 **Phase 7D: Production & Reproducibility** -- MOSTLY COMPLETE
 - [x] Results dashboard: `scripts/results_dashboard.py` (197 domains, 35 models)
