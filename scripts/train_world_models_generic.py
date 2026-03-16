@@ -98,6 +98,12 @@ DOMAIN_REGISTRY = {
     "social_epidemic": ("social_epidemic", "SocialEpidemicSimulation", {
         "coupling_IS": 1.0,
     }),
+    "predator_prey_pollution": ("predator_prey_pollution", "PredatorPreyPollutionSimulation", {
+        "coupling_CK": 0.5, "coupling_Bd": 0.1,
+    }),
+    "circadian_metabolism": ("circadian_metabolism", "CircadianMetabolismSimulation", {
+        "coupling_PE": 0.3, "coupling_SM": 0.2,
+    }),
 }
 
 # Domains already trained
