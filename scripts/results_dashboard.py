@@ -33,6 +33,11 @@ DEFAULT_OUTPUT_PATH = PROJECT_ROOT / "output" / "results_dashboard.json"
 NOVEL_DOMAINS = {
     "lorenz_stommel", "stochastic_resonance", "replicator_mutator",
     "climate_epidemic", "neural_cardiac",
+    "predator_prey_climate", "epidemic_economy", "neural_ecosystem",
+    "tumor_immune", "gene_metabolism", "plankton_ocean", "social_epidemic",
+    "predator_prey_pollution", "circadian_metabolism", "prey_disease_predator",
+    "vegetation_hydrology", "neuron_astrocyte", "infection_immunity",
+    "resource_consumer_waste", "predator_prey_migration",
 }
 
 # ---------------------------------------------------------------------------
