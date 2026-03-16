@@ -176,6 +176,20 @@ DOMAIN_REGISTRY = {
     "drug_pharmacokinetics": ("drug_pharmacokinetics", "DrugPharmacokineticsSimulation", {}),
     "predator_prey_habitat": ("predator_prey_habitat", "PredatorPreyHabitatSimulation", {}),
     "bee_colony": ("bee_colony", "BeeColonySimulation", {}),
+    "soil_erosion": ("soil_erosion", "SoilErosionSimulation", {}),
+    "aquaculture": ("aquaculture", "AquacultureSimulation", {}),
+    "river_sediment": ("river_sediment", "RiverSedimentSimulation", {}),
+    "air_pollution": ("air_pollution", "AirPollutionSimulation", {}),
+    "tidal_energy": ("tidal_energy", "TidalEnergySimulation", {}),
+    "nuclear_reactor": ("nuclear_reactor", "NuclearReactorSimulation", {}),
+    "fish_migration": ("fish_migration", "FishMigrationSimulation", {}),
+    "lake_stratification": ("lake_stratification", "LakeStratificationSimulation", {}),
+    "crop_rotation": ("crop_rotation", "CropRotationSimulation", {}),
+    "urban_flood": ("urban_flood", "UrbanFloodSimulation", {}),
+    "landfill_methane": ("landfill_methane", "LandfillMethaneSimulation", {}),
+    "wildfire_smoke": ("wildfire_smoke", "WildfireSmokeSimulation", {}),
+    "algal_biofuel": ("algal_biofuel", "AlgalBiofuelSimulation", {}),
+    "space_debris": ("space_debris", "SpaceDebrisSimulation", {}),
 }
 
 # Domains already trained
