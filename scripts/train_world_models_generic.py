@@ -532,8 +532,9 @@ def main():
         logger.info(f"{'='*60}")
 
         if domain not in DOMAIN_REGISTRY:
-            logger.warning(f"Skipping unknown domain: {domain}")
-            continue
+            # Auto-discover: try standard class naming convention
+            cls_name = "".join(w.capitalize() for w in domain.split("_")) + "Simulation"
+            DOMAIN_REGISTRY[domain] = (domain, cls_name, {})
 
         try:
             data = generate_trajectories(domain, n_trajectories=args.n_traj, seq_len=args.seq_len)
