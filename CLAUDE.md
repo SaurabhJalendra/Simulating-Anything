@@ -204,7 +204,7 @@ pip install "jax[cuda12]" equinox optax diffrax pandas
 - RTX 5090 (32GB VRAM) handles all V1 workloads locally -- no cloud GPU needed
 - RSSM observe step: ~6ms/step, dream step: ~20ms/step on RTX 5090
 - World model training: ~7 min/domain on RTX 5090 (200 epochs)
-- 238 RSSM world models trained, median dream MSE=0.07
+- 277 RSSM world models trained, median dream MSE=0.07
 
 ### WSL Command Pattern
 
@@ -369,7 +369,7 @@ These are things that broke in previous sessions. Do not repeat them:
 ### V8 (Extended Novel Discovery) — COMPLETE
 - Scaled from 197 to **1500+ domains** spanning 200+ scientific disciplines
 - **1497 SINDy rediscovery results**, ~1469 with R², ~1299 with R²>=0.99 (88%)
-- **238 RSSM world models** trained on RTX 5090 (200 epochs, all converge ~32.0)
+- **277 RSSM world models** trained on RTX 5090 (200 epochs, all converge ~32.0)
 - Scaling analysis: SINDy R²=1.0 with 2% data for Lorenz/LV
 - Noise robustness: R²>0.75 at 0.1% noise, degrades >5%
 - Hand-crafted novel coupled domains (with real physics):
@@ -388,7 +388,7 @@ These are things that broke in previous sessions. Do not repeat them:
 - **1498 simulation files** (1500+ with composable/external)
 - **1497 SINDy rediscovery results**, 1469 with R² values
 - **~1299 with R² >= 0.99** (88%)
-- **238 RSSM world models** on RTX 5090 (200 epochs each)
+- **277 RSSM world models** on RTX 5090 (200 epochs each)
 - **Paper:** `paper/main.tex` with full results table
 
 ### Paper
