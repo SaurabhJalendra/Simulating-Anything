@@ -20,7 +20,7 @@ policies. We use them for equations.
 
 **Goals:** Research paper (AI4Science workshops at NeurIPS/ICML/ICLR),
 open-source tool for scientists, and portfolio piece demonstrating ML research
-capability.
+capability. **Achieved:** 1500+ domains, 238 world models, 88% R²>=0.99.
 
 ---
 
@@ -144,7 +144,8 @@ Only the `SimulationEnvironment` subclass is domain-specific. Everything
 else -- problem parsing, world model, exploration, analysis, reporting --
 operates on generic tensors. Adding a domain = one new class (~50-200 lines).
 
-**Cross-domain analogy engine** detects 98 mathematical isomorphisms across 43 domains:
+**Cross-domain analogy engine** detects 586+ mathematical isomorphisms across 200+ domains.
+The project now spans 1500+ domains. Representative analogies:
 - LV ↔ SIR (bilinear interaction terms)
 - Pendulum ↔ Oscillator (harmonic restoring force, T ~ √(inertia/force))
 - Projectile ↔ Oscillator (energy conservation)
@@ -202,15 +203,16 @@ pip install "jax[cuda12]" equinox optax diffrax pandas
 
 - RTX 5090 (32GB VRAM) handles all V1 workloads locally -- no cloud GPU needed
 - RSSM observe step: ~6ms/step, dream step: ~20ms/step on RTX 5090
-- Full pipeline (with Claude Code CLI): ~6.5 minutes end-to-end
-- World model training target: < 60 minutes on RTX 5090
+- World model training: ~7 min/domain on RTX 5090 (200 epochs)
+- 238 RSSM world models trained, median dream MSE=0.07
 
 ### WSL Command Pattern
 
 ```bash
-wsl.exe -d Ubuntu -e bash -c "cd /mnt/d/'Git Repos'/Simulating-Anything && source .venv/bin/activate && <your_command>"
+wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && <your_command>"
 ```
 
+Never use `wsl.exe -d Ubuntu -e bash -c "..."` — Windows PATH with parentheses breaks it.
 Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ---
@@ -219,7 +221,7 @@ Never fall back to CPU for training or pipeline runs. Always use WSL2.
 
 ### Tests
 ```bash
-# Full suite in WSL (7041 passing, 380 skipped):
+# Full suite in WSL (7900+ passing, 380 skipped):
 wsl.exe -d Ubuntu -- bash -lc "cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && python3 -m pytest tests/unit/ -v"
 
 # Windows (CPU only, world model tests also pass):
@@ -335,222 +337,71 @@ These are things that broke in previous sessions. Do not repeat them:
 | PySR `variable_names` | FutureWarning in PySR 1.5.9 | Pass `variable_names` to `model.fit()`, not constructor |
 | Gray-Scott convention | Pearson D_u=2e-5 gives unresolvable wavelengths | Use Karl Sims convention: D_u=0.16, D_v=0.08, unscaled Laplacian |
 | WSL bash -c PATH | Windows PATH with parentheses breaks bash -c | Use `wsl.exe -d Ubuntu -- bash -lc "..."` instead |
+| PySINDy differentiate | `model.differentiate()` doesn't exist in v2.1 | Use `np.gradient()` for derivatives, pass as `x_dot` to `fit()` |
+| RSSM model loading | Tried standalone `RSSM(obs_shape=...)` | Use `WorldModelTrainer` to rebuild `(encoder, rssm, decoder)` tree, then `eqx.tree_deserialise_leaves` |
+| RSSM constructor | Passed `obs_shape` to `RSSM.__init__` | RSSM takes `(action_size, embed_size, hidden_size, stoch_vars, stoch_classes, key)` — NOT obs_shape |
+| SINDy threshold | Threshold 0.01 kills small coefficients | Lower to 0.001-0.0001 for slow dynamics (battery, soil, aquifer) |
+| GPU contention | 2 JAX training processes share 32GB | Train sequentially; kill redundant processes with `kill PID` |
+| Sim class names | Assumed all classes end in "Simulation" | Varies: `DoublePendulumSimulation`, `KeplerOrbit`, `ElasticPendulum`, `CoupledOscillators`, `DrivenPendulum` |
+| Batch SINDy | Some auto-generated domains overflow (NaN) | Filter `np.isnan/np.isinf` before fitting; use `np.clip(state, 0, None)` in step() |
 
 ---
 
 ## 11. Future Roadmap
 
-### V2 (Near-term)
-- ~~Install Julia + PySR for symbolic regression~~ DONE
-- ~~Demonstrate 3 rediscoveries~~ DONE (projectile R²=0.9999, LV R²=1.0, GS boundary+scaling)
-- ~~Add SIR epidemic domain~~ DONE (R0 = β/γ, R²=1.0)
-- ~~Add double pendulum domain~~ DONE (T = 2π√(L/g), R²=0.999993)
-- ~~Add harmonic oscillator domain~~ DONE (ω₀=√(k/m), R²=1.0)
-- ~~Train RSSM world models on all 3 V1 domains~~ DONE
-- ~~Uncertainty-driven exploration demo~~ DONE (LV + SIR, R0 boundary detection)
-- ~~Dream-based discovery pipeline~~ DONE (dreamed vs simulated comparison)
-- ~~Cross-Domain Analogy Engine~~ DONE (11 isomorphisms across 8 domains)
-- ~~Add Lorenz attractor domain~~ DONE (SINDy R²=0.99999, Lyapunov 1.1% error)
-- ~~Add Navier-Stokes 2D domain~~ DONE (decay_rate=4*nu, R²=1.0)
-- ~~Adversarial Dream Debate~~ DONE (simulation debate + divergence metrics)
-- ~~Add Van der Pol oscillator~~ DONE (period R²=0.99996, amplitude~2.01)
-- ~~Add Kuramoto oscillators~~ DONE (sync transition, K_c detection)
-- ~~Add Brusselator~~ DONE (Hopf bifurcation b_c=1+a²)
-- ~~Add FitzHugh-Nagumo~~ DONE (f-I curve, neural spiking)
-- ~~Add Heat Equation 1D~~ DONE (exact spectral, D*k² decay)
-- ~~Add Logistic Map~~ DONE (Feigenbaum, ln(2) Lyapunov at r=4)
-- ~~Ablation studies~~ DONE (4 factors: sampling, method, data, features)
-- ~~Add Duffing oscillator~~ DONE (chaos detection, SINDy ODE)
-- ~~Add Schwarzschild geodesic~~ DONE (GR orbits, ISCO=6M, precession)
-- ~~Add Quantum Harmonic Oscillator~~ DONE (E_n=(n+1/2)hbar*omega, FFT propagation)
-- ~~Bootstrap error analysis~~ DONE (confidence intervals on all R²)
-- ~~Add more domains: molecular dynamics (JAX-MD), robotics (Brax)~~ DONE (LennardJones MD, CartPole-Brax)
+### V2-V6 (All COMPLETE)
+- **V2:** 14 core domains, PySR/SINDy rediscoveries, world models, exploration, ablation — DONE
+- **V3:** DreamerV4 (RSSMv2 + ensemble), external bridges, 3-body/turbulence/protein — DONE
+- **V4:** Auto-generated simulations (SimulationGeneratorAgent), composable dynamics — DONE
+- **V5:** Docker, Sphinx docs, benchmarks, 7900+ tests, baselines — DONE
+- **V6:** Full discovery campaigns on 192 domains, all PySR/SINDy results — DONE
 
-### V3 (Medium-term) -- NEW DISCOVERY MODE
-- ~~Upgrade world model to DreamerV4 (longer imagination horizon, better uncertainty)~~ DONE (RSSMv2 + ensemble)
-- ~~Bridge to non-JAX simulators: OpenFOAM (CFD), GROMACS (MD), SUMO (traffic)~~ DONE (ExternalBridge)
-- ~~**New discovery mode**: apply pipeline to unknown sub-problems in known domains~~ DONE (CampaignManager)
-  - ~~3-body gravitational dynamics (no closed-form solution)~~ DONE (ThreeBodySimulation + Lagrange points)
-  - ~~Turbulent flow transitions (critical Reynolds number prediction)~~ DONE (TurbulentFlow2D + energy spectrum)
-  - ~~Protein folding energy landscapes~~ DONE (HPProteinSimulation + folding T_f)
-- ~~Graph neural network encoders for molecular structures~~ DONE (GraphEncoder)
-- ~~3D CNN encoders for volumetric data~~ DONE (CNN3DEncoder)
-- ~~Persistent knowledge across sessions~~ DONE (KnowledgeBase)
+### V7 (Novel Scientific Discovery) — COMPLETE
+- 5 genuinely novel coupled systems with no known analytical solutions
+  - Lorenz-Stommel (5D atm-ocean), Climate-Epidemic (6D ENSO-SIR),
+    Neural-Cardiac (4D FHN-VdP), Stochastic Resonance, Replicator-Mutator
+- Phase 7A: World models scaled from 17→35, CKA latent analysis (eff dim 5.4/512),
+  cross-domain transfer (4 positive pairs), dream accuracy (23/25 stable)
+- Phase 7B: Meta-discovery across 197 domains (bifurcation, scaling, R² stats)
+- Phase 7C: All 5 novel SINDy recoveries successful (R²=0.77-1.0)
+- Phase 7D: Dashboard, dream accuracy, ensemble uncertainty, publication figures
 
-### V4 (Long-term)
-- ~~Auto-generated simulation code from natural language equations~~ DONE (SimulationGeneratorAgent)
-- ~~Composable dynamics module library~~ DONE (composable.py: 12 modules + 6 recipes)
-- ~~Real sim-to-real transfer validation~~ DONE (TransferValidator)
+### V8 (Extended Novel Discovery) — COMPLETE
+- Scaled from 197 to **1500+ domains** spanning 200+ scientific disciplines
+- **1497 SINDy rediscovery results**, ~1469 with R², ~1299 with R²>=0.99 (88%)
+- **238 RSSM world models** trained on RTX 5090 (200 epochs, all converge ~32.0)
+- Scaling analysis: SINDy R²=1.0 with 2% data for Lorenz/LV
+- Noise robustness: R²>0.75 at 0.1% noise, degrades >5%
+- Hand-crafted novel coupled domains (with real physics):
+  PredatorPreyClimate, EpidemicEconomy, NeuralEcosystem, TumorImmune,
+  GeneMetabolism, PlanktonOcean, SocialEpidemic, PredatorPreyPollution,
+  CircadianMetabolism, PreyDiseasePredator, VegetationHydrology,
+  NeuronAstrocyte, InfectionImmunity, ResourceConsumerWaste,
+  PredatorPreyMigration, PredatorPreyFear, NutrientPhageBacteria,
+  LaserAbsorber, AtmosphereVegetation, BatteryThermal, EarthquakeAftershock,
+  CalciumSignaling, OceanCarbon, HormoneGlucose, SoilCarbonNitrogen,
+  DopamineReward, MuscleTendon, RiverPollution, ImmuneVirus, CoralReef,
+  AntibioticResistance, ForestFire, SupplyChain, UrbanHeatIsland, GlacierClimate
+- 500+ batch-generated domains across ecology, medicine, engineering, etc.
 
-### V5 (Production & Polish)
-- ~~Docker containerization~~ DONE (Dockerfile + .dockerignore)
-- ~~Sphinx API documentation~~ DONE (docs/conf.py + RST pages)
-- ~~Performance benchmarks~~ DONE (domain_statistics.py + scaling_analysis.py)
-- ~~Comprehensive test suite~~ DONE (7876 tests passing)
-- ~~Baseline comparisons: PySR alone, SINDy alone, manual simulation~~ DONE (baseline_comparison.py)
-
-### V6 (Discovery Campaigns) -- ACTUAL RESULTS
-Run all simulations on GPU, execute PySR/SINDy equation recovery, train world
-models, and produce real scientific discovery results.
-
-**Phase 1: Core 14 domain rediscoveries (PySR + SINDy)** -- COMPLETE (14/14, 30min)
-- [x] Projectile: R = v^2*sin(2*theta)/g (R²=1.0)
-- [x] Lotka-Volterra: equilibrium + ODE coefficients (R²=0.9999)
-- [x] Gray-Scott: Turing instability boundary + wavelength scaling (corr=0.927)
-- [x] SIR Epidemic: R0 = beta/gamma + ODE recovery (R²=1.0)
-- [x] Double Pendulum: T = 2*pi*sqrt(L/g) + energy conservation (R²=0.999993)
-- [x] Harmonic Oscillator: omega_0 = sqrt(k/m) + damping + ODE (R²=1.0)
-- [x] Lorenz: SINDy ODE recovery + chaos transition + Lyapunov (R²=0.99999)
-- [x] Navier-Stokes 2D: viscous decay rate = 4*nu (R²=1.0)
-- [x] Van der Pol: period scaling T(mu) + amplitude (R²=0.999999)
-- [x] Kuramoto: synchronization transition r(K) (R²=0.964)
-- [x] Brusselator: Hopf bifurcation b_c = 1 + a^2 (R²=0.9999)
-- [x] FitzHugh-Nagumo: f-I curve + SINDy ODE (R²=1.0)
-- [x] Heat Equation 1D: mode decay rate D*k^2 (R²=1.0)
-- [x] Logistic Map: Feigenbaum delta + Lyapunov (R²=0.672)
-
-**Phase 2: Extended domain rediscoveries (35 chaotic ODEs + oscillators)** -- COMPLETE (35/35, 58min)
-- [x] Duffing, Rossler, Chua, Chen, Aizawa, Halvorsen, Burke-Shaw
-- [x] Sprott A-S, Thomas, Lorenz-84, Lorenz-96, Coupled Lorenz
-- [x] Standard Map, Henon Map, Stuart-Landau, Coupled VdP
-- [x] Selkov, Oregonator, Rikitake, Colpitts, Cart-Pole
-- [x] Three-Species, Elastic Pendulum, Schwarzschild, Quantum HO
-- [x] Boltzmann Gas, Spring-Mass Chain, Kepler, Driven Pendulum
-
-**Phase 3: Extended domain rediscoveries (65 ecology + epi + PDEs + neuro)** -- COMPLETE (65/65, 59min)
-- [x] Ecology: Rosenzweig-MacArthur (0.9998), Competitive LV, Allee, Bazykin, May-Leonard
-- [x] Epidemiology: SEIR (R²=1.0), Network SIS, SIR-Vaccination (R²=1.0), Zombie-SIR
-- [x] Neuroscience: Hodgkin-Huxley, Hindmarsh-Rose (0.999), Morris-Lecar, Izhikevich (0.905)
-- [x] PDEs: KS, Ginzburg-Landau (0.936), Cahn-Hilliard, Sine-Gordon (1.0), Shallow Water (0.849)
-- [x] Reaction-Diffusion: Schnakenberg (1.0), Brusselator-2D (0.961), Gray-Scott-1D, BZ-Spiral (0.997)
-- [x] Solitons: Toda (1.0), FPUT (0.9998), Diffusive LV (0.830)
-- [x] Statistical Mechanics: Ising (0.981), Bak-Sneppen (0.979), Vicsek (0.997), Lennard-Jones (0.718)
-- [x] New V5: Three-Body (1.0), Turbulent Flow (0.943), HP Protein (0.848)
-
-**Phase 4: World model training (RSSM on RTX 5090)** -- COMPLETE (17/18, 37min)
-- [x] Train RSSM on 18 key domains (200 epochs each) -- 17 trained, gray_scott skipped (spatial)
-- [x] Evaluate dreaming quality (MSE, error growth) -- mean dream MSE=0.23, error growth 0.65-3.0x
-- [x] Save checkpoints + training curves -- all saved to output/world_models/
-
-**Phase 5: Novel discovery campaigns** -- COMPLETE (5/5)
-- [x] Three-body: Lagrange L4 = 0.5 - mu (R²=1.0), Jacobi constant drift < 0.003
-- [x] Turbulence: E(k) spectrum (R²=0.943), enstrophy cascade confirmed
-- [x] HP protein: folding T_f=0.72, Rg collapse confirmed, E vs N scaling
-- [x] Climate: Vallis ENSO SINDy exact, 21/30 chaotic, Lyapunov=0.533
-- [x] Traffic jam: deferred (CampaignManager requires LLM API at runtime)
-
-**Phase 6: Remaining 80 domains** -- COMPLETE (78/80 succeeded, 3157s)
-- [x] 80 additional domains not covered in Phases 1-3 (advection, age_structured, etc.)
-- [x] 78/80 succeeded; 2 failed (fhn_stochastic, toggle_switch_stochastic -- API mismatch)
-- Results: all saved to output/rediscovery/{domain}/results.json
-
-**V6 Summary: 192 domains total (+ 5 V7 novel = 197), 174 with quantitative R² fits**
-**Median R² = 0.9998 | 95/171 with R² >= 0.999 | 109/171 with R² >= 0.99**
-**17 RSSM world models trained on RTX 5090 (200 epochs, best dream MSE=0.004)**
-**Paper updated to 192 domains with full statistics**
-**Full discovery showcase notebook: notebooks/full_discovery_showcase.ipynb**
+### Current Stats
+- **1498 simulation files** (1500+ with composable/external)
+- **1497 SINDy rediscovery results**, 1469 with R² values
+- **~1299 with R² >= 0.99** (88%)
+- **238 RSSM world models** on RTX 5090 (200 epochs each)
+- **Paper:** `paper/main.tex` with full results table
 
 ### Paper
 - Target: AI4Science workshops (NeurIPS, ICML, ICLR)
 - Core contribution: domain-agnostic discovery architecture + rediscovery evidence
-- ~~Baseline comparisons: PySR alone, SINDy alone, manual simulation~~ DONE
-- ~~Paper updated to 195 domains~~ DONE (paper/main.tex + paper/results_table.tex)
+- Baselines, ablation, scaling, noise robustness all included
+- `paper/results_table.tex` — full domain results
 
-### V7 (Novel Scientific Discovery) -- IN PROGRESS
-Move beyond rediscovery to genuinely new scientific discoveries.
-
-**Phase 7A: Expanded World Model Training** -- COMPLETE
-- [x] Train RSSM on V7 novel domains (stochastic_resonance, replicator_mutator, lorenz_stommel)
-  - stochastic_resonance: loss=32.007, dream MSE=0.227
-  - replicator_mutator: loss=32.000, dream MSE=0.037 (excellent)
-  - lorenz_stommel: loss=32.020, dream MSE=1.231
-- [x] Train RSSM on 12 additional high-value domains
-  - kepler: loss=32.001, dream MSE=0.143
-  - toda_lattice: loss=32.000, dream MSE=0.001 (best across all domains)
-  - driven_pendulum: loss=32.000, dream MSE=0.058
-  - elastic_pendulum: loss=32.000, dream MSE=0.104
-  - coupled_oscillators: loss=32.001, dream MSE=0.147
-  - selkov: loss=32.000, dream MSE=0.018
-  - stommel: loss=32.000, dream MSE=0.072
-  - mackey_glass: loss=32.000, dream MSE=0.122
-  - wilson_cowan: loss=32.000, dream MSE=0.002 (near-perfect dreaming)
-  - langford: loss=32.000, dream MSE=0.010
-- [x] Train RSSM on climate_epidemic and neural_cardiac
-  - climate_epidemic: loss=32.001, dream MSE=0.067
-  - neural_cardiac: loss=32.001, dream MSE=0.049
-- [x] Cross-domain transfer: 10 pairs, 8 successful, 4 with positive transfer
-  - HO→Duffing: 0.38x, Selkov→Brusselator: 0.47x, Lorenz→Rossler: 0.66x
-  - StochRes→VdP: 0.09x (best transfer ratio)
-- [x] Latent space analysis: 28 domains, CKA similarity matrix
-  - Mean effective dim: 5.4/512 (extreme compression)
-  - Top CKA pairs: Rossler↔Selkov (0.96), Rossler↔Duffing (0.95)
-  - Mean CKA similarity: 0.365
-
-**Phase 7B: Meta-Discovery Across 197 Domains** -- COMPLETE
-- [x] Universal bifurcation analysis: 48 domains classified (43 chaos, 3 limit cycle, 2 hyperchaos)
-- [x] Universal scaling near Hopf bifurcations: 2/3 consistent with sqrt(mu-mu_c)
-- [x] R-squared distribution: 176/197 with R2 values, median=1.0, 123 >= 0.99
-- [x] Equation complexity analysis: 115 equations, complexity-R2 correlation = -0.204
-- [x] Domain classification: ODE/PDE/Map/Stochastic/Agent with per-category R2 stats
-
-**Phase 7C: Genuinely Novel Discoveries** -- COMPLETE (5/5 novel domains)
-- [x] Multi-scale coupled systems: Lorenz-Stommel coupled atmosphere-ocean
-  - SINDy recovered sigma=9.994, beta=2.665 from 5D coupled ODE (R²=0.772)
-  - Coupling is slightly destabilizing (Lyapunov: 0.902 -> 0.910)
-  - Novel: corr(x,T) jumps from 0.21 to 0.74 at coupling=0.01
-- [x] Stochastic resonance: bistable double-well with noise
-  - SNR peaks at D_opt=0.042 (stochastic resonance confirmed)
-  - PySR Kramers rate: R²=0.997
-- [x] Evolutionary dynamics: replicator-mutator equations
-  - PySR recovered Hawk-Dove ESS p*=V/C with R²=1.0 (exact!)
-  - SINDy recovered full 3-strategy RPS ODE with R²=1.0
-  - PD cooperation collapsed to 2.9e-87, mutation stabilizes (slope=-0.009)
-- [x] Climate-epidemic coupling: ENSO-driven disease dynamics (6D)
-  - SINDy recovered all 6 coupled ODEs with mean R²=0.9997
-  - ENSO equations (T, h, tau): R²=1.0 each
-  - SIR equations (S, I, R): R²=0.999 (captures coupling terms)
-  - Novel: corr(T, dI/dt)=0.995 — temperature drives infection rate changes
-  - PySR peak infected vs coupling: R²=0.999
-- [x] Neural-cardiac coupling: FHN brain + VdP heart oscillators (4D)
-  - SINDy recovered all 4 coupled ODEs with mean R²=0.997
-  - FHN cubic v-v³/3 recovered (R²=0.990), VdP cubic x-x³ recovered (R²=1.0)
-  - Coupling terms 0.100v detected in cardiac equation (true: 0.1)
-  - dw/dt = 0.056 + 0.080v - 0.064w matches eps*(v+a-bw) exactly
-- [ ] Network epidemic on realistic graphs (future work)
-- [ ] Turbulence cascade: higher Re corrections (future work)
-
-### V8 (Extended Novel Discovery) -- COMPLETE (9 domains, 44 world models)
-- [x] Predator-Prey-Climate (4D): RM ecology + Stommel ocean
-  - SINDy R²=0.999, bifurcation at coupling=0.29, corr(T,P)=0.81
-- [x] Epidemic-Economy (4D): SIR disease + Goodwin economy
-  - SINDy R²=0.977, S*I coupling detected, economy feedback recovered
-- [x] Neural-Ecosystem (4D): Wilson-Cowan + Lotka-Volterra
-  - SINDy R²=1.000, neural-modulated predation, corr(E,N)=0.82
-- [x] Tumor-Immune (4D): coupled growth + immune response
-  - SINDy R²=0.999, T*N killing and T*C suppression recovered
-- [x] Gene-Metabolism (4D): coupled toggle switch + metabolic flux
-  - SINDy R²=1.000, corr(g1,m2)=1.000 (perfect gene-metabolite locking)
-- [x] Plankton-Ocean (4D): NPZ-D marine ecology + nutrient cycling
-  - SINDy R²=0.984, Monod + Holling III + remineralization
-- [x] Social-Epidemic (4D): opinion dynamics + SIR + vaccination
-  - SINDy R²=1.000, corr(opinion,I)=0.987, disease fear drives vaccination
-- [x] Predator-Prey-Pollution (4D): LV + toxin bioaccumulation
-  - SINDy R²=0.9998, pollution reduces carrying capacity
-- [x] Circadian-Metabolism (4D): Goodwin clock + metabolic flux
-  - SINDy R²=1.000, clock-enzyme-metabolite cycle recovered
-- [x] 44 world models trained on RTX 5090 (200 epochs each)
-- [x] Add V8 domains to cross-domain analyzer (7+ new analogies)
-- [x] Scaling analysis: SINDy R²=1.0 with 2% data for Lorenz/LV
-- [x] Noise robustness: R²>0.75 at 0.1% noise, degrades >5%
-
-**Phase 7D: Production & Reproducibility** -- MOSTLY COMPLETE
-- [x] Results dashboard: `scripts/results_dashboard.py` (197 domains, 35 models)
-- [x] One-command reproduction: `python run_everything.py` generates all results
-- [x] Dream accuracy analysis: 25 domains, median MSE=0.267, 23/25 stable
-- [x] Ensemble uncertainty: 3 groups (2D/3D/4D), uncertainty scales with complexity
-- [x] Publication figures: R² distribution, CKA heatmap, transfer, dream accuracy
-- [ ] arXiv preprint with supplementary materials
-- [ ] Zenodo DOI for dataset + trained models
+### Future Work
+- arXiv preprint with supplementary materials
+- Zenodo DOI for dataset + trained models
+- Network epidemic on realistic graphs
+- Turbulence cascade: higher Re corrections
 
 ---
 
@@ -568,150 +419,30 @@ src/simulating_anything/
     communicator.py        # DiscoveryReport → Markdown (LLM)
   simulation/
     base.py                # SimulationEnvironment ABC
-    reaction_diffusion.py  # Gray-Scott (JAX finite differences)
-    rigid_body.py          # Projectile (symplectic Euler + drag)
-    agent_based.py         # Lotka-Volterra (RK4 + diffrax batch)
-    epidemiological.py     # SIR epidemic model (RK4)
-    chaotic_ode.py         # Double pendulum (Lagrangian + RK4)
-    harmonic_oscillator.py # Damped harmonic oscillator (RK4)
-    lorenz.py              # Lorenz strange attractor (RK4 + Lyapunov)
-    navier_stokes.py       # 2D incompressible NS (spectral vorticity-streamfunction)
-    van_der_pol.py         # Van der Pol oscillator (limit cycle, RK4)
-    kuramoto.py            # Kuramoto coupled oscillators (sync transition)
-    brusselator.py         # Brusselator chemical oscillator (Hopf bifurcation)
-    fitzhugh_nagumo.py     # FitzHugh-Nagumo neuron model (excitable)
-    heat_equation.py       # 1D heat equation (spectral FFT)
-    logistic_map.py        # Logistic map (discrete chaos, Feigenbaum)
-    duffing.py             # Duffing oscillator (forced nonlinear, chaos)
-    schwarzschild.py       # Schwarzschild geodesics (GR orbits)
-    quantum_oscillator.py  # Quantum harmonic oscillator (split-operator FFT)
-    boltzmann_gas.py       # 2D ideal gas (hard-sphere collisions, PV=NkT)
-    spring_mass_chain.py   # 1D coupled springs (phonon dispersion)
-    kepler.py              # Kepler two-body orbits (celestial mechanics)
-    driven_pendulum.py     # Damped driven pendulum (period-doubling chaos)
-    coupled_oscillators.py # Two coupled harmonic oscillators (beats)
-    diffusive_lv.py        # Spatial predator-prey PDE (FFT Laplacian)
-    damped_wave.py         # 1D damped wave equation (spectral FFT)
-    ising_model.py         # 2D Ising model (Metropolis Monte Carlo)
-    cart_pole.py           # Cart-pole (Lagrangian, mass matrix inversion)
-    three_species.py       # Three-species food chain (trophic cascade)
-    elastic_pendulum.py    # Elastic pendulum (spring-pendulum, 2 coupled DOFs)
-    rossler.py             # Rossler attractor (3D chaotic ODE)
-    brusselator_diffusion.py # Spatial Brusselator PDE (Turing patterns)
-    henon_map.py           # Henon map (2D discrete chaos)
-    rosenzweig_macarthur.py # Predator-prey with Holling Type II
-    chua.py                # Chua's circuit (double-scroll chaos)
-    shallow_water.py       # 1D shallow water equations (Lax-Friedrichs)
-    toda_lattice.py        # Toda lattice (integrable solitons)
-    kuramoto_sivashinsky.py # KS equation (spatiotemporal chaos, ETDRK4)
-    ginzburg_landau.py     # Complex Ginzburg-Landau (Benjamin-Feir)
-    oregonator.py          # Oregonator BZ reaction oscillator
-    bak_sneppen.py         # Bak-Sneppen SOC (power-law avalanches)
-    lorenz96.py            # Lorenz-96 atmospheric model (F=8 chaos)
-    chemostat.py           # Chemostat microbial growth (Monod kinetics)
-    fhn_spatial.py         # FHN reaction-diffusion PDE (spiral waves)
-    wilberforce.py         # Wilberforce pendulum (coupled beats)
-    standard_map.py        # Standard (Chirikov) map (KAM theory)
-    hodgkin_huxley.py      # Hodgkin-Huxley neuron (biophysical ion channels)
-    rayleigh_benard.py     # Rayleigh-Benard convection (rolls, Ra_c)
-    eco_epidemic.py        # Eco-epidemic predator-prey-disease
-    hindmarsh_rose.py      # Hindmarsh-Rose bursting neuron
-    magnetic_pendulum.py   # Magnetic pendulum (fractal basins)
-    competitive_lv.py      # Competitive exclusion (N-species LV)
-    vicsek.py              # Vicsek flocking model (active matter)
-    coupled_lorenz.py      # Coupled Lorenz synchronization
-    bz_spiral.py           # BZ 2D spiral waves (Oregonator PDE)
-    swinging_atwood.py     # Swinging Atwood machine (Lagrangian chaos)
-    allee_predator_prey.py # Allee effect predator-prey (bistable)
-    mackey_glass.py        # Mackey-Glass DDE (delay chaos)
-    bouncing_ball.py       # Bouncing ball impact map (period-doubling)
-    wilson_cowan.py        # Wilson-Cowan E-I neural populations
-    cable_equation.py      # Cable equation (passive neurite PDE)
-    sine_gordon.py         # Sine-Gordon topological solitons (kink/antikink)
-    thomas.py              # Thomas cyclically symmetric chaos (labyrinth attractor)
-    ikeda_map.py           # Ikeda discrete chaos (nonlinear optics)
-    may_leonard.py         # May-Leonard cyclic competition (heteroclinic cycles)
-    cahn_hilliard.py       # Cahn-Hilliard phase field PDE (spinodal decomposition)
-    delayed_predator_prey.py # Delay differential predator-prey (Hopf at tau_c)
-    duffing_van_der_pol.py # Hybrid Duffing-VdP chaotic oscillator
-    network_sis.py         # Network SIS epidemic (spectral threshold)
-    coupled_map_lattice.py # Coupled map lattice (spatiotemporal chaos)
-    schnakenberg.py        # Schnakenberg reaction-diffusion (Turing patterns)
-    kapitza_pendulum.py    # Kapitza inverted pendulum (parametric stabilization)
-    fitzhugh_rinzel.py     # FitzHugh-Rinzel 3-timescale bursting neuron
-    lorenz84.py            # Lorenz-84 atmospheric circulation (Hadley)
-    rabinovich_fabrikant.py # Rabinovich-Fabrikant plasma chaos
-    sprott.py              # Sprott minimal chaotic flows (A-S)
-    gray_scott_1d.py       # Gray-Scott 1D pulse dynamics
-    predator_prey_mutualist.py # Predator-prey-mutualist (Holling II + mutualism)
-    brusselator_2d.py      # 2D Brusselator Turing patterns (spots/stripes)
-    fput.py                # FPUT lattice (recurrence paradox, symplectic)
-    selkov.py              # Selkov glycolysis oscillator (Hopf bifurcation)
-    rikitake.py            # Rikitake dynamo (geomagnetic reversals)
-    oregonator_1d.py       # 1D Oregonator traveling chemical pulses
-    ricker_map.py          # Ricker discrete population map (overcompensation)
-    morris_lecar.py        # Morris-Lecar conductance neuron (Type I/II)
-    colpitts.py            # Colpitts electronic jerk-circuit chaos
-    rossler_hyperchaos.py  # 4D Rossler hyperchaos (two positive LE)
-    harvested_population.py # Logistic + harvesting (MSY saddle-node)
-    fhn_ring.py            # FHN ring network (traveling neural waves)
-    langford.py            # Langford Hopf-Hopf bifurcation
-    laser_rate.py          # Laser rate equations (relaxation oscillation)
-    bazykin.py             # Bazykin predator-prey (enrichment paradox)
-    sir_vaccination.py     # SIR + vaccination (herd immunity threshold)
-    lorenz_stenflo.py      # Lorenz-Stenflo 4D acoustic gravity chaos
-    fhn_lattice.py         # FHN 2D lattice (spiral breakup)
-    four_species_lv.py     # 4-species Lotka-Volterra (competitive exclusion)
-    chen.py                # Chen attractor (dual Lorenz)
-    aizawa.py              # Aizawa torus-to-chaos attractor
-    halvorsen.py           # Halvorsen cyclically symmetric chaos
-    burke_shaw.py          # Burke-Shaw Lorenz variant
-    nose_hoover.py         # Nose-Hoover thermostat dynamics
-    lorenz_haken.py        # Lorenz-Haken laser-matter chaos
-    sakarya.py             # Sakarya hyperjerk attractor
-    dadras.py              # Dadras-Momeni 3D chaos
-    genesio_tesi.py        # Genesio-Tesi jerk circuit
-    lu_chen.py             # Lu-Chen unified chaotic system
-    qi.py                  # Qi 4D hyperchaos
-    windmi.py              # WINDMI magnetosphere chaos
-    finance.py             # Financial chaotic attractor
-    shimizu_morioka.py     # Shimizu-Morioka Lorenz-like
-    newton_leipnik.py      # Newton-Leipnik multistable chaos
-    wang.py                # Wang 3-scroll attractor
-    arneodo.py             # Arneodo spiral chaos
-    rucklidge.py           # Rucklidge double convection
-    liu.py                 # Liu 4D hyperchaos
-    hadley.py              # Hadley atmospheric circulation
-    vallis.py              # Vallis ENSO oscillator
-    tigan.py               # Tigan T-system generalized Lorenz
-    predator_two_prey.py   # 1 predator + 2 prey competition
-    autocatalator.py       # Chemical autocatalytic oscillator
-    seir.py                # SEIR epidemic with exposed class
-    ueda.py                # Ueda forced cubic oscillator
-    cubic_map.py           # 1D cubic map x_{n+1}=rx-x^3
-    zombie_sir.py          # Zombie outbreak SIR epidemic
-    elastic_collision.py   # 1D elastic collision chain
-    tent_map.py            # Piecewise linear chaos, lambda=ln(r)
-    lozi_map.py            # 2D piecewise-linear attractor
-    izhikevich.py          # Efficient spiking neuron (7 patterns)
-    double_well.py         # Bistable potential V=x^4/4-x^2/2
-    tinkerbell_map.py      # 2D complex quadratic map
-    rulkov_map.py          # Discrete spiking neuron (fast-slow)
-    coupled_vdp.py         # Two coupled VdP oscillators (sync)
-    stuart_landau.py       # Hopf normal form (r=sqrt(mu))
+    # --- 1498 simulation files total (see directory for full list) ---
+    # Core V1-V6 domains (192 hand-crafted with domain-specific physics):
+    lorenz.py, navier_stokes.py, harmonic_oscillator.py, sir_epidemic.py,
+    lotka_volterra.py, brusselator.py, fitzhugh_nagumo.py, heat_equation.py,
+    van_der_pol.py, kuramoto.py, logistic_map.py, duffing.py, rossler.py,
+    chua.py, hodgkin_huxley.py, lorenz96.py, ising_model.py, ... (192 total)
+    # V7 novel coupled systems (5 domains):
+    stochastic_resonance.py, replicator_mutator.py, lorenz_stommel.py,
+    climate_epidemic.py, neural_cardiac.py
+    # V8 novel coupled systems (35+ hand-crafted with real physics):
+    predator_prey_climate.py, epidemic_economy.py, neural_ecosystem.py,
+    tumor_immune.py, gene_metabolism.py, plankton_ocean.py,
+    social_epidemic.py, predator_prey_pollution.py, circadian_metabolism.py,
+    prey_disease_predator.py, vegetation_hydrology.py, neuron_astrocyte.py,
+    infection_immunity.py, resource_consumer_waste.py, laser_absorber.py,
+    atmosphere_vegetation.py, earthquake_aftershock.py, calcium_signaling.py,
+    ocean_carbon.py, hormone_glucose.py, soil_carbon_nitrogen.py,
+    dopamine_reward.py, coral_reef.py, antibiotic_resistance.py,
+    forest_fire.py, supply_chain.py, urban_heat_island.py, ...
+    # V8 batch-generated domains (1000+ with unique coefficients):
+    # Spanning ecology, medicine, engineering, climate, geology, etc.
     composable.py          # ComposedSimulation + 12 DynamicsModules
     equation_parser.py     # EquationSimulation from NL equations
     external_bridge.py     # File/Socket/Subprocess/PythonModule bridges
-    three_body.py          # CR3BP rotating frame (Lagrange points)
-    turbulent_flow.py      # High-Re 2D NS (spectral, ETDRK2, hyperviscosity)
-    hp_protein.py          # HP lattice protein folding (MC, 2D lattice)
-    lennard_jones.py       # LJ molecular dynamics (velocity Verlet, PBC)
-    cartpole_brax.py       # Brax-style cart-pole (RK4, action control)
-    stochastic_resonance.py # Bistable double-well with periodic forcing + noise
-    replicator_mutator.py  # Replicator-mutator evolutionary game dynamics
-    lorenz_stommel.py      # Novel coupled Lorenz atmosphere + Stommel ocean
-    climate_epidemic.py    # Novel coupled ENSO + SIR epidemic (6D)
-    neural_cardiac.py      # Novel coupled FHN neural + VdP cardiac (4D)
   world_model/
     rssm.py                # RSSM (Equinox) — 1536 latent dims
     rssm_v2.py             # RSSMv2 (DreamerV4-style mixed stochastic)
@@ -741,147 +472,10 @@ src/simulating_anything/
     computational_cost.py  # Wall-clock timing per pipeline stage
   rediscovery/
     __init__.py            # Exports all rediscovery runners
-    projectile.py          # Range equation R=v²sin(2θ)/g recovery
-    lotka_volterra.py      # Equilibrium + ODE recovery via PySR/SINDy
-    gray_scott.py          # Phase diagram + wavelength scaling analysis
-    sir_epidemic.py        # R0 = β/γ + SIR ODE recovery
-    double_pendulum.py     # Period T = 2π√(L/g) + energy conservation
-    harmonic_oscillator.py # ω₀ = √(k/m) + damping + ODE recovery
-    lorenz.py              # Lorenz ODE recovery + chaos transition
-    navier_stokes.py       # NS 2D viscous decay rate recovery
-    van_der_pol.py         # VdP period/amplitude + SINDy ODE
-    kuramoto.py            # Sync transition + order parameter r(K)
-    brusselator.py         # Hopf bifurcation b_c = 1+a^2
-    fitzhugh_nagumo.py     # f-I curve + SINDy ODE
-    heat_equation.py       # Mode decay rate D*k^2
-    logistic_map.py        # Feigenbaum + Lyapunov + chaos onset
-    duffing.py             # Duffing chaos & ODE recovery
-    schwarzschild.py       # ISCO, V_eff, energy conservation
-    quantum_oscillator.py  # Energy spectrum E_n = (n+0.5)*hbar*omega
-    boltzmann_gas.py       # PV=NkT ideal gas law recovery
-    spring_mass_chain.py   # Phonon dispersion omega(k) recovery
-    kepler.py              # Kepler T^2 ~ a^3, energy/L conservation
-    driven_pendulum.py     # Period-doubling, resonance, Lyapunov
-    coupled_oscillators.py # Normal mode splitting, beat frequency
-    diffusive_lv.py        # Fisher-KPP waves, spatial patterns
-    damped_wave.py         # Spectral wave dispersion + decay
-    ising_model.py         # Phase transition T_c, Onsager magnetization
-    cart_pole.py           # omega=sqrt(g*(M+m)/(M*L)), energy
-    three_species.py       # Trophic cascade, SINDy ODE recovery
-    elastic_pendulum.py    # omega_r=sqrt(k/m), energy conservation
-    rossler.py             # SINDy ODE recovery, period-doubling
-    brusselator_diffusion.py # Turing wavelength scaling
-    henon_map.py           # Lyapunov spectrum, bifurcation
-    rosenzweig_macarthur.py # Holling II functional response
-    chua.py                # Double-scroll attractor analysis
-    shallow_water.py       # Wave speed c=sqrt(gh) recovery
-    toda_lattice.py        # Soliton propagation, harmonic limit
-    kuramoto_sivashinsky.py # Spatiotemporal chaos, Lyapunov
-    ginzburg_landau.py     # Benjamin-Feir instability
-    oregonator.py          # BZ relaxation oscillation analysis
-    bak_sneppen.py         # SOC threshold f_c~2/3
-    lorenz96.py            # High-dim chaos, Lyapunov exponent
-    chemostat.py           # Washout bifurcation, Monod kinetics
-    fhn_spatial.py         # Spiral waves, pattern formation
-    wilberforce.py         # Beat phenomena, energy exchange
-    standard_map.py        # Chirikov map chaos, KAM threshold
-    hodgkin_huxley.py      # Ion channel dynamics, f-I curve
-    rayleigh_benard.py     # Convection rolls, Ra_c threshold
-    eco_epidemic.py        # Disease in predator-prey system
-    hindmarsh_rose.py      # Burst dynamics, spike analysis
-    magnetic_pendulum.py   # Fractal basin boundaries
-    competitive_lv.py      # Competitive exclusion principle
-    vicsek.py              # Flocking order parameter transition
-    coupled_lorenz.py      # Sync threshold, conditional Lyapunov
-    bz_spiral.py           # Spiral wave tip tracking
-    swinging_atwood.py     # Lagrangian energy conservation
-    allee_predator_prey.py # Bistability, extinction threshold
-    mackey_glass.py        # DDE period-doubling, delay chaos
-    bouncing_ball.py       # Impact map, Feigenbaum cascade
-    wilson_cowan.py        # E-I Hopf bifurcation, nullclines
-    cable_equation.py      # Space constant lambda, tau_m decay
-    sine_gordon.py         # Kink soliton, topological charge
-    thomas.py              # Labyrinth attractor, b_c transition
-    ikeda_map.py           # Spiral attractor, det(J)=u^2
-    may_leonard.py         # Heteroclinic cycles, biodiversity
-    cahn_hilliard.py       # Coarsening L(t)~t^(1/3), phase separation
-    delayed_predator_prey.py # Delay-induced Hopf, critical tau
-    duffing_van_der_pol.py # VdP+Duffing hybrid chaos
-    network_sis.py         # Spectral threshold, endemic equilibrium
-    coupled_map_lattice.py # Kaneko CML, spatiotemporal patterns
-    schnakenberg.py        # Turing patterns, activator-inhibitor
-    kapitza_pendulum.py    # Parametric stabilization, inverted equilibrium
-    fitzhugh_rinzel.py     # 3-timescale bursting, burst dynamics
-    lorenz84.py            # Hadley fixed point, chaos transition
-    rabinovich_fabrikant.py # Multiscroll attractor, gamma sweep
-    sprott.py              # Minimal chaos, Lyapunov comparison
-    gray_scott_1d.py       # Pulse splitting, pulse speed
-    predator_prey_mutualist.py # Mutualism stabilization, Holling II
-    brusselator_2d.py      # 2D Turing patterns, wavelength
-    fput.py                # FPUT recurrence, mode energies
-    selkov.py              # Glycolysis Hopf, metabolic oscillation
-    rikitake.py            # Geomagnetic reversal statistics
-    oregonator_1d.py       # BZ pulse speed, excitable waves
-    ricker_map.py          # Bifurcation, Feigenbaum, Lyapunov
-    morris_lecar.py        # f-I curve, excitability classification
-    colpitts.py            # Electronic chaos, Q-sweep
-    rossler_hyperchaos.py  # Lyapunov spectrum, Kaplan-Yorke dim
-    harvested_population.py # MSY verification, bifurcation
-    fhn_ring.py            # Sync transition, wave speed
-    langford.py            # Hopf-Hopf bifurcation analysis
-    laser_rate.py          # Relaxation oscillation, Q-switch
-    bazykin.py             # Enrichment paradox, bistability
-    sir_vaccination.py     # Herd immunity threshold
-    lorenz_stenflo.py      # 4D acoustic chaos, Lyapunov
-    fhn_lattice.py         # Spiral breakup, 2D waves
-    four_species_lv.py     # 4-species competitive exclusion
-    chen.py                # Dual Lorenz, SINDy ODE
-    aizawa.py              # Torus-to-chaos transition
-    halvorsen.py           # Cyclic symmetry, Lyapunov
-    burke_shaw.py          # Period-doubling, SINDy
-    nose_hoover.py         # Thermostat energy, Lyapunov
-    lorenz_haken.py        # Laser-matter chaos analysis
-    sakarya.py             # Hyperjerk attractor
-    dadras.py              # 3D chaos Lyapunov spectrum
-    genesio_tesi.py        # Jerk circuit analysis
-    lu_chen.py             # Unified system, parameter sweep
-    qi.py                  # 4D hyperchaos, Lyapunov
-    windmi.py              # Magnetosphere, Lyapunov
-    finance.py             # Financial chaos analysis
-    shimizu_morioka.py     # Lorenz-like, period-doubling
-    newton_leipnik.py      # Multistable chaos
-    wang.py                # 3-scroll attractor
-    arneodo.py             # Spiral chaos, Lyapunov
-    rucklidge.py           # Double convection
-    liu.py                 # 4D hyperchaos
-    hadley.py              # Atmospheric circulation
-    vallis.py              # ENSO oscillation
-    tigan.py               # T-system chaos, Lyapunov
-    predator_two_prey.py   # 1P+2prey dynamics
-    autocatalator.py       # Chemical oscillation
-    seir.py                # SEIR epidemic dynamics
-    ueda.py                # Forced cubic oscillator
-    cubic_map.py           # 1D cubic chaos, bifurcation
-    zombie_sir.py          # Zombie outbreak analysis
-    elastic_collision.py   # Newton's cradle verification
-    tent_map.py            # Piecewise chaos, lambda=ln(r)
-    lozi_map.py            # 2D piecewise attractor
-    izhikevich.py          # 7 firing patterns analysis
-    double_well.py         # Kramers escape, bistability
-    tinkerbell_map.py      # Strange attractor, Lyapunov
-    rulkov_map.py          # Discrete spiking analysis
-    coupled_vdp.py         # Synchronization transition
-    stuart_landau.py       # Hopf normal form verification
-    three_body.py          # CR3BP Jacobi constant, Lagrange points
-    turbulent_flow.py      # High-Re 2D NS energy spectrum, enstrophy
-    hp_protein.py          # HP protein folding, specific heat, Rg
-    lennard_jones.py       # LJ MD equation of state, diffusion
-    stochastic_resonance.py # SNR peak, Kramers escape rate
-    replicator_mutator.py  # RPS cycles, Hawk-Dove ESS, PD collapse
-    lorenz_stommel.py      # Novel coupled atm-ocean, Lyapunov + sync
-    climate_epidemic.py    # Novel ENSO-epidemic coupling sweep + SINDy
-    neural_cardiac.py      # Novel brain-heart phase locking + SINDy
     runner.py              # Unified runner for all domains
+    # 192 core rediscovery scripts (projectile.py through neural_cardiac.py)
+    # + 35 V8 novel domain scripts (predator_prey_climate.py, etc.)
+    # Results saved to output/rediscovery/{domain}/results.json
   knowledge/
     trajectory_store.py    # Parquet + JSON sidecar storage
     discovery_log.py       # JSONL discovery persistence
@@ -916,151 +510,35 @@ configs/
     rigid_body.yaml
     agent_based.yaml
 
-tests/unit/                # 7876 tests across 150+ files
-  test_types.py            # 28 tests — Pydantic model validation
-  test_config.py           # 14 tests — Config loading
-  test_simulation.py       # 14 tests — 3 V1 simulation engines
-  test_world_model.py      # 11 tests — RSSM shapes, gradients
-  test_agents.py           # 11 tests — Backend, classifier, communicator
-  test_pipeline.py         # 20 tests — Verification, stores, exploration
-  test_rediscovery.py      # 15 tests — Data gen, PySR, PySINDy integration
-  test_new_domains.py      # 18 tests — SIR epidemic + double pendulum
-  test_exploration.py      # 13 tests — Explorer + ablation module
-  test_harmonic_oscillator.py # 14 tests — Oscillator sim + rediscovery data
-  test_cross_domain.py     # 12 tests — Analogy detection + similarity
-  test_lorenz.py           # 20 tests — Lorenz sim, fixed points, Lyapunov
-  test_dream_debate.py     # 9 tests — Adversarial dream debate
-  test_navier_stokes.py    # 13 tests — NS 2D spectral solver
-  test_van_der_pol.py      # 12 tests — VdP limit cycle, period
-  test_kuramoto.py         # 13 tests — Sync transition, order parameter
-  test_brusselator.py      # 11 tests — Hopf bifurcation
-  test_fitzhugh_nagumo.py  # 10 tests — FHN neuron model
-  test_heat_equation.py    # 12 tests — Heat equation 1D spectral
-  test_logistic_map.py     # 13 tests — Logistic map, Lyapunov, periods
-  test_cli.py              # 6 tests — CLI entry point commands
-  test_duffing.py          # 15 tests — Duffing oscillator sim + rediscovery
-  test_reproducibility.py  # 75 tests — Determinism, invariants, conservation
-  test_schwarzschild.py    # 15 tests — GR geodesics, ISCO, energy
-  test_quantum_oscillator.py # 15 tests — Quantum HO, norm, spectrum
-  test_boltzmann_gas.py    # 16 tests — 2D ideal gas, collisions
-  test_spring_mass_chain.py # 20 tests — Phonon dispersion, energy
-  test_error_analysis.py   # 18 tests — Bootstrap R², coefficients
-  test_kepler.py           # 19 tests — Kepler orbits, T^2~a^3
-  test_driven_pendulum.py  # 18 tests — Chaos, resonance, Poincare
-  test_coupled_oscillators.py # 17 tests — Normal modes, beat frequency
-  test_diffusive_lv.py     # 16 tests — Spatial predator-prey PDE
-  test_damped_wave.py      # 22 tests — Spectral wave, dispersion
-  test_ising_model.py      # 26 tests — Metropolis MC, phase transition
-  test_cart_pole.py        # 20 tests — Cart-pole mechanics, frequency
-  test_three_species.py    # 20 tests — Food chain, equilibrium
-  test_elastic_pendulum.py # 21 tests — Spring-pendulum, energy
-  test_rossler.py          # 21 tests — Rossler chaos, Lyapunov
-  test_brusselator_diffusion.py # 26 tests — Turing patterns PDE
-  test_henon_map.py        # 19 tests — Discrete chaos, bifurcation
-  test_rosenzweig_macarthur.py # 24 tests — Holling II, paradox of enrichment
-  test_chua.py             # 22 tests — Chua double-scroll attractor
-  test_shallow_water.py    # 18 tests — Shallow water equations
-  test_toda_lattice.py     # 24 tests — Integrable lattice, solitons
-  test_kuramoto_sivashinsky.py # 25 tests — KS spatiotemporal chaos
-  test_ginzburg_landau.py  # 21 tests — CGLE Benjamin-Feir
-  test_oregonator.py       # 19 tests — BZ reaction oscillator
-  test_bak_sneppen.py      # 23 tests — SOC avalanches
-  test_lorenz96.py         # 23 tests — High-dim atmospheric chaos
-  test_chemostat.py        # 24 tests — Monod kinetics, washout
-  test_fhn_spatial.py      # 21 tests — FHN reaction-diffusion
-  test_wilberforce.py      # 19 tests — Coupled torsional-translational
-  test_standard_map.py     # 26 tests — KAM theory, chaos transition
-  test_hodgkin_huxley.py   # 22 tests — Ion channels, action potential
-  test_rayleigh_benard.py  # 20 tests — Convection, Ra_c threshold
-  test_eco_epidemic.py     # 24 tests — Eco-epidemic dynamics
-  test_hindmarsh_rose.py   # 24 tests — Bursting neuron model
-  test_magnetic_pendulum.py # 18 tests — Fractal basin boundaries
-  test_competitive_lv.py   # 28 tests — Competitive exclusion
-  test_vicsek.py           # 26 tests — Flocking, order parameter
-  test_coupled_lorenz.py   # 25 tests — Chaos synchronization
-  test_bz_spiral.py        # 18 tests — BZ spiral waves
-  test_swinging_atwood.py  # 27 tests — Lagrangian chaos
-  test_allee_predator_prey.py # 25 tests — Allee bistability
-  test_mackey_glass.py     # 25 tests — DDE chaos
-  test_bouncing_ball.py    # 20 tests — Impact map chaos
-  test_wilson_cowan.py     # 25 tests — E-I neural oscillation
-  test_cable_equation.py   # 18 tests — Passive neurite PDE
-  test_sine_gordon.py      # 24 tests — Topological solitons
-  test_thomas.py           # 23 tests — Thomas labyrinth chaos
-  test_ikeda_map.py        # 22 tests — Ikeda discrete chaos
-  test_may_leonard.py      # 33 tests — Cyclic competition
-  test_cahn_hilliard.py    # 23 tests — Phase field PDE
-  test_delayed_predator_prey.py # 24 tests — DDE Hopf bifurcation
-  test_duffing_van_der_pol.py # 27 tests — Hybrid oscillator
-  test_network_sis.py      # 22 tests — Network epidemic
-  test_coupled_map_lattice.py # 23 tests — CML spatiotemporal chaos
-  test_schnakenberg.py     # 20 tests — Turing patterns RD
-  test_kapitza_pendulum.py # 24 tests — Parametric stabilization
-  test_fitzhugh_rinzel.py  # 24 tests — 3-timescale bursting
-  test_lorenz84.py         # 36 tests — Atmospheric chaos
-  test_rabinovich_fabrikant.py # 28 tests — Plasma chaos
-  test_sprott.py           # 26 tests — Minimal chaotic flows
-  test_gray_scott_1d.py    # 40 tests — 1D RD pulse dynamics
-  test_predator_prey_mutualist.py # 29 tests — Mutualistic ecology
-  test_brusselator_2d.py   # 32 tests — 2D Turing patterns
-  test_fput.py             # 28 tests — FPUT lattice recurrence
-  test_selkov.py           # 24 tests — Glycolysis oscillator
-  test_rikitake.py         # 23 tests — Geomagnetic dynamo
-  test_oregonator_1d.py    # 45 tests — 1D BZ traveling pulses
-  test_ricker_map.py       # 24 tests — Discrete population chaos
-  test_morris_lecar.py     # 34 tests — Conductance neuron
-  test_colpitts.py         # 26 tests — Electronic oscillator chaos
-  test_rossler_hyperchaos.py # 30 tests — 4D hyperchaos
-  test_harvested_population.py # 28 tests — Resource ODE
-  test_fhn_ring.py         # 23 tests — Neural ring network
-  # ... plus 60+ more test files for domains #97-192
-  test_tinkerbell_map.py   # 37 tests — 2D complex quadratic map
-  test_rulkov_map.py       # 32 tests — Discrete spiking neuron
-  test_coupled_vdp.py      # 40 tests — Coupled VdP synchronization
-  test_stuart_landau.py    # 37 tests — Hopf normal form
-  test_turbulent_flow.py   # Turbulent flow 2D simulation
-  test_hp_protein.py       # HP protein folding simulation
-  test_lennard_jones.py    # LJ molecular dynamics simulation
-  test_cartpole_brax.py    # CartPole-Brax simulation
-  test_three_body.py       # Three-body problem simulation
-  test_composable.py       # Composable dynamics modules
-  test_transfer_validation.py # Sim-to-real transfer validation
-  test_baseline_comparison.py # Baseline comparisons
-  test_advanced_encoders.py # GNN, 3D CNN, Set encoders
-  test_knowledge_base.py   # Persistent knowledge base
+tests/unit/                # 7900+ tests across 233 files
+  # 150+ test files for V1-V6 domains (test_lorenz.py, test_navier_stokes.py, etc.)
+  # V8 test files:
+  test_novel_v8_domains.py      # 24 tests — PPC, EpiEcon, NeuEco
+  test_novel_v8_extended.py     # 21 tests — TumorImmune, GeneMet, etc.
+  test_novel_v8_batch3.py       # 19 tests — Laser, Battery, Infection, etc.
+  # Infrastructure tests:
+  test_types.py, test_config.py, test_pipeline.py, test_world_model.py,
+  test_reproducibility.py, test_cross_domain.py, test_composable.py,
+  test_advanced_encoders.py, test_knowledge_base.py
 
-output/rediscovery/          # Rediscovery results (not committed to git)
-  projectile/results.json    # R = v²sin(2θ)/g recovered
-  lotka_volterra/results.json # Equilibrium + ODE equations recovered
-  gray_scott/results.json    # Phase diagram + wavelength scaling
-  sir_epidemic/results.json  # R0 = β/γ + SIR ODEs
-  double_pendulum/results.json # Period T = 2π√(L/g) + energy
-  harmonic_oscillator/results.json # ω₀ = √(k/m), c/(2m), SINDy ODE
-  lorenz/results.json      # Lorenz ODEs, chaos transition, Lyapunov
-  navier_stokes/results.json # NS 2D viscous decay rate
+output/rediscovery/          # 1497 rediscovery results (not committed to git)
+  {domain}/results.json      # SINDy/PySR equations + R² for each domain
 
-output/world_models/         # Trained RSSM checkpoints (all 14 domains)
-  projectile/model.eqx      # loss=32.32
-  lotka_volterra/model.eqx   # loss=32.15
-  gray_scott/model.eqx       # loss=32.06 (obs=8192)
-  navier_stokes/model.eqx    # loss=32.20 (obs=1024)
-  # + 10 more domains (all ~32.0 loss)
+output/world_models/         # 238 trained RSSM checkpoints
+  {domain}/model.eqx         # Equinox model weights (all ~32.0 loss)
+  {domain}/training_results.json  # Loss, dream MSE, training time
+  {domain}/dream_comparison.npz   # Ground truth vs dreamed trajectories
+  training_summary_all.json  # Comprehensive summary of all models
 
 scripts/
-  generate_figures.py        # 14 publication-quality figures
-  build_notebook.py          # Builds flagship rediscovery notebook
-  train_world_models.py      # RSSM training on all domains (WSL)
-  build_wm_notebook.py       # World model training notebook
-  build_crossdomain_notebook.py # Cross-domain analysis notebook
-  run_exploration_demo.py    # Uncertainty exploration demo
-  run_dream_discovery.py     # Dream-based discovery pipeline
-  run_ablation_studies.py    # Systematic ablation studies
-  generate_paper_figures.py  # 8 publication-quality figures (all 7 domains)
-  generate_ablation_figures.py # 5 ablation figures (sampling, method, data, features)
-  aggregate_all_results.py   # Unified JSON + LaTeX table for all 14 domains
-  build_7domain_notebook.py  # Builds 7-domain rediscovery notebook
-  generate_paper_tables.py   # Generates all paper LaTeX tables from code
-  run_all_discoveries.py     # Master execution: all domain rediscoveries + world models
+  train_world_models_generic.py  # Train RSSM on any domain (auto-discovery)
+  results_dashboard.py       # Comprehensive results dashboard
+  latent_space_analysis.py   # CKA + PCA latent space analysis
+  cross_domain_transfer.py   # Cross-domain world model transfer
+  dream_accuracy_analysis.py # Dream quality across all models
+  ensemble_uncertainty_analysis.py # Ensemble disagreement
+  generate_figures.py        # Publication-quality figures
+  run_everything.py          # One-command reproduction of all results
 
 docs/
   RESEARCH.md              # Vision, universality argument (Section 4), contributions
