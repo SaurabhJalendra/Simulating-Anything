@@ -1,12 +1,68 @@
 # CLAUDE.md -- Simulating Anything
 
+## 0. End Goal (North Star)
+
+**Make genuine scientific discoveries that help humanity.** Not equation fitting.
+Not inflating domain counts. Not R² numbers. ACTUAL discoveries:
+- Critical thresholds that guide policy (e.g., "polarization > 0.35 prevents epidemic control")
+- Phase boundaries that predict regime changes (e.g., "climate coupling > 0.29 causes population collapse")
+- Scaling laws that transfer to the real world (e.g., "peak infection is invariant to climate amplitude")
+
+Everything in this project serves this goal. Architecture, world models, SINDy,
+exploration — all tools in service of discovery.
+
+---
+
+## 0.1 Autonomous Execution Protocol
+
+Claude Code operates **fully autonomously** on this research. The human sets
+direction; Claude executes without stopping.
+
+### Workflow Orchestration (from global CLAUDE.md)
+1. **Plan Mode Default** — Enter plan mode for ANY non-trivial task (3+ steps).
+   If something goes sideways, STOP and re-plan. Don't keep pushing.
+2. **Subagent Strategy** — Offload research, exploration, parallel analysis to
+   subagents. For complex problems, throw more compute at it. One task per subagent.
+3. **Self-Improvement Loop** — After ANY correction: update lessons. Write rules
+   that prevent the same mistake. Ruthlessly iterate until mistake rate drops.
+4. **Verification Before Done** — Never mark complete without proving it works.
+   Ask: "Would a staff engineer approve this?" Run tests, check logs, demonstrate.
+5. **Demand Elegance** — For non-trivial changes: "is there a more elegant way?"
+   Skip this for simple fixes. Challenge your own work before presenting it.
+6. **Autonomous Bug Fixing** — When given a bug: just fix it. Zero context
+   switching required from the user.
+
+### Continuous Improvement Mandate
+- After EVERY discovery campaign: assess what worked, what didn't, improve the pipeline
+- After EVERY architecture change: verify it improves discovery quality, not just metrics
+- After EVERY session: update CLAUDE.md with new gotchas, lessons, and stats
+- **Depth over breadth** — 1 genuine discovery > 1000 template domains
+- **Honest results only** — Report failures as future work, never inflate numbers
+- **Quality bar** — Would this discovery survive peer review at NeurIPS?
+
+### Discovery Loop (Continuous)
+```
+LOOP FOREVER:
+  1. Pick a novel domain with high discovery potential
+  2. Ask a scientific question about its coupling behavior
+  3. Run discovery campaign: sweep → observe → detect bifurcations → fit scaling laws
+  4. Validate: extrapolation, seed robustness, dt invariance
+  5. If genuine discovery found → commit with evidence, update paper
+  6. If not → analyze why, improve pipeline, try different approach
+  7. Log everything to output/discoveries/experiment_log.jsonl
+  8. Improve architecture based on what failed
+  9. NEVER STOP until the human says stop
+```
+
+---
+
 ## 1. Project Vision & Research Thesis
 
-**Simulating Anything** is a multi-agent scientific discovery engine. Given a
+**Simulating Anything** is an autonomous scientific discovery engine. Given a
 natural language description of any phenomenon, the system automatically builds
 a simulation, trains a world model on it, explores the parameter space, and
 extracts human-interpretable discoveries -- governing equations, phase
-boundaries, scaling laws, and optimal strategies.
+boundaries, scaling laws, and critical thresholds.
 
 **The core claim:** any real-world phenomenon is a dynamical system; any
 dynamical system can be simulated; any simulation can train a world model;
@@ -16,11 +72,23 @@ handles all of science.
 **Why this is novel:** No existing system combines world model training +
 uncertainty-driven exploration + symbolic regression + multi-agent orchestration
 for scientific *discovery* (not control). DreamerV3 uses world models for
-policies. We use them for equations.
+policies. We use them for equations and phase boundaries.
 
-**Goals:** Research paper (AI4Science workshops at NeurIPS/ICML/ICLR),
-open-source tool for scientists, and portfolio piece demonstrating ML research
-capability. **Achieved:** 1500+ domains, 238 world models, 88% R²>=0.99.
+**Goals:**
+1. **Make genuine scientific discoveries** — Find critical thresholds, phase
+   boundaries, and scaling laws in novel coupled systems with no known solutions
+2. **Research paper** — AI4Science workshops (NeurIPS/ICML/ICLR) with honest results
+3. **Open-source discovery tool** — Scientists input a question, get equations
+4. **Continuously improve** — Every session makes the architecture better
+
+**Current State (honest):**
+- 261 real domains (14 core + 247 hand-crafted) with genuine physics
+- 277 RSSM world models trained on RTX 5090
+- 1285 template stress-test domains (appendix, not main results)
+- Extrapolation validation shows SINDy does polynomial fitting (limitation)
+- Noise tolerance: viable at 0.1%, degrades >5% (honest finding)
+- Dream-based discovery: not yet accurate enough (future work)
+- **Genuine discoveries: IN PROGRESS** — 3 campaigns designed, ready to run
 
 ---
 
@@ -347,61 +415,54 @@ These are things that broke in previous sessions. Do not repeat them:
 
 ---
 
-## 11. Future Roadmap
+## 11. Roadmap
 
-### V2-V6 (All COMPLETE)
-- **V2:** 14 core domains, PySR/SINDy rediscoveries, world models, exploration, ablation — DONE
-- **V3:** DreamerV4 (RSSMv2 + ensemble), external bridges, 3-body/turbulence/protein — DONE
-- **V4:** Auto-generated simulations (SimulationGeneratorAgent), composable dynamics — DONE
-- **V5:** Docker, Sphinx docs, benchmarks, 7900+ tests, baselines — DONE
-- **V6:** Full discovery campaigns on 192 domains, all PySR/SINDy results — DONE
+### Completed (V2-V8)
+- **V2-V6:** 14 core rediscoveries, 192 hand-crafted domains, world models, exploration — DONE
+- **V7:** 5 novel coupled systems, CKA latent analysis, cross-domain transfer — DONE
+- **V8:** Scaled to 261 real domains + 1285 template stress tests, 277 world models — DONE
+- **Honest Assessment:** Domain classification (261 real, 1285 template), extrapolation
+  validation (SINDy degrades at 1.5-3x range), noise robustness (viable at 0.1%), dream
+  discovery (not yet accurate enough) — ALL DONE
 
-### V7 (Novel Scientific Discovery) — COMPLETE
-- 5 genuinely novel coupled systems with no known analytical solutions
-  - Lorenz-Stommel (5D atm-ocean), Climate-Epidemic (6D ENSO-SIR),
-    Neural-Cardiac (4D FHN-VdP), Stochastic Resonance, Replicator-Mutator
-- Phase 7A: World models scaled from 17→35, CKA latent analysis (eff dim 5.4/512),
-  cross-domain transfer (4 positive pairs), dream accuracy (23/25 stable)
-- Phase 7B: Meta-discovery across 197 domains (bifurcation, scaling, R² stats)
-- Phase 7C: All 5 novel SINDy recoveries successful (R²=0.77-1.0)
-- Phase 7D: Dashboard, dream accuracy, ensemble uncertainty, publication figures
+### V9 (Genuine Discovery) — IN PROGRESS
+The pivot from breadth to depth. Make real discoveries.
 
-### V8 (Extended Novel Discovery) — COMPLETE
-- Scaled from 197 to **1500+ domains** spanning 200+ scientific disciplines
-- **1497 SINDy rediscovery results**, ~1469 with R², ~1299 with R²>=0.99 (88%)
-- **277 RSSM world models** trained on RTX 5090 (200 epochs, all converge ~32.0)
-- Scaling analysis: SINDy R²=1.0 with 2% data for Lorenz/LV
-- Noise robustness: R²>0.75 at 0.1% noise, degrades >5%
-- Hand-crafted novel coupled domains (with real physics):
-  PredatorPreyClimate, EpidemicEconomy, NeuralEcosystem, TumorImmune,
-  GeneMetabolism, PlanktonOcean, SocialEpidemic, PredatorPreyPollution,
-  CircadianMetabolism, PreyDiseasePredator, VegetationHydrology,
-  NeuronAstrocyte, InfectionImmunity, ResourceConsumerWaste,
-  PredatorPreyMigration, PredatorPreyFear, NutrientPhageBacteria,
-  LaserAbsorber, AtmosphereVegetation, BatteryThermal, EarthquakeAftershock,
-  CalciumSignaling, OceanCarbon, HormoneGlucose, SoilCarbonNitrogen,
-  DopamineReward, MuscleTendon, RiverPollution, ImmuneVirus, CoralReef,
-  AntibioticResistance, ForestFire, SupplyChain, UrbanHeatIsland, GlacierClimate
-- 500+ batch-generated domains across ecology, medicine, engineering, etc.
+**Phase 9A: Discovery Infrastructure**
+- [ ] Observable Extractor (mean, std, amplitude, period, Lyapunov, classification)
+- [ ] Bifurcation Detector (gradient z-scores, type classification, confidence intervals)
+- [ ] Phase Diagram Generator (2D classification grid, boundary detection, figures)
+- [ ] Discovery Campaign Runner (sweep → observe → detect → fit → validate)
 
-### Current Stats
-- **1498 simulation files** (1500+ with composable/external)
-- **1497 SINDy rediscovery results**, 1469 with R² values
-- **~1299 with R² >= 0.99** (88%)
-- **277 RSSM world models** on RTX 5090 (200 epochs each)
-- **Paper:** `paper/main.tex` with full results table
+**Phase 9B: Discovery Campaigns (3 targets)**
+- [ ] Social-Epidemic: polarization threshold for epidemic control
+- [ ] Climate-Epidemic: phase-locking mechanism, invariant peak magnitude
+- [ ] Predator-Prey-Climate: bifurcation type at coupling=0.29, prey extinction threshold
 
-### Paper
-- Target: AI4Science workshops (NeurIPS, ICML, ICLR)
-- Core contribution: domain-agnostic discovery architecture + rediscovery evidence
-- Baselines, ablation, scaling, noise robustness all included
-- `paper/results_table.tex` — full domain results
+**Phase 9C: Validation & Improvement Loop**
+- [ ] Extrapolation validation on all discoveries
+- [ ] Seed robustness (5 seeds), dt invariance (3 values)
+- [ ] Improve pipeline based on what fails
+- [ ] Run on next 5 novel domains from the 35 hand-crafted set
 
-### Future Work
-- arXiv preprint with supplementary materials
-- Zenodo DOI for dataset + trained models
-- Network epidemic on realistic graphs
-- Turbulence cascade: higher Re corrections
+**Phase 9D: Paper Rewrite**
+- [ ] Honest domain count (261 real)
+- [ ] Discovery results as main contribution
+- [ ] Limitations section (extrapolation, noise, dreams)
+- [ ] End-to-end autonomous demo
+
+### V10 (Autoresearch Integration) — PLANNED
+- [ ] Fixed-budget experiment loops (autoresearch pattern)
+- [ ] Per-domain SINDy threshold optimization
+- [ ] Per-domain-class RSSM architecture search
+- [ ] Overnight autonomous discovery loop
+
+### Current Stats (Honest)
+- **261 real domains** (14 core + 247 hand-crafted) — verified by `scripts/classify_domains.py`
+- **1285 template domains** (stress test only, NOT main results)
+- **277 RSSM world models** on RTX 5090
+- **Genuine discoveries: 0** (infrastructure built, campaigns designed, ready to execute)
+- **Paper:** needs rewrite with honest results + discovery contributions
 
 ---
 
