@@ -88,7 +88,10 @@ policies. We use them for equations and phase boundaries.
 - Extrapolation validation shows SINDy does polynomial fitting (limitation)
 - Noise tolerance: viable at 0.1%, degrades >5% (honest finding)
 - Dream-based discovery: not yet accurate enough (future work)
-- **Genuine discoveries: IN PROGRESS** — 3 campaigns designed, ready to run
+- **Genuine discoveries: 3 VALIDATED, 89 total across 19 domains**
+  - Neuron-Astrocyte: Inverse Hopf at coupling=0.20 (gliotransmitters silence neurons)
+  - Social-Epidemic: Inverse Hopf at v_max=0.08 (vaccination threshold)
+  - Ocean-Carbon: Inverse Hopf at k_mix=0.022 (mixing stabilizes carbon pump)
 
 ---
 
@@ -461,7 +464,7 @@ The pivot from breadth to depth. Make real discoveries.
 - **261 real domains** (14 core + 247 hand-crafted) — verified by `scripts/classify_domains.py`
 - **1285 template domains** (stress test only, NOT main results)
 - **277 RSSM world models** on RTX 5090
-- **Genuine discoveries: 0** (infrastructure built, campaigns designed, ready to execute)
+- **Genuine discoveries: 3 validated** (89 total across 19 domains, 3 confirmed across 5 seeds)
 - **Paper:** needs rewrite with honest results + discovery contributions
 
 ---
