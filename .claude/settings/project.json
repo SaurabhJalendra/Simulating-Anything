@@ -1,0 +1,26 @@
+{
+  "project": "simulating-anything",
+  "description": "Autonomous scientific discovery engine",
+  "autonomous_mode": true,
+  "never_stop": true,
+  "commit_at_checkpoints": true,
+  "push_immediately": true,
+  "no_co_authored_by": true,
+  "gpu": {
+    "device": "RTX 5090 32GB",
+    "access": "WSL2 Ubuntu",
+    "command_pattern": "wsl.exe -d Ubuntu -- bash -lc \"cd '/mnt/d/Git Repos/Simulating-Anything' && source .venv/bin/activate && <cmd>\""
+  },
+  "quality_bar": {
+    "depth_over_breadth": true,
+    "honest_results_only": true,
+    "validate_across_seeds": 5,
+    "peer_review_standard": "NeurIPS"
+  },
+  "discovery_engine": {
+    "observable_extractor": "src/simulating_anything/analysis/observable_extractor.py",
+    "bifurcation_detector": "src/simulating_anything/analysis/bifurcation_detector.py",
+    "campaign_runner": "src/simulating_anything/analysis/campaign_runner.py",
+    "output_dir": "output/discoveries/"
+  }
+}
