@@ -460,12 +460,16 @@ The pivot from breadth to depth. Make real discoveries.
 - [ ] Per-domain-class RSSM architecture search
 - [ ] Overnight autonomous discovery loop
 
-### Current Stats (Honest)
+### Current Stats
 - **261 real domains** (14 core + 247 hand-crafted) — verified by `scripts/classify_domains.py`
 - **1285 template domains** (stress test only, NOT main results)
-- **277 RSSM world models** on RTX 5090
-- **Genuine discoveries: 21 validated (418 total across 19 domains, 4 confirmed across 5 seeds)
-- **Paper:** needs rewrite with honest results + discovery contributions
+- **281 RSSM world models** on RTX 5090
+- **168 discovery campaigns** across 35+ novel coupled systems
+- **672 discoveries** (bifurcations + scaling laws + phase boundaries)
+- **31 validated bifurcations** (5-seed unanimous classification protocol)
+- **6 policy equations / structural invariants**
+- **3 structural invariants**: battery I_load_c, Lorenz-Stommel sigma window, earthquake v_plate_c
+- **Paper:** needs rewrite with discovery contributions
 
 ---
 
