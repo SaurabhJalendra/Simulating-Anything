@@ -467,7 +467,7 @@ The pivot from breadth to depth. Make real discoveries.
 - **207 discovery campaigns** across 35+ novel coupled systems
 - **813 discoveries** (bifurcations + scaling laws + phase boundaries)
 - **50 validated bifurcations** (5-seed unanimous classification, 15+ unique domains)
-- **7 policy equations / structural invariants**
+- **9 policy equations / structural invariants**
 - **4 structural invariants**: battery I_load_c, Lorenz-Stommel sigma, earthquake v_plate_c, predator d_pred
 - **NPB**: paradox of enrichment + triple phage-decay regime (d_v)
 - **Paper:** needs rewrite with discovery contributions
