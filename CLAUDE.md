@@ -464,7 +464,7 @@ The pivot from breadth to depth. Make real discoveries.
 - **261 real domains** (14 core + 247 hand-crafted) — verified by `scripts/classify_domains.py`
 - **1285 template domains** (stress test only, NOT main results)
 - **277 RSSM world models** on RTX 5090
-- **Genuine discoveries: 16 validated (320 total across 19 domains, 4 confirmed across 5 seeds)
+- **Genuine discoveries: 16 validated (330 total across 19 domains, 4 confirmed across 5 seeds)
 - **Paper:** needs rewrite with honest results + discovery contributions
 
 ---
