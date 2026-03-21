@@ -464,12 +464,12 @@ The pivot from breadth to depth. Make real discoveries.
 - **261 real domains** (14 core + 247 hand-crafted) — verified by `scripts/classify_domains.py`
 - **1285 template domains** (stress test only, NOT main results)
 - **281 RSSM world models** on RTX 5090
-- **175 discovery campaigns** across 35+ novel coupled systems
-- **691 discoveries** (bifurcations + scaling laws + phase boundaries)
-- **32 validated bifurcations** (5-seed unanimous classification protocol)
+- **184 discovery campaigns** across 35+ novel coupled systems
+- **725 discoveries** (bifurcations + scaling laws + phase boundaries)
+- **36 validated bifurcations** (5-seed unanimous classification protocol)
 - **7 policy equations / structural invariants**
-- **3 structural invariants**: battery I_load_c, Lorenz-Stommel sigma window, earthquake v_plate_c
-- **1 cross-domain invariant**: predator mortality threshold d_pred~0.45 across coupling types
+- **4 structural invariants**: battery I_load_c, Lorenz-Stommel sigma, earthquake v_plate_c, predator d_pred
+- **NPB paradox of enrichment**: low nutrient oscillates, moderate stable, high oscillates
 - **Paper:** needs rewrite with discovery contributions
 
 ---
