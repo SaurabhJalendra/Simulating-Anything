@@ -468,9 +468,10 @@ The pivot from breadth to depth. Make real discoveries.
 - **956 discoveries** (bifurcations + scaling laws + phase boundaries + 25 2D phase diagrams)
 - **55 validated bifurcations** (5-seed unanimous, 52% validation rate, 15+ unique domains)
 - **9 policy equations / structural invariants**
-- **4 structural invariants**: battery I_load_c, Lorenz-Stommel sigma, earthquake v_plate_c, predator d_pred
-- **NPB**: paradox of enrichment + triple phage-decay regime (d_v)
-- **Paper:** needs rewrite with discovery contributions
+- **Literature calibration**: NPB burst 7.2% error, Brusselator 9-28%, Tumor 24%
+- **dt-invariance**: 24/51 pass <5% deviation (47%), battery perfect
+- **6 testable predictions** (3 high confidence, 2 medium, 1 validated)
+- **Paper:** needs rewrite with calibration + prediction contributions
 
 ---
 
