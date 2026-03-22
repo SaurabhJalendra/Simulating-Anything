@@ -464,9 +464,9 @@ The pivot from breadth to depth. Make real discoveries.
 - **261 real domains** (14 core + 247 hand-crafted) — verified by `scripts/classify_domains.py`
 - **1285 template domains** (stress test only, NOT main results)
 - **281 RSSM world models** on RTX 5090
-- **255 discovery campaigns** across 35+ novel coupled systems
-- **976 discoveries** (bifurcations + scaling laws + phase boundaries + 31 2D phase diagrams)
-- **55 validated bifurcations** (5-seed unanimous, 52% validation rate, 15+ unique domains)
+- **259 discovery campaigns** across 35+ novel coupled systems
+- **1000 discoveries** (bifurcations + scaling laws + phase boundaries + 31 2D phase diagrams)
+- **63 validated bifurcations** (8 calibrated with literature params, 5-seed unanimous)
 - **9 policy equations / structural invariants**
 - **Literature calibration**: NPB burst 7.2% error, Brusselator 9-28%, Tumor 24%
 - **dt-invariance**: 24/51 pass <5% deviation (47%), battery perfect
