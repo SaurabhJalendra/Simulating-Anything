@@ -631,3 +631,54 @@ notebooks/
   cross_domain_analysis.ipynb # Cross-domain comparison
   showcase_14domain.ipynb    # 14-domain interactive showcase (24 cells)
 ```
+
+---
+
+## 13. LLM Wiki Operations (Karpathy Pattern)
+
+This project uses the Karpathy LLM Wiki pattern for accumulating external knowledge (papers, articles, references). `raw/` holds immutable sources; `wiki/` holds LLM-maintained knowledge.
+
+### Structure
+```
+raw/                    # Immutable source documents (papers, articles, clippings)
+  assets/              # Images, PDFs, referenced files
+wiki/                   # LLM-maintained markdown knowledge base
+  index.md             # Content catalog (all pages, by category)
+  log.md               # Append-only activity record with timestamps
+  entities/            # People, organizations, products, institutions
+  concepts/            # Ideas, theories, dynamical-systems methods
+  sources/             # One page per ingested source (summary + key takeaways)
+  syntheses/           # Cross-cutting analyses, comparisons, theses
+```
+
+### Ingest (when user drops a file in raw/)
+1. Read the source thoroughly
+2. Write a summary page in `wiki/sources/[source-name].md`
+3. Update 10-15 related pages in `wiki/entities/` and `wiki/concepts/`
+4. Update `wiki/index.md` with new entries
+5. Append entry to `wiki/log.md`: `## [YYYY-MM-DD] ingest | [source name]`
+6. Report to user: what was ingested, which pages were updated
+
+### Query (when user asks a question)
+1. Read `wiki/index.md` first to find relevant pages
+2. Drill into those pages
+3. Synthesize an answer with citations to source pages
+4. **If the answer is valuable**, file it back as a new page in `wiki/syntheses/`
+5. Append to `wiki/log.md`: `## [YYYY-MM-DD] query | [topic]`
+
+### Lint (periodic health check — user runs /wiki-lint)
+Check for:
+- Contradictions between pages (flag for user decision)
+- Stale claims that newer sources have superseded
+- Orphan pages with no inbound links
+- Important concepts mentioned but lacking their own page
+- Missing cross-references between related pages
+- Data gaps that could be filled with web search
+
+### Rules
+- Never modify files in `raw/` — those are immutable
+- Every wiki page should link to its sources
+- Use YAML frontmatter on wiki pages: name, description, type, sources, last_updated
+- Keep `index.md` under 200 lines — one line per page
+- For this project, prioritize ingesting: dynamical-systems papers, scientific discovery papers, world-model literature, symbolic-regression methods
+
